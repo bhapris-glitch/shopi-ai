@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Dashboard</title>
+</head>
+<body>
+
+<h2>Your AI Stats</h2>
+<p id="data"></p>
+
+<button onclick="pay()">Activate Subscription</button>
+
+<script>
+const params = new URLSearchParams(location.search);
+const id = params.get("client");
+
+async function load(){
+  const res = await fetch("/stats/" + id);
+  const d = await res.json();
+
+  document.getElementById("data").innerHTML =
+    "Messages: " + (d.messages || 0);
+}
+
+function pay(){
+  window.location = "https://rzp.io/l/YOUR_PAYMENT_LINK";
+}
+
+load();
+</script>
+
+</body>
+</html>

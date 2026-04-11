@@ -1,0 +1,33 @@
+body {
+  font-family: Arial;
+  text-align: center;
+  background: #0f172a;
+  color: white;
+  padding: 40px;
+}
+
+input {
+  padding:10px;
+  margin:10px;
+  width:250px;
+}
+
+button {
+  padding:10px 20px;
+}
+
+.btn {
+  padding:12px 20px;
+  background:#00ff88;
+  color:black;
+  text-decoration:none;
+}
+
+.whatsapp {
+  position:fixed;
+  bottom:20px;
+  left:20px;
+  background:#25D366;
+  padding:12px;
+  color:white;
+}
