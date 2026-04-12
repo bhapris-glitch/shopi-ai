@@ -16,26 +16,13 @@ if (fs.existsSync("clients.json")) {
 }
 
 // SIGNUP
-app.post("/signup", (req, res) => {
-  const id = "client_" + Date.now();
+const script = `<script src="https://shopi-ai.onrender.com/widget.js?client=${id}"></script>`;
 
-  clients[id] = {
-    ...req.body,
-    messages: 0,
-    createdAt: Date.now(),
-    trial: true,
-    paid: false
-  };
-
-  fs.writeFileSync("clients.json", JSON.stringify(clients, null, 2));
-
-  const script = `<script src="https://shopi-ai.onrender.com/widget.js?client=${id}"></script>`;
-
-  res.json({
-    success: true,
-    clientId: id,
-    script: script
-  });
+res.json({
+  success: true,
+  clientId: id,
+  script: script,
+  installUrl: `https://shopi-ai.onrender.com/install.html?client=${id}`
 });
 
 // TRIAL CHECK
