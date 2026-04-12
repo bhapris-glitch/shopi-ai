@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Install Chatbot</title>
+</head>
+<body style="font-family:Arial; text-align:center; padding:50px;">
+
+<h2>🚀 Install Shopi AI Agent</h2>
+
+<p>Copy & paste this script into your Shopify theme (theme.liquid)</p>
+
+<textarea id="code" style="width:80%;height:100px;"></textarea><br><br>
+
+<button onclick="copy()">Copy Script</button>
+
+<script>
+const params = new URLSearchParams(window.location.search);
+const client = params.get("client");
+
+const script = `<script src="https://shopi-ai.onrender.com/widget.js?client=${client}"><\/script>`;
+document.getElementById("code").value = script;
+
+function copy(){
+  navigator.clipboard.writeText(script);
+  alert("Copied!");
+}
+</script>
+
+</body>
+</html>
