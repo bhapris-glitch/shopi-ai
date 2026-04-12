@@ -101,3 +101,25 @@ app.get("/widget.js", (req, res) => {
 });
 
 app.listen(3000, () => console.log("Server running on 3000"));
+
+app.post("/auto-install", async (req, res) => {
+  const { store, token, clientId } = req.body;
+
+  const scriptTag = {
+    script_tag: {
+      event: "onload",
+      src: `https://shopi-ai.onrender.com/widget.js?client=${clientId}`
+    }
+  };
+
+  await fetch(`https://${store}/admin/api/2023-10/script_tags.json`, {
+    method: "POST",
+    headers: {
+      "X-Shopify-Access-Token": token,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(scriptTag)
+  });
+
+  res.json({ success: true });
+});
