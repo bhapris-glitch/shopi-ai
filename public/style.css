@@ -1,26 +1,48 @@
 body {
-  font-family: Arial;
-  text-align: center;
-  background: #0f172a;
-  color: white;
-  padding: 40px;
+  margin:0;
+  font-family:Arial;
+  background:#0b1a2f;
+  color:white;
 }
 
-input {
-  padding:10px;
-  margin:10px;
-  width:250px;
+.nav {
+  padding:20px;
+  display:flex;
+  justify-content:space-between;
 }
 
-button {
-  padding:10px 20px;
+.hero {
+  display:flex;
+  padding:60px;
+  align-items:center;
+}
+
+.left {
+  flex:1;
+}
+
+.right img {
+  width:300px;
 }
 
 .btn {
-  padding:12px 20px;
-  background:#00ff88;
-  color:black;
+  background:#00ffcc;
+  padding:12px 25px;
   text-decoration:none;
+  color:black;
+  border-radius:5px;
+}
+
+.features {
+  display:flex;
+  justify-content:space-around;
+  padding:40px;
+  background:#111;
+}
+
+.cta {
+  text-align:center;
+  padding:50px;
 }
 
 .whatsapp {
