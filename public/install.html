@@ -11,18 +11,24 @@
 
 <textarea id="code" style="width:80%;height:100px;"></textarea><br><br>
 
-<button onclick="copy()">Copy Script</button>
+<button onclick="autoInstall()">Auto Install</button>
 
 <script>
-const params = new URLSearchParams(window.location.search);
-const client = params.get("client");
+async function autoInstall(){
+  const store = prompt("Enter your Shopify store URL");
+  const token = prompt("Enter your Admin API token");
 
-const script = `<script src="https://shopi-ai.onrender.com/widget.js?client=${client}"><\/script>`;
-document.getElementById("code").value = script;
+  const res = await fetch("/auto-install", {
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body: JSON.stringify({
+      store,
+      token,
+      clientId: client
+    })
+  });
 
-function copy(){
-  navigator.clipboard.writeText(script);
-  alert("Copied!");
+  alert("Installed Successfully!");
 }
 </script>
 
