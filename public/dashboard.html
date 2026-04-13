@@ -1,32 +1,35 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Dashboard</title>
+  <title>Client Dashboard</title>
 </head>
-<body>
+<body style="font-family:Arial; text-align:center; padding:50px;">
 
-<h2>Your AI Stats</h2>
-<p id="data"></p>
+<h2>Client Dashboard</h2>
 
-<button onclick="pay()">Activate Subscription</button>
+<input id="store" placeholder="Store URL (yourstore.myshopify.com)"><br><br>
+<input id="token" placeholder="Admin API Token"><br><br>
+<input id="clientId" placeholder="Client ID"><br><br>
+
+<button onclick="install()">🚀 Install Chatbot</button>
+
+<p id="status"></p>
 
 <script>
-const params = new URLSearchParams(location.search);
-const id = params.get("client");
+async function install(){
+  const store = document.getElementById("store").value;
+  const token = document.getElementById("token").value;
+  const clientId = document.getElementById("clientId").value;
 
-async function load(){
-  const res = await fetch("/stats/" + id);
-  const d = await res.json();
+  const res = await fetch("/auto-install", {
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body: JSON.stringify({ store, token, clientId })
+  });
 
-  document.getElementById("data").innerHTML =
-    "Messages: " + (d.messages || 0);
+  const data = await res.json();
+  document.getElementById("status").innerText = "✅ Installed!";
 }
-
-function pay(){
-  window.location = "https://rzp.io/l/YOUR_PAYMENT_LINK";
-}
-
-load();
 </script>
 
 </body>
