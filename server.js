@@ -75,13 +75,40 @@ app.post("/chat", async (req, res) => {
     return res.json({ reply: "Trial expired. Please upgrade." });
   }
 
-  // Simple AI response (replace with OpenAI later)
-  const reply = "AI: Thanks for your message! We'll assist you.";
+  try {
+    const aiRes = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        model: "gpt-4o-mini",
+        messages: [
+          {
+            role: "system",
+            content: "You are a helpful e-commerce sales assistant. Help customers buy products."
+          },
+          {
+            role: "user",
+            content: message
+          }
+        ]
+      })
+    });
 
-  client.messages++;
-  saveClients();
+    const data = await aiRes.json();
 
-  res.json({ reply });
+    const reply = data.choices[0].message.content;
+
+    client.messages++;
+    saveClients();
+
+    res.json({ reply });
+
+  } catch (err) {
+    res.json({ reply: "AI error. Try again." });
+  }
 });
 
 // =======================
