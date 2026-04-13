@@ -9,21 +9,22 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static("public"));
 
-const BASE_URL = "https://shopi-ai.onrender.com"; // change if needed
+const BASE_URL = "https://shopi-ai.onrender.com"; // 🔁 CHANGE to your Render URL
 
-// Load clients
+// =======================
+// LOAD CLIENTS
+// =======================
 let clients = {};
 if (fs.existsSync("clients.json")) {
   clients = JSON.parse(fs.readFileSync("clients.json"));
 }
 
-// Save clients helper
 function saveClients() {
   fs.writeFileSync("clients.json", JSON.stringify(clients, null, 2));
 }
 
 // =======================
-// SIGNUP ROUTE
+// SIGNUP
 // =======================
 app.post("/signup", (req, res) => {
   const id = "client_" + Date.now();
@@ -35,7 +36,8 @@ app.post("/signup", (req, res) => {
     messages: 0,
     createdAt: Date.now(),
     trial: true,
-    paid: false
+    paid: false,
+    products: []
   };
 
   saveClients();
@@ -50,20 +52,20 @@ app.post("/signup", (req, res) => {
 });
 
 // =======================
-// TRIAL CHECK
+// TRIAL CHECK (24H)
 // =======================
 function isActive(client) {
   const now = Date.now();
   const oneDay = 24 * 60 * 60 * 1000;
 
   if (client.paid) return true;
-  if (client.trial && now - client.createdAt < oneDay) return true;
+  if (client.trial && (now - client.createdAt < oneDay)) return true;
 
   return false;
 }
 
 // =======================
-// CHAT API
+// CHAT API (AI + PRODUCTS)
 // =======================
 app.post("/chat", async (req, res) => {
   const { message, clientId } = req.body;
@@ -76,6 +78,14 @@ app.post("/chat", async (req, res) => {
   }
 
   try {
+    // 🧠 Prepare product data
+    const productList = client.products || [];
+
+    const productText = productList.slice(0, 10).map(p => {
+      return `${p.title} - ₹${p.variants[0].price}`;
+    }).join("\n");
+
+    // 🤖 OpenAI call
     const aiRes = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
@@ -87,7 +97,17 @@ app.post("/chat", async (req, res) => {
         messages: [
           {
             role: "system",
-            content: "You are a helpful e-commerce sales assistant. Help customers buy products."
+            content: `
+You are a Shopify sales assistant.
+
+Store products:
+${productText}
+
+Rules:
+- Recommend products from list
+- Be friendly
+- Help user buy
+`
           },
           {
             role: "user",
@@ -98,8 +118,7 @@ app.post("/chat", async (req, res) => {
     });
 
     const data = await aiRes.json();
-
-    const reply = data.choices[0].message.content;
+    const reply = data.choices?.[0]?.message?.content || "AI error";
 
     client.messages++;
     saveClients();
@@ -112,7 +131,7 @@ app.post("/chat", async (req, res) => {
 });
 
 // =======================
-// SHOPIFY AUTO INSTALL
+// SHOPIFY AUTO INSTALL + FETCH PRODUCTS
 // =======================
 app.post("/auto-install", async (req, res) => {
   try {
@@ -122,6 +141,7 @@ app.post("/auto-install", async (req, res) => {
       return res.json({ success: false, message: "Missing fields" });
     }
 
+    // 🟢 Install chatbot
     const scriptTag = {
       script_tag: {
         event: "onload",
@@ -129,7 +149,7 @@ app.post("/auto-install", async (req, res) => {
       }
     };
 
-    const response = await fetch(`https://${store}/admin/api/2023-10/script_tags.json`, {
+    await fetch(`https://${store}/admin/api/2023-10/script_tags.json`, {
       method: "POST",
       headers: {
         "X-Shopify-Access-Token": token,
@@ -138,23 +158,28 @@ app.post("/auto-install", async (req, res) => {
       body: JSON.stringify(scriptTag)
     });
 
-    const data = await response.json();
-
-    res.json({
-      success: true,
-      shopifyResponse: data
+    // 🟢 Fetch products
+    const productsRes = await fetch(`https://${store}/admin/api/2023-10/products.json`, {
+      headers: {
+        "X-Shopify-Access-Token": token
+      }
     });
+
+    const productsData = await productsRes.json();
+
+    // Save products to client
+    clients[clientId].products = productsData.products || [];
+    saveClients();
+
+    res.json({ success: true });
 
   } catch (err) {
-    res.json({
-      success: false,
-      error: err.message
-    });
+    res.json({ success: false, error: err.message });
   }
 });
 
 // =======================
-// WIDGET SCRIPT
+// CHAT WIDGET
 // =======================
 app.get("/widget.js", (req, res) => {
   const clientId = req.query.client;
@@ -165,7 +190,7 @@ app.get("/widget.js", (req, res) => {
 
     const box = document.createElement("div");
     box.innerHTML = \`
-      <div style="position:fixed;bottom:20px;right:20px;width:300px;background:#fff;border-radius:10px;padding:10px;">
+      <div style="position:fixed;bottom:20px;right:20px;width:300px;background:#fff;border-radius:10px;padding:10px;font-family:Arial;">
         <div id="chat" style="height:200px;overflow:auto;"></div>
         <input id="input" placeholder="Ask something..." style="width:100%;padding:5px;">
       </div>
