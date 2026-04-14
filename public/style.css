@@ -1,4 +1,4 @@
-* {
+ {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
@@ -134,4 +134,53 @@ body {
     gap: 10px;
   }
 
+}
+
+/* LOADER */
+.loader {
+  display: none;
+  margin: auto;
+  border: 4px solid #ccc;
+  border-top: 4px solid #00ffcc;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  100% { transform: rotate(360deg); }
+}
+
+/* POPUP */
+.popup {
+  display: none;
+  position: fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background: rgba(0,0,0,0.7);
+  justify-content:center;
+  align-items:center;
+}
+
+.popup-box {
+  padding: 30px;
+  text-align: center;
+}
+
+/* DASHBOARD */
+.dashboard {
+  padding: 50px;
+  text-align: center;
+}
+
+.dashboard .card {
+  max-width: 400px;
+  margin: auto;
+  padding: 20px;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
 }
