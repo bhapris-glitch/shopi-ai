@@ -190,9 +190,10 @@ app.get("/widget.js", (req, res) => {
 
     const box = document.createElement("div");
     box.innerHTML = \`
-      <div style="position:fixed;bottom:20px;right:20px;width:300px;background:#fff;border-radius:10px;padding:10px;font-family:Arial;">
-        <div id="chat" style="height:200px;overflow:auto;"></div>
-        <input id="input" placeholder="Ask something..." style="width:100%;padding:5px;">
+      <div style="position:fixed;bottom:20px;right:20px;width:320px;background:#fff;border-radius:12px;padding:10px;font-family:Arial;box-shadow:0 5px 20px rgba(0,0,0,0.3);">
+        <div id="chat" style="height:250px;overflow:auto;padding:5px;"></div>
+        <div id="typing" style="display:none;font-size:12px;color:gray;">AI typing...</div>
+        <input id="input" placeholder="Ask something..." style="width:100%;padding:8px;border-radius:6px;border:1px solid #ccc;">
       </div>
     \`;
 
@@ -200,12 +201,25 @@ app.get("/widget.js", (req, res) => {
 
     const input = box.querySelector("#input");
     const chat = box.querySelector("#chat");
+    const typing = box.querySelector("#typing");
+
+    function addMessage(text, type){
+      const div = document.createElement("div");
+      div.style.margin = "5px 0";
+      div.style.textAlign = type === "user" ? "right" : "left";
+      div.innerHTML = "<span style='background:"+ (type==="user"?"#00ffcc":"#eee") +";padding:6px 10px;border-radius:10px;display:inline-block;'>"+text+"</span>";
+      chat.appendChild(div);
+      chat.scrollTop = chat.scrollHeight;
+    }
 
     input.addEventListener("keypress", async (e)=>{
       if(e.key==="Enter"){
         const msg = input.value;
 
-        chat.innerHTML += "<p><b>You:</b> "+msg+"</p>";
+        addMessage(msg, "user");
+        input.value="";
+
+        typing.style.display = "block";
 
         const res = await fetch("${BASE_URL}/chat", {
           method:"POST",
@@ -217,9 +231,10 @@ app.get("/widget.js", (req, res) => {
         });
 
         const data = await res.json();
-        chat.innerHTML += "<p><b>AI:</b> "+data.reply+"</p>";
 
-        input.value="";
+        typing.style.display = "none";
+
+        addMessage(data.reply, "ai");
       }
     });
 
