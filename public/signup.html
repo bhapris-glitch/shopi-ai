@@ -1,44 +1,65 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Signup</title>
-<link rel="stylesheet" href="style.css">
+  <title>Start Trial</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<h2>Start Free Trial</h2>
+<div class="center-container">
 
-<input id="name" placeholder="Name"><br>
-<input id="email" placeholder="Email"><br>
-<input id="store" placeholder="Shopify Store"><br>
-<input id="token" placeholder="API Token"><br>
+  <form class="glass form-box" id="form">
+    <h2>Start Free Trial</h2>
 
-<button onclick="signup()">Start Trial</button>
+    <input type="text" id="name" placeholder="Your Name" required>
+    <input type="email" id="email" placeholder="Email" required>
+    <input type="text" id="store" placeholder="Shopify Store URL" required>
 
-<div id="result"></div>
+    <button type="submit">Start Trial</button>
+
+    <div class="loader" id="loader"></div>
+  </form>
+
+</div>
+
+<!-- SUCCESS POPUP -->
+<div class="popup" id="popup">
+  <div class="popup-box glass">
+    <h3>🎉 Trial Started</h3>
+    <p>Your AI assistant is ready!</p>
+    <button onclick="closePopup()">OK</button>
+  </div>
+</div>
 
 <script>
-async function signup(){
+const form = document.getElementById("form");
+const loader = document.getElementById("loader");
+const popup = document.getElementById("popup");
+
+form.onsubmit = async (e) => {
+  e.preventDefault();
+
+  loader.style.display = "block";
+
   const res = await fetch("/signup", {
     method:"POST",
     headers:{"Content-Type":"application/json"},
     body: JSON.stringify({
-      name:name.value,
-      email:email.value,
-      store:store.value,
-      token:token.value
+      name: name.value,
+      email: email.value,
+      store: store.value
     })
   });
 
-  const data = await res.json();
+  loader.style.display = "none";
 
-  document.getElementById("result").innerHTML = `
-  <h3>✅ Trial Started</h3>
-  <p>Install this in Shopify:</p>
-  <textarea style="width:100%;height:100px;">${data.script}</textarea>
-  <p>Trial: 24 hours</p>
-  <a href="dashboard.html?client=${data.clientId}">Go Dashboard</a>
-  `;
+  popup.style.display = "flex";
+};
+
+function closePopup(){
+  popup.style.display = "none";
+  window.location = "dashboard.html";
 }
 </script>
 
