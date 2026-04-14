@@ -1,33 +1,44 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Client Dashboard</title>
+  <title>Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
 </head>
-<body style="font-family:Arial; text-align:center; padding:50px;">
+<body>
 
-<h2>Client Dashboard</h2>
+<div class="dashboard">
 
-<input id="store" placeholder="Store URL (yourstore.myshopify.com)"><br><br>
-<input id="token" placeholder="Admin API Token"><br><br>
-<input id="clientId" placeholder="Client ID"><br><br>
+  <h2>Client Dashboard</h2>
 
-<button onclick="install()">🚀 Install Chatbot</button>
+  <div class="glass card">
+    <h3>Install Chatbot</h3>
 
-<p id="status"></p>
+    <input id="store" placeholder="yourstore.myshopify.com">
+    <input id="token" placeholder="Admin API Token">
+    <input id="clientId" placeholder="Client ID">
+
+    <button onclick="install()">🚀 Install</button>
+
+    <p id="status"></p>
+  </div>
+
+</div>
 
 <script>
 async function install(){
-  const store = document.getElementById("store").value;
-  const token = document.getElementById("token").value;
-  const clientId = document.getElementById("clientId").value;
+  document.getElementById("status").innerText = "Installing...";
 
   const res = await fetch("/auto-install", {
     method:"POST",
     headers:{"Content-Type":"application/json"},
-    body: JSON.stringify({ store, token, clientId })
+    body: JSON.stringify({
+      store: store.value,
+      token: token.value,
+      clientId: clientId.value
+    })
   });
 
-  const data = await res.json();
   document.getElementById("status").innerText = "✅ Installed!";
 }
 </script>
