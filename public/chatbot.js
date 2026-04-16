@@ -11,7 +11,10 @@
     <input id="input" placeholder="Ask something..." style="width:100%;padding:8px;margin-top:5px;">
   </div>
   `;
-
+setTimeout(()=>{
+  const chat = document.getElementById("chat");
+  chat.innerHTML += "<div>👋 Hi! Need help choosing a product?</div>";
+}, 2000);
   document.body.appendChild(box);
 
   const input = document.getElementById("input");
