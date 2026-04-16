@@ -53,6 +53,10 @@
 
   document.body.appendChild(box);
 
+ setTimeout(()=>{
+  const chat = document.getElementById("chat");
+  chat.innerHTML += "<div>👋 Hi! Need help choosing a product?</div>";
+}, 2000); 
 
   // 🔁 TOGGLE OPEN / CLOSE
   let open = false;
