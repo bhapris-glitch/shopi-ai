@@ -15,7 +15,7 @@
   button.style.justifyContent = "center";
   button.style.fontSize = "24px";
   button.style.cursor = "pointer";
-  button.style.boxShadow = "0 5px 20px rgba(0,0,0,0.3)";
+  button.style.boxShadow = "0 0 20px #00ffcc";
   button.style.zIndex = "9999";
 
   document.body.appendChild(button);
@@ -92,12 +92,13 @@ box.style.boxShadow = "0 10px 40px rgba(0,255,204,0.2)";
 
     div.innerHTML = `
       <span style="
-        background:${type==="user" ? "#00ffcc" : "#333"};
-        padding:6px 10px;
-        border-radius:10px;
-        display:inline-block;
-        max-width:80%;
-      ">${text}</span>
+  background:${type==="user" ? "#00ffcc" : "#222"};
+  padding:8px 12px;
+  border-radius:16px;
+  display:inline-block;
+  max-width:80%;
+  border:1px solid rgba(255,255,255,0.1);
+">${text}</span>
     `;
 
     chat.appendChild(div);
