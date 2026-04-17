@@ -28,13 +28,14 @@
 
 .logo {
   font-size: 32px;
+ color: 00ffcc;
   font-weight: bold;
 }
 
 .tagline {
-  font-size: 14px;
+  font-size: 12px;
   color: #aaa;
-  margin-top: -10px;
+  margin-top: -14px;
 }
 
 body {
