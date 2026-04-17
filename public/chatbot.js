@@ -30,7 +30,9 @@
   box.style.width = "320px";
   box.style.height = "420px";
   box.style.background = "#111";
-  box.style.borderRadius = "12px";
+  box.style.borderRadius = "20px";
+box.style.border = "1px solid rgba(0,255,204,0.3)";
+box.style.boxShadow = "0 10px 40px rgba(0,255,204,0.2)";
   box.style.display = "none";
   box.style.flexDirection = "column";
   box.style.boxShadow = "0 5px 25px rgba(0,0,0,0.4)";
