@@ -1,4 +1,4 @@
-(function(){
+
 
   // 🟢 CREATE CHAT BUTTON (FLOATING)
   const button = document.createElement("div");
@@ -46,7 +46,12 @@
     <div id="typing" style="display:none;padding-left:10px;font-size:12px;color:gray;">
       AI is typing...
     </div>
-
+<div id="quickBtns" style="padding:10px;">
+  <button onclick="quickAction('trial')" style="margin:5px;">🚀 Free Trial</button>
+  <button onclick="quickAction('basic')" style="margin:5px;">💰 ₹299 Plan</button>
+  <button onclick="quickAction('premium')" style="margin:5px;">🔥 Premium</button>
+  <button onclick="quickAction('shopify')" style="margin:5px;">🤝 Connect Shopify</button>
+</div>
     <input id="input" placeholder="Ask something..."
       style="border:none;padding:10px;width:100%;outline:none;">
   `;
