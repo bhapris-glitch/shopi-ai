@@ -1,4 +1,4 @@
-
+(function(){
 
   // 🟢 CREATE CHAT BUTTON (FLOATING)
   const button = document.createElement("div");
