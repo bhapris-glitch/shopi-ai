@@ -75,8 +75,9 @@ app.post("/chat", async (req, res) => {
   const { message, clientId } = req.body;
 
   const client = clients[clientId];
-  if (!client) return res.json({ reply: "Invalid client" });
-
+if(!client){
+  return res.json({ reply: "Welcome! Ask me anything about our products 😊" });
+}
   if (!isActive(client)) {
     return res.json({ reply: "Trial expired. Please upgrade." });
   }
