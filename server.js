@@ -1,3 +1,7 @@
+let analytics = {
+  chatbotOpens: 0
+};
+
 const express = require("express");
 const cors = require("cors");
 const fetch = require("node-fetch");
@@ -140,7 +144,27 @@ app.post("/auto-install", async (req, res) => {
     if (!store || !token || !clientId) {
       return res.json({ success: false, message: "Missing fields" });
     }
+//track
+    app.post("/track-open", (req, res) => {
+  analytics.chatbotOpens++;
+  res.json({ success: true });
+});
 
+    // Admin- data router 
+
+    app.get("/admin-data", (req, res) => {
+
+  const totalClients = Object.keys(clients).length;
+
+  res.json({
+    totalClients,
+    revenue: totalClients * 299,
+    chatbotOpens: analytics.chatbotOpens,
+    clients: Object.values(clients)
+  });
+
+});
+    
     // 🟢 Install chatbot
     const scriptTag = {
       script_tag: {
