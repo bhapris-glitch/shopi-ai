@@ -61,10 +61,16 @@
   // 🔁 TOGGLE OPEN / CLOSE
   let open = false;
 
-  button.onclick = () => {
-    open = !open;
-    box.style.display = open ? "flex" : "none";
-  };
+  button.onclick = async () => {
+
+  open = !open;
+  box.style.display = open ? "flex" : "none";
+
+  if(open){
+    fetch("/track-open", { method: "POST" });
+  }
+
+};
 
 
   // 🧠 CHAT LOGIC
