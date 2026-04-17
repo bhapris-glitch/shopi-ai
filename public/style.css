@@ -9,7 +9,20 @@ body {
   background: #0b1a2f;
   color: white;
 }
+.logo-box {
+  padding: 20px;
+}
 
+.logo {
+  font-size: 32px;
+  font-weight: bold;
+}
+
+.tagline {
+  font-size: 14px;
+  color: #aaa;
+  margin-top: -10px;
+}
 /* HEADER */
 .nav {
   display: flex;
