@@ -38,7 +38,7 @@
 
   box.innerHTML = `
     <div style="padding:10px;background:#00ffcc;color:black;font-weight:bold;">
-      Layboka AI Assistant
+      Layboka Shopi Assistant
     </div>
 
     <div id="chat" style="flex:1;padding:10px;overflow:auto;color:white;"></div>
@@ -136,3 +136,30 @@
   }, 1000);
 
 })();
+
+<div id="quickBtns" style="padding:10px;">
+  <button onclick="quickAction('trial')" style="margin:5px;">🚀 Free Trial</button>
+  <button onclick="quickAction('basic')" style="margin:5px;">💰 ₹299 Plan</button>
+  <button onclick="quickAction('premium')" style="margin:5px;">🔥 Premium</button>
+  <button onclick="quickAction('shopify')" style="margin:5px;">🤝 Connect Shopify</button>
+</div>
+
+window.quickAction = function(type){
+
+  if(type === "trial"){
+    window.location.href = "/contact.html";
+  }
+
+  if(type === "basic"){
+    window.location.href = "/pricing.html";
+  }
+
+  if(type === "premium"){
+    window.location.href = "/pricing.html";
+  }
+
+  if(type === "shopify"){
+    window.location.href = "/contact.html";
+  }
+
+};
