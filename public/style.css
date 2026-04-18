@@ -335,3 +335,99 @@ nav a:hover {
     text-align: center;
   }
 }
+
+/* HERO IMPROVED */
+.hero {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 100px 20px;
+}
+
+.highlight {
+  color: #00ffcc;
+}
+
+/* BUTTONS */
+.hero-buttons {
+  margin-top: 20px;
+}
+
+.btn-outline {
+  margin-left: 10px;
+  padding: 12px 20px;
+  border: 1px solid #00ffcc;
+  border-radius: 10px;
+  text-decoration: none;
+  color: #00ffcc;
+}
+
+/* FEATURES */
+.features {
+  margin-top: 20px;
+  display: flex;
+  gap: 15px;
+  font-size: 14px;
+  color: #ccc;
+}
+
+/* FLOATING IMAGE */
+.floating {
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%,100% { transform: translateY(0); }
+  50% { transform: translateY(-15px); }
+}
+
+/* TRUST SECTION */
+.trust {
+  text-align: center;
+  margin: 40px 0;
+}
+
+.badges {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+
+.badges span {
+  background: rgba(255,255,255,0.08);
+  padding: 10px 15px;
+  border-radius: 10px;
+}
+
+/* ANIMATIONS */
+.fade-up {
+  opacity: 0;
+  transform: translateY(30px);
+  animation: fadeUp 1s forwards;
+}
+
+.delay { animation-delay: 0.3s; }
+.delay2 { animation-delay: 0.6s; }
+.delay3 { animation-delay: 0.9s; }
+
+@keyframes fadeUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* MOBILE */
+@media (max-width:768px){
+  .hero {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .features {
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+}
