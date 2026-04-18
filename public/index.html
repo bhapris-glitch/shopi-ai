@@ -2,36 +2,43 @@
 <html>
 <head>
   <title>Layboka AI</title>
- <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="style.css">
 </head>
-<body>
-<div class="logo-box">
-  <h1 class="logo">Layboka</h1>
-  <p class="tagline">Converts Visitors Into Buyers 24/7</p>
-</div>
 
-  <div class="nav">
-  <a href="index.html">Home</a>
-  <a href="pricing.html">Pricing</a>
-  <a href="about.html">About</a>
-  <a href="terms.html">Privacy</a>
-</div>
-  
+<body>
+
+<!-- HEADER -->
+<header class="header">
+
+  <div class="logo-box">
+    <h1>Layboka</h1>
+    <span>Converts Visitors Into Buyers 24/7</span>
+  </div>
+
+  <div class="menu-toggle" onclick="toggleMenu()">☰</div>
+
+  <nav id="nav">
+    <a href="index.html">Home</a>
+    <a href="pricing.html">Pricing</a>
+    <a href="about.html">About</a>
+    <a href="privacy.html">Privacy</a>
+  </nav>
+
 </header>
 
+<!-- HERO -->
 <section class="hero">
 
   <div class="hero-left">
-    <h1>Turn Your Shopify Store Into a 24/7 Sales Machine</h1>
+    <h2>Turn Your Shopify Store Into a 24/7 Sales Machine</h2>
+    <p>AI that talks, sells, and converts automatically.</p>
 
-    <p>AI that replies instantly, recommends products, and converts visitors into buyers.</p>
-
-    <a href="signup.html" class="btn">Start Free Trial</a>
+    <a href="contact.html" class="btn">Start Free Trial</a>
   </div>
 
   <div class="hero-right">
-    <img src="apn.png" width="250">
+    <img src="https://cdn-icons-png.flaticon.com/512/869/869636.png">
   </div>
 
 </section>
@@ -95,6 +102,8 @@
   <a href="pricing.html">Pricing</a>
   <a href="contact.html">Contact Us</a>
 </footer>
+  
+  <script src="script.js"></script>
  <script src="chatbot.js"></script> 
 </body>
 </html>
