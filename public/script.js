@@ -8,6 +8,29 @@ function toggleMenu(){
   }
 }
 
+// 🌍 DETECT USER COUNTRY
+fetch("https://ipapi.co/json/")
+  .then(res => res.json())
+  .then(data => {
+
+    const country = data.country;
+
+    if(country === "IN"){
+      document.getElementById("basicPrice").innerText = "₹299/month";
+      document.getElementById("premiumPrice").innerText = "₹799/month";
+    } else {
+      document.getElementById("basicPrice").innerText = "$8/month";
+      document.getElementById("premiumPrice").innerText = "$15/month";
+    }
+
+  })
+  .catch(()=>{
+    // fallback
+    document.getElementById("basicPrice").innerText = "$8/month";
+    document.getElementById("premiumPrice").innerText = "$15/month";
+  });
+
+
 // TESTIMONIAL AUTO SLIDER
 let index = 0;
 
