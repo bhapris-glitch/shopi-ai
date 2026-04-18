@@ -5,51 +5,125 @@
   font-family: Arial;
 }
 
-.nav {
-  display: flex;
-  gap: 20px;
-  padding: 10px 20px;
-}
-
-.nav a {
-  text-decoration: none;
-  color: white;
-  font-weight: 500;
-  transition: 0.3s;
-}
-
-.nav a:hover {
-  color: #00ffcc;
-}
-
-.logo-box {
-  padding: 20px;
-}
-
-.logo {
-  font-size: 32px;
- color: 00ffcc;
-  font-weight: bold;
-}
-
-.tagline {
-  font-size: 12px;
-  color: #aaa;
-  margin-top: -14px;
-}
-
 body {
-  background: #0b1a2f;
+  margin: 0;
+  font-family: Arial;
+  background: linear-gradient(135deg, #0b1a2f, #001f3f);
   color: white;
 }
 
 /* HEADER */
-.nav {
+.header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 20px 20px;
+  padding: 15px 20px;
+  position: sticky;
+  top: 0;
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(10px);
+  z-index: 1000;
 }
+
+.logo-box h1 {
+  margin: 0;
+  font-size: 24px;
+}
+
+.logo-box span {
+  font-size: 12px;
+  color: #aaa;
+}
+
+/* NAV */
+nav {
+  display: flex;
+  gap: 20px;
+}
+
+nav a {
+  text-decoration: none;
+  color: white;
+  transition: 0.3s;
+}
+
+nav a:hover {
+  color: #00ffcc;
+}
+
+/* MOBILE MENU BUTTON */
+.menu-toggle {
+  display: none;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+/* HERO */
+.hero {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 80px 20px;
+}
+
+.hero-left {
+  max-width: 500px;
+}
+
+.hero-left h2 {
+  font-size: 36px;
+}
+
+.hero-right img {
+  width: 250px;
+}
+
+/* BUTTON */
+.btn {
+  display: inline-block;
+  margin-top: 20px;
+  background: #00ffcc;
+  color: black;
+  padding: 12px 20px;
+  border-radius: 10px;
+  text-decoration: none;
+}
+
+/* 📱 MOBILE RESPONSIVE */
+@media (max-width: 768px){
+
+  .menu-toggle {
+    display: block;
+  }
+
+  nav {
+    position: absolute;
+    top: 60px;
+    right: 0;
+    background: #111;
+    flex-direction: column;
+    width: 200px;
+    display: none;
+    padding: 10px;
+  }
+
+  nav a {
+    padding: 10px;
+  }
+
+  .hero {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .hero-right img {
+    margin-top: 20px;
+  }
+
+}
+
+
+
 
 .nav h2 {
   color: #00ffcc;
