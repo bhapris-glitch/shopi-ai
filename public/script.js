@@ -9,26 +9,45 @@ function toggleMenu(){
 }
 
 // 🌍 DETECT USER COUNTRY
-fetch("https://ipapi.co/json/")
-  .then(res => res.json())
-  .then(data => {
+document.addEventListener("DOMContentLoaded", () => {
 
-    const country = data.country;
+  const basic = document.getElementById("basicPrice");
+  const premium = document.getElementById("premiumPrice");
 
-    if(country === "IN"){
-      document.getElementById("basicPrice").innerText = "₹299/month";
-      document.getElementById("premiumPrice").innerText = "₹799/month";
-    } else {
-      document.getElementById("basicPrice").innerText = "$8/month";
-      document.getElementById("premiumPrice").innerText = "$15/month";
-    }
+  if(!basic || !premium){
+    console.log("Pricing elements not found");
+    return;
+  }
 
-  })
-  .catch(()=>{
-    // fallback
-    document.getElementById("basicPrice").innerText = "$8/month";
-    document.getElementById("premiumPrice").innerText = "$15/month";
-  });
+  // 🔥 DEFAULT (fast loading UX)
+  basic.innerText = "₹299/month";
+  premium.innerText = "₹799/month";
+
+  // 🌍 FETCH LOCATION
+  fetch("https://ipapi.co/json/")
+    .then(res => res.json())
+    .then(data => {
+
+      console.log("User country:", data.country);
+
+      if(data.country === "IN"){
+        basic.innerText = "₹299/month";
+        premium.innerText = "₹799/month";
+      } else {
+        basic.innerText = "$8/month";
+        premium.innerText = "$15/month";
+      }
+
+    })
+    .catch(err => {
+      console.log("Geo error:", err);
+
+      // 🌍 FALLBACK → USD
+      basic.innerText = "$8/month";
+      premium.innerText = "$15/month";
+    });
+
+});
 
 
 // TESTIMONIAL AUTO SLIDER
