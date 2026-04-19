@@ -121,7 +121,7 @@ nav a:hover {
   grid-template-columns: repeat(4, 1fr);
   gap: 20px;
   padding: 60px;
-  background: #20313b;
+  background: #0f4885;
   text-align: center;
 }
 
