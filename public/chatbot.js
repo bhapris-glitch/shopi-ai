@@ -37,6 +37,7 @@ box.style.boxShadow = "0 10px 40px rgba(0,255,204,0.2)";
   box.style.flexDirection = "column";
   box.style.boxShadow = "0 5px 25px rgba(0,0,0,0.4)";
   box.style.zIndex = "9999";
+  box.style.roundedcorner = "5px"
 
   box.innerHTML = `
     <div style="padding:10px;background:#00ffcc;color:black;font-weight:bold;">
@@ -75,7 +76,21 @@ box.style.boxShadow = "0 10px 40px rgba(0,255,204,0.2)";
 
   if(open){
     fetch("/track-open", { method: "POST" });
+
+// CHATBOT — SHOW UPGRADE BUTTON
+    
+  }function addMessage(text, type){
+
+  const chat = document.getElementById("chat");
+
+  let extra = "";
+
+  if(text.includes("trial expired")){
+    extra = `<br><a href="/pricing.html" style="color:#00ffcc;">👉 Upgrade Now</a>`;
   }
+
+  chat.innerHTML += `<p>${text}${extra}</p>`;
+}
 
 };
 
