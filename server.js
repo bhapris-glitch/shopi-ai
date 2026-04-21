@@ -169,6 +169,23 @@ app.post("/auto-install", async (req, res) => {
 
 });
 
+// ** CHAT API — CHECK TRIAL EXPIRY
+
+const client = clients.find(c => c.store); // simple match
+
+if(!client){
+  return res.json({ reply: "Client not found" });
+}
+
+// ⛔ TRIAL EXPIRED
+if(Date.now() > client.trialEnds && client.status !== "active"){
+  return res.json({
+    reply: "⚠️ Your 3-day trial expired. Upgrade to continue using AI."
+  });
+}
+
+
+
     // Admin- data router 
 
     app.get("/admin-data", (req, res) => {
