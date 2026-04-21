@@ -56,19 +56,6 @@ app.post("/signup", (req, res) => {
 });
 
 // =======================
-// TRIAL CHECK (24H)
-// =======================
-function isActive(client) {
-  const now = Date.now();
-  const oneDay = 24 * 60 * 60 * 1000;
-
-  if (client.paid) return true;
-  if (client.trial && (now - client.createdAt < oneDay)) return true;
-
-  return false;
-}
-
-// =======================
 // CHAT API (AI + PRODUCTS)
 // =======================
 app.post("/chat", async (req, res) => {
@@ -139,16 +126,47 @@ Rules:
 // SHOPIFY AUTO INSTALL + FETCH PRODUCTS
 // =======================
 app.post("/auto-install", async (req, res) => {
-  try {
-    const { store, token, clientId } = req.body;
 
-    if (!store || !token || !clientId) {
-      return res.json({ success: false, message: "Missing fields" });
-    }
-//track
-    app.post("/track-open", (req, res) => {
-  analytics.chatbotOpens++;
-  res.json({ success: true });
+  const { store, token } = req.body;
+
+  try {
+
+    // 👉 Install chatbot script
+    await fetch(`https://${store}/admin/api/2023-10/script_tags.json`, {
+      method: "POST",
+      headers: {
+        "X-Shopify-Access-Token": token,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        script_tag: {
+          event: "onload",
+          src: "https://shopi-ai.onrendar.com/chatbot.js"
+        }
+      })
+    });
+
+    // 👉 SAVE CLIENT (3 DAY TRIAL)
+    const trialEnds = Date.now() + (3 * 24 * 60 * 60 * 1000);
+
+    clients.push({
+      store,
+      token,
+      plan: "basic",
+      status: "trial",
+      trialEnds
+    });
+
+    saveData();
+
+    res.json({
+      message: "✅ Installed! 3-day trial started."
+    });
+
+  } catch (err) {
+    res.json({ message: "❌ Installation failed" });
+  }
+
 });
 
     // Admin- data router 
@@ -159,29 +177,13 @@ app.post("/auto-install", async (req, res) => {
 
   res.json({
     totalClients,
-    revenue: totalClients * 299,
+    revenue: totalClients * 399,
     chatbotOpens: analytics.chatbotOpens,
     clients: Object.values(clients)
   });
 
 });
-    
-    // 🟢 Install chatbot
-    const scriptTag = {
-      script_tag: {
-        event: "onload",
-        src: `${BASE_URL}/widget.js?client=${clientId}`
-      }
-    };
-
-    await fetch(`https://${store}/admin/api/2023-10/script_tags.json`, {
-      method: "POST",
-      headers: {
-        "X-Shopify-Access-Token": token,
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(scriptTag)
-    });
+  
 
     // 🟢 Fetch products
     const productsRes = await fetch(`https://${store}/admin/api/2023-10/products.json`, {
