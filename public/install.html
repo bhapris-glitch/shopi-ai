@@ -2,44 +2,46 @@
 <html>
 <head>
   <title>Install Chatbot</title>
-   <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
 </head>
-<body style="font-family:Arial; text-align:center; padding:50px;">
 
-<h2>🚀 Install Shopi AI Agent</h2>
+<body style="font-family:Arial; text-align:center; padding:40px;">
 
-<p>Copy & paste this script into your Shopify theme (theme.liquid)</p>
+<h2>🚀 Install Layboka AI Agent</h2>
 
-<textarea id="code" style="width:80%;height:100px;"></textarea><br><br>
+<p>Start your <b>3-Day Free Trial</b>. No coding needed.</p>
 
-<button onclick="autoInstall()">Auto Install</button>
+<button onclick="autoInstall()" style="padding:12px 20px;">
+Start Free Trial
+</button>
+
+<p id="status" style="margin-top:20px;"></p>
 
 <script>
 async function autoInstall(){
-  const store = prompt("Enter your Shopify store URL");
-  const token = prompt("Enter your Admin API token");
+
+  const store = prompt("Enter your Shopify store (example: mystore.myshopify.com)");
+  const token = prompt("Enter your Admin API Access Token");
 
   const res = await fetch("/auto-install", {
     method:"POST",
     headers:{"Content-Type":"application/json"},
-    body: JSON.stringify({
-      store,
-      token,
-      clientId: client
-    })
+    body: JSON.stringify({ store, token })
   });
 
-  alert("Installed Successfully!");
+  const data = await res.json();
+
+  document.getElementById("status").innerText = data.message;
+
 }
 </script>
-<script src="chatbot.js"></script>
 
-  <footer style="text-align:center; padding:20px;">
+<footer style="margin-top:40px;">
   <a href="privacy.html">Privacy</a> |
   <a href="terms.html">Terms</a> |
-  <a href="pricing.html">Pricing</a>
-  <a href="contact.html">Contact Us</a>
+  <a href="pricing.html">Pricing</a> |
+  <a href="contact.html">Contact</a>
 </footer>
-  
+
 </body>
 </html>
