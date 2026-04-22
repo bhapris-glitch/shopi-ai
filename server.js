@@ -13,6 +13,72 @@ app.use(express.json());
 app.use(express.static("public"));
 
 const BASE_URL = "https://shopi-ai.onrender.com"; // your domain
+//===============
+// AUTH ROUTE 
+//================
+app.get("/auth", (req, res) => {
+  const shop = req.query.shop;
+
+  if (!shop) return res.send("Missing shop");
+
+  const redirectUri = `${BASE_URL}/callback`;
+
+  const installUrl = `https://${shop}/admin/oauth/authorize?client_id=${process.env.SHOPIFY_API_KEY}&scope=read_products,write_script_tags&redirect_uri=${redirectUri}`;
+
+  res.redirect(installUrl);
+});
+
+//================
+//CALLBACK ROUTE
+//================
+
+app.get("/callback", async (req, res) => {
+  const { shop, code } = req.query;
+
+  const tokenRes = await fetch(`https://${shop}/admin/oauth/access_token`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      client_id: process.env.SHOPIFY_API_KEY,
+      client_secret: process.env.SHOPIFY_API_SECRET,
+      code
+    })
+  });
+
+  const tokenData = await tokenRes.json();
+  const token = tokenData.access_token;
+
+  const clientId = "client_" + Date.now();
+
+  const trialEnds = Date.now() + (3 * 24 * 60 * 60 * 1000);
+
+  clients[clientId] = {
+    store: shop,
+    token,
+    trialEnds,
+    paid: false,
+    products: []
+  };
+
+  saveClients();
+
+  // Install chatbot
+  await fetch(`https://${shop}/admin/api/2023-10/script_tags.json`, {
+    method: "POST",
+    headers: {
+      "X-Shopify-Access-Token": token,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      script_tag: {
+        event: "onload",
+        src: `${BASE_URL}/widget.js?client=${clientId}`
+      }
+    })
+  });
+
+  res.send("✅ Installed successfully!");
+});
 
 // =======================
 // LOAD CLIENTS
@@ -87,7 +153,7 @@ app.post("/chat", async (req, res) => {
   }
 
   if (!isActive(client)) {
-    return res.json({ reply: "⚠️ Trial expired. Please upgrade." });
+    return res.json({ reply: "⚠️ 3 Days Trial expired. Please upgrade." });
   }
 
   try {
@@ -134,10 +200,7 @@ app.post("/chat", async (req, res) => {
 // =======================
 // AUTO INSTALL + FETCH PRODUCTS
 // =======================
-app.post("/auto-install", async (req, res) => {
-  const { store, token, clientId } = req.body;
-
-  try {
+ 
     // install script
     await fetch(`https://${store}/admin/api/2023-10/script_tags.json`, {
       method: "POST",
