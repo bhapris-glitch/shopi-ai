@@ -1,30 +1,31 @@
 console.log("🔥 Starting server...");
 
-console.log("🔥 About to listen...");
-
-let analytics = {
-  chatbotOpens: 0
-};
-
 const express = require("express");
 const cors = require("cors");
 const fetch = require("node-fetch");
 const fs = require("fs");
 
 const app = express();
+const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(express.json());
 app.use(express.static("public"));
 
-const BASE_URL = "https://shopi-ai.onrender.com"; // 🔁 CHANGE to your Render URL
+const BASE_URL = "https://shopi-ai.onrender.com"; // your domain
 
 // =======================
 // LOAD CLIENTS
 // =======================
 let clients = {};
+
 if (fs.existsSync("clients.json")) {
-  clients = JSON.parse(fs.readFileSync("clients.json"));
+  try {
+    clients = JSON.parse(fs.readFileSync("clients.json"));
+  } catch (e) {
+    console.log("⚠️ clients.json corrupted, resetting...");
+    clients = {};
+  }
 }
 
 function saveClients() {
@@ -32,19 +33,33 @@ function saveClients() {
 }
 
 // =======================
-// SIGNUP
+// HELPER: CHECK TRIAL
+// =======================
+function isActive(client) {
+  if (!client) return false;
+
+  if (client.paid) return true;
+
+  const now = Date.now();
+  return now < client.trialEnds;
+}
+
+// =======================
+// SIGNUP (START 3 DAY TRIAL)
 // =======================
 app.post("/signup", (req, res) => {
   const id = "client_" + Date.now();
+
+  const trialEnds = Date.now() + (3 * 24 * 60 * 60 * 1000);
 
   clients[id] = {
     name: req.body.name,
     email: req.body.email,
     store: req.body.store,
-    messages: 0,
     createdAt: Date.now(),
-    trial: true,
+    trialEnds,
     paid: false,
+    messages: 0,
     products: []
   };
 
@@ -55,33 +70,32 @@ app.post("/signup", (req, res) => {
   res.json({
     success: true,
     clientId: id,
-    script: script
+    script
   });
 });
 
 // =======================
-// CHAT API (AI + PRODUCTS)
+// CHAT API (AI)
 // =======================
 app.post("/chat", async (req, res) => {
   const { message, clientId } = req.body;
 
   const client = clients[clientId];
-if(!client){
-  return res.json({ reply: "Welcome! Ask me anything about our products 😊" });
-}
+
+  if (!client) {
+    return res.json({ reply: "Welcome! Ask me anything 😊" });
+  }
+
   if (!isActive(client)) {
-    return res.json({ reply: "Trial expired. Please upgrade." });
+    return res.json({ reply: "⚠️ Trial expired. Please upgrade." });
   }
 
   try {
-    // 🧠 Prepare product data
-    const productList = client.products || [];
+    const productText = (client.products || [])
+      .slice(0, 10)
+      .map(p => `${p.title} - ₹${p.variants?.[0]?.price || ""}`)
+      .join("\n");
 
-    const productText = productList.slice(0, 10).map(p => {
-      return `${p.title} - ₹${p.variants[0].price}`;
-    }).join("\n");
-
-    // 🤖 OpenAI call
     const aiRes = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
@@ -93,17 +107,7 @@ if(!client){
         messages: [
           {
             role: "system",
-            content: `
-You are a Shopify sales assistant.
-
-Store products:
-${productText}
-
-Rules:
-- Recommend products from list
-- Be friendly
-- Help user buy
-`
+            content: `You are a Shopify sales assistant.\nProducts:\n${productText}`
           },
           {
             role: "user",
@@ -122,20 +126,19 @@ Rules:
     res.json({ reply });
 
   } catch (err) {
-    res.json({ reply: "AI error. Try again." });
+    console.log(err);
+    res.json({ reply: "AI error" });
   }
 });
 
 // =======================
-// SHOPIFY AUTO INSTALL + FETCH PRODUCTS
+// AUTO INSTALL + FETCH PRODUCTS
 // =======================
 app.post("/auto-install", async (req, res) => {
-
-  const { store, token } = req.body;
+  const { store, token, clientId } = req.body;
 
   try {
-
-    // 👉 Install chatbot script
+    // install script
     await fetch(`https://${store}/admin/api/2023-10/script_tags.json`, {
       method: "POST",
       headers: {
@@ -145,68 +148,12 @@ app.post("/auto-install", async (req, res) => {
       body: JSON.stringify({
         script_tag: {
           event: "onload",
-          src: "https://shopi-ai.onrendar.com/chatbot.js"
+          src: `${BASE_URL}/widget.js?client=${clientId}`
         }
       })
     });
 
-    // 👉 SAVE CLIENT (3 DAY TRIAL)
-    const trialEnds = Date.now() + (3 * 24 * 60 * 60 * 1000);
-
-    clients.push({
-      store,
-      token,
-      plan: "basic",
-      status: "trial",
-      trialEnds
-    });
-
-    saveData();
-
-    res.json({
-      message: "✅ Installed! 3-day trial started."
-    });
-
-  } catch (err) {
-    res.json({ message: "❌ Installation failed" });
-  }
-
-});
-
-// ** CHAT API — CHECK TRIAL EXPIRY
-
-const client = clients.find(c => c.store); // simple match
-
-if(!client){
-  return res.json({ reply: "Client not found" });
-}
-
-// ⛔ TRIAL EXPIRED
-if(Date.now() > client.trialEnds && client.status !== "active"){
-  return res.json({
-    reply: "⚠️ Your 3-day trial expired. Upgrade to continue using AI."
-  });
-}
-
-
-
-    // Admin- data router 
-
-    app.get("/admin-data", (req, res) => {
-
-  const totalClients = Object.keys(clients).length;
-
-  res.json({
-    totalClients,
-    revenue: totalClients * 399,
-    chatbotOpens: analytics.chatbotOpens,
-    clients: Object.values(clients)
-  });
-
-});
-  
-
-    // 🟢 Fetch products
+    // fetch products
     const productsRes = await fetch(`https://${store}/admin/api/2023-10/products.json`, {
       headers: {
         "X-Shopify-Access-Token": token
@@ -215,15 +162,33 @@ if(Date.now() > client.trialEnds && client.status !== "active"){
 
     const productsData = await productsRes.json();
 
-    // Save products to client
-    clients[clientId].products = productsData.products || [];
-    saveClients();
+    if (clients[clientId]) {
+      clients[clientId].products = productsData.products || [];
+      saveClients();
+    }
 
     res.json({ success: true });
 
   } catch (err) {
-    res.json({ success: false, error: err.message });
+    console.log(err);
+    res.json({ success: false });
   }
+});
+
+// =======================
+// ADMIN DATA
+// =======================
+let analytics = { chatbotOpens: 0 };
+
+app.get("/admin-data", (req, res) => {
+  const totalClients = Object.keys(clients).length;
+
+  res.json({
+    totalClients,
+    revenue: totalClients * 299,
+    chatbotOpens: analytics.chatbotOpens,
+    clients: Object.values(clients)
+  });
 });
 
 // =======================
@@ -234,58 +199,43 @@ app.get("/widget.js", (req, res) => {
 
   const script = `
   (function(){
-    const clientId = "${clientId}";
-
-    const box = document.createElement("div");
-    box.innerHTML = \`
-      <div style="position:fixed;bottom:20px;right:20px;width:320px;background:#fff;border-radius:12px;padding:10px;font-family:Arial;box-shadow:0 5px 20px rgba(0,0,0,0.3);">
-        <div id="chat" style="height:250px;overflow:auto;padding:5px;"></div>
-        <div id="typing" style="display:none;font-size:12px;color:gray;">AI typing...</div>
-        <input id="input" placeholder="Ask something..." style="width:100%;padding:8px;border-radius:6px;border:1px solid #ccc;">
-      </div>
-    \`;
+    const clientId="${clientId}";
+    const box=document.createElement("div");
+    box.innerHTML=\`
+    <div style="position:fixed;bottom:20px;right:20px;width:300px;background:#111;color:#fff;border-radius:15px;padding:10px;">
+      <div id="chat" style="height:220px;overflow:auto"></div>
+      <input id="input" placeholder="Ask..." style="width:100%;padding:8px;margin-top:5px;border-radius:8px;">
+    </div>\`;
 
     document.body.appendChild(box);
 
-    const input = box.querySelector("#input");
-    const chat = box.querySelector("#chat");
-    const typing = box.querySelector("#typing");
+    const input=box.querySelector("#input");
+    const chat=box.querySelector("#chat");
 
-    function addMessage(text, type){
-      const div = document.createElement("div");
-      div.style.margin = "5px 0";
-      div.style.textAlign = type === "user" ? "right" : "left";
-      div.innerHTML = "<span style='background:"+ (type==="user"?"#00ffcc":"#eee") +";padding:6px 10px;border-radius:10px;display:inline-block;'>"+text+"</span>";
-      chat.appendChild(div);
-      chat.scrollTop = chat.scrollHeight;
+    function add(text,type){
+      const d=document.createElement("div");
+      d.innerText=text;
+      d.style.margin="5px";
+      d.style.textAlign=type==="user"?"right":"left";
+      chat.appendChild(d);
     }
 
     input.addEventListener("keypress", async (e)=>{
       if(e.key==="Enter"){
-        const msg = input.value;
-
-        addMessage(msg, "user");
+        const msg=input.value;
+        add(msg,"user");
         input.value="";
 
-        typing.style.display = "block";
-
-        const res = await fetch("${BASE_URL}/chat", {
+        const r=await fetch("${BASE_URL}/chat",{
           method:"POST",
           headers:{"Content-Type":"application/json"},
-          body: JSON.stringify({
-            message: msg,
-            clientId: clientId
-          })
+          body:JSON.stringify({message:msg,clientId})
         });
 
-        const data = await res.json();
-
-        typing.style.display = "none";
-
-        addMessage(data.reply, "ai");
+        const data=await r.json();
+        add(data.reply,"ai");
       }
     });
-
   })();
   `;
 
@@ -296,24 +246,10 @@ app.get("/widget.js", (req, res) => {
 // =======================
 // START SERVER
 // =======================
-import express from "express";
-
-const app = express();
-
-// IMPORTANT: use Render port
-const PORT = process.env.PORT || 3000;
-
-// basic test route
 app.get("/", (req, res) => {
-  res.send("Server is running ✅");
+  res.send("🚀 Layboka AI running");
 });
 
-// START SERVER
 app.listen(PORT, () => {
   console.log("🚀 Server running on port " + PORT);
-});
-
-
-app.listen(3000, () => {
-  console.log("🚀 Server running on port 3000");
 });
