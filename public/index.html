@@ -41,15 +41,34 @@
     </p>
 
     <div class="hero-buttons fade-up delay2">
-     <form onsubmit="startInstall(event)">
-  <input id="shop" placeholder="yourstore.myshopify.com" required>
-  <button type="submit">🚀 Start Free Trial</button>
-</form>
+<div class="hero-form">
+  
+  <input 
+    type="text" 
+    id="shop" 
+    placeholder="yourstore.myshopify.com"
+    required
+  />
+
+  <button onclick="startInstall()">
+    🚀 Start Free Trial
+  </button>
+
+  <a href="pricing.html" class="secondary-btn">
+    View Pricing
+  </a>
+
+</div>
 
 <script>
-function startInstall(e){
-  e.preventDefault();
+function startInstall() {
   const shop = document.getElementById("shop").value;
+
+  if (!shop) {
+    alert("Enter your Shopify store");
+    return;
+  }
+
   window.location.href = "/auth?shop=" + shop;
 }
 </script>
