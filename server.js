@@ -1,3 +1,7 @@
+console.log("🔥 Starting server...");
+
+console.log("🔥 About to listen...");
+
 let analytics = {
   chatbotOpens: 0
 };
@@ -292,6 +296,24 @@ app.get("/widget.js", (req, res) => {
 // =======================
 // START SERVER
 // =======================
+import express from "express";
+
+const app = express();
+
+// IMPORTANT: use Render port
+const PORT = process.env.PORT || 3000;
+
+// basic test route
+app.get("/", (req, res) => {
+  res.send("Server is running ✅");
+});
+
+// START SERVER
+app.listen(PORT, () => {
+  console.log("🚀 Server running on port " + PORT);
+});
+
+
 app.listen(3000, () => {
   console.log("🚀 Server running on port 3000");
 });
