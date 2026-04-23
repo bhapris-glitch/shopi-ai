@@ -13,6 +13,12 @@ body{
   color:#fff;
 }
 
+.logo-gradient{
+  background: linear-gradient(90deg,#00ffc3,#00aaff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
 /* =========================
 HEADER
 ========================= */
