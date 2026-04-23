@@ -2,17 +2,21 @@
 <html>
 <head>
   <title>Layboka AI</title>
-   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+
   <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-<!-- HEADER -->
+<!-- ================= HEADER ================= -->
 <header class="header">
 
   <div class="logo-box">
-    <h1>Layboka</h1>
+    <h1 class="logo-gradient">Layboka</h1>
     <span>Converts Visitors Into Buyers 24/7</span>
   </div>
 
@@ -27,65 +31,55 @@
 
 </header>
 
-<!-- HERO -->
+
+<!-- ================= HERO ================= -->
 <section class="hero">
+
   <h1 class="fade-up">
     Turn Your Shopify Store Into a 
-    <span>24/7 Sales Machine</span>
+    <span class="highlight">24/7 Sales Machine</span>
   </h1>
 
   <p class="fade-up delay">
     AI that talks to customers, recommends products, and closes sales automatically.
   </p>
-<div class="hero-form fade-up delay2">
+
+  <!-- FORM -->
+  <div class="hero-form fade-up delay2">
+
     <input 
       type="text" 
       id="storeInput"
       placeholder="yourstore.myshopify.com"
     />
 
-    <button onclick="startTrial()">
+    <button onclick="startInstall()">
       🚀 Start Free Trial
     </button>
+
   </div>
 
-  <a href="pricing.html" class="pricing-btn">
+  <!-- SINGLE BUTTON -->
+  <a href="pricing.html" class="pricing-btn fade-up delay3">
     View Pricing
   </a>
-</section>
-
-<script>
-function startInstall() {
-  const shop = document.getElementById("shop").value;
-
-  if (!shop) {
-    alert("Enter your Shopify store");
-    return;
-  }
-
-  window.location.href = "/auth?shop=" + shop;
-}
-</script>
-      <a href="pricing.html" class="btn-outline">View Pricing</a>
-    </div>
-
-    <!-- ICON FEATURES -->
-    <div class="features fade-up delay3">
-      <div>⚡ Instant Replies</div>
-      <div>🤖 AI Sales Agent</div>
-      <div>💰 Boost Conversions</div>
-    </div>
-
-  </div>
-
-  <div class="hero-right">
-    <img src="https://cdn-icons-png.flaticon.com/512/869/869636.png" class="floating">
-  </div>
 
 </section>
 
-<!-- TRUST BADGES -->
-<div class="trust">
+
+<!-- ================= FEATURES ================= -->
+<section class="features fade-up delay3">
+
+  <div>⚡ Instant Replies</div>
+  <div>🤖 AI Sales Agent</div>
+  <div>💰 Boost Conversions</div>
+  <div>🕒 Works 24/7</div>
+
+</section>
+
+
+<!-- ================= TRUST ================= -->
+<div class="trust fade-up">
 
   <p>Trusted by growing eCommerce brands</p>
 
@@ -98,29 +92,8 @@ function startInstall() {
 
 </div>
 
-  
-</div>
 
-</section>
-
-  <div style="text-align:center; margin:40px;">
-
-<h2>🔥 Limited Free Trial Available</h2>
-<p>Only a few stores can activate the AI this week.</p>
-
-<a href="install.html" class="btn">Start Now</a>
-
-</div>
-  
-<section class="features">
-
-  <div>⚡ Instant replies</div>
-  <div>💬 WhatsApp-like chat</div>
-  <div>📈 Increase conversions</div>
-  <div>🕒 Works 24/7</div>
-
-</section>
-  
+<!-- ================= TESTIMONIALS ================= -->
 <section class="testimonials">
 
   <h2>What Our Users Say</h2>
@@ -128,19 +101,19 @@ function startInstall() {
   <div class="testimonial-container" id="testimonialBox">
 
     <div class="testimonial active">
-      <img src="151.jpg">
+      <img src="151.jpg" width="50">
       <p>"This AI boosted my Shopify sales by 30% in 2 days!"</p>
       <h4>Rahul Sharma</h4>
     </div>
 
     <div class="testimonial">
-      <img src="150.jpg">
+      <img src="150.jpg" width="50">
       <p>"Customers love the instant replies. Game changer."</p>
       <h4>Priya Mehta</h4>
     </div>
 
     <div class="testimonial">
-      <img src="152.png">
+      <img src="152.png" width="50">
       <p>"Feels like having a real sales agent 24/7."</p>
       <h4>Amit Verma</h4>
     </div>
@@ -148,34 +121,58 @@ function startInstall() {
   </div>
 
 </section>
-  
-<section class="cta">
+
+
+<!-- ================= CTA ================= -->
+<section class="cta fade-up">
   <h2>Install in 30 seconds. Try free for 3 Days.</h2>
-  <a href="install.html" class="btn">Start Now</a>
+  <a href="#" onclick="startInstall()" class="btn">Start Now</a>
 </section>
 
-<div style="text-align:center; margin-top:40px;">
 
-<p>Trusted by growing eCommerce brands</p>
-
-<div style="display:flex; justify-content:center; gap:20px; flex-wrap:wrap;">
-
-<span class="glass" style="padding:10px;">🔒 Secure Payments</span>
-<span class="glass" style="padding:10px;">⚡ Fast Setup</span>
-<span class="glass" style="padding:10px;">🌍 Global Support</span>
-
-</div>
-
-</div>
-  
+<!-- ================= FOOTER ================= -->
 <footer style="text-align:center; padding:20px;">
+
   <a href="privacy.html">Privacy</a> |
   <a href="terms.html">Terms</a> |
-  <a href="pricing.html">Pricing</a>
-  <a href="contact.html">Contact Us</a>
+  <a href="pricing.html">Pricing</a> |
+  <a href="contact.html">Contact</a>
+
 </footer>
-  
-  <script src="script.js"></script>
- <script src="chatbot.js"></script> 
+
+
+<!-- ================= JS ================= -->
+<script>
+
+function startInstall() {
+  const shop = document.getElementById("storeInput").value.trim();
+
+  if (!shop) {
+    alert("Enter your Shopify store (example: yourstore.myshopify.com)");
+    return;
+  }
+
+  window.location.href = "/auth?shop=" + shop;
+}
+
+
+/* MOBILE MENU */
+function toggleMenu() {
+  const nav = document.getElementById("nav");
+  nav.style.display = nav.style.display === "flex" ? "none" : "flex";
+}
+
+
+/* TESTIMONIAL AUTO SLIDER */
+let index = 0;
+setInterval(() => {
+  const items = document.querySelectorAll(".testimonial");
+  items.forEach(i => i.classList.remove("active"));
+  index = (index + 1) % items.length;
+  items[index].classList.add("active");
+}, 3000);
+
+</script>
+
 </body>
 </html>
