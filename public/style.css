@@ -159,6 +159,17 @@ FORM (FIXED - NO OVERLAP)
 .hero-form button:hover{
   transform:scale(1.05);
 }
+.btn{
+  display:inline-block;
+  margin-top:15px;
+  padding:12px 28px;
+  border:1px solid #00ffc3;
+  border-radius:14px;
+  color:#00ffc3;
+  text-decoration:none;
+  transition:0.3s;
+}
+
 
 /* SINGLE PRICING BUTTON (FIXED DUPLICATE) */
 .pricing-btn{
