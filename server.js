@@ -41,7 +41,7 @@ function isActive(client) {
 }
 
 // =======================
-// AUTH ROUTE
+// AUTH ROUTE (SHOPIFY INSTALL)
 // =======================
 app.get("/auth", (req, res) => {
   const shop = req.query.shop;
@@ -61,7 +61,7 @@ app.get("/callback", async (req, res) => {
   const { shop, code } = req.query;
 
   try {
-    // 🔐 Get token
+    // 🔐 Get access token
     const tokenRes = await fetch(`https://${shop}/admin/oauth/access_token`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -76,7 +76,6 @@ app.get("/callback", async (req, res) => {
     const token = tokenData.access_token;
 
     const clientId = "client_" + Date.now();
-
     const trialEnds = Date.now() + (3 * 24 * 60 * 60 * 1000);
 
     clients[clientId] = {
@@ -85,10 +84,11 @@ app.get("/callback", async (req, res) => {
       trialEnds,
       paid: false,
       messages: 0,
+      interested: 0,
       products: []
     };
 
-    // 🔥 INSTALL CHATBOT
+    // 🔥 Install chatbot
     await fetch(`https://${shop}/admin/api/2023-10/script_tags.json`, {
       method: "POST",
       headers: {
@@ -103,7 +103,7 @@ app.get("/callback", async (req, res) => {
       })
     });
 
-    // 🛍 FETCH PRODUCTS
+    // 🛍 Fetch products
     const productsRes = await fetch(`https://${shop}/admin/api/2023-10/products.json`, {
       headers: {
         "X-Shopify-Access-Token": token
@@ -139,9 +139,16 @@ app.post("/chat", async (req, res) => {
     return res.json({ reply: "👋 Ask me anything about products!" });
   }
 
+  // 🔒 TRIAL EXPIRED → LOCK CHAT
   if (!isActive(client)) {
     return res.json({
-      reply: "⚠️ Trial expired. Upgrade to continue."
+      locked: true,
+      reply: `⚠️ Trial expired
+
+Chats: ${client.messages}
+Interested: ${client.interested}
+
+👉 Upgrade now to continue.`,
     });
   }
 
@@ -172,12 +179,22 @@ app.post("/chat", async (req, res) => {
     const data = await aiRes.json();
     const reply = data.choices?.[0]?.message?.content || "AI error";
 
+    // 📊 Track usage
     client.messages++;
+
+    if (
+      message.toLowerCase().includes("buy") ||
+      message.toLowerCase().includes("price")
+    ) {
+      client.interested++;
+    }
+
     saveClients();
 
     res.json({ reply });
 
   } catch (err) {
+    console.log(err);
     res.json({ reply: "AI error" });
   }
 });
@@ -206,6 +223,7 @@ app.get("/widget.js", (req, res) => {
   const script = `
   (function(){
     const clientId="${clientId}";
+    let locked=false;
 
     const btn=document.createElement("div");
     btn.innerHTML="💬";
@@ -217,7 +235,8 @@ app.get("/widget.js", (req, res) => {
     box.innerHTML=\`
       <div style="font-weight:bold;margin-bottom:8px;">🤖 AI Assistant</div>
       <div id="chat" style="height:250px;overflow:auto;font-size:14px;"></div>
-      <input id="input" placeholder="Ask about products..." style="width:100%;padding:10px;margin-top:8px;border-radius:10px;border:none;outline:none;">
+      <input id="input" placeholder="Ask about products..." style="width:100%;padding:10px;margin-top:8px;border-radius:10px;border:none;">
+      <a id="upgradeBtn" href="/pricing.html" style="display:none;margin-top:10px;text-align:center;background:#00ffc6;color:#000;padding:8px;border-radius:8px;text-decoration:none;">Upgrade Now</a>
     \`;
 
     document.body.appendChild(btn);
@@ -229,18 +248,19 @@ app.get("/widget.js", (req, res) => {
 
     const input=box.querySelector("#input");
     const chat=box.querySelector("#chat");
+    const upgradeBtn=box.querySelector("#upgradeBtn");
 
     function add(text,type){
       const d=document.createElement("div");
       d.style.margin="6px 0";
       d.style.textAlign=type==="user"?"right":"left";
-      d.innerHTML="<span style='background:"+(type==="user"?"#00ffc6":"#1e293b")+";padding:6px 10px;border-radius:10px;display:inline-block;'>"+text+"</span>";
+      d.innerHTML="<span style='background:"+(type==="user"?"#00ffc6":"#1e293b")+";padding:6px 10px;border-radius:10px;'>"+text+"</span>";
       chat.appendChild(d);
       chat.scrollTop=chat.scrollHeight;
     }
 
     input.addEventListener("keypress", async (e)=>{
-      if(e.key==="Enter"){
+      if(e.key==="Enter" && !locked){
         const msg=input.value;
         add(msg,"user");
         input.value="";
@@ -252,9 +272,18 @@ app.get("/widget.js", (req, res) => {
         });
 
         const data=await r.json();
+
         add(data.reply,"ai");
+
+        if(data.locked){
+          locked=true;
+          input.disabled=true;
+          input.placeholder="Upgrade required...";
+          upgradeBtn.style.display="block";
+        }
       }
     });
+
   })();
   `;
 
