@@ -135,12 +135,27 @@
         <li>✔ 24/7 Chat Support</li>
       </ul>
 
-      <button class="subscribe-btn" onclick="buyPlan('basic')">
-        Subscribe
-      </button>
+      <button onclick="payNow()">Upgrade ₹399</button>
 
-    </div>
+<script>
+async function payNow(){
+  const res = await fetch("/create-subscription",{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body: JSON.stringify({clientId: localStorage.getItem("clientId")})
+  });
 
+  const data = await res.json();
+
+  const options = {
+    key: "YOUR_RAZORPAY_KEY",
+    subscription_id: data.id
+  };
+
+  const rzp = new Razorpay(options);
+  rzp.open();
+}
+</script>
 
     <!-- ================= PREMIUM PLAN ================= -->
     <div class="price-card recommended">
