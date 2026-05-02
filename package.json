@@ -1,17 +1,18 @@
 {
   "name": "shopi-ai",
   "version": "1.0.0",
-  "description": "AI SaaS",
+  "description": "Shopify AI SaaS",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
   },
-{
+  "engines": {
+    "node": ">=18"
+  },
   "dependencies": {
     "express": "^4.18.2",
     "cors": "^2.8.5",
     "mongoose": "^8.0.0",
-    "node-fetch": "^2.6.7",
     "dotenv": "^16.0.0",
     "razorpay": "^2.9.0"
   }
