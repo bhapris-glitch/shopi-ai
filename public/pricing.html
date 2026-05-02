@@ -4,255 +4,241 @@
   <title>Pricing - Layboka AI</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
+  <!-- Razorpay -->
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+  <!-- Stripe -->
+  <script src="https://js.stripe.com/v3/"></script>
 
   <style>
+    body {
+      margin: 0;
+      font-family: Arial;
+      background: linear-gradient(135deg, #0b1a2f, #001f3f);
+      color: white;
+      text-align: center;
+    }
 
-  /* =========================
-  PRICING PAGE EXTRA STYLES
-  ========================= */
+    h1 {
+      margin-top: 40px;
+      font-size: 32px;
+    }
 
-  .pricing-section{
-    text-align:center;
-    padding:80px 20px;
-  }
+    /* ===== PRICING CONTAINER ===== */
+    .pricing-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+      padding: 40px 20px;
+    }
 
-  .pricing-title{
-    font-size:36px;
-    margin-bottom:10px;
-  }
+    /* ===== CARD ===== */
+    .card {
+      width: 300px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 20px;
+      padding: 25px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+      position: relative;
+      transition: 0.3s;
+    }
 
-  .pricing-sub{
-    color:#ccc;
-    margin-bottom:40px;
-  }
+    .card:hover {
+      transform: translateY(-10px);
+    }
 
-  .pricing-grid{
-    display:flex;
-    justify-content:center;
-    gap:30px;
-    flex-wrap:wrap;
-  }
+    /* ===== POPULAR TAG ===== */
+    .tag {
+      position: absolute;
+      top: -10px;
+      right: 20px;
+      background: #00ffc6;
+      color: black;
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: bold;
+    }
 
-  .price-card{
-    width:300px;
-    padding:30px;
-    border-radius:20px;
-    background:rgba(255,255,255,0.05);
-    backdrop-filter:blur(12px);
-    border:1px solid rgba(255,255,255,0.1);
-    transition:0.3s;
-  }
+    /* ===== PRICE ===== */
+    .price {
+      font-size: 36px;
+      color: #00ffc6;
+      margin: 15px 0;
+    }
 
-  .price-card:hover{
-    transform:translateY(-10px);
-    box-shadow:0 20px 40px rgba(0,0,0,0.3);
-  }
+    ul {
+      list-style: none;
+      padding: 0;
+      text-align: left;
+    }
 
-  .plan-name{
-    font-size:22px;
-    margin-bottom:10px;
-  }
+    ul li {
+      margin: 10px 0;
+      color: #ccc;
+    }
 
-  .price{
-    font-size:32px;
-    margin:15px 0;
-    color:#00ffc3;
-  }
+    /* ===== BUTTON ===== */
+    .btn {
+      margin-top: 20px;
+      padding: 12px;
+      width: 100%;
+      border-radius: 10px;
+      border: none;
+      font-weight: bold;
+      background: linear-gradient(135deg, #00ffc6, #00aaff);
+      cursor: pointer;
+      transition: 0.3s;
+    }
 
-  .features-list{
-    text-align:left;
-    margin:20px 0;
-  }
+    .btn:hover {
+      transform: scale(1.05);
+    }
 
-  .features-list li{
-    margin:8px 0;
-    color:#ccc;
-  }
-
-  .subscribe-btn{
-    width:100%;
-    padding:14px;
-    border:none;
-    border-radius:12px;
-    background:linear-gradient(135deg,#00ffc3,#00aaff);
-    color:#000;
-    font-weight:bold;
-    cursor:pointer;
-    transition:0.3s;
-  }
-
-  .subscribe-btn:hover{
-    transform:scale(1.05);
-  }
-
-  .recommended{
-    border:2px solid #00ffc3;
-    position:relative;
-  }
-
-  .badge{
-    position:absolute;
-    top:-10px;
-    right:15px;
-    background:#00ffc3;
-    color:#000;
-    padding:5px 10px;
-    border-radius:10px;
-    font-size:12px;
-  }
+    /* MOBILE */
+    @media(max-width: 768px){
+      .pricing-container {
+        flex-direction: column;
+        align-items: center;
+      }
+    }
 
   </style>
 </head>
 
 <body>
 
-<!-- ================= HEADER ================= -->
-<header class="header">
-  <h1 class="logo-gradient">Layboka</h1>
-</header>
+<!-- ===== HEADER ===== -->
+<h1>Choose Your Plan 🚀</h1>
+<p>Start free. Upgrade anytime.</p>
 
+<!-- ===== PRICING SECTION ===== -->
+<div class="pricing-container">
 
-<!-- ================= PRICING SECTION ================= -->
-<section class="pricing-section">
+  <!-- ===== BASIC ===== -->
+  <div class="card">
+    <h2>Basic</h2>
+    <div class="price" id="basicPrice">₹399 / month</div>
 
-  <h1 class="pricing-title">Simple Pricing</h1>
-  <p class="pricing-sub">Start free. Upgrade anytime.</p>
+    <ul>
+      <li>✔ AI Shopi Agent</li>
+      <li>✔ Product Recommendations</li>
+      <li>✔ 24/7 Chat Support</li>
+    </ul>
 
-  <div class="pricing-grid">
-
-    <!-- ================= BASIC PLAN ================= -->
-    <div class="price-card">
-
-      <h2 class="plan-name">Basic</h2>
-
-      <div class="price" id="basicPrice">₹399 / month</div>
-
-      <ul class="features-list">
-        <li>✔ AI Shopi Agent</li>
-        <li>✔ Product Recommendations</li>
-        <li>✔ 24/7 Chat Support</li>
-      </ul>
-
-      <button onclick="payNow()">Upgrade ₹399</button>
-
-<script>
-async function payNow(){
-  const res = await fetch("/create-subscription",{
-    method:"POST",
-    headers:{"Content-Type":"application/json"},
-    body: JSON.stringify({clientId: localStorage.getItem("clientId")})
-  });
-
-  const data = await res.json();
-
-  const options = {
-    key: "YOUR_RAZORPAY_KEY",
-    subscription_id: data.id
-  };
-
-  const rzp = new Razorpay(options);
-  rzp.open();
-}
-</script>
-
-    <!-- ================= PREMIUM PLAN ================= -->
-    <div class="price-card recommended">
-
-      <div class="badge">Most Popular</div>
-
-      <h2 class="plan-name">Premium</h2>
-
-      <div class="price" id="premiumPrice">₹799 / month</div>
-
-      <ul class="features-list">
-        <li>✔ Everything in Basic</li>
-        <li>✔ Advanced AI Replies</li>
-        <li>✔ Priority Support</li>
-      </ul>
-
-      <button class="subscribe-btn" onclick="buyPlan('premium')">
-        Subscribe
-      </button>
-
-    </div>
-
-
-    <!-- ================= CUSTOM PLAN ================= -->
-    <div class="price-card">
-
-      <h2 class="plan-name">Custom</h2>
-
-      <div class="price">Contact Us</div>
-
-      <ul class="features-list">
-        <li>✔ Custom Features</li>
-        <li>✔ Dedicated Support</li>
-        <li>✔ Enterprise Setup</li>
-      </ul>
-
-      <button class="subscribe-btn" onclick="contactUs()">
-        Contact Us
-      </button>
-
-    </div>
-
+    <button class="btn" onclick="payBasic()">Subscribe</button>
   </div>
 
-</section>
+  <!-- ===== PREMIUM ===== -->
+  <div class="card">
+    <div class="tag">Most Popular</div>
 
+    <h2>Premium</h2>
+    <div class="price" id="premiumPrice">₹799 / month</div>
 
-<!-- ================= JS ================= -->
+    <ul>
+      <li>✔ Everything in Basic</li>
+      <li>✔ Advanced AI Replies</li>
+      <li>✔ Priority Support</li>
+    </ul>
+
+    <button class="btn" onclick="payPremium()">Subscribe</button>
+  </div>
+
+  <!-- ===== CUSTOM ===== -->
+  <div class="card">
+    <h2>Custom</h2>
+    <div class="price">Contact Us</div>
+
+    <ul>
+      <li>✔ Custom AI Training</li>
+      <li>✔ Dedicated Manager</li>
+      <li>✔ API Access</li>
+    </ul>
+
+    <button class="btn" onclick="contact()">Contact</button>
+  </div>
+
+</div>
+
+<!-- ===== SCRIPT ===== -->
 <script>
 
-let isIndia = false;
+let isIndia = true;
 
-/* ================= DETECT COUNTRY ================= */
+// ===== DETECT COUNTRY =====
 fetch("https://ipapi.co/json/")
   .then(res => res.json())
   .then(data => {
+    if(data.country !== "IN"){
+      isIndia = false;
 
-    if(data.country === "IN"){
-      isIndia = true;
-
-      document.getElementById("basicPrice").innerText = "₹399 / month";
-      document.getElementById("premiumPrice").innerText = "₹799 / month";
-    } else {
       document.getElementById("basicPrice").innerText = "$9 / month";
       document.getElementById("premiumPrice").innerText = "$20 / month";
     }
-
   });
 
 
-/* ================= PAYMENT REDIRECT ================= */
-function buyPlan(plan){
-
+// ===== RAZORPAY (INDIA) =====
+function payBasic(){
   if(isIndia){
-    // 👉 RAZORPAY LINKS (PUT YOUR REAL LINKS HERE)
-    if(plan === "basic"){
-      window.location.href = "https://rzp.io/l/basic-demo";
-    }
-    if(plan === "premium"){
-      window.location.href = "https://rzp.io/l/premium-demo";
-    }
-
+    const options = {
+      key: "YOUR_RAZORPAY_KEY",
+      amount: 39900,
+      currency: "INR",
+      name: "Layboka AI",
+      description: "Basic Plan",
+      handler: function(response){
+        alert("Payment Success!");
+        window.location.href = "/success.html";
+      }
+    };
+    new Razorpay(options).open();
   } else {
-    // 👉 STRIPE LINKS (PUT YOUR REAL LINKS HERE)
-    if(plan === "basic"){
-      window.location.href = "https://buy.stripe.com/basic-demo";
-    }
-    if(plan === "premium"){
-      window.location.href = "https://buy.stripe.com/premium-demo";
-    }
+    stripePay("price_basic");
   }
+}
 
+function payPremium(){
+  if(isIndia){
+    const options = {
+      key: "YOUR_RAZORPAY_KEY",
+      amount: 79900,
+      currency: "INR",
+      name: "Layboka AI",
+      description: "Premium Plan",
+      handler: function(response){
+        alert("Payment Success!");
+        window.location.href = "/success.html";
+      }
+    };
+    new Razorpay(options).open();
+  } else {
+    stripePay("price_premium");
+  }
 }
 
 
-/* ================= CONTACT ================= */
-function contactUs(){
+// ===== STRIPE =====
+const stripe = Stripe("YOUR_STRIPE_PUBLIC_KEY");
+
+function stripePay(plan){
+  fetch("/create-checkout-session", {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({ plan })
+  })
+  .then(res => res.json())
+  .then(data => {
+    stripe.redirectToCheckout({ sessionId: data.id });
+  });
+}
+
+
+// ===== CONTACT =====
+function contact(){
   window.location.href = "mailto:laybokalandd@gmail.com";
 }
 
