@@ -3,7 +3,7 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
-const fetch = require("node-fetch");
+await fetch(...);
 const crypto = require("crypto");
 const bodyParser = require("body-parser");
 
