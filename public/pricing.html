@@ -1,244 +1,148 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Pricing - Layboka</title>
+  <title>Upgrade Plan - Layboka</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
   <style>
-    * {
-      box-sizing: border-box;
-    }
-
     body {
       margin: 0;
       font-family: Arial;
-      background: linear-gradient(135deg, #0b1a2f, #001f3f);
+      background: linear-gradient(135deg,#0b1a2f,#001f3f);
       color: white;
-      overflow-x: hidden; /* ✅ FIX SCROLL */
+      overflow-x: hidden;
     }
 
-    /* HEADER */
     .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 15px 20px;
-      background: rgba(0,0,0,0.6);
-      backdrop-filter: blur(10px);
+      display:flex;
+      justify-content:space-between;
+      padding:15px 20px;
+      background:rgba(0,0,0,0.6);
     }
 
     .logo {
-      font-size: 24px;
-      font-weight: bold;
+      font-size:22px;
+      font-weight:bold;
       background: linear-gradient(45deg,#00ffc3,#00aaff);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
     }
 
-    nav {
-      display: flex;
-      gap: 20px;
+    .container {
+      text-align:center;
+      padding:40px 20px;
     }
 
-    nav a {
-      color: white;
-      text-decoration: none;
-    }
-
-    /* HERO */
-    .heading {
-      text-align: center;
-      margin-top: 40px;
-      padding: 0 15px;
-    }
-
-    .heading h1 {
-      font-size: 32px;
-    }
-
-    .heading p {
-      color: #ccc;
-    }
-
-    /* PRICING */
-    .pricing-container {
-      max-width: 1100px;
-      margin: auto;
-      display: flex;
-      justify-content: center;
-      align-items: stretch;
-      gap: 25px;
-      padding: 40px 20px;
-      flex-wrap: wrap; /* ✅ FIX OVERFLOW */
+    .cards {
+      display:flex;
+      gap:20px;
+      justify-content:center;
+      flex-wrap:wrap;
     }
 
     .card {
-      width: 100%;
-      max-width: 320px;
-      padding: 30px;
-      border-radius: 20px;
-      background: rgba(255,255,255,0.05);
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(255,255,255,0.2);
-      box-shadow: 0 10px 30px rgba(0,0,0,0.4);
-      text-align: center;
-      transition: 0.3s;
-      position: relative;
-    }
-
-    .card:hover {
-      transform: translateY(-8px);
-    }
-
-    .popular {
-      border: 2px solid #00ffc3;
-    }
-
-    .badge {
-      position: absolute;
-      top: -12px;
-      right: 15px;
-      background: #00ffc3;
-      color: black;
-      padding: 5px 10px;
-      border-radius: 10px;
-      font-size: 12px;
+      width:300px;
+      padding:30px;
+      border-radius:20px;
+      background:rgba(255,255,255,0.05);
+      border:1px solid rgba(255,255,255,0.2);
     }
 
     .price {
-      font-size: 36px;
-      color: #00ffc3;
-      margin: 20px 0;
-    }
-
-    ul {
-      text-align: left;
-      color: #ccc;
-      padding-left: 20px;
-    }
-
-    li {
-      margin: 10px 0;
+      font-size:36px;
+      color:#00ffc3;
     }
 
     button {
-      width: 100%;
-      padding: 14px;
-      border: none;
-      border-radius: 12px;
-      background: linear-gradient(135deg, #00ffc3, #00aaff);
-      color: black;
-      font-weight: bold;
-      cursor: pointer;
-      margin-top: 15px;
-    }
-
-    /* CUSTOM */
-    .custom {
-      text-align: center;
-      margin: 20px 0;
-    }
-
-    .custom a {
-      border: 1px solid #00ffc3;
-      padding: 10px 20px;
-      border-radius: 10px;
-      color: #00ffc3;
-      text-decoration: none;
-    }
-
-    /* FOOTER */
-    footer {
-      text-align: center;
-      padding: 25px;
-      border-top: 1px solid rgba(255,255,255,0.1);
-    }
-
-    footer a {
-      margin: 0 10px;
-      color: #aaa;
-      text-decoration: none;
-    }
-
-    /* MOBILE */
-    @media(max-width:768px){
-      nav {
-        display: none; /* keep simple or add hamburger later */
-      }
+      width:100%;
+      padding:15px;
+      border:none;
+      border-radius:10px;
+      background:linear-gradient(135deg,#00ffc3,#00aaff);
+      cursor:pointer;
+      font-weight:bold;
     }
   </style>
 </head>
 
 <body>
 
-<!-- HEADER -->
-<header class="header">
+<div class="header">
   <div class="logo">Layboka</div>
+</div>
 
-  <nav>
-    <a href="index.html">Home</a>
-    <a href="pricing.html">Pricing</a>
-    <a href="contact.html">Contact</a>
-  </nav>
-</header>
-
-<!-- TITLE -->
-<div class="heading">
+<div class="container">
   <h1>Upgrade Your Plan 🚀</h1>
-  <p>Start free. Upgrade anytime.</p>
-</div>
 
-<!-- PRICING -->
-<div class="pricing-container">
+  <div class="cards">
 
-  <div class="card">
-    <h2>Basic</h2>
-    <div class="price">₹399 / month</div>
+    <div class="card">
+      <h2>Basic</h2>
+      <div class="price" id="basicPrice">₹399</div>
+      <button onclick="pay('basic')">Upgrade</button>
+    </div>
 
-    <ul>
-      <li>✔ AI Shopi Agent</li>
-      <li>✔ Product Recommendations</li>
-      <li>✔ 24/7 Support</li>
-    </ul>
+    <div class="card">
+      <h2>Premium</h2>
+      <div class="price" id="premiumPrice">₹799</div>
+      <button onclick="pay('premium')">Subscribe</button>
+    </div>
 
-    <button onclick="pay('basic')">Upgrade Basic</button>
   </div>
-
-  <div class="card popular">
-    <div class="badge">Most Popular</div>
-
-    <h2>Premium</h2>
-    <div class="price">₹799 / month</div>
-
-    <ul>
-      <li>✔ Everything in Basic</li>
-      <li>✔ Smart AI Upsell</li>
-      <li>✔ Checkout Boost</li>
-    </ul>
-
-    <button onclick="pay('premium')">Subscribe Premium</button>
-  </div>
-
 </div>
-
-<!-- CUSTOM -->
-<div class="custom">
-  <p>Need custom pricing?</p>
-  <a href="contact.html">Contact Us</a>
-</div>
-
-<!-- FOOTER -->
-<footer>
-  <a href="#">Privacy</a>
-  <a href="#">Terms</a>
-  <a href="#">Pricing</a>
-</footer>
 
 <script>
+const clientId = new URLSearchParams(window.location.search).get("client");
+
+// 🌍 AUTO CURRENCY DETECT
+fetch("https://ipapi.co/json/")
+.then(res => res.json())
+.then(data => {
+  if(data.country !== "IN"){
+    document.getElementById("basicPrice").innerText = "$9";
+    document.getElementById("premiumPrice").innerText = "$20";
+    window.currency = "USD";
+  } else {
+    window.currency = "INR";
+  }
+});
+
 async function pay(plan){
-  alert("Connect backend payment here");
+
+  if(window.currency === "INR"){
+    // RAZORPAY
+    const res = await fetch("/create-order",{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({ plan, clientId })
+    });
+
+    const order = await res.json();
+
+    const options = {
+      key: "YOUR_RAZORPAY_KEY",
+      order_id: order.id,
+      amount: order.amount,
+      handler: function(){
+        window.location.href = "/success.html?client=" + clientId;
+      }
+    };
+
+    new Razorpay(options).open();
+
+  } else {
+    // STRIPE
+    const res = await fetch("/create-stripe",{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({ plan, clientId })
+    });
+
+    const data = await res.json();
+    window.location.href = data.url;
+  }
 }
 </script>
 
