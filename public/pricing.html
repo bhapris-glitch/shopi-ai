@@ -1,42 +1,234 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Payment</title>
+  <title>Pricing - Layboka AI</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Razorpay -->
   <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial;
+      background: linear-gradient(135deg, #0b1a2f, #001f3f);
+      color: white;
+      text-align: center;
+    }
+
+    h1 {
+      margin-top: 40px;
+      font-size: 32px;
+    }
+
+    .pricing-container {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      margin-top: 50px;
+      flex-wrap: wrap;
+      padding: 20px;
+    }
+
+    .card {
+      width: 300px;
+      padding: 30px;
+      border-radius: 20px;
+      background: rgba(255,255,255,0.05);
+      backdrop-filter: blur(15px);
+      border: 1px solid rgba(255,255,255,0.2);
+      box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+      transition: 0.3s;
+      position: relative;
+    }
+
+    .card:hover {
+      transform: translateY(-10px);
+    }
+
+    .popular {
+      border: 2px solid #00ffc3;
+    }
+
+    .badge {
+      position: absolute;
+      top: -10px;
+      right: 20px;
+      background: #00ffc3;
+      color: black;
+      padding: 5px 10px;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    .price {
+      font-size: 36px;
+      color: #00ffc3;
+      margin: 20px 0;
+    }
+
+    ul {
+      text-align: left;
+      margin: 20px 0;
+      padding-left: 20px;
+      color: #ccc;
+    }
+
+    li {
+      margin: 10px 0;
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #00ffc3, #00aaff);
+      color: black;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      transform: scale(1.05);
+    }
+
+    .custom {
+      margin-top: 40px;
+    }
+
+    .custom a {
+      color: #00ffc3;
+      text-decoration: none;
+      border: 1px solid #00ffc3;
+      padding: 10px 20px;
+      border-radius: 10px;
+    }
+
+    /* MOBILE */
+    @media(max-width:768px){
+      .pricing-container{
+        flex-direction: column;
+        align-items: center;
+      }
+    }
+  </style>
 </head>
 
 <body>
 
-<h2>Upgrade Plan 🚀</h2>
+<h1>Upgrade Your Plan 🚀</h1>
+<p>Start free. Upgrade anytime.</p>
 
-<button onclick="pay('basic')">Basic ₹399</button>
-<button onclick="pay('premium')">Premium ₹799</button>
+<div class="pricing-container">
+
+  <!-- BASIC -->
+  <div class="card">
+    <h2>Basic</h2>
+    <div class="price" id="basicPrice">₹399 / month</div>
+
+    <ul>
+      <li>✔ AI Shopi Agent</li>
+      <li>✔ Product Recommendations</li>
+      <li>✔ 24/7 Chat Support</li>
+    </ul>
+
+    <button onclick="pay('basic')">Upgrade Basic</button>
+  </div>
+
+  <!-- PREMIUM -->
+  <div class="card popular">
+    <div class="badge">Most Popular</div>
+
+    <h2>Premium</h2>
+    <div class="price" id="premiumPrice">₹799 / month</div>
+
+    <ul>
+      <li>✔ Everything in Basic</li>
+      <li>✔ Smart AI Upsell</li>
+      <li>✔ Priority Support</li>
+      <li>✔ Checkout Push AI</li>
+    </ul>
+
+    <button onclick="pay('premium')">Subscribe Premium</button>
+  </div>
+
+</div>
+
+<!-- CUSTOM -->
+<div class="custom">
+  <p>Need custom pricing?</p>
+  <a href="contact.html">Contact Us</a>
+</div>
 
 <script>
-async function pay(plan){
+/* 🌍 AUTO CURRENCY SWITCH */
+async function detectCountry() {
+  try {
+    const res = await fetch("https://ipapi.co/json/");
+    const data = await res.json();
 
+    if (data.country !== "IN") {
+      document.getElementById("basicPrice").innerText = "$9 / month";
+      document.getElementById("premiumPrice").innerText = "$20 / month";
+      window.currency = "USD";
+    } else {
+      window.currency = "INR";
+    }
+  } catch {
+    window.currency = "INR";
+  }
+}
+
+detectCountry();
+
+/* 💳 PAYMENT */
+async function pay(plan) {
   const clientId = new URLSearchParams(window.location.search).get("client");
 
-  const res = await fetch("/create-order", {
-    method:"POST",
-    headers:{"Content-Type":"application/json"},
-    body: JSON.stringify({ plan })
-  });
+  if (window.currency === "USD") {
+    // STRIPE FLOW
+    const res = await fetch("/create-stripe", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({ plan, clientId })
+    });
 
-  const order = await res.json();
+    const data = await res.json();
+    window.location.href = data.url;
 
-  const options = {
-    key: "YOUR_KEY",
-    amount: order.amount,
-    currency: "INR",
-    order_id: order.id,
-    notes:{
-      clientId,
-      plan
-    }
-  };
+  } else {
+    // RAZORPAY FLOW
+    const res = await fetch("/create-order", {
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({ plan, clientId })
+    });
 
-  new Razorpay(options).open();
+    const order = await res.json();
+
+    const options = {
+      key: "rzp_test_xxxxx",
+      amount: order.amount,
+      currency: "INR",
+      order_id: order.id,
+      name: "Layboka AI",
+      description: "Subscription Payment",
+      handler: function (response) {
+        alert("✅ Payment Successful!");
+        window.location.href = "/success.html";
+      },
+      notes: {
+        clientId,
+        plan
+      }
+    };
+
+    new Razorpay(options).open();
+  }
 }
 </script>
 
