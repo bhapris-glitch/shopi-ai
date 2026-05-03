@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<body style="text-align:center;padding:50px;font-family:Arial;">
+<h2>✅ Payment Successful</h2>
+<p>Your Shopi Assistant is now activated 🚀</p>
+
+<script>
+const client = new URLSearchParams(window.location.search).get("client");
+
+// redirect to dashboard
+setTimeout(()=>{
+  window.location.href = "/dashboard.html?client=" + client;
+},2000);
+</script>
+
+</body>
+</html>
