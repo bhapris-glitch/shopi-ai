@@ -1,20 +1,25 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Pricing - Layboka AI</title>
+  <title>Pricing - Layboka</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       margin: 0;
       font-family: Arial;
       background: linear-gradient(135deg, #0b1a2f, #001f3f);
       color: white;
+      overflow-x: hidden; /* ✅ FIX SCROLL */
     }
 
-    /* ===== HEADER ===== */
+    /* HEADER */
     .header {
       display: flex;
       justify-content: space-between;
@@ -22,13 +27,10 @@
       padding: 15px 20px;
       background: rgba(0,0,0,0.6);
       backdrop-filter: blur(10px);
-      position: sticky;
-      top: 0;
-      z-index: 1000;
     }
 
     .logo {
-      font-size: 22px;
+      font-size: 24px;
       font-weight: bold;
       background: linear-gradient(45deg,#00ffc3,#00aaff);
       -webkit-background-clip: text;
@@ -45,48 +47,49 @@
       text-decoration: none;
     }
 
-    /* ===== HEADING ===== */
+    /* HERO */
     .heading {
       text-align: center;
       margin-top: 40px;
+      padding: 0 15px;
     }
 
     .heading h1 {
-      font-size: 34px;
-      margin-bottom: 10px;
+      font-size: 32px;
     }
 
     .heading p {
       color: #ccc;
     }
 
-    /* ===== PRICING ===== */
+    /* PRICING */
     .pricing-container {
       max-width: 1100px;
       margin: auto;
       display: flex;
       justify-content: center;
-      gap: 30px;
+      align-items: stretch;
+      gap: 25px;
       padding: 40px 20px;
-      flex-wrap: wrap;
-      overflow: hidden;
+      flex-wrap: wrap; /* ✅ FIX OVERFLOW */
     }
 
     .card {
-      width: 320px;
-      padding: 35px;
+      width: 100%;
+      max-width: 320px;
+      padding: 30px;
       border-radius: 20px;
       background: rgba(255,255,255,0.05);
-      backdrop-filter: blur(15px);
+      backdrop-filter: blur(12px);
       border: 1px solid rgba(255,255,255,0.2);
-      box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.4);
       text-align: center;
       transition: 0.3s;
       position: relative;
     }
 
     .card:hover {
-      transform: translateY(-10px);
+      transform: translateY(-8px);
     }
 
     .popular {
@@ -96,26 +99,24 @@
     .badge {
       position: absolute;
       top: -12px;
-      right: 20px;
+      right: 15px;
       background: #00ffc3;
       color: black;
       padding: 5px 10px;
       border-radius: 10px;
       font-size: 12px;
-      font-weight: bold;
     }
 
     .price {
-      font-size: 38px;
+      font-size: 36px;
       color: #00ffc3;
       margin: 20px 0;
     }
 
     ul {
       text-align: left;
-      margin: 20px 0;
-      padding-left: 20px;
       color: #ccc;
+      padding-left: 20px;
     }
 
     li {
@@ -124,60 +125,49 @@
 
     button {
       width: 100%;
-      padding: 15px;
+      padding: 14px;
       border: none;
       border-radius: 12px;
       background: linear-gradient(135deg, #00ffc3, #00aaff);
       color: black;
       font-weight: bold;
       cursor: pointer;
-      transition: 0.3s;
+      margin-top: 15px;
     }
 
-    button:hover {
-      transform: scale(1.05);
-    }
-
-    /* ===== CUSTOM ===== */
+    /* CUSTOM */
     .custom {
       text-align: center;
-      margin-top: 20px;
+      margin: 20px 0;
     }
 
     .custom a {
-      color: #00ffc3;
       border: 1px solid #00ffc3;
       padding: 10px 20px;
       border-radius: 10px;
+      color: #00ffc3;
       text-decoration: none;
     }
 
-    /* ===== FOOTER ===== */
+    /* FOOTER */
     footer {
       text-align: center;
-      padding: 30px;
-      margin-top: 50px;
+      padding: 25px;
       border-top: 1px solid rgba(255,255,255,0.1);
     }
 
     footer a {
-      color: #aaa;
       margin: 0 10px;
+      color: #aaa;
       text-decoration: none;
     }
 
     /* MOBILE */
     @media(max-width:768px){
-      .pricing-container{
-        flex-direction: column;
-        align-items: center;
-      }
-
       nav {
-        display: none;
+        display: none; /* keep simple or add hamburger later */
       }
     }
-
   </style>
 </head>
 
@@ -194,7 +184,7 @@
   </nav>
 </header>
 
-<!-- HEADING -->
+<!-- TITLE -->
 <div class="heading">
   <h1>Upgrade Your Plan 🚀</h1>
   <p>Start free. Upgrade anytime.</p>
@@ -203,32 +193,29 @@
 <!-- PRICING -->
 <div class="pricing-container">
 
-  <!-- BASIC -->
   <div class="card">
     <h2>Basic</h2>
-    <div class="price" id="basicPrice">₹399 / month</div>
+    <div class="price">₹399 / month</div>
 
     <ul>
       <li>✔ AI Shopi Agent</li>
       <li>✔ Product Recommendations</li>
-      <li>✔ 24/7 Chat Support</li>
+      <li>✔ 24/7 Support</li>
     </ul>
 
     <button onclick="pay('basic')">Upgrade Basic</button>
   </div>
 
-  <!-- PREMIUM -->
   <div class="card popular">
     <div class="badge">Most Popular</div>
 
     <h2>Premium</h2>
-    <div class="price" id="premiumPrice">₹799 / month</div>
+    <div class="price">₹799 / month</div>
 
     <ul>
       <li>✔ Everything in Basic</li>
       <li>✔ Smart AI Upsell</li>
-      <li>✔ Priority Support</li>
-      <li>✔ Checkout Push AI</li>
+      <li>✔ Checkout Boost</li>
     </ul>
 
     <button onclick="pay('premium')">Subscribe Premium</button>
@@ -244,36 +231,14 @@
 
 <!-- FOOTER -->
 <footer>
-  <a href="privacy.html">Privacy</a>
-  <a href="terms.html">Terms</a>
-  <a href="pricing.html">Pricing</a>
+  <a href="#">Privacy</a>
+  <a href="#">Terms</a>
+  <a href="#">Pricing</a>
 </footer>
 
 <script>
 async function pay(plan){
-  const clientId = new URLSearchParams(window.location.search).get("client");
-
-  const res = await fetch("/create-order", {
-    method:"POST",
-    headers:{"Content-Type":"application/json"},
-    body: JSON.stringify({ plan, clientId })
-  });
-
-  const order = await res.json();
-
-  const options = {
-    key: "YOUR_RAZORPAY_KEY",
-    amount: order.amount,
-    currency: "INR",
-    order_id: order.id,
-    name: "Layboka AI",
-    handler: function (){
-      alert("Payment Success!");
-      window.location.href = "/success.html";
-    }
-  };
-
-  new Razorpay(options).open();
+  alert("Connect backend payment here");
 }
 </script>
 
