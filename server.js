@@ -5,9 +5,15 @@ const cors = require("cors");
 const mongoose = require("mongoose");
 const crypto = require("crypto");
 const bodyParser = require("body-parser");
+const fetch = require("node-fetch"); // ✅ FIXED
 
 const Razorpay = require("razorpay");
-const stripe = require("stripe")(process.env.STRIPE_SECRET);
+
+// Stripe safe load
+let stripe = null;
+if (process.env.STRIPE_SECRET) {
+  stripe = require("stripe")(process.env.STRIPE_SECRET);
+}
 
 const Client = require("./models/Client");
 
@@ -23,13 +29,12 @@ app.use(express.json());
 app.use(express.static("public"));
 
 // =======================
-// DB CONNECT
+// DB
 // =======================
 mongoose.connect(process.env.MONGO_URI)
 .then(()=>console.log("✅ MongoDB Connected"))
-.catch(err=>console.log("❌ DB Error", err));
+.catch(err=>console.log("❌ DB Error:", err));
 
-// =======================
 const BASE_URL = process.env.BASE_URL;
 
 // =======================
@@ -69,12 +74,13 @@ app.get("/callback", async (req,res)=>{
       trialEnds: Date.now() + (3*24*60*60*1000),
       messages: 0,
       paid: false,
-      status: "trial"
+      status: "trial",
+      plan: "free"
     });
 
     await client.save();
 
-    // INSTALL SCRIPT
+    // INSTALL CHATBOT
     await fetch(`https://${shop}/admin/api/2023-10/script_tags.json`,{
       method:"POST",
       headers:{
@@ -98,98 +104,115 @@ app.get("/callback", async (req,res)=>{
 });
 
 // =======================
-// RAZORPAY
+// RAZORPAY INIT (SAFE)
 // =======================
-const razorpay = new Razorpay({
-  key_id: process.env.RAZORPAY_KEY,
-  key_secret: process.env.RAZORPAY_SECRET
-});
-
-app.post("/create-subscription", async (req,res)=>{
-  const { clientId } = req.body;
-
-  const plan = await razorpay.plans.create({
-    period: "monthly",
-    interval: 1,
-    item: {
-      name: "Layboka Plan",
-      amount: 39900,
-      currency: "INR"
-    }
+let razorpay = null;
+if(process.env.RAZORPAY_KEY && process.env.RAZORPAY_SECRET){
+  razorpay = new Razorpay({
+    key_id: process.env.RAZORPAY_KEY,
+    key_secret: process.env.RAZORPAY_SECRET
   });
-
-  const sub = await razorpay.subscriptions.create({
-    plan_id: plan.id,
-    customer_notify: 1,
-    total_count: 12
-  });
-
-  await Client.findByIdAndUpdate(clientId,{
-    subscriptionId: sub.id
-  });
-
-  res.json(sub);
-});
+}
 
 // =======================
-// STRIPE
+// CREATE ORDER (PAYMENT)
+// =======================
+app.post("/create-order", async (req,res)=>{
+  try{
+    const { plan, clientId } = req.body;
+
+    if(!razorpay) return res.status(500).json({error:"Razorpay not configured"});
+
+    const amount = plan === "premium" ? 79900 : 39900;
+
+    const order = await razorpay.orders.create({
+      amount,
+      currency: "INR",
+      receipt: "rcpt_" + Date.now()
+    });
+
+    res.json({ ...order, plan, clientId });
+
+  }catch(err){
+    console.log(err);
+    res.status(500).json({error:"Order creation failed"});
+  }
+});
+
+// =======================
+// STRIPE GLOBAL
 // =======================
 app.post("/create-stripe", async (req,res)=>{
-  const { clientId } = req.body;
+  try{
+    if(!stripe) return res.status(500).json({error:"Stripe not configured"});
 
-  const session = await stripe.checkout.sessions.create({
-    payment_method_types:["card"],
-    mode:"subscription",
-    line_items:[{
-      price_data:{
-        currency:"usd",
-        product_data:{name:"Premium Plan"},
-        unit_amount:2000,
-        recurring:{interval:"month"}
-      },
-      quantity:1
-    }],
-    success_url:`${BASE_URL}/success.html`,
-    cancel_url:`${BASE_URL}/pricing.html`
-  });
+    const { plan, clientId } = req.body;
 
-  res.json({url:session.url});
+    const price = plan === "premium" ? 2000 : 900;
+
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types:["card"],
+      mode:"subscription",
+      line_items:[{
+        price_data:{
+          currency:"usd",
+          product_data:{name:"Layboka Plan"},
+          unit_amount:price,
+          recurring:{interval:"month"}
+        },
+        quantity:1
+      }],
+      success_url:`${BASE_URL}/success.html?client=${clientId}`,
+      cancel_url:`${BASE_URL}/pricing.html`
+    });
+
+    res.json({url:session.url});
+
+  }catch(err){
+    console.log(err);
+    res.status(500).json({error:"Stripe failed"});
+  }
 });
 
 // =======================
-// WEBHOOK
+// WEBHOOK (AUTO ACTIVATE)
 // =======================
 app.post("/webhook", async (req,res)=>{
-  const sig = req.headers["x-razorpay-signature"];
+  try{
+    const sig = req.headers["x-razorpay-signature"];
 
-  const expected = crypto
-    .createHmac("sha256", process.env.RAZORPAY_WEBHOOK_SECRET)
-    .update(req.body)
-    .digest("hex");
+    if(!process.env.RAZORPAY_WEBHOOK_SECRET){
+      return res.sendStatus(200);
+    }
 
-  if(sig !== expected) return res.sendStatus(400);
+    const expected = crypto
+      .createHmac("sha256", process.env.RAZORPAY_WEBHOOK_SECRET)
+      .update(req.body)
+      .digest("hex");
 
-  const event = JSON.parse(req.body);
+    if(sig !== expected) return res.sendStatus(400);
 
-  if(event.event === "subscription.charged"){
-    const subId = event.payload.subscription.entity.id;
+    const event = JSON.parse(req.body);
 
-    await Client.findOneAndUpdate(
-      {subscriptionId: subId},
-      {paid:true, status:"active"}
-    );
+    if(event.event === "payment.captured"){
+      const notes = event.payload.payment.entity.notes;
+
+      const clientId = notes.clientId;
+      const plan = notes.plan;
+
+      await Client.findByIdAndUpdate(clientId,{
+        paid:true,
+        status:"active",
+        plan: plan
+      });
+    }
+
+    res.sendStatus(200);
+
+  }catch(err){
+    console.log(err);
+    res.sendStatus(500);
   }
-
-  if(event.event === "subscription.cancelled"){
-    const subId = event.payload.subscription.entity.id;
-
-    await Client.findOneAndUpdate(
-      {subscriptionId: subId},
-      {paid:false, status:"cancelled"}
-    );
-  }
-
-  res.sendStatus(200);
 });
 
 // =======================
@@ -202,15 +225,15 @@ app.post("/chat", async (req,res)=>{
 
   if(!client) return res.json({reply:"👋 Hello"});
 
-  // 🔒 LOCK AFTER TRIAL
+  // 🔒 LOCK
   if(Date.now() > client.trialEnds && !client.paid){
     return res.json({
       reply:`⚠️ Trial expired
 
 Chats: ${client.messages}
 
-👉 Upgrade now: ${BASE_URL}/pricing.html`,
-      locked: true
+👉 Upgrade now`,
+      locked:true
     });
   }
 
@@ -245,7 +268,14 @@ Chats: ${client.messages}
 });
 
 // =======================
-// START SERVER
+// HEALTH CHECK
+// =======================
+app.get("/", (req,res)=>{
+  res.send("🚀 Layboka AI LIVE");
+});
+
+// =======================
+// START
 // =======================
 app.listen(PORT, ()=>{
   console.log("🚀 Server running on port " + PORT);
