@@ -2,10 +2,8 @@
 <html>
 <head>
   <title>Pricing - Layboka AI</title>
-
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- Razorpay -->
   <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
   <style>
@@ -14,31 +12,75 @@
       font-family: Arial;
       background: linear-gradient(135deg, #0b1a2f, #001f3f);
       color: white;
+    }
+
+    /* ===== HEADER ===== */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 20px;
+      background: rgba(0,0,0,0.6);
+      backdrop-filter: blur(10px);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    .logo {
+      font-size: 22px;
+      font-weight: bold;
+      background: linear-gradient(45deg,#00ffc3,#00aaff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    nav {
+      display: flex;
+      gap: 20px;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+    }
+
+    /* ===== HEADING ===== */
+    .heading {
       text-align: center;
-    }
-
-    h1 {
       margin-top: 40px;
-      font-size: 32px;
     }
 
+    .heading h1 {
+      font-size: 34px;
+      margin-bottom: 10px;
+    }
+
+    .heading p {
+      color: #ccc;
+    }
+
+    /* ===== PRICING ===== */
     .pricing-container {
+      max-width: 1100px;
+      margin: auto;
       display: flex;
       justify-content: center;
       gap: 30px;
-      margin-top: 50px;
+      padding: 40px 20px;
       flex-wrap: wrap;
-      padding: 20px;
+      overflow: hidden;
     }
 
     .card {
-      width: 300px;
-      padding: 30px;
+      width: 320px;
+      padding: 35px;
       border-radius: 20px;
       background: rgba(255,255,255,0.05);
       backdrop-filter: blur(15px);
       border: 1px solid rgba(255,255,255,0.2);
       box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+      text-align: center;
       transition: 0.3s;
       position: relative;
     }
@@ -53,7 +95,7 @@
 
     .badge {
       position: absolute;
-      top: -10px;
+      top: -12px;
       right: 20px;
       background: #00ffc3;
       color: black;
@@ -64,7 +106,7 @@
     }
 
     .price {
-      font-size: 36px;
+      font-size: 38px;
       color: #00ffc3;
       margin: 20px 0;
     }
@@ -82,7 +124,7 @@
 
     button {
       width: 100%;
-      padding: 14px;
+      padding: 15px;
       border: none;
       border-radius: 12px;
       background: linear-gradient(135deg, #00ffc3, #00aaff);
@@ -96,16 +138,32 @@
       transform: scale(1.05);
     }
 
+    /* ===== CUSTOM ===== */
     .custom {
-      margin-top: 40px;
+      text-align: center;
+      margin-top: 20px;
     }
 
     .custom a {
       color: #00ffc3;
-      text-decoration: none;
       border: 1px solid #00ffc3;
       padding: 10px 20px;
       border-radius: 10px;
+      text-decoration: none;
+    }
+
+    /* ===== FOOTER ===== */
+    footer {
+      text-align: center;
+      padding: 30px;
+      margin-top: 50px;
+      border-top: 1px solid rgba(255,255,255,0.1);
+    }
+
+    footer a {
+      color: #aaa;
+      margin: 0 10px;
+      text-decoration: none;
     }
 
     /* MOBILE */
@@ -114,15 +172,35 @@
         flex-direction: column;
         align-items: center;
       }
+
+      nav {
+        display: none;
+      }
     }
+
   </style>
 </head>
 
 <body>
 
-<h1>Upgrade Your Plan 🚀</h1>
-<p>Start free. Upgrade anytime.</p>
+<!-- HEADER -->
+<header class="header">
+  <div class="logo">Layboka</div>
 
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="pricing.html">Pricing</a>
+    <a href="contact.html">Contact</a>
+  </nav>
+</header>
+
+<!-- HEADING -->
+<div class="heading">
+  <h1>Upgrade Your Plan 🚀</h1>
+  <p>Start free. Upgrade anytime.</p>
+</div>
+
+<!-- PRICING -->
 <div class="pricing-container">
 
   <!-- BASIC -->
@@ -164,71 +242,38 @@
   <a href="contact.html">Contact Us</a>
 </div>
 
+<!-- FOOTER -->
+<footer>
+  <a href="privacy.html">Privacy</a>
+  <a href="terms.html">Terms</a>
+  <a href="pricing.html">Pricing</a>
+</footer>
+
 <script>
-/* 🌍 AUTO CURRENCY SWITCH */
-async function detectCountry() {
-  try {
-    const res = await fetch("https://ipapi.co/json/");
-    const data = await res.json();
-
-    if (data.country !== "IN") {
-      document.getElementById("basicPrice").innerText = "$9 / month";
-      document.getElementById("premiumPrice").innerText = "$20 / month";
-      window.currency = "USD";
-    } else {
-      window.currency = "INR";
-    }
-  } catch {
-    window.currency = "INR";
-  }
-}
-
-detectCountry();
-
-/* 💳 PAYMENT */
-async function pay(plan) {
+async function pay(plan){
   const clientId = new URLSearchParams(window.location.search).get("client");
 
-  if (window.currency === "USD") {
-    // STRIPE FLOW
-    const res = await fetch("/create-stripe", {
-      method: "POST",
-      headers: {"Content-Type": "application/json"},
-      body: JSON.stringify({ plan, clientId })
-    });
+  const res = await fetch("/create-order", {
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body: JSON.stringify({ plan, clientId })
+  });
 
-    const data = await res.json();
-    window.location.href = data.url;
+  const order = await res.json();
 
-  } else {
-    // RAZORPAY FLOW
-    const res = await fetch("/create-order", {
-      method:"POST",
-      headers:{"Content-Type":"application/json"},
-      body: JSON.stringify({ plan, clientId })
-    });
+  const options = {
+    key: "YOUR_RAZORPAY_KEY",
+    amount: order.amount,
+    currency: "INR",
+    order_id: order.id,
+    name: "Layboka AI",
+    handler: function (){
+      alert("Payment Success!");
+      window.location.href = "/success.html";
+    }
+  };
 
-    const order = await res.json();
-
-    const options = {
-      key: "rzp_test_xxxxx",
-      amount: order.amount,
-      currency: "INR",
-      order_id: order.id,
-      name: "Layboka AI",
-      description: "Subscription Payment",
-      handler: function (response) {
-        alert("✅ Payment Successful!");
-        window.location.href = "/success.html";
-      },
-      notes: {
-        clientId,
-        plan
-      }
-    };
-
-    new Razorpay(options).open();
-  }
+  new Razorpay(options).open();
 }
 </script>
 
