@@ -1,0 +1,10 @@
+<script>
+fetch("/admin-data")
+.then(r=>r.json())
+.then(d=>{
+  document.body.innerHTML = `
+  <h2>Total Clients: ${d.clients}</h2>
+  <h3>Revenue: ₹${d.revenue}</h3>
+  `;
+});
+</script>
