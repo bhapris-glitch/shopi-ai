@@ -187,7 +187,68 @@ FORM (FIXED - NO OVERLAP)
   background:#00ffc3;
   color:#000;
 }
+/* ==================
+Problem and Solution
+=====================*/
+ .style-20 {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08)
+        }
 
+        .style-21 {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08)
+        }
+
+        .style-22 {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08)
+        }
+
+        .style-23 {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08)
+        }
+
+        .style-24 {
+            background: rgba(99, 102, 241, 0.05)
+        }
+
+        .style-25 {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(12px)
+        }
+
+        .style-26 {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(12px)
+        }
+
+        .style-27 {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(12px)
+        }
+
+        .style-28 {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(12px)
+        }
+
+        .style-29 {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(12px)
+        }
+
+        .style-30 {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(12px)
+        }
 /* =========================
 FEATURES (PREMIUM CARDS)
 ========================= */
