@@ -190,65 +190,123 @@ FORM (FIXED - NO OVERLAP)
 /* ==================
 Problem and Solution
 =====================*/
- .style-20 {
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid rgba(255, 255, 255, 0.08)
-        }
 
-        .style-21 {
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid rgba(255, 255, 255, 0.08)
-        }
+/* ===== SECTION COMMON ===== */
+.section-header {
+  text-align: center;
+  margin-bottom: 50px;
+}
 
-        .style-22 {
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid rgba(255, 255, 255, 0.08)
-        }
+.tag {
+  color: #888;
+  font-size: 14px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
 
-        .style-23 {
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid rgba(255, 255, 255, 0.08)
-        }
+.tag.gradient {
+  color: #00ffc3;
+}
 
-        .style-24 {
-            background: rgba(99, 102, 241, 0.05)
-        }
+.section-header h2 {
+  font-size: 38px;
+  margin: 10px 0;
+}
 
-        .style-25 {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(12px)
-        }
+.section-header h2 span {
+  color: #00ffc3;
+}
 
-        .style-26 {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(12px)
-        }
+.subtitle {
+  color: #aaa;
+  max-width: 600px;
+  margin: auto;
+}
 
-        .style-27 {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(12px)
-        }
+/* ===== PROBLEM ===== */
+.problem-section {
+  padding: 80px 20px;
+}
 
-        .style-28 {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(12px)
-        }
+.problem-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  margin-top: 40px;
+}
 
-        .style-29 {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(12px)
-        }
+.problem-card {
+  background: rgba(255,255,255,0.05);
+  padding: 25px;
+  border-radius: 16px;
+  transition: 0.3s;
+  border: 1px solid rgba(255,255,255,0.1);
+}
 
-        .style-30 {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(12px)
-        }
+.problem-card:hover {
+  transform: translateY(-8px);
+  border-color: #ff4d4d;
+}
+
+.problem-card .icon {
+  font-size: 30px;
+  margin-bottom: 10px;
+}
+
+/* ===== SOLUTION ===== */
+.solution-section {
+  padding: 80px 20px;
+  background: linear-gradient(135deg, #001f3f, #000);
+}
+
+.solution-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  margin-top: 40px;
+}
+
+.solution-card {
+  background: rgba(0,255,200,0.05);
+  padding: 25px;
+  border-radius: 16px;
+  border: 1px solid rgba(0,255,200,0.2);
+  transition: 0.3s;
+}
+
+.solution-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 0 20px rgba(0,255,200,0.2);
+}
+
+.solution-card .icon {
+  font-size: 28px;
+  margin-bottom: 10px;
+}
+
+.highlight-card {
+  background: linear-gradient(135deg, #00ffc3, #00aaff);
+  color: black;
+  font-weight: bold;
+}
+
+/* ===== MOBILE ===== */
+@media (max-width: 900px) {
+  .problem-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .solution-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .problem-grid,
+  .solution-grid {
+    grid-template-columns: 1fr;
+  }
+}
 /* =========================
 FEATURES (PREMIUM CARDS)
 ========================= */
