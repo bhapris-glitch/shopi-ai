@@ -330,6 +330,168 @@ FEATURES (PREMIUM CARDS)
   transform:translateY(-5px);
   box-shadow:0 10px 30px rgba(0,0,0,0.3);
 }
+/* =======================
+ Trail Staps
+========================== */
+/* RESET */
+
+body {
+  background: #050505;
+  font-family: "Inter", sans-serif;
+  color: #ffffff;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* LAYOUT */
+.container {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 64px 24px;
+}
+
+/* TRIAL CARD */
+.trial-card {
+  background: #0b0b0b;
+  border-radius: 18px;
+  padding: 32px 36px;
+  border: 1px solid rgba(255, 140, 0, 0.12);
+  box-shadow: 0 10px 40px rgba(255, 140, 0, 0.08);
+}
+
+/* TYPOGRAPHY */
+.trial-title {
+  font-size: 18px;
+  font-weight: 500;
+  color: #e7e7e7;
+  margin-bottom: 28px;
+  letter-spacing: -0.2px;
+}
+
+/* FEATURES GRID */
+.features {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 28px;
+}
+
+.feature {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+
+.icon {
+  font-size: 18px;
+  color: #ff8c00;
+  margin-top: 2px;
+}
+
+.feature h4 {
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: #fff;
+}
+
+.feature p {
+  font-size: 13.5px;
+  color: #a3a3a3;
+  line-height: 1.6;
+}
+
+/* JOURNEY */
+.journey-title {
+  text-align: center;
+  margin: 56px 0 28px;
+  font-size: 20px;
+  font-weight: 500;
+  color: #e5e5e5;
+  letter-spacing: -0.3px;
+}
+
+.journey {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px;
+}
+
+/* STEP CARD */
+.step {
+  background: #0a0a0a;
+  padding: 22px;
+  border-radius: 14px;
+  border: 1px solid #1f1f1f;
+  transition: all 0.25s ease;
+  cursor: pointer;
+}
+
+/* ACTIVE ORANGE GRADIENT */
+.step.active {
+  border: 1px solid transparent;
+  background: linear-gradient(#0a0a0a, #0a0a0a) padding-box,
+              linear-gradient(135deg, #ff7a18, #ffb347) border-box;
+  box-shadow: 0 8px 30px rgba(255, 140, 0, 0.15);
+}
+
+/* HOVER */
+.step:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 35px rgba(255, 140, 0, 0.18);
+}
+
+/* TEXT */
+.tag {
+  font-size: 11px;
+  color: #ff9a3c;
+  font-weight: 500;
+  margin-bottom: 8px;
+  display: block;
+  letter-spacing: 0.5px;
+}
+
+.step h3 {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.step p {
+  font-size: 13px;
+  color: #a0a0a0;
+}
+
+/* RESPONSIVE DESIGN */
+@media (max-width: 1024px) {
+  .features {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .journey {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .container {
+    padding: 48px 18px;
+  }
+
+  .features {
+    grid-template-columns: 1fr;
+  }
+
+  .journey {
+    grid-template-columns: 1fr;
+  }
+
+  .trial-card {
+    padding: 24px;
+  }
+
+  .trial-title {
+    font-size: 16px;
+  }
+}
 
 /* =========================
 TRUST BADGES
