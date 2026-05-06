@@ -335,29 +335,6 @@ FEATURES (PREMIUM CARDS)
 ========================== */
 /* RESET */
 
-body {
-  background: #050505;
-  font-family: "Inter", sans-serif;
-  color: #ffffff;
-  -webkit-font-smoothing: antialiased;
-}
-
-/* LAYOUT */
-.container {
-  max-width: 1120px;
-  margin: 0 auto;
-  padding: 44px 24px;
-}
-
-/* TRIAL CARD */
-.trial-card {
-  background: #0b0b0b;
-  border-radius: 18px;
-  padding: 32px 36px;
-  border: 1px solid rgba(255, 140, 0, 0.12);
-  box-shadow: 0 10px 40px rgba(255, 140, 0, 0.08);
-}
-
 /* TYPOGRAPHY */
 .trial-title {
   font-size: 18px;
