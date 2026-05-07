@@ -1,23 +1,140 @@
 const mongoose = require("mongoose");
 
-const clientSchema = new mongoose.Schema({
-  store: String,
-  token: String,
+const ClientSchema = new mongoose.Schema({
 
-  plan: { type: String, default: "basic" },
+  // =========================
+  // STORE
+  // =========================
+  store:{
+    type:String,
+    required:true
+  },
 
-  trialEnds: Number,
-  paid: { type: Boolean, default: false },
+  token:{
+    type:String,
+    default:""
+  },
 
-  subscriptionId: String,   // Razorpay / Stripe
-  customerId: String,
+  // =========================
+  // PLAN
+  // =========================
+  plan:{
+    type:String,
+    default:"starter"
+  },
 
-  status: { type: String, default: "trial" }, 
-  // trial / active / cancelled / failed
+  // =========================
+  // PAYMENT STATUS
+  // =========================
+  paid:{
+    type:Boolean,
+    default:false
+  },
 
-  messages: { type: Number, default: 0 },
+  paymentProvider:{
+    type:String,
+    default:""
+  },
 
-  createdAt: { type: Date, default: Date.now }
+  subscriptionId:{
+    type:String,
+    default:""
+  },
+
+  status:{
+    type:String,
+    default:"trial"
+  },
+
+  // =========================
+  // TRIAL
+  // =========================
+  trialEnds:{
+    type:Number,
+    default:()=>Date.now() + (3*24*60*60*1000)
+  },
+
+  // =========================
+  // AUTO RENEW
+  // =========================
+  renewalDate:{
+    type:Number,
+    default:0
+  },
+
+  // =========================
+  // ANALYTICS
+  // =========================
+  messages:{
+    type:Number,
+    default:0
+  },
+
+  opens:{
+    type:Number,
+    default:0
+  },
+
+  conversions:{
+    type:Number,
+    default:0
+  },
+
+  recoveredCarts:{
+    type:Number,
+    default:0
+  },
+
+  revenue:{
+    type:Number,
+    default:0
+  },
+
+  // =========================
+  // FEATURES
+  // =========================
+  whatsappRecovery:{
+    type:Boolean,
+    default:false
+  },
+
+  abandonedCartAI:{
+    type:Boolean,
+    default:false
+  },
+
+  checkoutCloser:{
+    type:Boolean,
+    default:false
+  },
+
+  premiumUI:{
+    type:Boolean,
+    default:false
+  },
+
+  // =========================
+  // CONTACT
+  // =========================
+  email:{
+    type:String,
+    default:""
+  },
+
+  phone:{
+    type:String,
+    default:""
+  },
+
+  // =========================
+  // CREATED
+  // =========================
+  createdAt:{
+    type:Date,
+    default:Date.now
+  }
+
 });
 
-module.exports = mongoose.model("Client", clientSchema);
+module.exports =
+  mongoose.model("Client", ClientSchema);
