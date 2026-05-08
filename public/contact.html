@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Contact • Layboka AI</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
+body{
+  font-family:Poppins,sans-serif;
+  background:#07111f;
+  color:white;
+}
+
+.header{
+  padding:20px 7%;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  border-bottom:1px solid rgba(255,255,255,0.06);
+}
+
+.logo{
+  font-size:30px;
+  font-weight:800;
+  background:linear-gradient(90deg,#ff7a00,#ffb347);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+
+nav{
+  display:flex;
+  gap:20px;
+}
+
+nav a{
+  color:#ddd;
+  text-decoration:none;
+}
+
+.hero{
+  padding:80px 7% 40px;
+  text-align:center;
+}
+
+.hero h1{
+  font-size:58px;
+  margin-bottom:16px;
+}
+
+.hero p{
+  color:#aaa;
+}
+
+.form-section{
+  padding:20px 7% 100px;
+}
+
+.form-box{
+
+  max-width:700px;
+  margin:auto;
+
+  background:rgba(255,255,255,0.04);
+
+  border:1px solid rgba(255,255,255,0.06);
+
+  border-radius:30px;
+
+  padding:40px;
+
+}
+
+.input{
+  width:100%;
+  padding:18px;
+  border:none;
+  border-radius:16px;
+  margin-bottom:18px;
+  background:#111b2d;
+  color:white;
+  font-size:15px;
+}
+
+textarea{
+  min-height:160px;
+  resize:none;
+}
+
+button{
+  width:100%;
+  border:none;
+  padding:18px;
+  border-radius:16px;
+  background:linear-gradient(90deg,#ff7a00,#ffb347);
+  color:black;
+  font-weight:700;
+  cursor:pointer;
+  font-size:16px;
+}
+
+footer{
+  padding:30px;
+  text-align:center;
+  border-top:1px solid rgba(255,255,255,0.06);
+  color:#888;
+}
+
+@media(max-width:700px){
+
+.hero h1{
+  font-size:40px;
+}
+
+.form-box{
+  padding:25px;
+}
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header class="header">
+
+<div class="logo">
+  Layboka AI
+</div>
+
+<nav>
+<a href="index.html">Home</a>
+<a href="pricing.html">Pricing</a>
+<a href="about.html">About</a>
+<a href="contact.html">Contact</a>
+</nav>
+
+</header>
+
+<section class="hero">
+
+<h1>Contact Us</h1>
+
+<p>
+Need help with installation, billing or AI setup? Send us a message.
+</p>
+
+</section>
+
+<section class="form-section">
+
+<div class="form-box">
+
+<form action="/contact-form" method="POST">
+
+<input
+type="text"
+name="name"
+placeholder="Your Name"
+class="input"
+required
+>
+
+<input
+type="email"
+name="email"
+placeholder="Your Email"
+class="input"
+required
+>
+
+<input
+type="text"
+name="store"
+placeholder="Your Shopify Store"
+class="input"
+>
+
+<textarea
+name="message"
+placeholder="Write your message..."
+class="input"
+required
+></textarea>
+
+<button type="submit">
+🚀 Send Message
+</button>
+
+</form>
+
+</div>
+
+</section>
+
+<footer>
+© 2026 Layboka AI • All Rights Reserved
+</footer>
+
+</body>
+</html>
