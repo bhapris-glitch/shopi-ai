@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+  <title>Layboka Dashboard</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+    }
+
+    body{
+      font-family:'Poppins',sans-serif;
+      background:#0b1020;
+      color:white;
+      overflow-x:hidden;
+    }
+
+    body::before{
+      content:"";
+      position:fixed;
+      inset:0;
+      background:
+      radial-gradient(circle at top left,#ff7a0020,transparent 35%),
+      radial-gradient(circle at bottom right,#ff7a0020,transparent 35%);
+      z-index:-1;
+    }
+
+    /* ================= HEADER ================= */
+
+    .header{
+      width:100%;
+      padding:20px 6%;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      border-bottom:1px solid rgba(255,255,255,0.08);
+      backdrop-filter:blur(10px);
+      position:sticky;
+      top:0;
+      z-index:100;
+      background:rgba(11,16,32,0.7);
+    }
+
+    .logo{
+      font-size:28px;
+      font-weight:700;
+      background:linear-gradient(90deg,#ff7a00,#ffb347);
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+    }
+
+    .status{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      font-size:14px;
+      color:#bbb;
+    }
+
+    .live-dot{
+      width:10px;
+      height:10px;
+      border-radius:50%;
+      background:#00ff7f;
+      box-shadow:0 0 12px #00ff7f;
+    }
+
+    /* ================= LAYOUT ================= */
+
+    .dashboard{
+      display:grid;
+      grid-template-columns:260px 1fr;
+      min-height:100vh;
+    }
+
+    /* ================= SIDEBAR ================= */
+
+    .sidebar{
+      border-right:1px solid rgba(255,255,255,0.06);
+      padding:30px 20px;
+      background:rgba(255,255,255,0.02);
+      backdrop-filter:blur(12px);
+    }
+
+    .sidebar h3{
+      margin-bottom:25px;
+      font-size:14px;
+      text-transform:uppercase;
+      letter-spacing:1px;
+      color:#777;
+    }
+
+    .menu{
+      display:flex;
+      flex-direction:column;
+      gap:14px;
+    }
+
+    .menu a{
+      text-decoration:none;
+      color:white;
+      padding:14px 18px;
+      border-radius:14px;
+      transition:0.3s;
+      background:rgba(255,255,255,0.03);
+      border:1px solid transparent;
+    }
+
+    .menu a:hover{
+      background:linear-gradient(90deg,#ff7a00,#ff9d3f);
+      transform:translateX(4px);
+    }
+
+    /* ================= MAIN ================= */
+
+    .main{
+      padding:40px;
+    }
+
+    .welcome{
+      margin-bottom:35px;
+    }
+
+    .welcome h1{
+      font-size:38px;
+      margin-bottom:10px;
+    }
+
+    .welcome p{
+      color:#aaa;
+      line-height:1.7;
+    }
+
+    /* ================= STATS ================= */
+
+    .stats{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+      gap:25px;
+      margin-bottom:40px;
+    }
+
+    .card{
+      background:rgba(255,255,255,0.04);
+      border:1px solid rgba(255,255,255,0.08);
+      border-radius:24px;
+      padding:28px;
+      position:relative;
+      overflow:hidden;
+      transition:0.4s;
+      backdrop-filter:blur(12px);
+    }
+
+    .card:hover{
+      transform:translateY(-6px);
+      border-color:#ff7a00;
+      box-shadow:0 10px 40px rgba(255,122,0,0.18);
+    }
+
+    .card h2{
+      font-size:15px;
+      color:#aaa;
+      margin-bottom:14px;
+    }
+
+    .card h1{
+      font-size:42px;
+      font-weight:700;
+      margin-bottom:8px;
+    }
+
+    .card span{
+      color:#00ff7f;
+      font-size:14px;
+    }
+
+    /* ================= ANALYTICS ================= */
+
+    .analytics{
+      margin-top:20px;
+      display:grid;
+      grid-template-columns:2fr 1fr;
+      gap:25px;
+    }
+
+    .chart,
+    .plan-box{
+      background:rgba(255,255,255,0.04);
+      border-radius:24px;
+      padding:30px;
+      border:1px solid rgba(255,255,255,0.06);
+      backdrop-filter:blur(12px);
+    }
+
+    .chart h2,
+    .plan-box h2{
+      margin-bottom:20px;
+      font-size:24px;
+    }
+
+    .fake-chart{
+      height:260px;
+      border-radius:20px;
+      background:
+      linear-gradient(180deg,rgba(255,122,0,0.3),transparent),
+      rgba(255,255,255,0.03);
+      position:relative;
+      overflow:hidden;
+    }
+
+    .fake-chart::before{
+      content:"";
+      position:absolute;
+      width:200%;
+      height:2px;
+      background:linear-gradient(90deg,transparent,#ff7a00,transparent);
+      animation:move 4s linear infinite;
+      top:50%;
+    }
+
+    @keyframes move{
+      from{
+        transform:translateX(-50%);
+      }
+      to{
+        transform:translateX(50%);
+      }
+    }
+
+    /* ================= PLAN ================= */
+
+    .plan{
+      background:linear-gradient(135deg,#ff7a00,#ffb347);
+      color:black;
+      padding:20px;
+      border-radius:20px;
+      margin-top:10px;
+    }
+
+    .plan h3{
+      font-size:28px;
+      margin-bottom:10px;
+    }
+
+    .plan p{
+      line-height:1.6;
+      font-weight:500;
+    }
+
+    .upgrade-btn{
+      margin-top:20px;
+      display:inline-block;
+      background:black;
+      color:white;
+      padding:14px 22px;
+      border-radius:14px;
+      text-decoration:none;
+      font-weight:600;
+      transition:0.3s;
+    }
+
+    .upgrade-btn:hover{
+      transform:scale(1.05);
+    }
+
+    /* ================= RECENT ACTIVITY ================= */
+
+    .activity{
+      margin-top:40px;
+      background:rgba(255,255,255,0.04);
+      border-radius:24px;
+      padding:30px;
+      border:1px solid rgba(255,255,255,0.06);
+    }
+
+    .activity h2{
+      margin-bottom:20px;
+    }
+
+    .activity-item{
+      padding:16px;
+      border-bottom:1px solid rgba(255,255,255,0.05);
+      color:#ccc;
+      display:flex;
+      justify-content:space-between;
+      gap:20px;
+    }
+
+    /* ================= MOBILE ================= */
+
+    @media(max-width:900px){
+
+      .dashboard{
+        grid-template-columns:1fr;
+      }
+
+      .sidebar{
+        display:none;
+      }
+
+      .main{
+        padding:25px;
+      }
+
+      .analytics{
+        grid-template-columns:1fr;
+      }
+
+      .welcome h1{
+        font-size:28px;
+      }
+
+    }
+
+  </style>
+</head>
+
+<body>
+
+  <!-- ================= HEADER ================= -->
+
+  <header class="header">
+
+    <div class="logo">
+      Layboka AI
+    </div>
+
+    <div class="status">
+      <div class="live-dot"></div>
+      Live Dashboard
+    </div>
+
+  </header>
+
+  <!-- ================= DASHBOARD ================= -->
+
+  <div class="dashboard">
+
+    <!-- SIDEBAR -->
+
+    <aside class="sidebar">
+
+      <h3>Navigation</h3>
+
+      <div class="menu">
+        <a href="#">🏠 Overview</a>
+        <a href="#">💬 Chats</a>
+        <a href="#">📈 Analytics</a>
+        <a href="#">🛒 Conversions</a>
+        <a href="#">📦 Products</a>
+        <a href="#">💳 Billing</a>
+        <a href="#">⚙ Settings</a>
+      </div>
+
+    </aside>
+
+    <!-- MAIN -->
+
+    <main class="main">
+
+      <!-- WELCOME -->
+
+      <div class="welcome">
+        <h1>🚀 Welcome Back</h1>
+        <p>
+          Your AI sales assistant is actively converting visitors into buyers 24/7.
+          Monitor chats, revenue, conversions and recovery analytics here.
+        </p>
+      </div>
+
+      <!-- STATS -->
+
+      <div class="stats">
+
+        <div class="card">
+          <h2>Total Chats</h2>
+          <h1 id="chatCount">120</h1>
+          <span>+22% this week</span>
+        </div>
+
+        <div class="card">
+          <h2>Interested Users</h2>
+          <h1 id="interestCount">45</h1>
+          <span>+15% conversion</span>
+        </div>
+
+        <div class="card">
+          <h2>Recovered Carts</h2>
+          <h1 id="recoveryCount">18</h1>
+          <span>₹12,500 recovered</span>
+        </div>
+
+        <div class="card">
+          <h2>Total Revenue</h2>
+          <h1 id="revenueCount">₹32K</h1>
+          <span>+38% growth</span>
+        </div>
+
+      </div>
+
+      <!-- ANALYTICS -->
+
+      <div class="analytics">
+
+        <div class="chart">
+
+          <h2>📊 AI Conversion Analytics</h2>
+
+          <div class="fake-chart"></div>
+
+        </div>
+
+        <div class="plan-box">
+
+          <h2>💎 Current Plan</h2>
+
+          <div class="plan">
+
+            <h3>Premium</h3>
+
+            <p>
+              AI Checkout Closer <br>
+              WhatsApp Recovery <br>
+              Abandoned Cart AI <br>
+              Premium UI <br>
+              Smart Recommendations
+            </p>
+
+            <a href="pricing.html" class="upgrade-btn">
+              Manage Billing
+            </a>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- ACTIVITY -->
+
+      <div class="activity">
+
+        <h2>⚡ Recent Activity</h2>
+
+        <div class="activity-item">
+          <span>AI recovered abandoned cart</span>
+          <span>2 mins ago</span>
+        </div>
+
+        <div class="activity-item">
+          <span>New Shopify store installed chatbot</span>
+          <span>10 mins ago</span>
+        </div>
+
+        <div class="activity-item">
+          <span>Premium subscription activated</span>
+          <span>30 mins ago</span>
+        </div>
+
+        <div class="activity-item">
+          <span>AI recommended best-selling product</span>
+          <span>1 hour ago</span>
+        </div>
+
+      </div>
+
+    </main>
+
+  </div>
+
+  <!-- ================= JS ================= -->
+
+  <script>
+
+    // Fake live animation counters
+
+    function animateValue(id, start, end, duration){
+
+      let obj = document.getElementById(id);
+      let range = end - start;
+      let current = start;
+      let increment = end > start ? 1 : -1;
+      let stepTime = Math.abs(Math.floor(duration / range));
+
+      let timer = setInterval(function(){
+
+        current += increment;
+        obj.innerHTML = current;
+
+        if(current == end){
+          clearInterval(timer);
+        }
+
+      }, stepTime);
+    }
+
+    animateValue("chatCount", 80, 120, 2000);
+    animateValue("interestCount", 20, 45, 2000);
+    animateValue("recoveryCount", 5, 18, 2000);
+
+  </script>
+
+</body>
+</html>
