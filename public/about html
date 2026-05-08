@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>About • Layboka AI</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+    }
+
+    body{
+      font-family:'Poppins',sans-serif;
+      background:#07111f;
+      color:white;
+      overflow-x:hidden;
+    }
+
+    body::before{
+      content:"";
+      position:fixed;
+      inset:0;
+      background:
+      radial-gradient(circle at top left,#ff7a0015,transparent 30%),
+      radial-gradient(circle at bottom right,#ffb34712,transparent 30%);
+      z-index:-1;
+    }
+
+    a{
+      text-decoration:none;
+      color:white;
+    }
+
+    .header{
+      position:sticky;
+      top:0;
+      z-index:999;
+      backdrop-filter:blur(18px);
+      background:rgba(7,17,31,0.82);
+      border-bottom:1px solid rgba(255,255,255,0.06);
+
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+
+      padding:20px 7%;
+    }
+
+    .logo{
+      font-size:32px;
+      font-weight:800;
+      background:linear-gradient(90deg,#ff7a00,#ffb347);
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+    }
+
+    nav{
+      display:flex;
+      gap:24px;
+      align-items:center;
+    }
+
+    nav a{
+      color:#ddd;
+      transition:0.3s;
+    }
+
+    nav a:hover{
+      color:#ff9d3f;
+    }
+
+    .btn{
+      background:linear-gradient(90deg,#ff7a00,#ffb347);
+      color:black;
+      padding:12px 20px;
+      border-radius:12px;
+      font-weight:700;
+    }
+
+    .menu{
+      display:none;
+      font-size:28px;
+      cursor:pointer;
+    }
+
+    .hero{
+      padding:100px 7% 60px;
+      text-align:center;
+    }
+
+    .hero p{
+      color:#ff9d3f;
+      margin-bottom:14px;
+      font-weight:600;
+    }
+
+    .hero h1{
+      font-size:62px;
+      line-height:1.1;
+      margin-bottom:20px;
+    }
+
+    .hero h4{
+      color:#aaa;
+      line-height:1.8;
+      max-width:850px;
+      margin:auto;
+      font-weight:400;
+    }
+
+    .section{
+      padding:30px 7% 90px;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+      gap:30px;
+    }
+
+    .card{
+      background:rgba(255,255,255,0.04);
+      border:1px solid rgba(255,255,255,0.06);
+      border-radius:28px;
+      padding:35px;
+      transition:0.4s;
+    }
+
+    .card:hover{
+      transform:translateY(-8px);
+      border-color:#ff7a00;
+      box-shadow:0 15px 50px rgba(255,122,0,0.12);
+    }
+
+    .card h3{
+      margin:20px 0 14px;
+      font-size:24px;
+    }
+
+    .card p{
+      color:#aaa;
+      line-height:1.8;
+    }
+
+    .icon{
+      font-size:44px;
+    }
+
+    footer{
+      border-top:1px solid rgba(255,255,255,0.06);
+      padding:70px 7% 30px;
+    }
+
+    .footer-grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+      gap:40px;
+      margin-bottom:40px;
+    }
+
+    .footer-box h3{
+      margin-bottom:18px;
+    }
+
+    .footer-box a{
+      display:block;
+      color:#aaa;
+      margin-bottom:12px;
+    }
+
+    .footer-box a:hover{
+      color:#ff9d3f;
+    }
+
+    .copyright{
+      border-top:1px solid rgba(255,255,255,0.06);
+      padding-top:24px;
+      text-align:center;
+      color:#888;
+    }
+
+    @media(max-width:900px){
+
+      nav{
+        display:none;
+        position:absolute;
+        top:80px;
+        right:7%;
+        background:#111b2d;
+        padding:25px;
+        border-radius:20px;
+        flex-direction:column;
+        width:240px;
+      }
+
+      nav.show{
+        display:flex;
+      }
+
+      .menu{
+        display:block;
+      }
+
+      .hero h1{
+        font-size:44px;
+      }
+
+    }
+
+  </style>
+
+</head>
+
+<body>
+
+<header class="header">
+
+  <div class="logo">
+    Layboka AI
+  </div>
+
+  <div class="menu" onclick="toggleMenu()">☰</div>
+
+  <nav id="nav">
+
+    <a href="index.html">Home</a>
+    <a href="pricing.html">Pricing</a>
+    <a href="dashboard.html">Dashboard</a>
+    <a href="about.html">About</a>
+    <a href="contact.html">Contact</a>
+    <a href="privacy.html">Privacy</a>
+    <a href="terms.html">Terms</a>
+
+    <a href="pricing.html" class="btn">
+      Start Free Trial
+    </a>
+
+  </nav>
+
+</header>
+
+<section class="hero">
+
+  <p>ABOUT LAYBOKA AI</p>
+
+  <h1>
+    AI Built To Grow
+    Shopify Stores Faster
+  </h1>
+
+  <h4>
+    Layboka AI helps eCommerce brands convert visitors into buyers using AI-powered conversations, checkout assistance, abandoned cart recovery and real-time sales automation.
+  </h4>
+
+</section>
+
+<section class="section">
+
+  <div class="grid">
+
+    <div class="card">
+
+      <div class="icon">🤖</div>
+
+      <h3>AI Sales Assistant</h3>
+
+      <p>
+        Our AI chatbot talks to customers 24/7, recommends products, answers questions and boosts conversions automatically.
+      </p>
+
+    </div>
+
+    <div class="card">
+
+      <div class="icon">🛒</div>
+
+      <h3>Checkout Recovery</h3>
+
+      <p>
+        Recover abandoned carts with automated WhatsApp messages, email follow-ups and smart checkout reminders.
+      </p>
+
+    </div>
+
+    <div class="card">
+
+      <div class="icon">📈</div>
+
+      <h3>Conversion Growth</h3>
+
+      <p>
+        Turn your Shopify traffic into revenue with personalized AI conversations designed to increase order value and sales.
+      </p>
+
+    </div>
+
+  </div>
+
+</section>
+
+<footer>
+
+  <div class="footer-grid">
+
+    <div class="footer-box">
+      <h3>Layboka AI</h3>
+      <a href="index.html">Home</a>
+      <a href="pricing.html">Pricing</a>
+      <a href="dashboard.html">Dashboard</a>
+    </div>
+
+    <div class="footer-box">
+      <h3>Company</h3>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+      <a href="privacy.html">Privacy</a>
+      <a href="terms.html">Terms</a>
+    </div>
+
+    <div class="footer-box">
+      <h3>Features</h3>
+      <a href="#">AI Chatbot</a>
+      <a href="#">Recovery System</a>
+      <a href="#">Analytics</a>
+    </div>
+
+  </div>
+
+  <div class="copyright">
+    © 2026 Layboka AI • All Rights Reserved
+  </div>
+
+</footer>
+
+<script>
+
+function toggleMenu(){
+  document.getElementById("nav").classList.toggle("show");
+}
+
+</script>
+
+</body>
+</html>
