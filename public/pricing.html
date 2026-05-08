@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+  <title>Pricing • Layboka AI</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+  <style>
+
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+    }
+
+    body{
+      font-family:'Poppins',sans-serif;
+      background:#0b1020;
+      color:white;
+      overflow-x:hidden;
+    }
+
+    body::before{
+      content:"";
+      position:fixed;
+      inset:0;
+      background:
+      radial-gradient(circle at top left,#ff7a0025,transparent 35%),
+      radial-gradient(circle at bottom right,#ff7a0020,transparent 35%);
+      z-index:-1;
+    }
+
+    /* ================= HEADER ================= */
+
+    .header{
+      width:100%;
+      padding:22px 7%;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      border-bottom:1px solid rgba(255,255,255,0.08);
+      backdrop-filter:blur(10px);
+      position:sticky;
+      top:0;
+      z-index:100;
+      background:rgba(11,16,32,0.7);
+    }
+
+    .logo{
+      font-size:30px;
+      font-weight:700;
+      background:linear-gradient(90deg,#ff7a00,#ffb347);
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+    }
+
+    nav{
+      display:flex;
+      gap:30px;
+    }
+
+    nav a{
+      color:white;
+      text-decoration:none;
+      font-size:15px;
+      transition:0.3s;
+    }
+
+    nav a:hover{
+      color:#ff9d3f;
+    }
+
+    /* ================= HERO ================= */
+
+    .hero{
+      text-align:center;
+      padding:90px 20px 50px;
+    }
+
+    .hero h1{
+      font-size:58px;
+      line-height:1.2;
+      margin-bottom:20px;
+    }
+
+    .hero span{
+      background:linear-gradient(90deg,#ff7a00,#ffb347);
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+    }
+
+    .hero p{
+      max-width:700px;
+      margin:auto;
+      color:#aaa;
+      line-height:1.8;
+      font-size:18px;
+    }
+
+    /* ================= PRICING ================= */
+
+    .pricing{
+      width:100%;
+      max-width:1250px;
+      margin:70px auto;
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+      gap:35px;
+      padding:0 25px;
+    }
+
+    .card{
+      background:rgba(255,255,255,0.04);
+      border:1px solid rgba(255,255,255,0.08);
+      border-radius:30px;
+      padding:40px 30px;
+      position:relative;
+      overflow:hidden;
+      transition:0.4s;
+      backdrop-filter:blur(14px);
+    }
+
+    .card:hover{
+      transform:translateY(-10px);
+      box-shadow:0 15px 50px rgba(255,122,0,0.22);
+      border-color:#ff7a00;
+    }
+
+    .popular{
+      border:2px solid #ff7a00;
+      transform:scale(1.03);
+    }
+
+    .badge{
+      position:absolute;
+      top:18px;
+      right:18px;
+      background:#ff7a00;
+      color:black;
+      padding:8px 14px;
+      border-radius:30px;
+      font-size:12px;
+      font-weight:700;
+    }
+
+    .plan{
+      font-size:32px;
+      margin-bottom:15px;
+      font-weight:700;
+    }
+
+    .price{
+      font-size:60px;
+      font-weight:700;
+      margin-bottom:8px;
+    }
+
+    .month{
+      color:#aaa;
+      margin-bottom:25px;
+    }
+
+    .features{
+      margin-top:25px;
+      display:flex;
+      flex-direction:column;
+      gap:15px;
+    }
+
+    .features div{
+      background:rgba(255,255,255,0.03);
+      padding:14px;
+      border-radius:14px;
+      color:#ddd;
+    }
+
+    .btn{
+      margin-top:35px;
+      width:100%;
+      border:none;
+      padding:18px;
+      border-radius:16px;
+      font-size:17px;
+      font-weight:600;
+      cursor:pointer;
+      background:linear-gradient(90deg,#ff7a00,#ffb347);
+      color:black;
+      transition:0.3s;
+    }
+
+    .btn:hover{
+      transform:scale(1.03);
+    }
+
+    /* ================= CUSTOM ================= */
+
+    .custom{
+      text-align:center;
+      margin-top:40px;
+    }
+
+    .custom a{
+      color:#ff9d3f;
+      text-decoration:none;
+      font-weight:600;
+    }
+
+    /* ================= FAQ ================= */
+
+    .faq{
+      max-width:900px;
+      margin:100px auto;
+      padding:0 20px;
+    }
+
+    .faq h2{
+      text-align:center;
+      font-size:42px;
+      margin-bottom:40px;
+    }
+
+    .faq-item{
+      background:rgba(255,255,255,0.04);
+      border-radius:18px;
+      padding:24px;
+      margin-bottom:20px;
+      border:1px solid rgba(255,255,255,0.05);
+    }
+
+    .faq-item h3{
+      margin-bottom:12px;
+    }
+
+    .faq-item p{
+      color:#bbb;
+      line-height:1.8;
+    }
+
+    /* ================= FOOTER ================= */
+
+    footer{
+      text-align:center;
+      padding:40px 20px;
+      border-top:1px solid rgba(255,255,255,0.06);
+      color:#888;
+    }
+
+    footer a{
+      color:#bbb;
+      margin:0 10px;
+      text-decoration:none;
+    }
+
+    /* ================= MOBILE ================= */
+
+    @media(max-width:768px){
+
+      .hero h1{
+        font-size:40px;
+      }
+
+      nav{
+        gap:15px;
+      }
+
+      .price{
+        font-size:48px;
+      }
+
+    }
+
+  </style>
+</head>
+
+<body>
+
+  <!-- ================= HEADER ================= -->
+
+  <header class="header">
+
+    <div class="logo">
+      Layboka AI
+    </div>
+
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="dashboard.html">Dashboard</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+
+  </header>
+
+  <!-- ================= HERO ================= -->
+
+  <section class="hero">
+
+    <h1>
+      Scale Your Store With
+      <span>AI Sales Automation</span>
+    </h1>
+
+    <p>
+      Install Layboka AI in minutes and turn your Shopify store into a 24/7 conversion machine.
+      Includes AI checkout closer, WhatsApp recovery, abandoned cart AI and premium sales chatbot.
+    </p>
+
+  </section>
+
+  <!-- ================= PRICING ================= -->
+
+  <section class="pricing">
+
+    <!-- STARTER -->
+
+    <div class="card">
+
+      <div class="plan">Starter</div>
+
+      <div class="price" id="starterPrice">₹399</div>
+
+      <div class="month">Per month • Auto renewal</div>
+
+      <div class="features">
+
+        <div>🤖 AI Chatbot</div>
+        <div>💬 Unlimited Conversations</div>
+        <div>🛍 Product Recommendations</div>
+        <div>📈 Conversion Analytics</div>
+        <div>⚡ Shopify Integration</div>
+        <div>📧 Email Recovery</div>
+
+      </div>
+
+      <button class="btn" onclick="pay('starter')">
+        Start Starter Plan
+      </button>
+
+    </div>
+
+    <!-- PREMIUM -->
+
+    <div class="card popular">
+
+      <div class="badge">
+        MOST POPULAR
+      </div>
+
+      <div class="plan">Premium</div>
+
+      <div class="price" id="premiumPrice">₹799</div>
+
+      <div class="month">Per month • Auto renewal</div>
+
+      <div class="features">
+
+        <div>🔥 AI Checkout Closer</div>
+        <div>🛒 Abandoned Cart Recovery</div>
+        <div>📲 WhatsApp Recovery System</div>
+        <div>💎 Premium Chatbot UI</div>
+        <div>🎯 Smart Recommendations</div>
+        <div>🌍 Multi-language AI</div>
+        <div>📊 Advanced Analytics</div>
+        <div>⚡ Priority AI Speed</div>
+
+      </div>
+
+      <button class="btn" onclick="pay('premium')">
+        Upgrade To Premium
+      </button>
+
+    </div>
+
+    <!-- CUSTOM -->
+
+    <div class="card">
+
+      <div class="plan">Enterprise</div>
+
+      <div class="price">Custom</div>
+
+      <div class="month">For high-scale brands</div>
+
+      <div class="features">
+
+        <div>🏢 Multi-store Support</div>
+        <div>🧠 Custom AI Training</div>
+        <div>📞 Dedicated Manager</div>
+        <div>⚡ Ultra Fast Infrastructure</div>
+        <div>🔒 Enterprise Security</div>
+        <div>☁ Private AI Hosting</div>
+
+      </div>
+
+      <button class="btn" onclick="window.location.href='contact.html'">
+        Contact Sales
+      </button>
+
+    </div>
+
+  </section>
+
+  <!-- ================= FAQ ================= -->
+
+  <section class="faq">
+
+    <h2>Frequently Asked Questions</h2>
+
+    <div class="faq-item">
+      <h3>How does billing work?</h3>
+      <p>
+        Billing is automatic every 28 days. If payment fails, chatbot access gets locked until payment succeeds.
+      </p>
+    </div>
+
+    <div class="faq-item">
+      <h3>Can I cancel anytime?</h3>
+      <p>
+        Yes. You can cancel your subscription anytime from the dashboard billing section.
+      </p>
+    </div>
+
+    <div class="faq-item">
+      <h3>Do you support international payments?</h3>
+      <p>
+        Yes. India uses Razorpay (INR) while global customers use Stripe (USD).
+      </p>
+    </div>
+
+  </section>
+
+  <!-- ================= FOOTER ================= -->
+
+  <footer>
+
+    © 2026 Layboka AI • All Rights Reserved
+
+    <br><br>
+
+    <a href="privacy.html">Privacy</a>
+    <a href="terms.html">Terms</a>
+    <a href="contact.html">Contact</a>
+
+  </footer>
+
+  <!-- ================= JS ================= -->
+
+  <script>
+
+    const clientId =
+      new URLSearchParams(window.location.search).get("client");
+
+    // ================= COUNTRY DETECTION =================
+
+    async function detectCountry(){
+
+      try{
+
+        const res = await fetch("https://ipapi.co/json/");
+        const data = await res.json();
+
+        if(data.country !== "IN"){
+
+          document.getElementById("starterPrice").innerHTML = "$9";
+          document.getElementById("premiumPrice").innerHTML = "$20";
+
+        }
+
+      }catch(e){
+        console.log(e);
+      }
+
+    }
+
+    detectCountry();
+
+    // ================= PAYMENT =================
+
+    async function pay(plan){
+
+      const resCountry = await fetch("https://ipapi.co/json/");
+      const countryData = await resCountry.json();
+
+      // ================= INDIA =================
+
+      if(countryData.country === "IN"){
+
+        const res = await fetch("/create-order",{
+          method:"POST",
+          headers:{
+            "Content-Type":"application/json"
+          },
+          body:JSON.stringify({
+            plan,
+            clientId
+          })
+        });
+
+        const order = await res.json();
+
+        const options = {
+
+          key:"YOUR_RAZORPAY_KEY",
+
+          amount:order.amount,
+
+          currency:"INR",
+
+          name:"Layboka AI",
+
+          description:"AI Subscription",
+
+          order_id:order.id,
+
+          theme:{
+            color:"#ff7a00"
+          },
+
+          notes:{
+            clientId,
+            plan
+          },
+
+          handler:function(response){
+
+            window.location.href =
+            "/success.html?payment=success";
+
+          }
+
+        };
+
+        const rzp = new Razorpay(options);
+        rzp.open();
+
+      }
+
+      // ================= GLOBAL STRIPE =================
+
+      else{
+
+        const stripeRes = await fetch("/create-stripe",{
+          method:"POST",
+          headers:{
+            "Content-Type":"application/json"
+          },
+          body:JSON.stringify({
+            plan,
+            clientId
+          })
+        });
+
+        const data = await stripeRes.json();
+
+        window.location.href = data.url;
+
+      }
+
+    }
+
+  </script>
+
+</body>
+</html>
