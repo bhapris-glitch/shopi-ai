@@ -1,0 +1,826 @@
+```html id="pay7x1"
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Pricing & Payment • Layboka AI</title>
+
+  <!-- FONT -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- RAZORPAY -->
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+  <style>
+
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+    }
+
+    body{
+      font-family:'Poppins',sans-serif;
+      background:#07111f;
+      color:white;
+      overflow-x:hidden;
+    }
+
+    body::before{
+      content:"";
+      position:fixed;
+      inset:0;
+      background:
+      radial-gradient(circle at top left,#ff7a001a,transparent 30%),
+      radial-gradient(circle at bottom right,#ff9d0016,transparent 30%);
+      z-index:-1;
+    }
+
+    a{
+      text-decoration:none;
+      color:white;
+    }
+
+    /* ================= HEADER ================= */
+
+    .header{
+      width:100%;
+      position:sticky;
+      top:0;
+      z-index:999;
+
+      backdrop-filter:blur(18px);
+      background:rgba(7,17,31,0.8);
+
+      border-bottom:1px solid rgba(255,255,255,0.06);
+
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+
+      padding:20px 7%;
+    }
+
+    .logo-box{
+      display:flex;
+      flex-direction:column;
+    }
+
+    .logo{
+      font-size:32px;
+      font-weight:800;
+      background:linear-gradient(90deg,#ff7a00,#ffb347);
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+      line-height:1;
+    }
+
+    .logo-sub{
+      color:#aaa;
+      font-size:12px;
+      margin-top:5px;
+    }
+
+    nav{
+      display:flex;
+      align-items:center;
+      gap:28px;
+    }
+
+    nav a{
+      color:#ddd;
+      transition:0.3s;
+      font-size:15px;
+    }
+
+    nav a:hover{
+      color:#ff9d3f;
+    }
+
+    .header-btn{
+      background:linear-gradient(90deg,#ff7a00,#ffb347);
+      color:black;
+      padding:12px 22px;
+      border-radius:14px;
+      font-weight:700;
+    }
+
+    .menu-toggle{
+      display:none;
+      font-size:28px;
+      cursor:pointer;
+    }
+
+    /* ================= HERO ================= */
+
+    .hero{
+      padding:90px 7% 40px;
+      text-align:center;
+    }
+
+    .hero p{
+      color:#ff9d3f;
+      font-weight:600;
+      margin-bottom:12px;
+    }
+
+    .hero h1{
+      font-size:64px;
+      line-height:1.1;
+      margin-bottom:20px;
+      font-weight:800;
+    }
+
+    .gradient{
+      background:linear-gradient(90deg,#ff7a00,#ffb347);
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+    }
+
+    .hero h4{
+      color:#aaa;
+      max-width:800px;
+      margin:auto;
+      line-height:1.9;
+      font-weight:400;
+      font-size:18px;
+    }
+
+    /* ================= PRICING ================= */
+
+    .pricing{
+      padding:40px 7% 100px;
+    }
+
+    .pricing-grid{
+
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(340px,1fr));
+
+      gap:35px;
+
+      align-items:stretch;
+
+    }
+
+    .plan{
+
+      background:rgba(255,255,255,0.05);
+
+      border:1px solid rgba(255,255,255,0.07);
+
+      border-radius:34px;
+
+      padding:42px 35px;
+
+      position:relative;
+
+      overflow:hidden;
+
+      transition:0.4s;
+
+      backdrop-filter:blur(20px);
+
+    }
+
+    .plan:hover{
+      transform:translateY(-10px);
+      border-color:#ff7a00;
+      box-shadow:0 20px 60px rgba(255,122,0,0.18);
+    }
+
+    .popular{
+      border:2px solid #ff7a00;
+      transform:scale(1.03);
+    }
+
+    .popular-badge{
+
+      position:absolute;
+      top:20px;
+      right:20px;
+
+      background:linear-gradient(90deg,#ff7a00,#ffb347);
+
+      color:black;
+
+      padding:8px 16px;
+
+      border-radius:50px;
+
+      font-size:12px;
+      font-weight:700;
+
+    }
+
+    .plan-name{
+      font-size:32px;
+      font-weight:700;
+      margin-bottom:15px;
+    }
+
+    .price{
+      font-size:62px;
+      font-weight:800;
+      margin-bottom:10px;
+    }
+
+    .price span{
+      font-size:18px;
+      color:#aaa;
+      font-weight:400;
+    }
+
+    .desc{
+      color:#aaa;
+      line-height:1.8;
+      margin-bottom:30px;
+    }
+
+    .features{
+      display:flex;
+      flex-direction:column;
+      gap:18px;
+      margin-bottom:35px;
+    }
+
+    .feature{
+      display:flex;
+      align-items:flex-start;
+      gap:12px;
+      color:#ddd;
+      line-height:1.7;
+    }
+
+    .feature span{
+      color:#ff9d3f;
+      font-size:18px;
+    }
+
+    .plan button{
+      width:100%;
+      border:none;
+      padding:18px;
+      border-radius:18px;
+      font-size:16px;
+      font-weight:700;
+      cursor:pointer;
+      transition:0.3s;
+    }
+
+    .starter-btn{
+      background:#1a2537;
+      color:white;
+    }
+
+    .premium-btn{
+      background:linear-gradient(90deg,#ff7a00,#ffb347);
+      color:black;
+    }
+
+    .plan button:hover{
+      transform:translateY(-2px);
+    }
+
+    /* ================= TRUST ================= */
+
+    .trust{
+      padding:0 7% 100px;
+      text-align:center;
+    }
+
+    .trust-box{
+
+      background:rgba(255,255,255,0.04);
+
+      border:1px solid rgba(255,255,255,0.05);
+
+      border-radius:30px;
+
+      padding:45px;
+
+    }
+
+    .trust-box h2{
+      font-size:38px;
+      margin-bottom:18px;
+    }
+
+    .trust-box p{
+      color:#aaa;
+      line-height:1.8;
+      margin-bottom:30px;
+    }
+
+    .badges{
+      display:flex;
+      justify-content:center;
+      flex-wrap:wrap;
+      gap:18px;
+    }
+
+    .badge{
+      padding:14px 22px;
+      border-radius:50px;
+      background:#131d2f;
+      border:1px solid rgba(255,255,255,0.05);
+      color:#ddd;
+    }
+
+    /* ================= FOOTER ================= */
+
+    footer{
+      border-top:1px solid rgba(255,255,255,0.06);
+      padding:70px 7% 30px;
+    }
+
+    .footer-grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+      gap:40px;
+      margin-bottom:45px;
+    }
+
+    .footer-box h3{
+      margin-bottom:18px;
+      font-size:20px;
+    }
+
+    .footer-box a{
+      display:block;
+      margin-bottom:12px;
+      color:#aaa;
+      transition:0.3s;
+    }
+
+    .footer-box a:hover{
+      color:#ff9d3f;
+    }
+
+    .copyright{
+      border-top:1px solid rgba(255,255,255,0.06);
+      padding-top:22px;
+      text-align:center;
+      color:#888;
+      font-size:14px;
+    }
+
+    /* ================= MOBILE ================= */
+
+    @media(max-width:950px){
+
+      nav{
+        display:none;
+        position:absolute;
+        top:85px;
+        right:7%;
+        background:#111b2d;
+        flex-direction:column;
+        width:240px;
+        padding:24px;
+        border-radius:22px;
+      }
+
+      nav.show{
+        display:flex;
+      }
+
+      .menu-toggle{
+        display:block;
+      }
+
+      .hero h1{
+        font-size:48px;
+      }
+
+    }
+
+    @media(max-width:650px){
+
+      .hero h1{
+        font-size:40px;
+      }
+
+      .price{
+        font-size:52px;
+      }
+
+      .plan{
+        padding:35px 25px;
+      }
+
+    }
+
+  </style>
+
+</head>
+
+<body>
+
+<!-- ================= HEADER ================= -->
+
+<header class="header">
+
+  <div class="logo-box">
+
+    <div class="logo">
+      Layboka AI
+    </div>
+
+    <div class="logo-sub">
+      Shopify Sales Assistant
+    </div>
+
+  </div>
+
+  <div class="menu-toggle" onclick="toggleMenu()">
+    ☰
+  </div>
+
+  <nav id="nav">
+
+    <a href="index.html">Home</a>
+    <a href="pricing.html">Pricing</a>
+    <a href="dashboard.html">Dashboard</a>
+    <a href="install.html">Install</a>
+    <a href="about.html">About</a>
+    <a href="contact.html">Contact</a>
+    <a href="privacy.html">Privacy</a>
+    <a href="terms.html">Terms</a>
+
+    <a href="dashboard.html" class="header-btn">
+      Dashboard
+    </a>
+
+  </nav>
+
+</header>
+
+<!-- ================= HERO ================= -->
+
+<section class="hero">
+
+  <p>PRICING & BILLING</p>
+
+  <h1>
+    Start Selling More With
+    <span class="gradient">AI Automation</span>
+  </h1>
+
+  <h4>
+    Install Layboka AI in under 2 minutes and automate sales,
+    support, checkout recovery and customer engagement 24/7.
+  </h4>
+
+</section>
+
+<!-- ================= PRICING ================= -->
+
+<section class="pricing">
+
+  <div class="pricing-grid">
+
+    <!-- STARTER -->
+
+    <div class="plan">
+
+      <div class="plan-name">
+        Starter
+      </div>
+
+      <div class="price">
+        ₹399
+        <span>/month</span>
+      </div>
+
+      <div class="desc">
+        Perfect for growing Shopify stores starting with AI automation.
+      </div>
+
+      <div class="features">
+
+        <div class="feature">
+          <span>✓</span>
+          AI chatbot for customer support
+        </div>
+
+        <div class="feature">
+          <span>✓</span>
+          Product recommendations
+        </div>
+
+        <div class="feature">
+          <span>✓</span>
+          Shopify integration
+        </div>
+
+        <div class="feature">
+          <span>✓</span>
+          24/7 AI replies
+        </div>
+
+        <div class="feature">
+          <span>✓</span>
+          Abandoned cart reminders
+        </div>
+
+        <div class="feature">
+          <span>✓</span>
+          Analytics dashboard
+        </div>
+
+      </div>
+
+      <button class="starter-btn" onclick="pay('starter')">
+        🚀 Start Starter Plan
+      </button>
+
+    </div>
+
+    <!-- PREMIUM -->
+
+    <div class="plan popular">
+
+      <div class="popular-badge">
+        MOST POPULAR
+      </div>
+
+      <div class="plan-name">
+        Premium
+      </div>
+
+      <div class="price">
+        ₹799
+        <span>/month</span>
+      </div>
+
+      <div class="desc">
+        Full AI sales machine with checkout closer and recovery automation.
+      </div>
+
+      <div class="features">
+
+        <div class="feature">
+          <span>✓</span>
+          Everything in Starter
+        </div>
+
+        <div class="feature">
+          <span>✓</span>
+          AI checkout closer
+        </div>
+
+        <div class="feature">
+          <span>✓</span>
+          WhatsApp cart recovery
+        </div>
+
+        <div class="feature">
+          <span>✓</span>
+          Email automation system
+        </div>
+
+        <div class="feature">
+          <span>✓</span>
+          Smart conversion booster AI
+        </div>
+
+        <div class="feature">
+          <span>✓</span>
+          Premium analytics dashboard
+        </div>
+
+        <div class="feature">
+          <span>✓</span>
+          Priority support
+        </div>
+
+      </div>
+
+      <button class="premium-btn" onclick="pay('premium')">
+        🔥 Start Premium Plan
+      </button>
+
+    </div>
+
+  </div>
+
+</section>
+
+<!-- ================= TRUST ================= -->
+
+<section class="trust">
+
+  <div class="trust-box">
+
+    <h2>
+      Secure Payments & Auto Billing
+    </h2>
+
+    <p>
+      Your subscription renews automatically every 30 days.
+      If payment fails, chatbot access locks automatically until billing is restored.
+    </p>
+
+    <div class="badges">
+
+      <div class="badge">
+        🔒 Secure Razorpay Payments
+      </div>
+
+      <div class="badge">
+        💳 Auto Renewal Enabled
+      </div>
+
+      <div class="badge">
+        🌍 Stripe USD Billing
+      </div>
+
+      <div class="badge">
+        ⚡ Instant Activation
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+<!-- ================= FOOTER ================= -->
+
+<footer>
+
+  <div class="footer-grid">
+
+    <div class="footer-box">
+
+      <h3>Layboka AI</h3>
+
+      <a href="index.html">Home</a>
+      <a href="pricing.html">Pricing</a>
+      <a href="dashboard.html">Dashboard</a>
+      <a href="install.html">Install</a>
+
+    </div>
+
+    <div class="footer-box">
+
+      <h3>Company</h3>
+
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+      <a href="privacy.html">Privacy</a>
+      <a href="terms.html">Terms</a>
+
+    </div>
+
+    <div class="footer-box">
+
+      <h3>Features</h3>
+
+      <a href="#">AI Chatbot</a>
+      <a href="#">Checkout Closer</a>
+      <a href="#">Recovery System</a>
+      <a href="#">Analytics</a>
+
+    </div>
+
+    <div class="footer-box">
+
+      <h3>Support</h3>
+
+      <a href="#">Help Center</a>
+      <a href="#">API Access</a>
+      <a href="#">Live Support</a>
+      <a href="#">Documentation</a>
+
+    </div>
+
+  </div>
+
+  <div class="copyright">
+    © 2026 Layboka AI • All Rights Reserved
+  </div>
+
+</footer>
+
+<!-- ================= JS ================= -->
+
+<script>
+
+  // MOBILE MENU
+
+  function toggleMenu(){
+
+    document
+    .getElementById("nav")
+    .classList
+    .toggle("show");
+
+  }
+
+  // PAYMENT
+
+  async function pay(plan){
+
+    const clientId =
+    new URLSearchParams(window.location.search)
+    .get("client");
+
+    try{
+
+      const res = await fetch("/create-order",{
+
+        method:"POST",
+
+        headers:{
+          "Content-Type":"application/json"
+        },
+
+        body:JSON.stringify({
+          plan,
+          clientId
+        })
+
+      });
+
+      const order = await res.json();
+
+      const options = {
+
+        key:"YOUR_RAZORPAY_KEY",
+
+        amount:order.amount,
+
+        currency:"INR",
+
+        name:"Layboka AI",
+
+        description:"AI Shopify Assistant",
+
+        image:"https://cdn-icons-png.flaticon.com/512/4712/4712109.png",
+
+        order_id:order.id,
+
+        theme:{
+          color:"#ff7a00"
+        },
+
+        notes:{
+          clientId,
+          plan
+        },
+
+        handler: async function(response){
+
+          await fetch("/verify-payment",{
+
+            method:"POST",
+
+            headers:{
+              "Content-Type":"application/json"
+            },
+
+            body:JSON.stringify({
+
+              razorpay_payment_id:
+              response.razorpay_payment_id,
+
+              razorpay_order_id:
+              response.razorpay_order_id,
+
+              razorpay_signature:
+              response.razorpay_signature,
+
+              clientId,
+              plan
+
+            })
+
+          });
+
+          window.location.href =
+          "/success.html";
+
+        }
+
+      };
+
+      new Razorpay(options).open();
+
+    }catch(err){
+
+      alert("Payment failed");
+
+    }
+
+  }
+
+</script>
+
+</body>
+</html>
