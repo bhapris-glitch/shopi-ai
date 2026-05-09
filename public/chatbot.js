@@ -11,6 +11,114 @@
   let CHAT_LOCKED = false;
 
   // =========================
+  // GLOBAL STATE
+  // =========================
+  let lastActivity = Date.now();
+
+  // =========================
+  // PREMIUM CSS
+  // =========================
+  const style = document.createElement("style");
+
+  style.innerHTML = `
+
+  *{
+    box-sizing:border-box;
+  }
+
+  .qbtn{
+    border:none;
+    padding:10px 14px;
+    border-radius:12px;
+    background:#111827;
+    color:#fff;
+    cursor:pointer;
+    white-space:nowrap;
+    font-size:13px;
+    transition:0.3s;
+  }
+
+  .qbtn:hover{
+    transform:translateY(-2px);
+    background:#00ffc3;
+    color:#000;
+  }
+
+  .productCard{
+    background:#0f172a;
+    border-radius:18px;
+    padding:14px;
+    margin-top:12px;
+    border:1px solid rgba(255,255,255,0.06);
+    animation:fadeIn .4s ease;
+  }
+
+  .productCard img{
+    width:100%;
+    border-radius:12px;
+    margin-bottom:10px;
+    height:180px;
+    object-fit:cover;
+  }
+
+  .buyBtn{
+    margin-top:10px;
+    width:100%;
+    padding:13px;
+    border:none;
+    border-radius:12px;
+    background:linear-gradient(135deg,#00ffc3,#00aaff);
+    color:#000;
+    font-weight:bold;
+    cursor:pointer;
+    transition:0.3s;
+  }
+
+  .buyBtn:hover{
+    transform:scale(1.03);
+  }
+
+  .dot{
+    width:7px;
+    height:7px;
+    background:#9ca3af;
+    border-radius:50%;
+    animation:bounce 1s infinite;
+  }
+
+  .dot:nth-child(2){
+    animation-delay:0.2s;
+  }
+
+  .dot:nth-child(3){
+    animation-delay:0.4s;
+  }
+
+  @keyframes bounce{
+    0%,80%,100%{
+      transform:scale(0);
+    }
+    40%{
+      transform:scale(1);
+    }
+  }
+
+  @keyframes fadeIn{
+    from{
+      opacity:0;
+      transform:translateY(10px);
+    }
+    to{
+      opacity:1;
+      transform:translateY(0);
+    }
+  }
+
+  `;
+
+  document.head.appendChild(style);
+
+  // =========================
   // FLOAT BUTTON
   // =========================
   const button = document.createElement("div");
@@ -32,6 +140,7 @@
     cursor:pointer;
     z-index:999999;
     box-shadow:0 0 30px rgba(0,255,200,0.5);
+    animation:pulse 2s infinite;
   `;
 
   document.body.appendChild(button);
@@ -47,7 +156,7 @@
     right:20px;
     width:360px;
     max-width:95%;
-    height:520px;
+    height:540px;
     background:#071421;
     border-radius:24px;
     overflow:hidden;
@@ -56,6 +165,7 @@
     z-index:999999;
     box-shadow:0 20px 60px rgba(0,0,0,0.5);
     border:1px solid rgba(255,255,255,0.08);
+    backdrop-filter:blur(12px);
   `;
 
   // =========================
@@ -75,12 +185,12 @@
   ">
 
     <div>
-      💁 Layboka Shop Manager 
+      💁 Layboka Shop Manager
       <div style="
       font-size:12px;
       margin-top:4px;
       ">
-      🟢 Live
+      🟢 AI Online
       </div>
     </div>
 
@@ -111,10 +221,19 @@
   style="
   display:none;
   padding-left:14px;
-  color:#9ca3af;
-  font-size:12px;
+  padding-bottom:10px;
   ">
-  AI is typing...
+
+    <div style="
+    display:flex;
+    gap:4px;
+    align-items:center;
+    ">
+      <div class="dot"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+    </div>
+
   </div>
 
   <div id="quickBtns"
@@ -143,6 +262,7 @@
     outline:none;
     background:#111827;
     color:#fff;
+    font-size:14px;
     ">
 
   </div>
@@ -198,24 +318,74 @@
       ? "right"
       : "left";
 
-    div.innerHTML = `
-    <span style="
-    display:inline-block;
-    padding:12px 14px;
-    border-radius:18px;
-    max-width:80%;
-    background:
-      ${type==="user"
-        ? "linear-gradient(135deg,#00ffc3,#00aaff)"
-        : "#111827"};
-    color:
-      ${type==="user"
-        ? "#000"
-        : "#fff"};
-    ">
-    ${text}
-    </span>
-    `;
+    // PRODUCT CARD
+    if(typeof text === "object" && text.type === "product"){
+
+      div.innerHTML = `
+
+      <div class="productCard">
+
+        <img src="${text.image}">
+
+        <h3 style="
+        margin:0;
+        color:white;
+        ">
+        ${text.title}
+        </h3>
+
+        <p style="
+        color:#9ca3af;
+        font-size:14px;
+        margin-top:8px;
+        ">
+        ${text.description}
+        </p>
+
+        <h2 style="
+        color:#00ffc3;
+        margin-top:10px;
+        ">
+        ${text.price}
+        </h2>
+
+        <button class="buyBtn"
+        onclick="
+        window.location.href='${text.url}'
+        ">
+        🛒 Add To Cart
+        </button>
+
+      </div>
+
+      `;
+
+    }
+
+    // NORMAL CHAT
+    else{
+
+      div.innerHTML = `
+      <span style="
+      display:inline-block;
+      padding:12px 14px;
+      border-radius:18px;
+      max-width:80%;
+      background:
+        ${type==="user"
+          ? "linear-gradient(135deg,#00ffc3,#00aaff)"
+          : "#111827"};
+      color:
+        ${type==="user"
+          ? "#000"
+          : "#fff"};
+      line-height:1.5;
+      ">
+      ${text}
+      </span>
+      `;
+
+    }
 
     chat.appendChild(div);
 
@@ -291,10 +461,31 @@
       quickAsk('checkout')
       "
       class="qbtn">
-      ⚡ Fast Checkout
+      ⚡ Checkout
+      </button>
+
+      <button onclick="
+      quickAsk('offer')
+      "
+      class="qbtn">
+      💰 Offers
       </button>
 
       `;
+
+      setTimeout(()=>{
+
+        addMessage(`
+⚡ Premium AI Activated
+
+✔ AI Checkout Closer
+✔ Cart Recovery
+✔ Smart Upsells
+✔ Product Recommendations
+✔ Conversion Boosters
+        `,"ai");
+
+      },2000);
 
     }
 
@@ -385,6 +576,12 @@ Upgrade Now
       );
     }
 
+    if(type==="offer"){
+      sendMessage(
+        "What offers are available?"
+      );
+    }
+
   };
 
   // =========================
@@ -430,6 +627,79 @@ Upgrade Now
         data.reply,
         "ai"
       );
+
+      // =====================
+      // SALES PUSH
+      // =====================
+
+      if(
+      msg.toLowerCase().includes("buy") ||
+      msg.toLowerCase().includes("price") ||
+      msg.toLowerCase().includes("best")
+      ){
+
+        setTimeout(()=>{
+
+          addMessage(`
+🔥 Today's Offer:
+Extra 10% OFF if you checkout today.
+          `,"ai");
+
+        },1200);
+
+      }
+
+      // =====================
+      // PRODUCT CARD
+      // =====================
+
+      if(
+      msg.toLowerCase().includes("hoodie") ||
+      msg.toLowerCase().includes("product") ||
+      msg.toLowerCase().includes("show")
+      ){
+
+        setTimeout(()=>{
+
+          addMessage({
+
+            type:"product",
+
+            title:"Premium Hoodie",
+
+            description:
+            "Ultra-soft premium cotton hoodie loved by customers.",
+
+            price:"₹1,999",
+
+            image:
+            "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab",
+
+            url:"#"
+
+          },"ai");
+
+        },1500);
+
+      }
+
+      // =====================
+      // AUTO CHECKOUT PUSH
+      // =====================
+
+      if(
+      msg.toLowerCase().includes("checkout")
+      ){
+
+        setTimeout(()=>{
+
+          addMessage(`
+⚡ Complete your order now before stock runs out.
+          `,"ai");
+
+        },1000);
+
+      }
 
       // 🔒 LOCK
       if(data.locked){
@@ -481,11 +751,63 @@ Upgrade Now
   setTimeout(()=>{
 
     addMessage(
-      "👋 Hi There! How can I help you today?",
+      "👋 Hi There! Need help choosing the perfect product?",
       "ai"
     );
 
   },1000);
+
+  // =========================
+  // DEMO PRODUCT CARD
+  // =========================
+  setTimeout(()=>{
+
+    addMessage({
+
+      type:"product",
+
+      title:"Premium Oversized Hoodie",
+
+      description:
+      "🔥 Best Seller • Premium Cotton • Limited Stock",
+
+      price:"₹1,999",
+
+      image:
+      "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab",
+
+      url:"#"
+
+    },"ai");
+
+  },3000);
+
+  // =========================
+  // ABANDONED CART RECOVERY
+  // =========================
+  document.addEventListener(
+    "mousemove",
+    ()=>{
+      lastActivity = Date.now();
+    }
+  );
+
+  setInterval(()=>{
+
+    const inactive =
+      Date.now() - lastActivity;
+
+    if(inactive > 60000){
+
+      addMessage(`
+🛒 Still thinking?
+
+Complete your purchase before today's offer expires.
+      `,"ai");
+
+    }
+
+  },30000);
 
   // =========================
   // LOAD PLAN
