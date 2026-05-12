@@ -36,72 +36,44 @@
       z-index:-1;
     }
 
-   /* ================= HEADER ================= */
+    /* ================= HEADER ================= */
 
     .header{
       width:100%;
+      padding:22px 7%;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      border-bottom:1px solid rgba(255,255,255,0.08);
+      backdrop-filter:blur(10px);
       position:sticky;
       top:0;
-      z-index:999;
-      backdrop-filter:blur(16px);
-      background:rgba(7,17,31,0.75);
-      border-bottom:1px solid rgba(255,255,255,0.06);
-
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-
-      padding:18px 7%;
-    }
-
-    .logo-box{
-      display:flex;
-      flex-direction:column;
+      z-index:100;
+      background:rgba(11,16,32,0.7);
     }
 
     .logo{
-      font-size:32px;
-      font-weight:800;
+      font-size:30px;
+      font-weight:700;
       background:linear-gradient(90deg,#ff7a00,#ffb347);
       -webkit-background-clip:text;
       -webkit-text-fill-color:transparent;
-      line-height:1;
-    }
-
-    .logo-sub{
-      color:#bbb;
-      font-size:12px;
-      margin-top:4px;
     }
 
     nav{
       display:flex;
-      gap:28px;
-      align-items:center;
+      gap:30px;
     }
 
     nav a{
-      color:#ddd;
+      color:white;
+      text-decoration:none;
       font-size:15px;
       transition:0.3s;
     }
 
     nav a:hover{
-      color:#ff9c3a;
-    }
-
-    .header-btn{
-      background:linear-gradient(90deg,#ff7a00,#ffb347);
-      color:black;
-      padding:12px 22px;
-      border-radius:14px;
-      font-weight:700;
-    }
-
-    .menu-toggle{
-      display:none;
-      font-size:28px;
-      cursor:pointer;
+      color:#ff9d3f;
     }
 
     /* ================= HERO ================= */
@@ -294,19 +266,7 @@
       }
 
       nav{
-        display:none;
-        position:absolute;
-        top:80px;
-        right:7%;
-        background:#111b2d;
-        flex-direction:column;
-        width:240px;
-        padding:25px;
-        border-radius:22px;
-      }
-
-      nav.show{
-        display:flex;
+        gap:15px;
       }
 
       .price{
@@ -321,44 +281,29 @@
 <body>
 
   <!-- ================= HEADER ================= -->
-<header class="header">
 
-  <div class="logo-box">
-    <div class="logo">Layboka AI</div>
-    <div class="logo-sub">Shopify Sales Assistant</div>
-  </div>
+  <header class="header">
 
-  <div class="menu-toggle" onclick="toggleMenu()">
-    ☰
-  </div>
+    <div class="logo">
+      Layboka AI
+    </div>
 
-  <nav id="nav">
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="dashboard.html">Dashboard</a>
+      <a href="contact.html">Contact</a>
+    </nav>
 
-    <a href="index.html">Home</a>
-    <a href="pricing.html">Pricing</a>
-    <a href="dashboard.html">Dashboard</a>
-    <a href="Install.html">Install</a>
-    <a href="about.html">About</a>
-    <a href="contact.html">Contact Us</a>
-    <a href="privacy.html">Privacy</a>
-    <a href="terms.html">Terms</a>
-
-    <a href="#storeInput" class="header-btn">
-      Install Free Trial
-    </a>
-
-  </nav>
-
-</header>
+  </header>
 
   <!-- ================= HERO ================= -->
 
   <section class="hero">
 
-    <h2>
+    <h1>
       Scale Your Store With
       <span>AI Sales Automation</span>
-    </h2>
+    </h1>
 
     <p>
       Install Layboka AI in minutes and turn your Shopify store into a 24/7 conversion machine.
@@ -375,16 +320,16 @@
 
     <div class="card">
 
-      <div class="plan">Starter</div>
-<div><small>• Auto renewal • Cancel Anytime </small></div>
+      <div class="plan">Starter <br> <small>• Auto renewal • Cancel Anytime</small></br></div>
+
       <div class="price" id="starterPrice">₹399/</div>
 
-      <div class="month">Per month </div>
+      <div class="month">Per month • Auto renewal</div>
 
       <div class="features">
 
-        <div>🤖 AI Store Assistant</div>
-        <div>💬 500 Conversations</div>
+        <div>🤖 AI Chatbot</div>
+        <div>💬 Unlimited Conversations</div>
         <div>🛍 Product Recommendations</div>
         <div>📈 Conversion Analytics</div>
         <div>⚡ Shopify Integration</div>
@@ -406,8 +351,7 @@
         MOST POPULAR
       </div>
 
-      <div class="plan">Premium</div>
-   <div class="month"><small>• Auto renewal • Cancel Anytime</small></div>
+      <div class="plan">Premium<br> <small>• Auto renewal • Cancel Anytime</small></br></div>
 
       <div class="price" id="premiumPrice">₹799/</div>
 
