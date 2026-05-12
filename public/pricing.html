@@ -36,44 +36,72 @@
       z-index:-1;
     }
 
-    /* ================= HEADER ================= */
+   /* ================= HEADER ================= */
 
     .header{
       width:100%;
-      padding:22px 7%;
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      border-bottom:1px solid rgba(255,255,255,0.08);
-      backdrop-filter:blur(10px);
       position:sticky;
       top:0;
-      z-index:100;
-      background:rgba(11,16,32,0.7);
+      z-index:999;
+      backdrop-filter:blur(16px);
+      background:rgba(7,17,31,0.75);
+      border-bottom:1px solid rgba(255,255,255,0.06);
+
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+
+      padding:18px 7%;
+    }
+
+    .logo-box{
+      display:flex;
+      flex-direction:column;
     }
 
     .logo{
-      font-size:30px;
-      font-weight:700;
+      font-size:32px;
+      font-weight:800;
       background:linear-gradient(90deg,#ff7a00,#ffb347);
       -webkit-background-clip:text;
       -webkit-text-fill-color:transparent;
+      line-height:1;
+    }
+
+    .logo-sub{
+      color:#bbb;
+      font-size:12px;
+      margin-top:4px;
     }
 
     nav{
       display:flex;
-      gap:30px;
+      gap:28px;
+      align-items:center;
     }
 
     nav a{
-      color:white;
-      text-decoration:none;
+      color:#ddd;
       font-size:15px;
       transition:0.3s;
     }
 
     nav a:hover{
-      color:#ff9d3f;
+      color:#ff9c3a;
+    }
+
+    .header-btn{
+      background:linear-gradient(90deg,#ff7a00,#ffb347);
+      color:black;
+      padding:12px 22px;
+      border-radius:14px;
+      font-weight:700;
+    }
+
+    .menu-toggle{
+      display:none;
+      font-size:28px;
+      cursor:pointer;
     }
 
     /* ================= HERO ================= */
