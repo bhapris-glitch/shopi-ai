@@ -4,11 +4,13 @@
 <head>
 
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta
+name="viewport"
+content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
 <title>Contact • Layboka AI</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
 <style>
 
@@ -18,51 +20,122 @@
   box-sizing:border-box;
 }
 
-body{
-  font-family:Poppins,sans-serif;
-  background:#07111f;
-  color:white;
+html{
+  scroll-behavior:smooth;
 }
 
+body{
+  font-family:'Poppins',sans-serif;
+  background:#07111f;
+  color:white;
+  overflow-x:hidden;
+  -webkit-text-size-adjust:100%;
+}
+
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  background:
+  radial-gradient(circle at top left,#ff7a001c,transparent 30%),
+  radial-gradient(circle at bottom right,#ff99001a,transparent 30%);
+  z-index:-1;
+}
+
+a{
+  text-decoration:none;
+}
+
+/* ================= HEADER ================= */
+
 .header{
-  padding:20px 7%;
+
+  width:100%;
+  position:sticky;
+  top:0;
+  z-index:999;
+
+  padding:18px 7%;
+
   display:flex;
   justify-content:space-between;
   align-items:center;
+
+  backdrop-filter:blur(14px);
+  background:rgba(7,17,31,0.82);
+
   border-bottom:1px solid rgba(255,255,255,0.06);
+
+}
+
+.logo-box{
+  display:flex;
+  flex-direction:column;
 }
 
 .logo{
   font-size:30px;
   font-weight:800;
+  line-height:1;
+
   background:linear-gradient(90deg,#ff7a00,#ffb347);
   -webkit-background-clip:text;
   -webkit-text-fill-color:transparent;
 }
 
+.logo-sub{
+  font-size:12px;
+  color:#aaa;
+  margin-top:5px;
+  letter-spacing:0.4px;
+}
+
 nav{
   display:flex;
-  gap:20px;
+  align-items:center;
+  gap:28px;
 }
 
 nav a{
   color:#ddd;
-  text-decoration:none;
+  font-size:15px;
+  transition:0.3s;
 }
 
+nav a:hover{
+  color:#ff9c3a;
+}
+
+.menu-toggle{
+  display:none;
+  font-size:32px;
+  color:white;
+  cursor:pointer;
+  user-select:none;
+}
+
+/* ================= HERO ================= */
+
 .hero{
-  padding:80px 7% 40px;
+  padding:90px 7% 40px;
   text-align:center;
 }
 
 .hero h1{
   font-size:58px;
-  margin-bottom:16px;
+  margin-bottom:18px;
+  font-weight:800;
 }
 
 .hero p{
   color:#aaa;
+  max-width:720px;
+  margin:auto;
+  line-height:1.9;
+  font-size:17px;
 }
+
+/* ================= FORM ================= */
 
 .form-section{
   padding:20px 7% 100px;
@@ -70,63 +143,208 @@ nav a{
 
 .form-box{
 
-  max-width:700px;
+  width:100%;
+  max-width:760px;
+
   margin:auto;
 
   background:rgba(255,255,255,0.04);
 
   border:1px solid rgba(255,255,255,0.06);
 
-  border-radius:30px;
+  border-radius:32px;
 
   padding:40px;
+
+  backdrop-filter:blur(16px);
+
+  box-shadow:
+  0 15px 50px rgba(0,0,0,0.25);
 
 }
 
 .input{
   width:100%;
+
   padding:18px;
+
   border:none;
+
   border-radius:16px;
+
   margin-bottom:18px;
+
   background:#111b2d;
+
+  border:1px solid rgba(255,255,255,0.06);
+
   color:white;
+
   font-size:15px;
+
+  outline:none;
+
+  transition:0.3s;
+}
+
+.input:focus{
+  border-color:#ff7a00;
+}
+
+select{
+  appearance:none;
+  cursor:pointer;
 }
 
 textarea{
-  min-height:160px;
+  min-height:170px;
   resize:none;
 }
 
 button{
+
   width:100%;
+
   border:none;
+
   padding:18px;
+
   border-radius:16px;
+
   background:linear-gradient(90deg,#ff7a00,#ffb347);
+
   color:black;
+
   font-weight:700;
+
   cursor:pointer;
+
   font-size:16px;
+
+  transition:0.3s;
 }
 
-footer{
-  padding:30px;
+button:hover{
+  transform:translateY(-2px);
+}
+
+.info-grid{
+
+  margin-top:50px;
+
+  display:grid;
+
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+
+  gap:22px;
+}
+
+.info-card{
+
+  background:rgba(255,255,255,0.04);
+
+  border:1px solid rgba(255,255,255,0.06);
+
+  border-radius:24px;
+
+  padding:28px;
+
   text-align:center;
+}
+
+.info-card h3{
+  margin:14px 0 10px;
+}
+
+.info-card p{
+  color:#aaa;
+  line-height:1.7;
+  font-size:14px;
+}
+
+/* ================= FOOTER ================= */
+
+footer{
+
+  padding:35px 20px;
+
+  text-align:center;
+
   border-top:1px solid rgba(255,255,255,0.06);
+
   color:#888;
+
+  font-size:14px;
+}
+
+/* ================= MOBILE ================= */
+
+@media(max-width:850px){
+
+  nav{
+
+    display:none;
+
+    position:absolute;
+
+    top:82px;
+    right:7%;
+
+    width:240px;
+
+    background:#111b2d;
+
+    border:1px solid rgba(255,255,255,0.06);
+
+    border-radius:22px;
+
+    padding:25px;
+
+    flex-direction:column;
+
+    align-items:flex-start;
+
+    gap:18px;
+  }
+
+  nav.show{
+    display:flex;
+  }
+
+  .menu-toggle{
+    display:block;
+  }
+
 }
 
 @media(max-width:700px){
 
-.hero h1{
-  font-size:40px;
-}
+  .hero{
+    padding-top:70px;
+  }
 
-.form-box{
-  padding:25px;
-}
+  .hero h1{
+    font-size:40px;
+    line-height:1.2;
+  }
+
+  .hero p{
+    font-size:15px;
+  }
+
+  .form-box{
+    padding:24px;
+    border-radius:24px;
+  }
+
+  .input{
+    font-size:14px;
+    padding:16px;
+  }
+
+  button{
+    padding:16px;
+  }
 
 }
 
@@ -136,36 +354,59 @@ footer{
 
 <body>
 
+<!-- ================= HEADER ================= -->
+
 <header class="header">
 
-<div class="logo">
-  Layboka AI
-</div>
+  <div class="logo-box">
 
-<nav>
-<a href="index.html">Home</a>
-<a href="pricing.html">Pricing</a>
-<a href="about.html">About</a>
-<a href="contact.html">Contact</a>
-</nav>
+    <div class="logo">
+      Layboka AI
+    </div>
+
+    <div class="logo-sub">
+      Shopify AI Sales Assistant
+    </div>
+
+  </div>
+
+  <div
+  class="menu-toggle"
+  id="menuToggle"
+  onclick="toggleMenu()">
+    ☰
+  </div>
+
+  <nav id="nav">
+
+    <a href="index.html">Home</a>
+    <a href="pricing.html">Pricing</a>
+    <a href="dashboard.html">Dashboard</a>
+    <a href="about.html">About</a>
+    <a href="contact.html">Contact</a>
+    <a href="privacy.html">Privacy</a>
+    <a href="terms.html">Terms</a>
+
+  </nav>
 
 </header>
+
+<!-- ================= HERO ================= -->
 
 <section class="hero">
 
 <h1>Contact Us</h1>
 
 <p>
-Need help with installation, billing or AI setup? Send us a message.
+Need help with installation, billing, AI setup or custom enterprise solutions?
+Our team is here to help you launch and scale faster with Layboka AI.
 </p>
 
 </section>
 
-<section class="form-section">
+<!-- ================= FORM ================= -->
 
-<div class="form-box">
-
-<form action="/contact-form" method="POST">
+<form id="contactForm">
 
 <input
 type="text"
@@ -190,6 +431,33 @@ placeholder="Your Shopify Store"
 class="input"
 >
 
+<select
+name="category"
+class="input"
+required>
+
+<option value="">
+Select Inquiry Type
+</option>
+
+<option value="General">
+General
+</option>
+
+<option value="Custom Made">
+Custom Made
+</option>
+
+<option value="Payment Related">
+Payment Related
+</option>
+
+<option value="Support">
+Support
+</option>
+
+</select>
+
 <textarea
 name="message"
 placeholder="Write your message..."
@@ -197,19 +465,191 @@ class="input"
 required
 ></textarea>
 
-<button type="submit">
+<button type="submit" id="submitBtn">
 🚀 Send Message
 </button>
 
 </form>
 
+<!-- SUCCESS MESSAGE -->
+
+<div
+id="successMsg"
+style="
+display:none;
+margin-top:20px;
+padding:16px;
+border-radius:14px;
+background:#10351f;
+color:#7dffae;
+text-align:center;
+font-weight:600;
+">
+✅ Message sent successfully.
+</div>
+
+
+<!-- INFO -->
+
+<div class="info-grid">
+
+  <div class="info-card">
+
+    <div style="font-size:34px;">⚡</div>
+
+    <h3>Fast Response</h3>
+
+    <p>
+      Most messages receive a reply within a few hours.
+    </p>
+
+  </div>
+
+  <div class="info-card">
+
+    <div style="font-size:34px;">🛒</div>
+
+    <h3>Shopify Support</h3>
+
+    <p>
+      Get installation help and AI optimization guidance.
+    </p>
+
+  </div>
+
+  <div class="info-card">
+
+    <div style="font-size:34px;">🌍</div>
+
+    <h3>Global Assistance</h3>
+
+    <p>
+      We support merchants worldwide with Stripe & Razorpay billing.
+    </p>
+
+  </div>
+
+</div>
+
 </div>
 
 </section>
+
+<!-- ================= FOOTER ================= -->
 
 <footer>
 © 2026 Layboka AI • All Rights Reserved
 </footer>
 
+<!-- ================= JS ================= -->
+
+<script>
+
+function toggleMenu(){
+
+  const nav =
+  document.getElementById("nav");
+
+  const menu =
+  document.getElementById("menuToggle");
+
+  nav.classList.toggle("show");
+
+  if(nav.classList.contains("show")){
+    menu.innerHTML = "✕";
+  }else{
+    menu.innerHTML = "☰";
+  }
+
+}
+
+// CLOSE MENU ON LINK CLICK
+
+document.querySelectorAll("#nav a").forEach(link=>{
+
+  link.addEventListener("click",()=>{
+
+    document.getElementById("nav")
+    .classList.remove("show");
+
+    document.getElementById("menuToggle")
+    .innerHTML = "☰";
+
+  });
+
+});
+
+</script>
+  
+  <!--=============Form Submit Action===============-->
+
+  <script>
+
+const form =
+document.getElementById("contactForm");
+
+form.addEventListener("submit", async (e)=>{
+
+  e.preventDefault();
+
+  const submitBtn =
+  document.getElementById("submitBtn");
+
+  submitBtn.innerHTML = "Sending...";
+  submitBtn.disabled = true;
+
+  const formData = {
+
+    name:form.name.value,
+    email:form.email.value,
+    store:form.store.value,
+    category:form.category.value,
+    message:form.message.value
+
+  };
+
+  try{
+
+    const res = await fetch("/contact-form",{
+
+      method:"POST",
+
+      headers:{
+        "Content-Type":"application/json"
+      },
+
+      body:JSON.stringify(formData)
+
+    });
+
+    const data = await res.json();
+
+    if(data.success){
+
+      document
+      .getElementById("successMsg")
+      .style.display = "block";
+
+      form.reset();
+
+    }else{
+
+      alert("Failed to send message.");
+
+    }
+
+  }catch(err){
+
+    alert("Server error.");
+
+  }
+
+  submitBtn.innerHTML = "🚀 Send Message";
+  submitBtn.disabled = false;
+
+});
+
+</script>
+  
 </body>
 </html>
