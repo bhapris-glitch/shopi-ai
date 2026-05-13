@@ -5,9 +5,9 @@
 
   <meta charset="UTF-8" />
 
-  <!-- Prevent Zoom -->
-  <meta 
-    name="viewport" 
+  <!-- MOBILE RESPONSIVE + NO ZOOM -->
+  <meta
+    name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
   />
 
@@ -50,10 +50,6 @@
       z-index:-1;
     }
 
-    img{
-      max-width:100%;
-    }
-
     /* ================= HEADER ================= */
 
     .header{
@@ -62,12 +58,12 @@
       display:flex;
       justify-content:space-between;
       align-items:center;
-      border-bottom:1px solid rgba(255,255,255,0.08);
-      backdrop-filter:blur(12px);
       position:sticky;
       top:0;
       z-index:1000;
       background:rgba(11,16,32,0.82);
+      border-bottom:1px solid rgba(255,255,255,0.06);
+      backdrop-filter:blur(12px);
     }
 
     .logo{
@@ -81,8 +77,8 @@
 
     nav{
       display:flex;
-      align-items:center;
       gap:30px;
+      align-items:center;
     }
 
     nav a{
@@ -107,15 +103,11 @@
       border-radius:12px;
       background:rgba(255,255,255,0.06);
       color:white;
+      font-size:28px;
       cursor:pointer;
       align-items:center;
       justify-content:center;
-      font-size:28px;
       z-index:1001;
-    }
-
-    .menu-btn span{
-      line-height:1;
     }
 
     /* ================= HERO ================= */
@@ -128,7 +120,7 @@
     .hero h1{
       font-size:58px;
       line-height:1.2;
-      margin-bottom:22px;
+      margin-bottom:20px;
       font-weight:700;
     }
 
@@ -190,29 +182,26 @@
       border-radius:30px;
       font-size:11px;
       font-weight:700;
-      letter-spacing:0.5px;
     }
 
     .plan{
       font-size:32px;
-      margin-bottom:10px;
       font-weight:700;
       line-height:1.2;
     }
 
     .plan-info{
-      font-size:13px;
-      color:#9d9d9d;
-      font-weight:400;
       margin-top:8px;
+      font-size:13px;
+      color:#969696;
+      font-weight:400;
     }
 
     .price{
       font-size:58px;
       font-weight:700;
       margin-top:25px;
-      margin-bottom:8px;
-      word-break:break-word;
+      margin-bottom:10px;
     }
 
     .month{
@@ -233,7 +222,7 @@
       padding:15px;
       border-radius:14px;
       color:#dddddd;
-      line-height:1.5;
+      line-height:1.6;
       font-size:15px;
     }
 
@@ -302,8 +291,8 @@
 
     footer a{
       color:#bbbbbb;
-      margin:0 10px;
       text-decoration:none;
+      margin:0 10px;
     }
 
     footer a:hover{
@@ -367,7 +356,6 @@
 
       nav a{
         font-size:18px;
-        width:100%;
       }
 
       .hero{
@@ -391,33 +379,14 @@
 
       .card{
         padding:30px 22px;
-        border-radius:24px;
       }
 
       .plan{
         font-size:28px;
       }
 
-      .plan-info{
-        font-size:12px;
-      }
-
       .price{
         font-size:44px;
-      }
-
-      .month{
-        font-size:14px;
-      }
-
-      .features div{
-        font-size:14px;
-        padding:14px;
-      }
-
-      .btn{
-        font-size:15px;
-        padding:16px;
       }
 
       .faq{
@@ -426,18 +395,6 @@
 
       .faq h2{
         font-size:32px;
-      }
-
-      .faq-item{
-        padding:22px;
-      }
-
-      .faq-item h3{
-        font-size:18px;
-      }
-
-      footer{
-        font-size:14px;
       }
 
     }
@@ -455,12 +412,15 @@
       }
 
       .card{
-        padding:26px 18px;
+        padding:25px 18px;
       }
 
-      .badge{
-        font-size:10px;
-        padding:7px 12px;
+      .features div{
+        font-size:14px;
+      }
+
+      .btn{
+        font-size:15px;
       }
 
     }
@@ -479,7 +439,8 @@
       Layboka AI
     </div>
 
-    <!-- Mobile Menu Button -->
+    <!-- MOBILE MENU BUTTON -->
+
     <button class="menu-btn" id="menuBtn">
       <span id="menuIcon">☰</span>
     </button>
@@ -521,11 +482,13 @@
     <div class="card">
 
       <div class="plan">
+
         Starter
 
         <div class="plan-info">
           • Auto renewal • Cancel anytime
         </div>
+
       </div>
 
       <div class="price" id="starterPrice">
@@ -562,11 +525,13 @@
       </div>
 
       <div class="plan">
+
         Premium
 
         <div class="plan-info">
           • Auto renewal • Cancel anytime
         </div>
+
       </div>
 
       <div class="price" id="premiumPrice">
@@ -623,7 +588,7 @@
 
       </div>
 
-      <button 
+      <button
         class="btn"
         onclick="window.location.href='contact.html'"
       >
@@ -649,8 +614,8 @@
       </h3>
 
       <p>
-        Billing is automatic every 28 days. If payment fails,
-        chatbot access gets locked until payment succeeds.
+        Billing is automatic every 28 days.
+        If payment fails, chatbot access gets locked until payment succeeds.
       </p>
 
     </div>
@@ -662,8 +627,7 @@
       </h3>
 
       <p>
-        Yes. You can cancel your subscription anytime from
-        the dashboard billing section.
+        Yes. You can cancel your subscription anytime from the dashboard billing section.
       </p>
 
     </div>
@@ -675,8 +639,7 @@
       </h3>
 
       <p>
-        Yes. India uses Razorpay (INR) while global customers
-        use Stripe (USD).
+        Yes. India uses Razorpay (INR) while global customers use Stripe (USD).
       </p>
 
     </div>
@@ -719,25 +682,14 @@
 
     });
 
-    // Close menu when click menu item
-
-    document.querySelectorAll("nav a").forEach(link => {
-
-      link.addEventListener("click", () => {
-
-        mobileMenu.classList.remove("active");
-        menuIcon.innerHTML = "☰";
-
-      });
-
-    });
-
     // ================= CLIENT ID =================
 
     const clientId =
       new URLSearchParams(window.location.search).get("client");
 
     // ================= COUNTRY DETECTION =================
+
+    let isIndia = true;
 
     async function detectCountry(){
 
@@ -746,11 +698,27 @@
         const res = await fetch("https://ipapi.co/json/");
         const data = await res.json();
 
+        // OUTSIDE INDIA
+
         if(data.country !== "IN"){
+
+          isIndia = false;
 
           document.getElementById("starterPrice").innerHTML = "$9";
 
           document.getElementById("premiumPrice").innerHTML = "$20";
+
+        }
+
+        // INDIA
+
+        else{
+
+          isIndia = true;
+
+          document.getElementById("starterPrice").innerHTML = "₹399";
+
+          document.getElementById("premiumPrice").innerHTML = "₹799";
 
         }
 
@@ -768,90 +736,117 @@
 
     async function pay(plan){
 
-      const resCountry = await fetch("https://ipapi.co/json/");
-      const countryData = await resCountry.json();
+      // ================= INDIA → RAZORPAY =================
 
-      // ================= INDIA =================
+      if(isIndia){
 
-      if(countryData.country === "IN"){
+        try{
 
-        const res = await fetch("/create-order",{
+          const res = await fetch("/create-order",{
 
-          method:"POST",
+            method:"POST",
 
-          headers:{
-            "Content-Type":"application/json"
-          },
+            headers:{
+              "Content-Type":"application/json"
+            },
 
-          body:JSON.stringify({
-            plan,
-            clientId
-          })
+            body:JSON.stringify({
+              plan,
+              clientId
+            })
 
-        });
+          });
 
-        const order = await res.json();
+          const order = await res.json();
 
-        const options = {
+          const options = {
 
-          key:"YOUR_RAZORPAY_KEY",
+            key:"YOUR_RAZORPAY_KEY",
 
-          amount:order.amount,
+            amount:order.amount,
 
-          currency:"INR",
+            currency:"INR",
 
-          name:"Layboka AI",
+            name:"Layboka AI",
 
-          description:"AI Subscription",
+            description:"AI Subscription",
 
-          order_id:order.id,
+            order_id:order.id,
 
-          theme:{
-            color:"#ff7a00"
-          },
+            theme:{
+              color:"#ff7a00"
+            },
 
-          notes:{
-            clientId,
-            plan
-          },
+            notes:{
+              clientId,
+              plan
+            },
 
-          handler:function(response){
+            handler:function(response){
 
-            window.location.href =
-            "/success.html?payment=success";
+              window.location.href =
+              "/success.html?payment=success";
 
-          }
+            }
 
-        };
+          };
 
-        const rzp = new Razorpay(options);
+          const rzp = new Razorpay(options);
 
-        rzp.open();
+          rzp.open();
+
+        }catch(err){
+
+          console.log(err);
+
+          alert("Payment failed");
+
+        }
 
       }
 
-      // ================= GLOBAL STRIPE =================
+      // ================= OUTSIDE INDIA → STRIPE =================
 
       else{
 
-        const stripeRes = await fetch("/create-stripe",{
+        try{
 
-          method:"POST",
+          const stripeRes = await fetch("/create-stripe-checkout",{
 
-          headers:{
-            "Content-Type":"application/json"
-          },
+            method:"POST",
 
-          body:JSON.stringify({
-            plan,
-            clientId
-          })
+            headers:{
+              "Content-Type":"application/json"
+            },
 
-        });
+            body:JSON.stringify({
+              plan,
+              clientId
+            })
 
-        const data = await stripeRes.json();
+          });
 
-        window.location.href = data.url;
+          const data = await stripeRes.json();
+
+          if(data.url){
+
+            // REDIRECT TO STRIPE CHECKOUT
+
+            window.location.href = data.url;
+
+          }else{
+
+            alert("Stripe checkout failed");
+
+          }
+
+        }catch(err){
+
+          console.log(err);
+
+          alert("Stripe payment failed");
+
+        }
 
       }
 
