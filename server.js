@@ -41,12 +41,32 @@ const BASE_URL = process.env.BASE_URL;
 // SHOPIFY AUTH
 // =======================
 app.get("/auth", (req,res)=>{
-  const shop = req.query.shop;
-  if(!shop) return res.send("Missing shop");
 
-  const url = `https://${shop}/admin/oauth/authorize?client_id=${process.env.SHOPIFY_API_KEY}&scope=read_products,write_script_tags&redirect_uri=${BASE_URL}/callback`;
+  const shop =
+  req.query.shop?.toLowerCase().trim();
+
+  // EMPTY CHECK
+  if(!shop){
+
+    return res.status(400).send("Missing shop");
+  }
+
+  // VALID SHOPIFY DOMAIN CHECK
+  const regex =
+  /^[a-zA-Z0-9][a-zA-Z0-9-]*\.myshopify\.com$/;
+
+  if(!regex.test(shop)){
+
+    return res
+    .status(400)
+    .send("Invalid Shopify store");
+  }
+
+  const url =
+  `https://${shop}/admin/oauth/authorize?client_id=${process.env.SHOPIFY_API_KEY}&scope=read_products,write_script_tags&redirect_uri=${BASE_URL}/callback`;
 
   res.redirect(url);
+
 });
 
 // =======================
