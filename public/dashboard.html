@@ -2,512 +2,795 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
-  <title>Layboka Dashboard</title>
+<meta charset="UTF-8" />
 
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<meta
+name="viewport"
+content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+/>
 
-  <style>
+<title>Dashboard • Layboka AI</title>
 
-    *{
-      margin:0;
-      padding:0;
-      box-sizing:border-box;
-    }
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
-    body{
-      font-family:'Poppins',sans-serif;
-      background:#0b1020;
-      color:white;
-      overflow-x:hidden;
-    }
+<style>
 
-    body::before{
-      content:"";
-      position:fixed;
-      inset:0;
-      background:
-      radial-gradient(circle at top left,#ff7a0020,transparent 35%),
-      radial-gradient(circle at bottom right,#ff7a0020,transparent 35%);
-      z-index:-1;
-    }
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
 
-    /* ================= HEADER ================= */
+html{
+  scroll-behavior:smooth;
+}
 
-    .header{
-      width:100%;
-      padding:20px 6%;
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      border-bottom:1px solid rgba(255,255,255,0.08);
-      backdrop-filter:blur(10px);
-      position:sticky;
-      top:0;
-      z-index:100;
-      background:rgba(11,16,32,0.7);
-    }
+body{
+  font-family:'Poppins',sans-serif;
+  background:#0b1020;
+  color:white;
+  overflow-x:hidden;
+  -webkit-text-size-adjust:100%;
+}
 
-    .logo{
-      font-size:28px;
-      font-weight:700;
-      background:linear-gradient(90deg,#ff7a00,#ffb347);
-      -webkit-background-clip:text;
-      -webkit-text-fill-color:transparent;
-    }
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  background:
+  radial-gradient(circle at top left,#ff7a0025,transparent 35%),
+  radial-gradient(circle at bottom right,#ff7a0020,transparent 35%);
+  z-index:-1;
+}
 
-    .status{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      font-size:14px;
-      color:#bbb;
-    }
+/* ================= HEADER ================= */
 
-    .live-dot{
-      width:10px;
-      height:10px;
-      border-radius:50%;
-      background:#00ff7f;
-      box-shadow:0 0 12px #00ff7f;
-    }
+.header{
 
-    /* ================= LAYOUT ================= */
+  width:100%;
+  padding:18px 6%;
 
-    .dashboard{
-      display:grid;
-      grid-template-columns:260px 1fr;
-      min-height:100vh;
-    }
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
 
-    /* ================= SIDEBAR ================= */
+  border-bottom:1px solid rgba(255,255,255,0.08);
 
-    .sidebar{
-      border-right:1px solid rgba(255,255,255,0.06);
-      padding:30px 20px;
-      background:rgba(255,255,255,0.02);
-      backdrop-filter:blur(12px);
-    }
+  backdrop-filter:blur(14px);
 
-    .sidebar h3{
-      margin-bottom:25px;
-      font-size:14px;
-      text-transform:uppercase;
-      letter-spacing:1px;
-      color:#777;
-    }
+  position:sticky;
+  top:0;
+  z-index:1000;
 
-    .menu{
-      display:flex;
-      flex-direction:column;
-      gap:14px;
-    }
+  background:rgba(11,16,32,0.82);
 
-    .menu a{
-      text-decoration:none;
-      color:white;
-      padding:14px 18px;
-      border-radius:14px;
-      transition:0.3s;
-      background:rgba(255,255,255,0.03);
-      border:1px solid transparent;
-    }
+}
 
-    .menu a:hover{
-      background:linear-gradient(90deg,#ff7a00,#ff9d3f);
-      transform:translateX(4px);
-    }
+.logo-wrap{
+  display:flex;
+  flex-direction:column;
+}
 
-    /* ================= MAIN ================= */
+.logo{
+  font-size:30px;
+  font-weight:800;
 
-    .main{
-      padding:40px;
-    }
+  background:linear-gradient(90deg,#ff7a00,#ffb347);
 
-    .welcome{
-      margin-bottom:35px;
-    }
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
 
-    .welcome h1{
-      font-size:38px;
-      margin-bottom:10px;
-    }
+.tagline{
+  color:#9da6c7;
+  font-size:12px;
+  margin-top:2px;
+}
 
-    .welcome p{
-      color:#aaa;
-      line-height:1.7;
-    }
+.header-right{
+  display:flex;
+  align-items:center;
+  gap:18px;
+}
 
-    /* ================= STATS ================= */
+.status{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  color:#bbb;
+  font-size:14px;
+}
 
-    .stats{
-      display:grid;
-      grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-      gap:25px;
-      margin-bottom:40px;
-    }
+.live-dot{
+  width:10px;
+  height:10px;
+  border-radius:50%;
+  background:#00ff88;
+  box-shadow:0 0 12px #00ff88;
+}
 
-    .card{
-      background:rgba(255,255,255,0.04);
-      border:1px solid rgba(255,255,255,0.08);
-      border-radius:24px;
-      padding:28px;
-      position:relative;
-      overflow:hidden;
-      transition:0.4s;
-      backdrop-filter:blur(12px);
-    }
+.menu-toggle{
+  display:none;
+  width:45px;
+  height:45px;
+  border-radius:12px;
+  background:rgba(255,255,255,0.06);
+  border:1px solid rgba(255,255,255,0.08);
 
-    .card:hover{
-      transform:translateY(-6px);
-      border-color:#ff7a00;
-      box-shadow:0 10px 40px rgba(255,122,0,0.18);
-    }
+  align-items:center;
+  justify-content:center;
 
-    .card h2{
-      font-size:15px;
-      color:#aaa;
-      margin-bottom:14px;
-    }
+  font-size:24px;
+  cursor:pointer;
+}
 
-    .card h1{
-      font-size:42px;
-      font-weight:700;
-      margin-bottom:8px;
-    }
+/* ================= LAYOUT ================= */
 
-    .card span{
-      color:#00ff7f;
-      font-size:14px;
-    }
+.dashboard{
+  display:grid;
+  grid-template-columns:260px 1fr;
+  min-height:100vh;
+}
 
-    /* ================= ANALYTICS ================= */
+/* ================= SIDEBAR ================= */
 
-    .analytics{
-      margin-top:20px;
-      display:grid;
-      grid-template-columns:2fr 1fr;
-      gap:25px;
-    }
+.sidebar{
 
-    .chart,
-    .plan-box{
-      background:rgba(255,255,255,0.04);
-      border-radius:24px;
-      padding:30px;
-      border:1px solid rgba(255,255,255,0.06);
-      backdrop-filter:blur(12px);
-    }
+  border-right:1px solid rgba(255,255,255,0.06);
 
-    .chart h2,
-    .plan-box h2{
-      margin-bottom:20px;
-      font-size:24px;
-    }
+  padding:30px 20px;
 
-    .fake-chart{
-      height:260px;
-      border-radius:20px;
-      background:
-      linear-gradient(180deg,rgba(255,122,0,0.3),transparent),
-      rgba(255,255,255,0.03);
-      position:relative;
-      overflow:hidden;
-    }
+  background:rgba(255,255,255,0.03);
 
-    .fake-chart::before{
-      content:"";
-      position:absolute;
-      width:200%;
-      height:2px;
-      background:linear-gradient(90deg,transparent,#ff7a00,transparent);
-      animation:move 4s linear infinite;
-      top:50%;
-    }
+  backdrop-filter:blur(14px);
 
-    @keyframes move{
-      from{
-        transform:translateX(-50%);
-      }
-      to{
-        transform:translateX(50%);
-      }
-    }
+  transition:0.35s ease;
+}
 
-    /* ================= PLAN ================= */
+.sidebar h3{
+  margin-bottom:24px;
+  font-size:13px;
+  text-transform:uppercase;
+  letter-spacing:1px;
+  color:#777;
+}
 
-    .plan{
-      background:linear-gradient(135deg,#ff7a00,#ffb347);
-      color:black;
-      padding:20px;
-      border-radius:20px;
-      margin-top:10px;
-    }
+.menu{
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+}
 
-    .plan h3{
-      font-size:28px;
-      margin-bottom:10px;
-    }
+.menu a{
 
-    .plan p{
-      line-height:1.6;
-      font-weight:500;
-    }
+  text-decoration:none;
+  color:white;
 
-    .upgrade-btn{
-      margin-top:20px;
-      display:inline-block;
-      background:black;
-      color:white;
-      padding:14px 22px;
-      border-radius:14px;
-      text-decoration:none;
-      font-weight:600;
-      transition:0.3s;
-    }
+  padding:15px 18px;
 
-    .upgrade-btn:hover{
-      transform:scale(1.05);
-    }
+  border-radius:16px;
 
-    /* ================= RECENT ACTIVITY ================= */
+  transition:0.3s;
 
-    .activity{
-      margin-top:40px;
-      background:rgba(255,255,255,0.04);
-      border-radius:24px;
-      padding:30px;
-      border:1px solid rgba(255,255,255,0.06);
-    }
+  background:rgba(255,255,255,0.03);
 
-    .activity h2{
-      margin-bottom:20px;
-    }
+  border:1px solid transparent;
 
-    .activity-item{
-      padding:16px;
-      border-bottom:1px solid rgba(255,255,255,0.05);
-      color:#ccc;
-      display:flex;
-      justify-content:space-between;
-      gap:20px;
-    }
+  font-size:15px;
+}
 
-    /* ================= MOBILE ================= */
+.menu a:hover{
+  background:linear-gradient(90deg,#ff7a00,#ffb347);
+  color:black;
+  transform:translateX(4px);
+}
 
-    @media(max-width:900px){
+/* ================= OVERLAY ================= */
 
-      .dashboard{
-        grid-template-columns:1fr;
-      }
+.overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.45);
+  z-index:998;
+  opacity:0;
+  visibility:hidden;
+  transition:0.3s;
+}
 
-      .sidebar{
-        display:none;
-      }
+.overlay.show{
+  opacity:1;
+  visibility:visible;
+}
 
-      .main{
-        padding:25px;
-      }
+/* ================= MAIN ================= */
 
-      .analytics{
-        grid-template-columns:1fr;
-      }
+.main{
+  padding:40px;
+}
 
-      .welcome h1{
-        font-size:28px;
-      }
+.welcome{
+  margin-bottom:35px;
+}
 
-    }
+.welcome h1{
+  font-size:42px;
+  margin-bottom:12px;
+}
 
-  </style>
+.welcome p{
+  color:#aaa;
+  line-height:1.8;
+  max-width:760px;
+}
+
+/* ================= STATS ================= */
+
+.stats{
+
+  display:grid;
+
+  grid-template-columns:
+  repeat(auto-fit,minmax(230px,1fr));
+
+  gap:24px;
+
+  margin-bottom:40px;
+}
+
+.card{
+
+  background:rgba(255,255,255,0.04);
+
+  border:1px solid rgba(255,255,255,0.08);
+
+  border-radius:26px;
+
+  padding:28px;
+
+  transition:0.4s;
+
+  backdrop-filter:blur(14px);
+}
+
+.card:hover{
+  transform:translateY(-8px);
+  border-color:#ff7a00;
+  box-shadow:0 14px 50px rgba(255,122,0,0.18);
+}
+
+.card h2{
+  font-size:15px;
+  color:#aaa;
+  margin-bottom:14px;
+}
+
+.card h1{
+  font-size:42px;
+  margin-bottom:10px;
+}
+
+.card span{
+  color:#00ff88;
+  font-size:14px;
+}
+
+/* ================= ANALYTICS ================= */
+
+.analytics{
+
+  display:grid;
+  grid-template-columns:2fr 1fr;
+  gap:24px;
+}
+
+.chart,
+.plan-box{
+
+  background:rgba(255,255,255,0.04);
+
+  border-radius:28px;
+
+  padding:30px;
+
+  border:1px solid rgba(255,255,255,0.06);
+
+  backdrop-filter:blur(14px);
+}
+
+.chart h2,
+.plan-box h2{
+  margin-bottom:24px;
+  font-size:24px;
+}
+
+.fake-chart{
+
+  height:280px;
+
+  border-radius:22px;
+
+  background:
+  linear-gradient(180deg,rgba(255,122,0,0.35),transparent),
+  rgba(255,255,255,0.03);
+
+  position:relative;
+  overflow:hidden;
+}
+
+.fake-chart::before{
+
+  content:"";
+
+  position:absolute;
+
+  width:200%;
+  height:2px;
+
+  background:
+  linear-gradient(90deg,transparent,#ff7a00,transparent);
+
+  animation:move 4s linear infinite;
+
+  top:50%;
+}
+
+@keyframes move{
+
+  from{
+    transform:translateX(-50%);
+  }
+
+  to{
+    transform:translateX(50%);
+  }
+
+}
+
+/* ================= PLAN ================= */
+
+.plan{
+
+  background:
+  linear-gradient(135deg,#ff7a00,#ffb347);
+
+  color:black;
+
+  padding:24px;
+
+  border-radius:24px;
+}
+
+.plan h3{
+  font-size:30px;
+  margin-bottom:12px;
+}
+
+.plan p{
+  line-height:1.8;
+  font-weight:500;
+}
+
+.upgrade-btn{
+
+  display:inline-block;
+
+  margin-top:22px;
+
+  background:black;
+
+  color:white;
+
+  padding:14px 22px;
+
+  border-radius:14px;
+
+  text-decoration:none;
+
+  font-weight:600;
+
+  transition:0.3s;
+}
+
+.upgrade-btn:hover{
+  transform:scale(1.04);
+}
+
+/* ================= ACTIVITY ================= */
+
+.activity{
+
+  margin-top:40px;
+
+  background:rgba(255,255,255,0.04);
+
+  border-radius:28px;
+
+  padding:30px;
+
+  border:1px solid rgba(255,255,255,0.06);
+}
+
+.activity h2{
+  margin-bottom:24px;
+}
+
+.activity-item{
+
+  padding:18px 0;
+
+  border-bottom:1px solid rgba(255,255,255,0.06);
+
+  display:flex;
+  justify-content:space-between;
+  gap:20px;
+
+  color:#d2d2d2;
+}
+
+.activity-item:last-child{
+  border-bottom:none;
+}
+
+/* ================= MOBILE ================= */
+
+@media(max-width:950px){
+
+  .dashboard{
+    grid-template-columns:1fr;
+  }
+
+  .menu-toggle{
+    display:flex;
+  }
+
+  .sidebar{
+
+    position:fixed;
+
+    top:0;
+    left:-280px;
+
+    width:260px;
+    height:100vh;
+
+    z-index:999;
+
+    background:#10192d;
+
+    overflow-y:auto;
+  }
+
+  .sidebar.show{
+    left:0;
+  }
+
+  .analytics{
+    grid-template-columns:1fr;
+  }
+
+  .main{
+    padding:25px;
+  }
+
+}
+
+@media(max-width:700px){
+
+  .header{
+    padding:16px 5%;
+  }
+
+  .logo{
+    font-size:26px;
+  }
+
+  .welcome h1{
+    font-size:30px;
+  }
+
+  .card h1{
+    font-size:34px;
+  }
+
+  .chart,
+  .plan-box,
+  .activity{
+    padding:22px;
+  }
+
+  .main{
+    padding:20px;
+  }
+
+  .activity-item{
+    flex-direction:column;
+    gap:8px;
+  }
+
+}
+
+</style>
+
 </head>
 
 <body>
 
-  <!-- ================= HEADER ================= -->
+<!-- ================= OVERLAY ================= -->
 
-  <header class="header">
+<div class="overlay" id="overlay" onclick="closeMenu()"></div>
+
+<!-- ================= HEADER ================= -->
+
+<header class="header">
+
+  <div class="logo-wrap">
 
     <div class="logo">
       Layboka AI
     </div>
+
+    <div class="tagline">
+      Shopify AI Sales Assistant
+    </div>
+
+  </div>
+
+  <div class="header-right">
 
     <div class="status">
       <div class="live-dot"></div>
       Live Dashboard
     </div>
 
-  </header>
-
-  <!-- ================= DASHBOARD ================= -->
-
-  <div class="dashboard">
-
-    <!-- SIDEBAR -->
-
-    <aside class="sidebar">
-
-      <h3>Navigation</h3>
-
-      <div class="menu">
-        <a href="#">🏠 Overview</a>
-        <a href="#">💬 Chats</a>
-        <a href="#">📈 Analytics</a>
-        <a href="#">🛒 Conversions</a>
-        <a href="#">📦 Products</a>
-        <a href="#">💳 Billing</a>
-        <a href="#">⚙ Settings</a>
-      </div>
-
-    </aside>
-
-    <!-- MAIN -->
-
-    <main class="main">
-
-      <!-- WELCOME -->
-
-      <div class="welcome">
-        <h1>🚀 Welcome Back</h1>
-        <p>
-          Your AI sales assistant is actively converting visitors into buyers 24/7.
-          Monitor chats, revenue, conversions and recovery analytics here.
-        </p>
-      </div>
-
-      <!-- STATS -->
-
-      <div class="stats">
-
-        <div class="card">
-          <h2>Total Chats</h2>
-          <h1 id="chatCount">120</h1>
-          <span>+22% this week</span>
-        </div>
-
-        <div class="card">
-          <h2>Interested Users</h2>
-          <h1 id="interestCount">45</h1>
-          <span>+15% conversion</span>
-        </div>
-
-        <div class="card">
-          <h2>Recovered Carts</h2>
-          <h1 id="recoveryCount">18</h1>
-          <span>₹12,500 recovered</span>
-        </div>
-
-        <div class="card">
-          <h2>Total Revenue</h2>
-          <h1 id="revenueCount">₹32K</h1>
-          <span>+38% growth</span>
-        </div>
-
-      </div>
-
-      <!-- ANALYTICS -->
-
-      <div class="analytics">
-
-        <div class="chart">
-
-          <h2>📊 AI Conversion Analytics</h2>
-
-          <div class="fake-chart"></div>
-
-        </div>
-
-        <div class="plan-box">
-
-          <h2>💎 Current Plan</h2>
-
-          <div class="plan">
-
-            <h3>Premium</h3>
-
-            <p>
-              AI Checkout Closer <br>
-              WhatsApp Recovery <br>
-              Abandoned Cart AI <br>
-              Premium UI <br>
-              Smart Recommendations
-            </p>
-
-            <a href="pricing.html" class="upgrade-btn">
-              Manage Billing
-            </a>
-
-          </div>
-
-        </div>
-
-      </div>
-
-      <!-- ACTIVITY -->
-
-      <div class="activity">
-
-        <h2>⚡ Recent Activity</h2>
-
-        <div class="activity-item">
-          <span>AI recovered abandoned cart</span>
-          <span>2 mins ago</span>
-        </div>
-
-        <div class="activity-item">
-          <span>New Shopify store installed chatbot</span>
-          <span>10 mins ago</span>
-        </div>
-
-        <div class="activity-item">
-          <span>Premium subscription activated</span>
-          <span>30 mins ago</span>
-        </div>
-
-        <div class="activity-item">
-          <span>AI recommended best-selling product</span>
-          <span>1 hour ago</span>
-        </div>
-
-      </div>
-
-    </main>
+    <div class="menu-toggle" id="menuBtn" onclick="toggleMenu()">
+      ☰
+    </div>
 
   </div>
 
-  <!-- ================= JS ================= -->
+</header>
 
-  <script>
+<!-- ================= DASHBOARD ================= -->
 
-    // Fake live animation counters
+<div class="dashboard">
 
-    function animateValue(id, start, end, duration){
+  <!-- SIDEBAR -->
 
-      let obj = document.getElementById(id);
-      let range = end - start;
-      let current = start;
-      let increment = end > start ? 1 : -1;
-      let stepTime = Math.abs(Math.floor(duration / range));
+  <aside class="sidebar" id="sidebar">
 
-      let timer = setInterval(function(){
+    <h3>Navigation</h3>
 
-        current += increment;
-        obj.innerHTML = current;
+    <div class="menu">
 
-        if(current == end){
-          clearInterval(timer);
-        }
+      <a href="#">🏠 Overview</a>
 
-      }, stepTime);
+      <a href="#">💬 Chats</a>
+
+      <a href="#">📈 Analytics</a>
+
+      <a href="#">🛒 Conversions</a>
+
+      <a href="#">📦 Products</a>
+
+      <a href="#">💳 Billing</a>
+
+      <a href="#">⚙ Settings</a>
+
+      <a href="pricing.html">🚀 Upgrade Plan</a>
+
+      <a href="contact.html">📩 Support</a>
+
+    </div>
+
+  </aside>
+
+  <!-- MAIN -->
+
+  <main class="main">
+
+    <!-- WELCOME -->
+
+    <div class="welcome">
+
+      <h1>
+        🚀 Welcome Back
+      </h1>
+
+      <p>
+        Your AI sales assistant is actively converting visitors into buyers 24/7.
+        Track conversations, revenue, recovered carts, analytics and customer activity in real time.
+      </p>
+
+    </div>
+
+    <!-- STATS -->
+
+    <div class="stats">
+
+      <div class="card">
+
+        <h2>Total Chats</h2>
+
+        <h1 id="chatCount">120</h1>
+
+        <span>+22% this week</span>
+
+      </div>
+
+      <div class="card">
+
+        <h2>Interested Users</h2>
+
+        <h1 id="interestCount">45</h1>
+
+        <span>+15% conversion</span>
+
+      </div>
+
+      <div class="card">
+
+        <h2>Recovered Carts</h2>
+
+        <h1 id="recoveryCount">18</h1>
+
+        <span>₹12,500 recovered</span>
+
+      </div>
+
+      <div class="card">
+
+        <h2>Total Revenue</h2>
+
+        <h1>₹32K</h1>
+
+        <span>+38% growth</span>
+
+      </div>
+
+    </div>
+
+    <!-- ANALYTICS -->
+
+    <div class="analytics">
+
+      <div class="chart">
+
+        <h2>📊 AI Conversion Analytics</h2>
+
+        <div class="fake-chart"></div>
+
+      </div>
+
+      <div class="plan-box">
+
+        <h2>💎 Current Plan</h2>
+
+        <div class="plan">
+
+          <h3>Premium</h3>
+
+          <p>
+            AI Checkout Closer<br>
+            WhatsApp Recovery<br>
+            Abandoned Cart AI<br>
+            Premium UI<br>
+            Smart Recommendations
+          </p>
+
+          <a href="pricing.html" class="upgrade-btn">
+            Manage Billing
+          </a>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- ACTIVITY -->
+
+    <div class="activity">
+
+      <h2>⚡ Recent Activity</h2>
+
+      <div class="activity-item">
+        <span>AI recovered abandoned cart</span>
+        <span>2 mins ago</span>
+      </div>
+
+      <div class="activity-item">
+        <span>New Shopify store installed chatbot</span>
+        <span>10 mins ago</span>
+      </div>
+
+      <div class="activity-item">
+        <span>Premium subscription activated</span>
+        <span>30 mins ago</span>
+      </div>
+
+      <div class="activity-item">
+        <span>AI recommended best-selling product</span>
+        <span>1 hour ago</span>
+      </div>
+
+    </div>
+
+  </main>
+
+</div>
+
+<!-- ================= JS ================= -->
+
+<script>
+
+const sidebar =
+document.getElementById("sidebar");
+
+const overlay =
+document.getElementById("overlay");
+
+const menuBtn =
+document.getElementById("menuBtn");
+
+function toggleMenu(){
+
+  sidebar.classList.toggle("show");
+  overlay.classList.toggle("show");
+
+  if(sidebar.classList.contains("show")){
+    menuBtn.innerHTML = "✕";
+  }else{
+    menuBtn.innerHTML = "☰";
+  }
+
+}
+
+function closeMenu(){
+
+  sidebar.classList.remove("show");
+  overlay.classList.remove("show");
+
+  menuBtn.innerHTML = "☰";
+
+}
+
+// ================= COUNTER =================
+
+function animateValue(id,start,end,duration){
+
+  let obj = document.getElementById(id);
+
+  let range = end - start;
+
+  let current = start;
+
+  let increment = end > start ? 1 : -1;
+
+  let stepTime =
+  Math.abs(Math.floor(duration / range));
+
+  let timer = setInterval(function(){
+
+    current += increment;
+
+    obj.innerHTML = current;
+
+    if(current == end){
+      clearInterval(timer);
     }
 
-    animateValue("chatCount", 80, 120, 2000);
-    animateValue("interestCount", 20, 45, 2000);
-    animateValue("recoveryCount", 5, 18, 2000);
+  }, stepTime);
 
-  </script>
+}
+
+animateValue("chatCount",80,120,2000);
+
+animateValue("interestCount",20,45,2000);
+
+animateValue("recoveryCount",5,18,2000);
+
+</script>
 
 </body>
 </html>
