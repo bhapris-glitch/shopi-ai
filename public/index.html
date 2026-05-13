@@ -1260,22 +1260,40 @@
 
   function startInstall(){
 
-    const shop =
-    document.getElementById("storeInput").value.trim();
+  const shop =
+  document.getElementById("storeInput")
+  .value
+  .trim()
+  .toLowerCase();
 
-    if(!shop){
+  // EMPTY CHECK
+  if(!shop){
 
-      alert(
+    alert(
       "Enter your Shopify store.\n\nExample:\nmy-store.myshopify.com"
-      );
+    );
 
-      return;
-    }
-
-    window.location.href =
-    "/auth?shop=" + shop;
-
+    return;
   }
+
+  // VALIDATE SHOPIFY DOMAIN
+  const regex =
+  /^[a-zA-Z0-9][a-zA-Z0-9-]*\.myshopify\.com$/;
+
+  if(!regex.test(shop)){
+
+    alert(
+      "Please enter a valid Shopify store URL.\n\nExample:\nmy-store.myshopify.com"
+    );
+
+    return;
+  }
+
+  // REDIRECT
+  window.location.href =
+  "/auth?shop=" + encodeURIComponent(shop);
+
+}
 
   // ================= SCROLL REVEAL =================
 
