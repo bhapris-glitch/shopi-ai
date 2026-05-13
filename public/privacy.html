@@ -1,70 +1,273 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<meta
+name="viewport"
+content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
 <title>Privacy Policy • Layboka AI</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
 <style>
 
-body{
+*{
   margin:0;
-  font-family:Poppins,sans-serif;
-  background:#07111f;
-  color:white;
+  padding:0;
+  box-sizing:border-box;
 }
 
+html{
+  scroll-behavior:smooth;
+}
+
+body{
+  font-family:'Poppins',sans-serif;
+  background:#07111f;
+  color:white;
+  overflow-x:hidden;
+  -webkit-text-size-adjust:100%;
+}
+
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  background:
+  radial-gradient(circle at top left,#ff7a001d,transparent 30%),
+  radial-gradient(circle at bottom right,#ff99001a,transparent 30%);
+  z-index:-1;
+}
+
+a{
+  text-decoration:none;
+}
+
+/* ================= HEADER ================= */
+
 .header{
-  padding:20px 7%;
+
+  width:100%;
+  position:sticky;
+  top:0;
+  z-index:999;
+
+  padding:18px 7%;
+
   display:flex;
   justify-content:space-between;
   align-items:center;
+
+  backdrop-filter:blur(14px);
+  background:rgba(7,17,31,0.82);
+
   border-bottom:1px solid rgba(255,255,255,0.06);
+
+}
+
+.logo-box{
+  display:flex;
+  flex-direction:column;
 }
 
 .logo{
   font-size:30px;
   font-weight:800;
+  line-height:1;
+
   background:linear-gradient(90deg,#ff7a00,#ffb347);
   -webkit-background-clip:text;
   -webkit-text-fill-color:transparent;
 }
 
+.logo-sub{
+  font-size:12px;
+  color:#aaa;
+  margin-top:5px;
+  letter-spacing:0.4px;
+}
+
+nav{
+  display:flex;
+  align-items:center;
+  gap:28px;
+}
+
 nav a{
   color:#ddd;
-  margin-left:20px;
-  text-decoration:none;
+  font-size:15px;
+  transition:0.3s;
 }
+
+nav a:hover{
+  color:#ff9c3a;
+}
+
+.menu-toggle{
+  display:none;
+  font-size:32px;
+  color:white;
+  cursor:pointer;
+  user-select:none;
+}
+
+/* ================= CONTAINER ================= */
 
 .container{
-  padding:80px 7%;
-  max-width:1000px;
+
+  width:100%;
+  max-width:1050px;
+
   margin:auto;
+
+  padding:90px 7% 100px;
 }
 
-h1{
-  font-size:52px;
+.hero-title{
+  text-align:center;
+  margin-bottom:70px;
+}
+
+.hero-title h1{
+  font-size:58px;
   margin-bottom:20px;
+  font-weight:800;
 }
 
-h2{
-  margin-top:40px;
-}
-
-p{
+.hero-title p{
+  max-width:800px;
+  margin:auto;
   color:#aaa;
   line-height:1.9;
+  font-size:17px;
 }
 
+/* ================= CONTENT ================= */
+
+.policy-box{
+
+  background:rgba(255,255,255,0.04);
+
+  border:1px solid rgba(255,255,255,0.06);
+
+  border-radius:32px;
+
+  padding:45px;
+
+  margin-bottom:30px;
+
+  backdrop-filter:blur(16px);
+
+  box-shadow:
+  0 15px 50px rgba(0,0,0,0.25);
+}
+
+.policy-box h2{
+  font-size:28px;
+  margin-bottom:18px;
+}
+
+.policy-box p{
+  color:#aaa;
+  line-height:1.95;
+  margin-bottom:16px;
+  font-size:15px;
+}
+
+.policy-box ul{
+  padding-left:20px;
+}
+
+.policy-box li{
+  color:#aaa;
+  margin-bottom:14px;
+  line-height:1.8;
+}
+
+.highlight{
+  color:#ffb347;
+  font-weight:600;
+}
+
+/* ================= FOOTER ================= */
+
 footer{
-  padding:30px;
+
+  padding:35px 20px;
+
   text-align:center;
+
   border-top:1px solid rgba(255,255,255,0.06);
+
   color:#888;
+
+  font-size:14px;
+}
+
+/* ================= MOBILE ================= */
+
+@media(max-width:850px){
+
+  nav{
+
+    display:none;
+
+    position:absolute;
+
+    top:82px;
+    right:7%;
+
+    width:240px;
+
+    background:#111b2d;
+
+    border:1px solid rgba(255,255,255,0.06);
+
+    border-radius:22px;
+
+    padding:25px;
+
+    flex-direction:column;
+
+    align-items:flex-start;
+
+    gap:18px;
+  }
+
+  nav.show{
+    display:flex;
+  }
+
+  .menu-toggle{
+    display:block;
+  }
+
+}
+
+@media(max-width:700px){
+
+  .hero-title h1{
+    font-size:40px;
+    line-height:1.2;
+  }
+
+  .hero-title p{
+    font-size:15px;
+  }
+
+  .policy-box{
+    padding:25px;
+    border-radius:24px;
+  }
+
+  .policy-box h2{
+    font-size:24px;
+  }
+
 }
 
 </style>
@@ -73,61 +276,288 @@ footer{
 
 <body>
 
+<!-- ================= HEADER ================= -->
+
 <header class="header">
 
-<div class="logo">Layboka AI</div>
+  <div class="logo-box">
 
-<nav>
-<a href="index.html">Home</a>
-<a href="pricing.html">Pricing</a>
-<a href="contact.html">Contact</a>
-</nav>
+    <div class="logo">
+      Layboka AI
+    </div>
+
+    <div class="logo-sub">
+      Shopify Sales Assistant
+    </div>
+
+  </div>
+
+  <div
+  class="menu-toggle"
+  id="menuToggle"
+  onclick="toggleMenu()">
+    ☰
+  </div>
+
+  <nav id="nav">
+
+    <a href="index.html">Home</a>
+    <a href="pricing.html">Pricing</a>
+    <a href="dashboard.html">Dashboard</a>
+    <a href="about.html">About</a>
+    <a href="contact.html">Contact</a>
+    <a href="terms.html">Terms</a>
+
+  </nav>
 
 </header>
 
+<!-- ================= CONTENT ================= -->
+
 <div class="container">
 
-<h1>Privacy Policy</h1>
+  <div class="hero-title">
 
-<p>
-Your privacy matters to us. Layboka AI collects only necessary information required to provide AI automation services.
-</p>
+    <h2>Privacy Policy</h2>
 
-<h2>Information We Collect</h2>
+    <p>
+      Your privacy and data security are extremely important to us.
+      This Privacy Policy explains how Layboka AI collects, uses, stores and protects your information when using our AI-powered Shopify automation platform.
+    </p>
 
-<p>
-We may collect store information, customer interaction data, chatbot analytics and billing details to improve service quality.
-</p>
+  </div>
 
-<h2>How We Use Data</h2>
+  <!-- SECTION -->
 
-<p>
-Data is used to power AI conversations, optimize chatbot responses and improve conversion tracking.
-</p>
+  <div class="policy-box">
 
-<h2>Payment Security</h2>
+    <h2>1. Information We Collect</h2>
 
-<p>
-Payments are securely processed through Razorpay and Stripe. We do not store your credit card details.
-</p>
+    <p>
+      We collect only the information necessary to operate, improve and secure our services.
+    </p>
 
-<h2>Third-Party Services</h2>
+    <ul>
 
-<p>
-We may integrate with Shopify, OpenAI, WhatsApp APIs and email providers to provide automation features.
-</p>
+      <li>
+        Shopify store information including store URL, products and branding assets.
+      </li>
 
-<h2>Contact</h2>
+      <li>
+        Customer interaction data such as chatbot conversations and support requests.
+      </li>
 
-<p>
-For privacy questions contact us through contact.html.
-</p>
+      <li>
+        Billing and subscription details processed securely through payment providers.
+      </li>
+
+      <li>
+        Technical information including browser type, device data and analytics usage.
+      </li>
+
+    </ul>
+
+  </div>
+
+  <!-- SECTION -->
+
+  <div class="policy-box">
+
+    <h2>2. How We Use Your Information</h2>
+
+    <p>
+      Layboka AI uses collected information to provide and improve our automation platform.
+    </p>
+
+    <ul>
+
+      <li>
+        Deliver AI chatbot conversations and product recommendations.
+      </li>
+
+      <li>
+        Recover abandoned carts and automate customer engagement.
+      </li>
+
+      <li>
+        Improve platform performance, analytics and AI response quality.
+      </li>
+
+      <li>
+        Provide customer support, billing management and account security.
+      </li>
+
+    </ul>
+
+  </div>
+
+  <!-- SECTION -->
+
+  <div class="policy-box">
+
+    <h2>3. Payment & Billing Security</h2>
+
+    <p>
+      All payments are securely processed through trusted third-party payment gateways including
+      <span class="highlight">Stripe</span> and
+      <span class="highlight">Razorpay</span>.
+    </p>
+
+    <p>
+      Layboka AI does not store full credit card information or sensitive banking credentials on our servers.
+    </p>
+
+  </div>
+
+  <!-- SECTION -->
+
+  <div class="policy-box">
+
+    <h2>4. Third-Party Integrations</h2>
+
+    <p>
+      To provide automation and AI services, we may integrate with trusted third-party platforms including:
+    </p>
+
+    <ul>
+
+      <li>Shopify</li>
+      <li>OpenAI</li>
+      <li>WhatsApp APIs</li>
+      <li>Email delivery providers</li>
+      <li>Analytics and infrastructure services</li>
+
+    </ul>
+
+    <p>
+      These services operate under their own privacy and security policies.
+    </p>
+
+  </div>
+
+  <!-- SECTION -->
+
+  <div class="policy-box">
+
+    <h2>5. Data Protection & Security</h2>
+
+    <p>
+      We use modern security practices and encrypted infrastructure to help protect customer information from unauthorized access, misuse or disclosure.
+    </p>
+
+    <p>
+      While no online platform can guarantee absolute security, we continuously monitor and improve our systems to maintain a secure environment.
+    </p>
+
+  </div>
+
+  <!-- SECTION -->
+
+  <div class="policy-box">
+
+    <h2>6. Cookies & Analytics</h2>
+
+    <p>
+      Layboka AI may use cookies and analytics technologies to improve platform functionality, understand usage behavior and optimize user experience.
+    </p>
+
+    <p>
+      These technologies help us enhance performance, detect issues and improve AI interactions.
+    </p>
+
+  </div>
+
+  <!-- SECTION -->
+
+  <div class="policy-box">
+
+    <h2>7. Your Rights</h2>
+
+    <p>
+      Depending on your region, you may have rights related to accessing, updating or requesting deletion of your data.
+    </p>
+
+    <p>
+      To request account deletion or data removal, contact our support team through the contact page.
+    </p>
+
+  </div>
+
+  <!-- SECTION -->
+
+  <div class="policy-box">
+
+    <h2>8. Policy Updates</h2>
+
+    <p>
+      We may update this Privacy Policy periodically to reflect platform improvements, legal requirements or security updates.
+    </p>
+
+    <p>
+      Continued use of Layboka AI after updates means you agree to the revised policy.
+    </p>
+
+  </div>
+
+  <!-- SECTION -->
+
+  <div class="policy-box">
+
+    <h2>9. Contact Us</h2>
+
+    <p>
+      If you have any questions regarding privacy, billing or security, please contact us through the Contact page.
+    </p>
+
+  </div>
 
 </div>
+
+<!-- ================= FOOTER ================= -->
 
 <footer>
 © 2026 Layboka AI • All Rights Reserved
 </footer>
+
+<!-- ================= JS ================= -->
+
+<script>
+
+function toggleMenu(){
+
+  const nav =
+  document.getElementById("nav");
+
+  const menu =
+  document.getElementById("menuToggle");
+
+  nav.classList.toggle("show");
+
+  if(nav.classList.contains("show")){
+    menu.innerHTML = "✕";
+  }else{
+    menu.innerHTML = "☰";
+  }
+
+}
+
+// CLOSE MENU WHEN CLICK
+
+document.querySelectorAll("#nav a").forEach(link=>{
+
+  link.addEventListener("click",()=>{
+
+    document.getElementById("nav")
+    .classList.remove("show");
+
+    document.getElementById("menuToggle")
+    .innerHTML = "☰";
+
+  });
+
+});
+
+</script>
 
 </body>
 </html>
