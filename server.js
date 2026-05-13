@@ -74,7 +74,12 @@ app.get("/auth", (req,res)=>{
 // =======================
 app.get("/callback", async (req,res)=>{
   const { shop, code } = req.query;
-
+if(
+  !shop ||
+  !/^[a-zA-Z0-9][a-zA-Z0-9-]*\.myshopify\.com$/.test(shop)
+){
+  return res.send("Invalid shop");
+}
   try{
     const tokenRes = await fetch(`https://${shop}/admin/oauth/access_token`,{
       method:"POST",
