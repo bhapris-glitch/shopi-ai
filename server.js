@@ -40,32 +40,61 @@ const BASE_URL = process.env.BASE_URL;
 // =======================
 // SHOPIFY AUTH
 // =======================
-app.get("/auth", (req,res)=>{
+app.get("/auth", async (req, res) => {
 
-  const shop =
-  req.query.shop?.toLowerCase().trim();
+  let shop = req.query.shop;
 
-  // EMPTY CHECK
-  if(!shop){
-
-    return res.status(400).send("Missing shop");
+  if (!shop) {
+    return res.send("Missing store URL");
   }
 
-  // VALID SHOPIFY DOMAIN CHECK
-  const regex =
-  /^[a-zA-Z0-9][a-zA-Z0-9-]*\.myshopify\.com$/;
+  try {
 
-  if(!regex.test(shop)){
+    // Remove https:// if entered
+    shop = shop
+      .replace("https://", "")
+      .replace("http://", "")
+      .trim()
+      .toLowerCase();
 
-    return res
-    .status(400)
-    .send("Invalid Shopify store");
+    // If already myshopify domain
+    if (!shop.includes(".myshopify.com")) {
+
+      // Detect Shopify store
+      const detectRes = await fetch(
+        `https://${shop}/products.json?limit=1`
+      );
+
+      const realShop =
+        detectRes.headers.get("x-shopify-shop-domain");
+
+      if (!realShop) {
+        return res.send(
+          "❌ Not a Shopify store"
+        );
+      }
+
+      shop = realShop;
+    }
+
+    // OAuth URL
+    const installUrl =
+      `https://${shop}/admin/oauth/authorize` +
+      `?client_id=${process.env.SHOPIFY_API_KEY}` +
+      `&scope=read_products,write_script_tags` +
+      `&redirect_uri=${process.env.BASE_URL}/callback`;
+
+    res.redirect(installUrl);
+
+  } catch (err) {
+
+    console.log(err);
+
+    res.send(
+      "❌ Could not detect Shopify store"
+    );
+
   }
-
-  const url =
-  `https://${shop}/admin/oauth/authorize?client_id=${process.env.SHOPIFY_API_KEY}&scope=read_products,write_script_tags&redirect_uri=${BASE_URL}/callback`;
-
-  res.redirect(url);
 
 });
 
