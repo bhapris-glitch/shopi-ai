@@ -5,7 +5,6 @@
 
   <meta charset="UTF-8" />
 
-  <!-- RESPONSIVE + NO ZOOM -->
   <meta
     name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
@@ -13,7 +12,6 @@
 
   <title>Layboka AI • Shopify Sales Assistant</title>
 
-  <!-- GOOGLE FONT -->
   <link
     href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
     rel="stylesheet"
@@ -49,14 +47,14 @@
       z-index:-1;
     }
 
-    img{
-      max-width:100%;
-      display:block;
-    }
-
     a{
       text-decoration:none;
       color:white;
+    }
+
+    img{
+      max-width:100%;
+      display:block;
     }
 
     /* ================= HEADER ================= */
@@ -67,7 +65,7 @@
       top:0;
       z-index:999;
       backdrop-filter:blur(16px);
-      background:rgba(7,17,31,0.8);
+      background:rgba(7,17,31,0.85);
       border-bottom:1px solid rgba(255,255,255,0.06);
 
       display:flex;
@@ -93,9 +91,10 @@
     }
 
     .logo-sub{
-      color:#bbb;
+      color:#bdbdbd;
       font-size:12px;
-      margin-top:4px;
+      margin-top:5px;
+      letter-spacing:0.5px;
     }
 
     nav{
@@ -107,8 +106,8 @@
     nav a{
       color:#ddd;
       font-size:15px;
-      transition:0.3s;
       font-weight:500;
+      transition:0.3s;
     }
 
     nav a:hover{
@@ -399,8 +398,6 @@
       font-weight:400;
     }
 
-    /* ================= GRID ================= */
-
     .feature-grid{
       display:grid;
       grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
@@ -444,110 +441,6 @@
       line-height:1.8;
     }
 
-    /* ================= TESTIMONIALS ================= */
-
-    .testimonial-wrapper{
-      max-width:900px;
-      margin:auto;
-      position:relative;
-    }
-
-    .testimonial{
-      display:none;
-      text-align:center;
-      background:rgba(255,255,255,0.04);
-      border:1px solid rgba(255,255,255,0.06);
-      padding:40px;
-      border-radius:28px;
-    }
-
-    .testimonial.active{
-      display:block;
-    }
-
-    .testimonial img{
-      width:70px;
-      height:70px;
-      border-radius:50%;
-      object-fit:cover;
-      margin:0 auto 20px;
-    }
-
-    .testimonial p{
-      color:#d3d3d3;
-      line-height:1.9;
-      margin-bottom:18px;
-      font-size:18px;
-    }
-
-    .testimonial h4{
-      color:#ffb347;
-    }
-
-    /* ================= TRUST ================= */
-
-    .trust{
-      padding:0 7% 90px;
-      text-align:center;
-    }
-
-    .trust p{
-      color:#bdbdbd;
-      margin-bottom:30px;
-      font-size:18px;
-    }
-
-    .badges{
-      display:flex;
-      justify-content:center;
-      gap:18px;
-      flex-wrap:wrap;
-    }
-
-    .badges span{
-      padding:14px 20px;
-      border-radius:16px;
-      background:rgba(255,255,255,0.05);
-      border:1px solid rgba(255,255,255,0.06);
-      color:#ddd;
-    }
-
-    /* ================= CTA ================= */
-
-    .cta{
-      margin:80px 7%;
-      background:linear-gradient(135deg,#ff7a00,#ffb347);
-      border-radius:40px;
-      padding:70px 30px;
-      text-align:center;
-      color:black;
-    }
-
-    .cta h2{
-      font-size:54px;
-      margin-bottom:18px;
-      font-weight:800;
-    }
-
-    .cta p{
-      max-width:750px;
-      margin:auto;
-      line-height:1.8;
-      margin-bottom:35px;
-      font-size:18px;
-    }
-
-    .cta a{
-      display:inline-block;
-      padding:18px 34px;
-      border-radius:18px;
-      background:black;
-      color:white;
-      font-weight:700;
-    }
-
-    /* ================= FOOTER ================= */
-
     footer{
       margin-top:100px;
       border-top:1px solid rgba(255,255,255,0.06);
@@ -584,8 +477,6 @@
       color:#888;
       font-size:14px;
     }
-
-    /* ================= ANIMATION ================= */
 
     .reveal{
       opacity:0;
@@ -665,21 +556,9 @@
         flex-direction:column;
       }
 
-      .hero-form input{
-        width:100%;
-        min-width:100%;
-      }
-
+      .hero-form input,
       .hero-form button{
         width:100%;
-      }
-
-      .hero-buttons{
-        flex-direction:column;
-      }
-
-      .hero-buttons a{
-        text-align:center;
       }
 
       .section{
@@ -690,49 +569,8 @@
         font-size:34px;
       }
 
-      .section-title h4{
-        font-size:15px;
-      }
-
-      .feature-card{
-        padding:28px;
-      }
-
-      .feature-card h3{
-        font-size:22px;
-      }
-
-      .stats{
-        padding:0 20px 70px;
-      }
-
-      .trust{
-        padding:0 20px 70px;
-      }
-
-      .cta{
-        margin:60px 20px;
-        padding:50px 20px;
-      }
-
-      .cta h2{
-        font-size:34px;
-      }
-
-      .cta p{
-        font-size:15px;
-      }
-
       footer{
         padding:60px 20px 30px;
-      }
-
-      .testimonial{
-        padding:30px 20px;
-      }
-
-      .testimonial p{
-        font-size:16px;
       }
 
     }
@@ -743,16 +581,14 @@
 
 <body>
 
-<!-- ================= HEADER ================= -->
-
 <header class="header">
 
   <div class="logo-box">
     <div class="logo">Layboka AI</div>
-    <div class="logo-sub">Shopify Sales Assistant</div>
+    <div class="logo-sub">
+      AI Powered Shopify Sales Automation
+    </div>
   </div>
-
-  <!-- MOBILE MENU BUTTON -->
 
   <button class="menu-toggle" id="menuBtn">
     ☰
@@ -765,7 +601,7 @@
     <a href="dashboard.html">Dashboard</a>
     <a href="install.html">Install</a>
     <a href="about.html">About</a>
-    <a href="contact.html">Contact Us</a>
+    <a href="contact.html">Contact</a>
     <a href="privacy.html">Privacy</a>
     <a href="terms.html">Terms</a>
 
@@ -777,8 +613,6 @@
 
 </header>
 
-<!-- ================= HERO ================= -->
-
 <section class="hero">
 
   <div class="hero-left reveal">
@@ -789,13 +623,13 @@
     </h1>
 
     <p>
-      Layboka AI talks to visitors, recommends products, recovers abandoned carts,
-      answers support questions and pushes customers to checkout automatically.
+      Layboka AI talks to visitors, recommends products,
+      recovers abandoned carts and boosts conversions automatically.
     </p>
 
     <div class="trial-note">
-      Enter your Shopify store URL to start your free 3-day trial instantly.
-      <b>No credit card required. Full access to all features. 1-Click setup.</b>
+      Start your free 3-day premium trial instantly.
+      <b>No credit card required.</b>
     </div>
 
     <div class="hero-form">
@@ -826,8 +660,6 @@
 
   </div>
 
-  <!-- HERO RIGHT -->
-
   <div class="hero-right reveal">
 
     <div class="hero-card">
@@ -856,7 +688,7 @@
         </div>
 
         <div class="msg bot">
-          🔥 This model is trending right now and includes a 20% discount today only.
+          🔥 This model is trending right now with 20% OFF.
         </div>
 
         <div class="msg bot">
@@ -870,130 +702,6 @@
   </div>
 
 </section>
-
-<!-- ================= PROBLEM ================= -->
-
-<section class="section">
-
-  <div class="section-title reveal">
-
-    <p>THE PROBLEM</p>
-
-    <h2>
-      Your Store Is Losing
-      <span>Sales Every Day</span>
-    </h2>
-
-    <h4>
-      Most Shopify stores lose customers because visitors leave before getting answers.
-    </h4>
-
-  </div>
-
-  <div class="feature-grid">
-
-    <div class="feature-card reveal">
-      <div class="feature-icon">😤</div>
-      <h3>Visitors Leave Fast</h3>
-      <p>
-        Customers abandon your store when questions go unanswered.
-      </p>
-    </div>
-
-    <div class="feature-card reveal">
-      <div class="feature-icon">📧</div>
-      <h3>Support Overload</h3>
-      <p>
-        Your team wastes hours replying to repetitive customer questions.
-      </p>
-    </div>
-
-    <div class="feature-card reveal">
-      <div class="feature-icon">💸</div>
-      <h3>Lost Ad Budget</h3>
-      <p>
-        Paid traffic leaves without converting into paying customers.
-      </p>
-    </div>
-
-  </div>
-
-</section>
-
-<!-- ================= SOLUTION ================= -->
-
-<section class="section">
-
-  <div class="section-title reveal">
-
-    <p>THE SOLUTION</p>
-
-    <h2>
-      One AI Assistant For
-      <span>Every Sale</span>
-    </h2>
-
-    <h4>
-      Layboka AI turns visitors into buyers with automated conversations and smart checkout recovery.
-    </h4>
-
-  </div>
-
-  <div class="feature-grid">
-
-    <div class="feature-card reveal">
-
-      <div class="feature-icon">🤖</div>
-
-      <h3>AI Sales Agent</h3>
-
-      <p>
-        Talks naturally with visitors and recommends products in real time.
-      </p>
-
-    </div>
-
-    <div class="feature-card reveal">
-
-      <div class="feature-icon">🛒</div>
-
-      <h3>Checkout Closer</h3>
-
-      <p>
-        AI pushes users toward checkout using urgency and smart recommendations.
-      </p>
-
-    </div>
-
-    <div class="feature-card reveal">
-
-      <div class="feature-icon">📲</div>
-
-      <h3>WhatsApp Recovery</h3>
-
-      <p>
-        Recover abandoned carts automatically with reminders and offers.
-      </p>
-
-    </div>
-
-    <div class="feature-card reveal">
-
-      <div class="feature-icon">📊</div>
-
-      <h3>Analytics Dashboard</h3>
-
-      <p>
-        Track conversations, revenue and conversion performance in one place.
-      </p>
-
-    </div>
-
-  </div>
-
-</section>
-
-<!-- ================= STATS ================= -->
 
 <section class="stats reveal">
 
@@ -1009,7 +717,7 @@
 
   <div class="stat-card">
     <h2>2 Min</h2>
-    <p>Shopify Installation Time</p>
+    <p>Installation Time</p>
   </div>
 
   <div class="stat-card">
@@ -1019,13 +727,11 @@
 
 </section>
 
-<!-- ================= FEATURES ================= -->
-
 <section class="section" id="features">
 
   <div class="section-title reveal">
 
-    <p>POWERFUL FEATURES</p>
+    <p>FEATURES</p>
 
     <h2>
       Everything You Need To
@@ -1033,7 +739,7 @@
     </h2>
 
     <h4>
-      Built for Shopify brands that want more sales, fewer abandoned carts and automated support.
+      Powerful AI tools built for Shopify growth.
     </h4>
 
   </div>
@@ -1042,36 +748,36 @@
 
     <div class="feature-card reveal">
 
-      <div class="feature-icon">📧</div>
+      <div class="feature-icon">🤖</div>
 
-      <h3>Email Automation</h3>
+      <h3>AI Sales Agent</h3>
 
       <p>
-        Send automated recovery emails and promotional campaigns instantly.
+        Convert visitors into buyers automatically.
       </p>
 
     </div>
 
     <div class="feature-card reveal">
 
-      <div class="feature-icon">🌍</div>
+      <div class="feature-icon">🛒</div>
 
-      <h3>Multi-language AI</h3>
+      <h3>Checkout Recovery</h3>
 
       <p>
-        Support global shoppers in multiple languages without additional setup.
+        Recover abandoned carts with smart AI reminders.
       </p>
 
     </div>
 
     <div class="feature-card reveal">
 
-      <div class="feature-icon">⚡</div>
+      <div class="feature-icon">📊</div>
 
-      <h3>Instant Setup</h3>
+      <h3>Live Analytics</h3>
 
       <p>
-        Install and activate Layboka AI on your Shopify store in under 2 minutes.
+        Track chats, conversions and revenue in real time.
       </p>
 
     </div>
@@ -1079,102 +785,6 @@
   </div>
 
 </section>
-
-<!-- ================= TESTIMONIALS ================= -->
-
-<section class="section">
-
-  <div class="section-title reveal">
-
-    <p>TESTIMONIALS</p>
-
-    <h2>
-      Shopify Brands Love
-      <span>Layboka AI</span>
-    </h2>
-
-  </div>
-
-  <div class="testimonial-wrapper">
-
-    <div class="testimonial active">
-
-      <img src="151.jpg" alt="Rahul">
-
-      <p>
-        "This AI boosted my Shopify sales by 30% in just 2 days."
-      </p>
-
-      <h4>Rahul Sharma</h4>
-
-    </div>
-
-    <div class="testimonial">
-
-      <img src="150.jpg" alt="Priya">
-
-      <p>
-        "Customers love the instant replies. Huge improvement in conversions."
-      </p>
-
-      <h4>Priya Mehta</h4>
-
-    </div>
-
-    <div class="testimonial">
-
-      <img src="152.png" alt="Amit">
-
-      <p>
-        "Feels like having a real AI sales employee working 24/7."
-      </p>
-
-      <h4>Amit Verma</h4>
-
-    </div>
-
-  </div>
-
-</section>
-
-<!-- ================= TRUST ================= -->
-
-<section class="trust reveal">
-
-  <p>
-    Trusted by growing eCommerce brands worldwide
-  </p>
-
-  <div class="badges">
-
-    <span>🔒 Secure</span>
-    <span>🌍 Global</span>
-    <span>⚡ Fast Setup</span>
-    <span>💬 24/7 AI Support</span>
-
-  </div>
-
-</section>
-
-<!-- ================= CTA ================= -->
-
-<section class="cta reveal">
-
-  <h2>
-    Install In Under 2 Minutes
-  </h2>
-
-  <p>
-    Start your 3-day premium AI trial today and turn visitors into paying customers automatically.
-  </p>
-
-  <a href="#storeInput">
-    🚀 Install Free Trial
-  </a>
-
-</section>
-
-<!-- ================= FOOTER ================= -->
 
 <footer>
 
@@ -1187,7 +797,6 @@
       <a href="index.html">Home</a>
       <a href="pricing.html">Pricing</a>
       <a href="dashboard.html">Dashboard</a>
-      <a href="#storeInput">Install</a>
 
     </div>
 
@@ -1197,30 +806,8 @@
 
       <a href="about.html">About</a>
       <a href="contact.html">Contact</a>
-      <a href="terms.html">Terms</a>
       <a href="privacy.html">Privacy</a>
-
-    </div>
-
-    <div class="footer-box">
-
-      <h3>Features</h3>
-
-      <a href="#">AI Chatbot</a>
-      <a href="#">WhatsApp Recovery</a>
-      <a href="#">Email Automation</a>
-      <a href="#">Analytics</a>
-
-    </div>
-
-    <div class="footer-box">
-
-      <h3>Support</h3>
-
-      <a href="#">Help Center</a>
-      <a href="#">Documentation</a>
-      <a href="#">Live Chat</a>
-      <a href="#">API Access</a>
+      <a href="terms.html">Terms</a>
 
     </div>
 
@@ -1231,8 +818,6 @@
   </div>
 
 </footer>
-
-<!-- ================= JS ================= -->
 
 <script>
 
@@ -1256,48 +841,82 @@
 
   });
 
-  // ================= SHOPIFY INSTALL =================
+  // CLOSE MENU ON CLICK OUTSIDE
+
+  document.addEventListener("click",(e)=>{
+
+    if(
+      nav.classList.contains("show") &&
+      !nav.contains(e.target) &&
+      !menuBtn.contains(e.target)
+    ){
+
+      nav.classList.remove("show");
+      menuBtn.innerHTML = "☰";
+
+    }
+
+  });
+
+  // ================= INSTALL =================
 
   function startInstall(){
 
-  let shop =
+    let shop =
     document.getElementById("storeInput")
     .value
     .trim();
 
-  if(!shop){
+    if(!shop){
 
-    alert("Enter your Shopify store URL");
+      alert("Enter your Shopify store URL");
+      return;
 
-    return;
-  }
+    }
 
-  // Remove spaces
-  shop = shop.replace(/\s/g,'');
+    shop = shop
+      .replace(/\s/g,'')
+      .replace("https://","")
+      .replace("http://","");
 
-  // Add protocol safety
-  shop = shop
-    .replace("https://","")
-    .replace("http://","");
+    const valid =
+    /^[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
+    .test(shop);
 
-  window.location.href =
+    if(!valid){
+
+      alert(
+        "Enter valid Shopify domain or custom domain"
+      );
+
+      return;
+
+    }
+
+    window.location.href =
     "/auth?shop=" +
     encodeURIComponent(shop);
 
-}
+  }
 
-  // REDIRECT
-  window.location.href =
-  "/auth?shop=" + encodeURIComponent(shop);
+  // ENTER KEY SUPPORT
 
-}
+  document
+  .getElementById("storeInput")
+  .addEventListener("keypress",(e)=>{
+
+    if(e.key === "Enter"){
+      startInstall();
+    }
+
+  });
 
   // ================= SCROLL REVEAL =================
 
   const reveals =
   document.querySelectorAll(".reveal");
 
-  window.addEventListener("scroll",()=>{
+  function revealOnScroll(){
 
     reveals.forEach((el)=>{
 
@@ -1312,26 +931,14 @@
 
     });
 
-  });
+  }
 
-  // ================= TESTIMONIAL SLIDER =================
+  window.addEventListener(
+    "scroll",
+    revealOnScroll
+  );
 
-  let index = 0;
-
-  setInterval(()=>{
-
-    const items =
-    document.querySelectorAll(".testimonial");
-
-    items.forEach((i)=>
-      i.classList.remove("active")
-    );
-
-    index = (index + 1) % items.length;
-
-    items[index].classList.add("active");
-
-  },3000);
+  revealOnScroll();
 
 </script>
 
