@@ -1260,34 +1260,31 @@
 
   function startInstall(){
 
-  const shop =
-  document.getElementById("storeInput")
-  .value
-  .trim()
-  .toLowerCase();
+  let shop =
+    document.getElementById("storeInput")
+    .value
+    .trim();
 
-  // EMPTY CHECK
   if(!shop){
 
-    alert(
-      "Enter your Shopify store.\n\nExample:\nmy-store.myshopify.com"
-    );
+    alert("Enter your Shopify store URL");
 
     return;
   }
 
-  // VALIDATE SHOPIFY DOMAIN
-  const regex =
-  /^[a-zA-Z0-9][a-zA-Z0-9-]*\.myshopify\.com$/;
+  // Remove spaces
+  shop = shop.replace(/\s/g,'');
 
-  if(!regex.test(shop)){
+  // Add protocol safety
+  shop = shop
+    .replace("https://","")
+    .replace("http://","");
 
-    alert(
-      "Please enter a valid Shopify store URL.\n\nExample:\nmy-store.myshopify.com"
-    );
+  window.location.href =
+    "/auth?shop=" +
+    encodeURIComponent(shop);
 
-    return;
-  }
+}
 
   // REDIRECT
   window.location.href =
