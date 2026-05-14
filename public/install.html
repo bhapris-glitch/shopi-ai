@@ -1,20 +1,513 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
-  <title>Install Chatbot</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+
+  <meta charset="UTF-8">
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0"
+  >
+
+  <title>Install • Layboka AI</title>
+
+  <!-- GOOGLE FONT -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+    }
+
+    html{
+      scroll-behavior:smooth;
+    }
+
+    body{
+      font-family:'Poppins',sans-serif;
+      background:#07111f;
+      color:white;
+      overflow-x:hidden;
+    }
+
+    body::before{
+      content:"";
+      position:fixed;
+      inset:0;
+      background:
+      radial-gradient(circle at top left,#ff7a001f,transparent 30%),
+      radial-gradient(circle at bottom right,#ff99001c,transparent 30%);
+      z-index:-1;
+    }
+
+    a{
+      text-decoration:none;
+      color:white;
+    }
+
+    /* ================= HEADER ================= */
+
+    .header{
+
+      width:100%;
+      position:sticky;
+      top:0;
+      z-index:999;
+
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+
+      padding:18px 7%;
+
+      background:rgba(7,17,31,0.75);
+      backdrop-filter:blur(14px);
+
+      border-bottom:
+      1px solid rgba(255,255,255,0.06);
+
+    }
+
+    .logo-box{
+      display:flex;
+      flex-direction:column;
+    }
+
+    .logo{
+      font-size:32px;
+      font-weight:800;
+      line-height:1;
+
+      background:
+      linear-gradient(90deg,#ff7a00,#ffb347);
+
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+    }
+
+    .tagline{
+      color:#aaa;
+      font-size:12px;
+      margin-top:5px;
+      letter-spacing:0.5px;
+    }
+
+    nav{
+      display:flex;
+      align-items:center;
+      gap:28px;
+    }
+
+    nav a{
+      color:#ddd;
+      transition:0.3s;
+      font-size:15px;
+    }
+
+    nav a:hover{
+      color:#ff9c3a;
+    }
+
+    .menu-toggle{
+      display:none;
+      font-size:30px;
+      cursor:pointer;
+    }
+
+    /* ================= HERO ================= */
+
+    .install-section{
+
+      min-height:85vh;
+
+      display:flex;
+      align-items:center;
+      justify-content:center;
+
+      padding:80px 7%;
+
+    }
+
+    .install-card{
+
+      width:100%;
+      max-width:750px;
+
+      background:
+      rgba(255,255,255,0.05);
+
+      border:
+      1px solid rgba(255,255,255,0.08);
+
+      border-radius:34px;
+
+      padding:55px;
+
+      text-align:center;
+
+      backdrop-filter:blur(20px);
+
+      box-shadow:
+      0 20px 60px rgba(255,122,0,0.12);
+
+    }
+
+    .install-badge{
+
+      display:inline-block;
+
+      background:
+      rgba(255,122,0,0.12);
+
+      color:#ffb347;
+
+      padding:10px 18px;
+
+      border-radius:999px;
+
+      font-size:13px;
+      font-weight:600;
+
+      margin-bottom:24px;
+
+      border:
+      1px solid rgba(255,122,0,0.18);
+
+    }
+
+    .install-card h1{
+
+      font-size:56px;
+      line-height:1.15;
+
+      margin-bottom:22px;
+
+      font-weight:800;
+
+    }
+
+    .gradient{
+      background:
+      linear-gradient(90deg,#ff7a00,#ffb347);
+
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+    }
+
+    .install-card p{
+
+      color:#b8b8b8;
+
+      line-height:1.9;
+
+      font-size:17px;
+
+      max-width:620px;
+
+      margin:auto auto 35px;
+
+    }
+
+    .hero-form{
+
+      display:flex;
+      gap:14px;
+      flex-wrap:wrap;
+
+      margin-bottom:22px;
+
+    }
+
+    .hero-form input{
+
+      flex:1;
+      min-width:240px;
+
+      padding:18px;
+
+      border:none;
+      outline:none;
+
+      border-radius:18px;
+
+      background:
+      rgba(255,255,255,0.06);
+
+      border:
+      1px solid rgba(255,255,255,0.08);
+
+      color:white;
+
+      font-size:16px;
+
+    }
+
+    .hero-form button{
+
+      border:none;
+
+      padding:18px 28px;
+
+      border-radius:18px;
+
+      background:
+      linear-gradient(90deg,#ff7a00,#ffb347);
+
+      color:black;
+
+      font-weight:700;
+
+      cursor:pointer;
+
+      transition:0.3s;
+
+      font-size:16px;
+
+    }
+
+    .hero-form button:hover{
+      transform:translateY(-2px);
+    }
+
+    .hero-buttons{
+
+      display:flex;
+      justify-content:center;
+      gap:16px;
+      flex-wrap:wrap;
+
+      margin-top:18px;
+
+    }
+
+    .header-btn{
+
+      display:inline-block;
+
+      padding:16px 24px;
+
+      border-radius:16px;
+
+      background:
+      linear-gradient(90deg,#ff7a00,#ffb347);
+
+      color:black;
+
+      font-weight:700;
+
+    }
+
+    .secondary-btn{
+
+      display:inline-block;
+
+      padding:16px 24px;
+
+      border-radius:16px;
+
+      border:
+      1px solid rgba(255,255,255,0.12);
+
+      color:#ddd;
+
+    }
+
+    .small-note{
+
+      margin-top:24px;
+
+      color:#8f8f8f;
+
+      font-size:14px;
+      line-height:1.8;
+
+    }
+
+    #status{
+
+      margin-top:24px;
+
+      color:#ffb347;
+
+      font-weight:600;
+
+      line-height:1.7;
+
+    }
+
+    /* ================= FOOTER ================= */
+
+    footer{
+
+      border-top:
+      1px solid rgba(255,255,255,0.06);
+
+      padding:30px 7%;
+
+      text-align:center;
+
+    }
+
+    .footer-links{
+
+      display:flex;
+      justify-content:center;
+      gap:20px;
+      flex-wrap:wrap;
+
+      margin-bottom:18px;
+
+    }
+
+    .footer-links a{
+      color:#aaa;
+      transition:0.3s;
+    }
+
+    .footer-links a:hover{
+      color:#ff9c3a;
+    }
+
+    .copyright{
+      color:#777;
+      font-size:14px;
+    }
+
+    /* ================= MOBILE ================= */
+
+    @media(max-width:900px){
+
+      nav{
+
+        position:fixed;
+
+        top:78px;
+        right:-100%;
+
+        width:270px;
+
+        background:#111b2d;
+
+        flex-direction:column;
+
+        padding:28px;
+
+        border-radius:24px;
+
+        transition:0.35s;
+
+        gap:22px;
+
+      }
+
+      nav.show{
+        right:7%;
+      }
+
+      .menu-toggle{
+        display:block;
+      }
+
+      .install-card h1{
+        font-size:42px;
+      }
+
+    }
+
+    @media(max-width:650px){
+
+      .install-card{
+        padding:35px 24px;
+      }
+
+      .install-card h1{
+        font-size:34px;
+      }
+
+      .hero-form{
+        flex-direction:column;
+      }
+
+      .hero-form button{
+        width:100%;
+      }
+
+    }
+
+  </style>
+
 </head>
 
-<body style="font-family:Arial; text-align:center; padding:40px;">
+<body>
 
-<h2>🚀 Install Layboka Shopi Agent</h2>
+<!-- ================= HEADER ================= -->
 
-<div class="hero-form">
+<header class="header">
+
+  <div class="logo-box">
+
+    <div class="logo">
+      Layboka AI
+    </div>
+
+    <div class="tagline">
+      AI Shopify Sales Assistant • Convert Visitors Into Buyers
+    </div>
+
+  </div>
+
+  <div
+    class="menu-toggle"
+    id="menuBtn"
+    onclick="toggleMenu()"
+  >
+    ☰
+  </div>
+
+  <nav id="nav">
+
+    <a href="index.html">Home</a>
+    <a href="pricing.html">Pricing</a>
+    <a href="dashboard.html">Dashboard</a>
+    <a href="about.html">About</a>
+    <a href="contact.html">Contact</a>
+    <a href="privacy.html">Privacy</a>
+    <a href="terms.html">Terms</a>
+
+  </nav>
+
+</header>
+
+<!-- ================= INSTALL ================= -->
+
+<section class="install-section">
+
+  <div class="install-card">
+
+    <div class="install-badge">
+      🚀 3-Day Free Trial • No Credit Card Required
+    </div>
+
+    <h1>
+      Install <span class="gradient">Layboka AI</span>
+      In Under 2 Minutes
+    </h1>
+
+    <p>
+      Enter your Shopify store URL below to install your AI sales assistant.
+      Supports both custom domains and Shopify domains automatically.
+    </p>
+
+    <div class="hero-form">
 
       <input
-      type="text"
-      id="storeInput"
-      placeholder="yourstore.myshopify.com">
+        type="text"
+        id="storeInput"
+        placeholder="yourstore.com or yourstore.myshopify.com"
+      >
 
       <button onclick="startInstall()">
         🚀 Install Free Trial
@@ -28,33 +521,148 @@
         View Pricing
       </a>
 
-<p id="status" style="margin-top:20px;"></p>
+      <a href="contact.html" class="secondary-btn">
+        Need Help?
+      </a>
+
+    </div>
+
+    <div class="small-note">
+
+      ✔ Works with custom domains<br>
+      ✔ Automatic Shopify detection<br>
+      ✔ Instant installation & setup
+
+    </div>
+
+    <p id="status"></p>
+
+  </div>
+
+</section>
+
+<!-- ================= FOOTER ================= -->
+
+<footer>
+
+  <div class="footer-links">
+
+    <a href="index.html">Home</a>
+    <a href="pricing.html">Pricing</a>
+    <a href="privacy.html">Privacy</a>
+    <a href="terms.html">Terms</a>
+    <a href="contact.html">Contact</a>
+
+  </div>
+
+  <div class="copyright">
+    © 2026 Layboka AI • All Rights Reserved
+  </div>
+
+</footer>
+
+<!-- ================= JS ================= -->
 
 <script>
-async function autoInstall(){
 
-  const store = prompt("Enter your Shopify store (example: mystore.myshopify.com)");
-  const token = prompt("Enter your Admin API Access Token");
+  // MOBILE MENU
 
-  const res = await fetch("/auto-install", {
-    method:"POST",
-    headers:{"Content-Type":"application/json"},
-    body: JSON.stringify({ store, token })
+  function toggleMenu(){
+
+    const nav =
+    document.getElementById("nav");
+
+    const btn =
+    document.getElementById("menuBtn");
+
+    nav.classList.toggle("show");
+
+    if(nav.classList.contains("show")){
+      btn.innerHTML = "✕";
+    }else{
+      btn.innerHTML = "☰";
+    }
+
+  }
+
+  // CLOSE MENU ON OUTSIDE CLICK
+
+  document.addEventListener("click", function(e){
+
+    const nav =
+    document.getElementById("nav");
+
+    const btn =
+    document.getElementById("menuBtn");
+
+    if(
+      !nav.contains(e.target) &&
+      !btn.contains(e.target)
+    ){
+
+      nav.classList.remove("show");
+
+      btn.innerHTML = "☰";
+
+    }
+
   });
 
-  const data = await res.json();
+  // SHOPIFY INSTALL VALIDATION
 
-  document.getElementById("status").innerText = data.message;
+  function startInstall(){
 
-}
+    let shop =
+    document
+    .getElementById("storeInput")
+    .value
+    .trim();
+
+    const status =
+    document.getElementById("status");
+
+    status.innerHTML = "";
+
+    if(!shop){
+
+      status.innerHTML =
+      "⚠ Please enter your Shopify store URL.";
+
+      return;
+    }
+
+    // REMOVE SPACES
+
+    shop = shop.replace(/\s/g,'');
+
+    // REMOVE PROTOCOLS
+
+    shop = shop
+      .replace("https://","")
+      .replace("http://","");
+
+    // SIMPLE DOMAIN VALIDATION
+
+    const domainRegex =
+    /^[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+    if(!domainRegex.test(shop)){
+
+      status.innerHTML =
+      "❌ Enter a valid Shopify or custom store domain.";
+
+      return;
+    }
+
+    // REDIRECT
+
+    window.location.href =
+    "/auth?shop=" +
+    encodeURIComponent(shop);
+
+  }
+
 </script>
-
-<footer style="margin-top:40px;">
-  <a href="privacy.html">Privacy</a> |
-  <a href="terms.html">Terms</a> |
-  <a href="pricing.html">Pricing</a> |
-  <a href="contact.html">Contact</a>
-</footer>
 
 </body>
 </html>
