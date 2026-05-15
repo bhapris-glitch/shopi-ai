@@ -63,7 +63,6 @@ const BASE_URL = process.env.BASE_URL;
 // =======================
 // SHOPIFY AUTH
 // =======================
-
 app.get("/auth", async (req, res) => {
 
   let shop = req.query.shop;
@@ -74,46 +73,70 @@ app.get("/auth", async (req, res) => {
 
   try {
 
-    // CLEAN INPUT
+    // CLEAN URL
     shop = shop
       .replace("https://", "")
       .replace("http://", "")
-      .replace("/", "")
+      .replace("www.", "")
+      .split("/")[0]
       .trim()
       .toLowerCase();
 
-    // DETECT CUSTOM DOMAIN
+    let finalShop = shop;
+
+    // IF CUSTOM DOMAIN
     if (!shop.includes(".myshopify.com")) {
 
-      const detectRes = await fetch(
-        `https://${shop}/products.json?limit=1`
-      );
+      // Try detecting Shopify
+      const response = await fetch(`https://${shop}`, {
+        method: "GET",
+        redirect: "follow"
+      });
 
-      const realShop =
-        detectRes.headers.get("x-shopify-shop-domain");
+      // Shopify Header Detection
+      const shopifyDomain =
+        response.headers.get("x-shopify-shop-domain");
 
-      if (!realShop) {
+      // If found
+      if (shopifyDomain) {
+
+        finalShop = shopifyDomain;
+
+      } else {
+
+        // Backup HTML Detection
+        const html = await response.text();
+
+        // Detect Shopify CDN/assets
+        const isShopify =
+          html.includes("cdn.shopify.com") ||
+          html.includes("shopify.theme") ||
+          html.includes("Shopify");
+
+        if (!isShopify) {
+          return res.send("❌ This is not a Shopify store");
+        }
+
+        // Still no myshopify domain found
         return res.send(
-          "❌ This is not a Shopify store"
+          "⚠️ Shopify detected but hidden.\nAsk store owner for their myshopify URL."
         );
       }
-
-      shop = realShop;
     }
 
-    // VALIDATE SHOP
+    // FINAL VALIDATION
     if (
-      !/^[a-zA-Z0-9][a-zA-Z0-9-]*\.myshopify\.com$/.test(shop)
+      !/^[a-zA-Z0-9][a-zA-Z0-9-]*\.myshopify\.com$/.test(finalShop)
     ) {
       return res.send("❌ Invalid Shopify store");
     }
 
-    // SHOPIFY INSTALL URL
+    // OAUTH URL
     const installUrl =
-      `https://${shop}/admin/oauth/authorize` +
+      `https://${finalShop}/admin/oauth/authorize` +
       `?client_id=${process.env.SHOPIFY_API_KEY}` +
       `&scope=read_products,write_script_tags` +
-      `&redirect_uri=${BASE_URL}/callback`;
+      `&redirect_uri=${process.env.BASE_URL}/callback`;
 
     res.redirect(installUrl);
 
