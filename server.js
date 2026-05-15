@@ -118,9 +118,9 @@ app.get("/auth", async (req, res) => {
         }
 
         // Still no myshopify domain found
-        return res.send(
-          "⚠️ Shopify detected but hidden.\nAsk store owner for their myshopify URL."
-        );
+        return res.redirect(
+  "/find-store.html?domain=" + shop
+);
       }
     }
 
