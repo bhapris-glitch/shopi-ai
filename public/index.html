@@ -976,145 +976,152 @@ Start your premium AI trial today and automate your Shopify sales.
 
 <script>
 
-// MOBILE MENU
+  // ================= MOBILE MENU =================
 
-const menuBtn =
-document.getElementById("menuBtn");
+  const menuBtn =
+  document.getElementById("menuBtn");
 
-const nav =
-document.getElementById("nav");
+  const nav =
+  document.getElementById("nav");
 
-menuBtn.addEventListener("click",()=>{
+  menuBtn.addEventListener("click",()=>{
 
-nav.classList.toggle("show");
+    nav.classList.toggle("show");
 
-if(nav.classList.contains("show")){
-menuBtn.innerHTML = "✕";
-}else{
-menuBtn.innerHTML = "☰";
-}
+    if(nav.classList.contains("show")){
+      menuBtn.innerHTML = "✕";
+    }else{
+      menuBtn.innerHTML = "☰";
+    }
 
-});
+  });
 
-// CLOSE MENU OUTSIDE
+  // ================= CLOSE MENU OUTSIDE =================
 
-document.addEventListener("click",(e)=>{
+  document.addEventListener("click",(e)=>{
 
-if(
-nav.classList.contains("show") &&
-!nav.contains(e.target) &&
-!menuBtn.contains(e.target)
-){
+    if(
+      nav.classList.contains("show") &&
+      !nav.contains(e.target) &&
+      !menuBtn.contains(e.target)
+    ){
 
-nav.classList.remove("show");
-menuBtn.innerHTML = "☰";
+      nav.classList.remove("show");
 
-}
+      menuBtn.innerHTML = "☰";
 
-});
+    }
 
-// INSTALL
+  });
 
-function startInstall(){
+  // ================= INSTALL =================
 
-let shop =
-document.getElementById("storeInput")
-.value
-.trim();
+  function startInstall(){
 
-if(!shop){
+    let shop =
+    document.getElementById("storeInput")
+    .value
+    .trim();
 
-alert("Enter your Shopify store URL");
-return;
+    if(!shop){
 
-}
+      alert("Enter your Shopify store URL");
 
-shop = shop
-.replace(/\s/g,'')
-.replace("https://","")
-.replace("http://","");
+      return;
 
-const valid =
-/^[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
-.test(shop);
+    }
 
-if(!valid){
+    // CLEAN URL
+    shop = shop
+    .replace(/\s/g,'')
+    .replace("https://","")
+    .replace("http://","")
+    .replace("www.","")
+    .split("/")[0];
 
-alert(
-"Enter valid Shopify domain or custom domain"
-);
+    // VALID DOMAIN
+    const valid =
+    /^[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
+    .test(shop);
 
-return;
+    if(!valid){
 
-}
+      alert(
+        "Enter valid Shopify domain or custom domain"
+      );
 
-window.location.href =
-"/auth?shop=" +
-encodeURIComponent(shop);
+      return;
 
-}
+    }
 
-// ENTER SUPPORT
+    // REDIRECT
+    window.location.href =
+    "/auth?shop=" +
+    encodeURIComponent(shop);
 
-document
-.getElementById("storeInput")
-.addEventListener("keypress",(e)=>{
+  }
 
-if(e.key === "Enter"){
-startInstall();
-}
+  // ================= ENTER SUPPORT =================
 
-});
+  document
+  .getElementById("storeInput")
+  .addEventListener("keypress",(e)=>{
 
-// REVEAL
+    if(e.key === "Enter"){
+      startInstall();
+    }
 
-const reveals =
-document.querySelectorAll(".reveal");
+  });
 
-function revealOnScroll(){
+  // ================= SCROLL REVEAL =================
 
-reveals.forEach((el)=>{
+  const reveals =
+  document.querySelectorAll(".reveal");
 
-const top =
-el.getBoundingClientRect().top;
+  function revealOnScroll(){
 
-if(top < window.innerHeight - 100){
+    reveals.forEach((el)=>{
 
-el.classList.add("active");
+      const top =
+      el.getBoundingClientRect().top;
 
-}
+      if(top < window.innerHeight - 100){
 
-});
+        el.classList.add("active");
 
-}
+      }
 
-window.addEventListener(
-"scroll",
-revealOnScroll
-);
+    });
 
-revealOnScroll();
+  }
 
-// TESTIMONIALS
+  window.addEventListener(
+    "scroll",
+    revealOnScroll
+  );
 
-let index = 0;
+  revealOnScroll();
 
-setInterval(()=>{
+  // ================= TESTIMONIAL SLIDER =================
 
-const items =
-document.querySelectorAll(".testimonial");
+  let index = 0;
 
-items.forEach((i)=>
-i.classList.remove("active")
-);
+  setInterval(()=>{
 
-index =
-(index + 1) % items.length;
+    const items =
+    document.querySelectorAll(".testimonial");
 
-items[index]
-.classList.add("active");
+    items.forEach((i)=>
+      i.classList.remove("active")
+    );
 
-},4000);
+    index =
+    (index + 1) % items.length;
+
+    items[index]
+    .classList.add("active");
+
+  },4000);
 
 </script>
 
