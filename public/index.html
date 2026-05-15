@@ -3,628 +3,606 @@
 
 <head>
 
-  <meta charset="UTF-8" />
-
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
-  />
-
-  <title>Layboka AI • Shopify Sales Assistant</title>
-
-  <link
-    href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
-    rel="stylesheet"
-  >
-
-  <style>
-
-    *{
-      margin:0;
-      padding:0;
-      box-sizing:border-box;
-      -webkit-tap-highlight-color:transparent;
-    }
-
-    html{
-      scroll-behavior:smooth;
-    }
-
-    body{
-      font-family:'Poppins',sans-serif;
-      background:#07111f;
-      color:white;
-      overflow-x:hidden;
-    }
-
-    body::before{
-      content:"";
-      position:fixed;
-      inset:0;
-      background:
-      radial-gradient(circle at top left,#ff7a001f,transparent 30%),
-      radial-gradient(circle at bottom right,#ff99001c,transparent 30%);
-      z-index:-1;
-    }
-
-    a{
-      text-decoration:none;
-      color:white;
-    }
-
-    img{
-      max-width:100%;
-      display:block;
-    }
-
-    /* ================= HEADER ================= */
-
-    .header{
-      width:100%;
-      position:sticky;
-      top:0;
-      z-index:999;
-      backdrop-filter:blur(16px);
-      background:rgba(7,17,31,0.85);
-      border-bottom:1px solid rgba(255,255,255,0.06);
-
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-
-      padding:18px 7%;
-    }
-
-    .logo-box{
-      display:flex;
-      flex-direction:column;
-      z-index:1001;
-    }
-
-    .logo{
-      font-size:32px;
-      font-weight:800;
-      background:linear-gradient(90deg,#ff7a00,#ffb347);
-      -webkit-background-clip:text;
-      -webkit-text-fill-color:transparent;
-      line-height:1;
-    }
-
-    .logo-sub{
-      color:#bdbdbd;
-      font-size:12px;
-      margin-top:5px;
-      letter-spacing:0.5px;
-    }
-
-    nav{
-      display:flex;
-      align-items:center;
-      gap:28px;
-    }
-
-    nav a{
-      color:#ddd;
-      font-size:15px;
-      font-weight:500;
-      transition:0.3s;
-    }
-
-    nav a:hover{
-      color:#ff9c3a;
-    }
-
-    .header-btn{
-      background:linear-gradient(90deg,#ff7a00,#ffb347);
-      color:black !important;
-      padding:12px 22px;
-      border-radius:14px;
-      font-weight:700;
-    }
-
-    /* ================= MOBILE MENU ================= */
-
-    .menu-toggle{
-      display:none;
-      width:46px;
-      height:46px;
-      border:none;
-      border-radius:12px;
-      background:rgba(255,255,255,0.06);
-      color:white;
-      font-size:28px;
-      cursor:pointer;
-      align-items:center;
-      justify-content:center;
-      z-index:1001;
-    }
-
-    /* ================= HERO ================= */
-
-    .hero{
-      width:100%;
-      min-height:90vh;
-
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-
-      gap:50px;
-
-      padding:90px 7%;
-    }
-
-    .hero-left{
-      flex:1;
-    }
-
-    .hero-left h1{
-      font-size:68px;
-      line-height:1.1;
-      margin-bottom:25px;
-      font-weight:800;
-    }
-
-    .gradient{
-      background:linear-gradient(90deg,#ff7a00,#ffb347);
-      -webkit-background-clip:text;
-      -webkit-text-fill-color:transparent;
-    }
-
-    .hero-left p{
-      color:#b7b7b7;
-      font-size:18px;
-      line-height:1.9;
-      max-width:650px;
-      margin-bottom:35px;
-    }
-
-    .trial-note{
-      color:#cfcfcf;
-      line-height:1.8;
-      margin-bottom:30px;
-      font-size:14px;
-    }
-
-    .trial-note b{
-      color:white;
-    }
-
-    .hero-form{
-      display:flex;
-      gap:14px;
-      margin-bottom:25px;
-      flex-wrap:wrap;
-    }
-
-    .hero-form input{
-      flex:1;
-      min-width:260px;
-      padding:18px;
-      border:none;
-      border-radius:18px;
-      background:rgba(255,255,255,0.06);
-      color:white;
-      outline:none;
-      border:1px solid rgba(255,255,255,0.08);
-      font-size:16px;
-      font-family:'Poppins',sans-serif;
-    }
-
-    .hero-form button{
-      border:none;
-      padding:18px 28px;
-      border-radius:18px;
-      background:linear-gradient(90deg,#ff7a00,#ffb347);
-      color:black;
-      font-weight:700;
-      cursor:pointer;
-      font-size:16px;
-      transition:0.3s;
-      font-family:'Poppins',sans-serif;
-    }
-
-    .hero-form button:hover{
-      transform:translateY(-2px);
-    }
-
-    .hero-buttons{
-      display:flex;
-      gap:18px;
-      flex-wrap:wrap;
-    }
-
-    .secondary-btn{
-      padding:16px 24px;
-      border-radius:16px;
-      border:1px solid rgba(255,255,255,0.12);
-      color:#ddd;
-    }
-
-    .hero-right{
-      flex:1;
-      display:flex;
-      justify-content:center;
-      align-items:center;
-    }
-
-    .hero-card{
-      width:100%;
-      max-width:480px;
-
-      background:rgba(255,255,255,0.05);
-      border:1px solid rgba(255,255,255,0.08);
-
-      border-radius:32px;
-
-      padding:30px;
-
-      backdrop-filter:blur(20px);
-
-      box-shadow:
-      0 20px 60px rgba(255,122,0,0.15),
-      inset 0 0 0 1px rgba(255,255,255,0.03);
-
-      animation:float 4s ease-in-out infinite;
-    }
-
-    @keyframes float{
-      0%{transform:translateY(0px);}
-      50%{transform:translateY(-12px);}
-      100%{transform:translateY(0px);}
-    }
-
-    .chat-top{
-      display:flex;
-      align-items:center;
-      gap:12px;
-      margin-bottom:20px;
-    }
-
-    .chat-avatar{
-      width:50px;
-      height:50px;
-      border-radius:50%;
-      background:linear-gradient(90deg,#ff7a00,#ffb347);
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      font-size:22px;
-    }
-
-    .live{
-      color:#77ff9f;
-      font-size:14px;
-      margin-top:4px;
-    }
-
-    .chat-box{
-      display:flex;
-      flex-direction:column;
-      gap:16px;
-    }
-
-    .msg{
-      padding:14px 18px;
-      border-radius:18px;
-      max-width:85%;
-      line-height:1.6;
-      font-size:14px;
-    }
-
-    .bot{
-      background:#161f31;
-      align-self:flex-start;
-    }
-
-    .user{
-      background:linear-gradient(90deg,#ff7a00,#ffb347);
-      color:black;
-      align-self:flex-end;
-      font-weight:600;
-    }
-
-    /* ================= STATS ================= */
-
-    .stats{
-      width:100%;
-      display:grid;
-      grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-      gap:25px;
-      padding:0 7% 80px;
-    }
-
-    .stat-card{
-      background:rgba(255,255,255,0.04);
-      border:1px solid rgba(255,255,255,0.06);
-      padding:35px;
-      border-radius:26px;
-      text-align:center;
-      transition:0.4s;
-    }
-
-    .stat-card:hover{
-      transform:translateY(-8px);
-      border-color:#ff7a00;
-      box-shadow:0 10px 40px rgba(255,122,0,0.15);
-    }
-
-    .stat-card h2{
-      font-size:42px;
-      margin-bottom:12px;
-      background:linear-gradient(90deg,#ff7a00,#ffb347);
-      -webkit-background-clip:text;
-      -webkit-text-fill-color:transparent;
-    }
-
-    .stat-card p{
-      color:#bbb;
-    }
-
-    /* ================= SECTION ================= */
-
-    .section{
-      padding:100px 7%;
-    }
-
-    .section-title{
-      text-align:center;
-      margin-bottom:70px;
-    }
-
-    .section-title p{
-      color:#ff9c3a;
-      font-weight:600;
-      margin-bottom:10px;
-    }
-
-    .section-title h2{
-      font-size:54px;
-      line-height:1.2;
-      margin-bottom:18px;
-    }
-
-    .section-title span{
-      background:linear-gradient(90deg,#ff7a00,#ffb347);
-      -webkit-background-clip:text;
-      -webkit-text-fill-color:transparent;
-    }
-
-    .section-title h4{
-      color:#aaa;
-      max-width:750px;
-      margin:auto;
-      line-height:1.8;
-      font-weight:400;
-    }
-
-    .feature-grid{
-      display:grid;
-      grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
-      gap:28px;
-    }
-
-    .feature-card{
-      background:rgba(255,255,255,0.04);
-      border-radius:30px;
-      padding:35px;
-      border:1px solid rgba(255,255,255,0.05);
-      transition:0.4s;
-    }
-
-    .feature-card:hover{
-      transform:translateY(-10px);
-      border-color:#ff7a00;
-      box-shadow:0 15px 50px rgba(255,122,0,0.18);
-    }
-
-    .feature-icon{
-      width:70px;
-      height:70px;
-      border-radius:20px;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      background:linear-gradient(90deg,#ff7a00,#ffb347);
-      font-size:30px;
-      margin-bottom:24px;
-      color:black;
-    }
-
-    .feature-card h3{
-      margin-bottom:15px;
-      font-size:24px;
-    }
-
-    .feature-card p{
-      color:#b9b9b9;
-      line-height:1.8;
-    }
-
-    footer{
-      margin-top:100px;
-      border-top:1px solid rgba(255,255,255,0.06);
-      padding:70px 7% 30px;
-    }
-
-    .footer-grid{
-      display:grid;
-      grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-      gap:40px;
-      margin-bottom:50px;
-    }
-
-    .footer-box h3{
-      margin-bottom:20px;
-      font-size:22px;
-    }
-/*-- ================= TESTIMONIAL STYLE =================*/
+<meta charset="UTF-8">
+
+<meta
+name="viewport"
+content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+/>
+
+<title>Layboka AI • Shopify Sales Assistant</title>
+
+<link
+href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+rel="stylesheet"
+/>
+
+<style>
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  -webkit-tap-highlight-color:transparent;
+}
+
+html{
+  scroll-behavior:smooth;
+}
+
+body{
+  font-family:'Poppins',sans-serif;
+  background:#07111f;
+  color:white;
+  overflow-x:hidden;
+}
+
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  background:
+  radial-gradient(circle at top left,#ff7a001f,transparent 30%),
+  radial-gradient(circle at bottom right,#ff99001c,transparent 30%);
+  z-index:-1;
+}
+
+a{
+  text-decoration:none;
+  color:white;
+}
+
+img{
+  max-width:100%;
+  display:block;
+}
+
+/* ================= HEADER ================= */
+
+.header{
+  width:100%;
+  position:sticky;
+  top:0;
+  z-index:999;
+  backdrop-filter:blur(16px);
+  background:rgba(7,17,31,0.85);
+  border-bottom:1px solid rgba(255,255,255,0.06);
+
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+
+  padding:18px 7%;
+}
+
+.logo-box{
+  display:flex;
+  flex-direction:column;
+  z-index:1001;
+}
+
+.logo{
+  font-size:32px;
+  font-weight:800;
+  background:linear-gradient(90deg,#ff7a00,#ffb347);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+
+.logo-sub{
+  color:#bbb;
+  font-size:12px;
+  margin-top:4px;
+  letter-spacing:0.5px;
+}
+
+nav{
+  display:flex;
+  align-items:center;
+  gap:28px;
+}
+
+nav a{
+  color:#ddd;
+  font-size:15px;
+  transition:0.3s;
+  font-weight:500;
+}
+
+nav a:hover{
+  color:#ff9c3a;
+}
+
+.header-btn{
+  background:linear-gradient(90deg,#ff7a00,#ffb347);
+  color:black !important;
+  padding:12px 22px;
+  border-radius:14px;
+  font-weight:700;
+}
+
+.menu-toggle{
+  display:none;
+  width:46px;
+  height:46px;
+  border:none;
+  border-radius:12px;
+  background:rgba(255,255,255,0.06);
+  color:white;
+  font-size:28px;
+  cursor:pointer;
+  align-items:center;
+  justify-content:center;
+  z-index:1001;
+}
+
+/* ================= HERO ================= */
+
+.hero{
+  width:100%;
+  min-height:90vh;
+
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+
+  gap:50px;
+
+  padding:90px 7%;
+}
+
+.hero-left{
+  flex:1;
+}
+
+.hero-left h1{
+  font-size:68px;
+  line-height:1.1;
+  margin-bottom:25px;
+  font-weight:800;
+}
+
+.gradient{
+  background:linear-gradient(90deg,#ff7a00,#ffb347);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+
+.hero-left p{
+  color:#b7b7b7;
+  font-size:18px;
+  line-height:1.9;
+  max-width:650px;
+  margin-bottom:35px;
+}
+
+.trial-note{
+  color:#cfcfcf;
+  line-height:1.8;
+  margin-bottom:30px;
+  font-size:14px;
+}
+
+.hero-form{
+  display:flex;
+  gap:14px;
+  margin-bottom:25px;
+  flex-wrap:wrap;
+}
+
+.hero-form input{
+  flex:1;
+  min-width:260px;
+  padding:18px;
+  border:none;
+  border-radius:18px;
+  background:rgba(255,255,255,0.06);
+  color:white;
+  outline:none;
+  border:1px solid rgba(255,255,255,0.08);
+  font-size:16px;
+}
+
+.hero-form button{
+  border:none;
+  padding:18px 28px;
+  border-radius:18px;
+  background:linear-gradient(90deg,#ff7a00,#ffb347);
+  color:black;
+  font-weight:700;
+  cursor:pointer;
+  font-size:16px;
+}
+
+.hero-buttons{
+  display:flex;
+  gap:18px;
+  flex-wrap:wrap;
+}
+
+.secondary-btn{
+  padding:16px 24px;
+  border-radius:16px;
+  border:1px solid rgba(255,255,255,0.12);
+  color:#ddd;
+}
+
+.hero-right{
+  flex:1;
+  display:flex;
+  justify-content:center;
+}
+
+.hero-card{
+  width:100%;
+  max-width:480px;
+
+  background:rgba(255,255,255,0.05);
+  border:1px solid rgba(255,255,255,0.08);
+
+  border-radius:32px;
+
+  padding:30px;
+
+  backdrop-filter:blur(20px);
+
+  animation:float 4s ease-in-out infinite;
+}
+
+@keyframes float{
+  0%{transform:translateY(0px);}
+  50%{transform:translateY(-12px);}
+  100%{transform:translateY(0px);}
+}
+
+.chat-top{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  margin-bottom:20px;
+}
+
+.chat-avatar{
+  width:50px;
+  height:50px;
+  border-radius:50%;
+  background:linear-gradient(90deg,#ff7a00,#ffb347);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:22px;
+}
+
+.live{
+  color:#77ff9f;
+  font-size:14px;
+}
+
+.chat-box{
+  display:flex;
+  flex-direction:column;
+  gap:16px;
+}
+
+.msg{
+  padding:14px 18px;
+  border-radius:18px;
+  max-width:85%;
+  line-height:1.6;
+  font-size:14px;
+}
+
+.bot{
+  background:#161f31;
+}
+
+.user{
+  background:linear-gradient(90deg,#ff7a00,#ffb347);
+  color:black;
+  align-self:flex-end;
+  font-weight:600;
+}
+
+/* ================= SECTION ================= */
+
+.section{
+  padding:100px 7%;
+}
+
+.section-title{
+  text-align:center;
+  margin-bottom:70px;
+}
+
+.section-title p{
+  color:#ff9c3a;
+  font-weight:600;
+  margin-bottom:10px;
+}
+
+.section-title h2{
+  font-size:54px;
+  margin-bottom:18px;
+}
+
+.section-title span{
+  background:linear-gradient(90deg,#ff7a00,#ffb347);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+
+.section-title h4{
+  color:#aaa;
+  max-width:750px;
+  margin:auto;
+  line-height:1.8;
+  font-weight:400;
+}
+
+.feature-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+  gap:28px;
+}
+
+.feature-card{
+  background:rgba(255,255,255,0.04);
+  border-radius:30px;
+  padding:35px;
+  border:1px solid rgba(255,255,255,0.05);
+  transition:0.4s;
+}
+
+.feature-card:hover{
+  transform:translateY(-10px);
+  border-color:#ff7a00;
+}
+
+.feature-icon{
+  width:70px;
+  height:70px;
+  border-radius:20px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:linear-gradient(90deg,#ff7a00,#ffb347);
+  font-size:30px;
+  margin-bottom:24px;
+  color:black;
+}
+
+.feature-card h3{
+  margin-bottom:15px;
+  font-size:24px;
+}
+
+.feature-card p{
+  color:#b9b9b9;
+  line-height:1.8;
+}
+
+/* ================= STATS ================= */
+
+.stats{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:25px;
+  padding:0 7% 80px;
+}
+
+.stat-card{
+  background:rgba(255,255,255,0.04);
+  border:1px solid rgba(255,255,255,0.06);
+  padding:35px;
+  border-radius:26px;
+  text-align:center;
+}
+
+.stat-card h2{
+  font-size:42px;
+  margin-bottom:12px;
+  background:linear-gradient(90deg,#ff7a00,#ffb347);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+
+.stat-card p{
+  color:#bbb;
+}
+
+/* ================= TESTIMONIAL ================= */
+
 .testimonial-wrapper{
-  max-width:900px;
-  margin:auto;
-  position:relative;
+  max-width:900px;
+  margin:auto;
 }
 
 .testimonial{
-  display:none;
-  text-align:center;
-  background:rgba(255,255,255,0.04);
-  border:1px solid rgba(255,255,255,0.06);
-  padding:40px;
-  border-radius:28px;
+  display:none;
+  text-align:center;
+  background:rgba(255,255,255,0.04);
+  border:1px solid rgba(255,255,255,0.06);
+  padding:40px;
+  border-radius:28px;
 }
 
 .testimonial.active{
-  display:block;
+  display:block;
 }
 
 .testimonial img{
-  width:80px;
-  height:80px;
-  border-radius:50%;
-  object-fit:cover;
-  margin:0 auto 22px;
-  border:3px solid rgba(255,255,255,0.08);
+  width:80px;
+  height:80px;
+  border-radius:50%;
+  object-fit:cover;
+  margin:0 auto 20px;
 }
 
 .testimonial p{
-  color:#d3d3d3;
-  line-height:1.9;
-  margin-bottom:20px;
-  font-size:18px;
+  color:#d3d3d3;
+  line-height:1.9;
+  margin-bottom:18px;
+  font-size:18px;
 }
 
 .testimonial h4{
-  color:#ffb347;
-  font-size:18px;
+  color:#ffb347;
 }
-  .footer-box a{
-      display:block;
-      margin-bottom:12px;
-      color:#aaa;
-      transition:0.3s;
-    }
 
-    .footer-box a:hover{
-      color:#ff9c3a;
-    }
+/* ================= CTA ================= */
 
-    .copyright{
-      border-top:1px solid rgba(255,255,255,0.06);
-      padding-top:25px;
-      text-align:center;
-      color:#888;
-      font-size:14px;
-    }
+.cta{
+  margin:80px 7%;
+  background:linear-gradient(135deg,#ff7a00,#ffb347);
+  border-radius:40px;
+  padding:70px 30px;
+  text-align:center;
+  color:black;
+}
 
-    .reveal{
-      opacity:0;
-      transform:translateY(40px);
-      transition:1s;
-    }
+.cta h2{
+  font-size:54px;
+  margin-bottom:18px;
+}
 
-    .reveal.active{
-      opacity:1;
-      transform:translateY(0);
-    }
+.cta p{
+  max-width:750px;
+  margin:auto;
+  line-height:1.8;
+  margin-bottom:35px;
+}
 
-    /* ================= MOBILE ================= */
+.cta a{
+  display:inline-block;
+  padding:18px 34px;
+  border-radius:18px;
+  background:black;
+  color:white;
+  font-weight:700;
+}
 
-    @media(max-width:950px){
+/* ================= FOOTER ================= */
 
-      .hero{
-        flex-direction:column;
-        padding-top:60px;
-      }
+footer{
+  margin-top:100px;
+  border-top:1px solid rgba(255,255,255,0.06);
+  padding:70px 7% 30px;
+}
 
-      .hero-left h1{
-        font-size:52px;
-      }
+.footer-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:40px;
+  margin-bottom:50px;
+}
 
-      .menu-toggle{
-        display:flex;
-        align-items:center;
-        justify-content:center;
-      }
+.footer-box h3{
+  margin-bottom:20px;
+}
 
-      nav{
-        position:fixed;
-        top:0;
-        right:-100%;
-        width:280px;
-        height:100vh;
-        background:#111b2d;
-        flex-direction:column;
-        align-items:flex-start;
-        justify-content:flex-start;
-        padding:100px 30px 30px;
-        transition:0.35s ease;
-        gap:24px;
-        border-left:1px solid rgba(255,255,255,0.08);
-      }
+.footer-box a{
+  display:block;
+  margin-bottom:12px;
+  color:#aaa;
+}
 
-      nav.show{
-        right:0;
-      }
+.copyright{
+  border-top:1px solid rgba(255,255,255,0.06);
+  padding-top:25px;
+  text-align:center;
+  color:#888;
+}
 
-    }
+.reveal{
+  opacity:0;
+  transform:translateY(40px);
+  transition:1s;
+}
 
-    @media(max-width:650px){
+.reveal.active{
+  opacity:1;
+  transform:translateY(0);
+}
 
-      .header{
-        padding:16px 20px;
-      }
+/* ================= MOBILE ================= */
 
-      .logo{
-        font-size:28px;
-      }
+@media(max-width:950px){
 
-      .hero{
-        padding:60px 20px;
-      }
+  .hero{
+    flex-direction:column;
+    padding-top:60px;
+  }
 
-      .hero-left h1{
-        font-size:40px;
-      }
+  .hero-left h1{
+    font-size:52px;
+  }
 
-      .hero-left p{
-        font-size:15px;
-      }
+  .menu-toggle{
+    display:flex;
+  }
 
-      .hero-form{
-        flex-direction:column;
-      }
+  nav{
+    position:fixed;
+    top:0;
+    right:-100%;
+    width:280px;
+    height:100vh;
+    background:#111b2d;
+    flex-direction:column;
+    align-items:flex-start;
+    justify-content:flex-start;
+    padding:100px 30px;
+    transition:0.35s ease;
+  }
 
-      .hero-form input,
-      .hero-form button{
-        width:100%;
-      }
+  nav.show{
+    right:0;
+  }
 
-      .section{
-        padding:80px 20px;
-      }
+}
 
-      .section-title h2{
-        font-size:34px;
-      }
-
-      footer{
-        padding:60px 20px 30px;
-      }
-
-    }
 @media(max-width:650px){
 
-  .testimonial{
-    padding:30px 20px;
-  }
+  .header{
+    padding:16px 20px;
+  }
 
-  .testimonial p{
-    font-size:15px;
-  }
+  .hero{
+    padding:60px 20px;
+  }
+
+  .hero-left h1{
+    font-size:40px;
+  }
+
+  .hero-form{
+    flex-direction:column;
+  }
+
+  .hero-form input,
+  .hero-form button{
+    width:100%;
+  }
+
+  .section{
+    padding:80px 20px;
+  }
+
+  .section-title h2{
+    font-size:34px;
+  }
+
+  .cta{
+    margin:60px 20px;
+  }
+
+  footer{
+    padding:60px 20px 30px;
+  }
 
 }
-  </style>
+
+</style>
 
 </head>
 
@@ -632,663 +610,511 @@
 
 <header class="header">
 
-  <div class="logo-box">
-    <div class="logo">Layboka AI</div>
-    <div class="logo-sub">
-      AI Powered Shopify Sales Automation
-    </div>
-  </div>
+<div class="logo-box">
+<div class="logo">Layboka AI</div>
+<div class="logo-sub">
+Shopify Sales Automation
+</div>
+</div>
 
-  <button class="menu-toggle" id="menuBtn">
-    ☰
-  </button>
+<button class="menu-toggle" id="menuBtn">
+☰
+</button>
 
-  <nav id="nav">
+<nav id="nav">
 
-    <a href="index.html">Home</a>
-    <a href="pricing.html">Pricing</a>
-    <a href="dashboard.html">Dashboard</a>
-    <a href="install.html">Install</a>
-    <a href="about.html">About</a>
-    <a href="contact.html">Contact</a>
-    <a href="privacy.html">Privacy</a>
-    <a href="terms.html">Terms</a>
+<a href="index.html">Home</a>
+<a href="pricing.html">Pricing</a>
+<a href="dashboard.html">Dashboard</a>
+<a href="install.html">Install</a>
+<a href="about.html">About</a>
+<a href="contact.html">Contact</a>
+<a href="privacy.html">Privacy</a>
+<a href="terms.html">Terms</a>
 
-    <a href="#storeInput" class="header-btn">
-      Install Free Trial
-    </a>
+<a href="#storeInput" class="header-btn">
+Install Free Trial
+</a>
 
-  </nav>
+</nav>
 
 </header>
 
+<!-- HERO -->
+
 <section class="hero">
 
-  <div class="hero-left reveal">
+<div class="hero-left reveal">
 
-    <h1>
-      Turn Your Shopify Store Into A
-      <span class="gradient">24/7 Sales Machine</span>
-    </h1>
+<h1>
+Turn Your Shopify Store Into A
+<span class="gradient">24/7 Sales Machine</span>
+</h1>
 
-    <p>
-      Layboka AI talks to visitors, recommends products,
-      recovers abandoned carts and boosts conversions automatically.
-    </p>
+<p>
+Layboka AI talks to visitors, recommends products,
+recovers abandoned carts and boosts conversions automatically.
+</p>
 
-    <div class="trial-note">
-      Start your free 3-day premium trial instantly.
-      <b>No credit card required.</b>
-    </div>
+<div class="trial-note">
+Start your free 3-day premium trial instantly.
+No credit card required. 1 click Setup.
+</div>
 
-    <div class="hero-form">
+<div class="hero-form">
 
-      <input
-        type="text"
-        id="storeInput"
-        placeholder="yourstore.myshopify.com"
-      >
+<input
+type="text"
+id="storeInput"
+placeholder="yourstore.myshopify.com"
+/>
 
-      <button onclick="startInstall()">
-        🚀 Install Free Trial
-      </button>
+<button onclick="startInstall()">
+🚀 Install Free Trial
+</button>
 
-    </div>
+</div>
 
-    <div class="hero-buttons">
+<div class="hero-buttons">
 
-      <a href="pricing.html" class="header-btn">
-        View Pricing
-      </a>
+<a href="pricing.html" class="header-btn">
+View Pricing
+</a>
 
-      <a href="#features" class="secondary-btn">
-        Explore Features
-      </a>
+<a href="#features" class="secondary-btn">
+Explore Features
+</a>
 
-    </div>
+</div>
 
-  </div>
+</div>
 
-  <div class="hero-right reveal">
+<div class="hero-right reveal">
 
-    <div class="hero-card">
+<div class="hero-card">
 
-      <div class="chat-top">
+<div class="chat-top">
 
-        <div class="chat-avatar">
-          🤖
-        </div>
+<div class="chat-avatar">
+🤖
+</div>
 
-        <div>
-          <h3>Layboka Shopi Agent</h3>
-          <div class="live">🟢 Live AI Assistant</div>
-        </div>
+<div>
+<h3>Layboka Shopi Agent</h3>
+<div class="live">🟢 Live AI Assistant</div>
+</div>
 
-      </div>
+</div>
 
-      <div class="chat-box">
+<div class="chat-box">
 
-        <div class="msg bot">
-          👋 Welcome! Looking for the best products today?
-        </div>
+<div class="msg bot">
+👋 Welcome! Looking for the best products today?
+</div>
 
-        <div class="msg user">
-          I need a premium smartwatch.
-        </div>
+<div class="msg user">
+I need a premium smartwatch.
+</div>
 
-        <div class="msg bot">
-          🔥 This model is trending right now with 20% OFF.
-        </div>
+<div class="msg bot">
+🔥 This model is trending right now with 20% OFF.
+</div>
 
-        <div class="msg bot">
-          🛒 Want me to add it to cart instantly?
-        </div>
+<div class="msg bot">
+🛒 Want me to add it to cart instantly?
+</div>
 
-      </div>
+</div>
 
-    </div>
+</div>
 
-  </div>
-
-</section>
-
-<section class="stats reveal">
-
-  <div class="stat-card">
-    <h2>+38%</h2>
-    <p>Average Conversion Increase</p>
-  </div>
-
-  <div class="stat-card">
-    <h2>24/7</h2>
-    <p>AI Customer Support</p>
-  </div>
-
-  <div class="stat-card">
-    <h2>2 Min</h2>
-    <p>Installation Time</p>
-  </div>
-
-  <div class="stat-card">
-    <h2>40+</h2>
-    <p>Languages Supported</p>
-  </div>
+</div>
 
 </section>
-  <!-- ================= PROBLEM ================= -->
+
+<!-- PROBLEM -->
 
 <section class="section">
 
-  <div class="section-title reveal">
+<div class="section-title reveal">
 
-    <p>THE PROBLEM</p>
+<p>THE PROBLEM</p>
 
-    <h2>
-      Your Store Is Losing
-      <span>Sales Every Day</span>
-    </h2>
+<h2>
+Your Store Is Losing
+<span>Sales Every Day</span>
+</h2>
 
-    <h4>
-      Most Shopify stores lose customers because visitors leave before getting answers,
-      abandon carts or never return after browsing.
-    </h4>
+<h4>
+Most Shopify stores lose customers because visitors leave before getting answers.
+</h4>
 
-  </div>
+</div>
 
-  <div class="feature-grid">
+<div class="feature-grid">
 
-    <div class="feature-card reveal">
+<div class="feature-card reveal">
+<div class="feature-icon">😤</div>
+<h3>Visitors Leave Fast</h3>
+<p>
+Customers abandon stores when questions go unanswered.
+</p>
+</div>
 
-      <div class="feature-icon">😤</div>
+<div class="feature-card reveal">
+<div class="feature-icon">📧</div>
+<h3>Support Overload</h3>
+<p>
+Your team wastes hours replying to repetitive questions.
+</p>
+</div>
 
-      <h3>Visitors Leave Fast</h3>
+<div class="feature-card reveal">
+<div class="feature-icon">💸</div>
+<h3>Lost Revenue</h3>
+<p>
+Abandoned carts reduce conversions and store growth.
+</p>
+</div>
 
-      <p>
-        Customers exit your store when questions are unanswered
-        or product recommendations are missing.
-      </p>
-
-    </div>
-
-    <div class="feature-card reveal">
-
-      <div class="feature-icon">📧</div>
-
-      <h3>Support Overload</h3>
-
-      <p>
-        Your team spends hours replying to repetitive support
-        and product-related questions every day.
-      </p>
-
-    </div>
-
-    <div class="feature-card reveal">
-
-      <div class="feature-icon">💸</div>
-
-      <h3>Abandoned Carts</h3>
-
-      <p>
-        Most stores lose revenue because shoppers leave before checkout
-        without any recovery automation.
-      </p>
-
-    </div>
-
-  </div>
+</div>
 
 </section>
 
-<!-- ================= SOLUTION ================= -->
-
-<section class="section">
-
-  <div class="section-title reveal">
-
-    <p>THE SOLUTION</p>
-
-    <h2>
-      One AI Assistant For
-      <span>Every Sale</span>
-    </h2>
-
-    <h4>
-      Layboka AI helps Shopify brands automate sales, support,
-      product recommendations and abandoned cart recovery 24/7.
-    </h4>
-
-  </div>
-
-  <div class="feature-grid">
-
-    <div class="feature-card reveal">
-
-      <div class="feature-icon">🤖</div>
-
-      <h3>AI Sales Conversations</h3>
-
-      <p>
-        Talk naturally with customers and guide them toward checkout
-        using smart AI product recommendations.
-      </p>
-
-    </div>
-
-    <div class="feature-card reveal">
-
-      <div class="feature-icon">🛒</div>
-
-      <h3>Smart Checkout Recovery</h3>
-
-      <p>
-        Recover abandoned carts automatically through AI reminders,
-        urgency and follow-up automation.
-      </p>
-
-    </div>
-
-    <div class="feature-card reveal">
-
-      <div class="feature-icon">📲</div>
-
-      <h3>WhatsApp Automation</h3>
-
-      <p>
-        Send instant WhatsApp recovery messages and customer updates
-        automatically after cart abandonment.
-      </p>
-
-    </div>
-
-    <div class="feature-card reveal">
-
-      <div class="feature-icon">📊</div>
-
-      <h3>Real-Time Dashboard</h3>
-
-      <p>
-        Monitor chats, conversions, revenue and AI performance
-        from a single analytics dashboard.
-      </p>
-
-    </div>
-
-  </div>
-
-</section>
+<!-- SOLUTION -->
 
 <section class="section" id="features">
 
-  <div class="section-title reveal">
+<div class="section-title reveal">
 
-    <p>FEATURES</p>
+<p>THE SOLUTION</p>
 
-    <h2>
-      Everything You Need To
-      <span>Scale Revenue</span>
-    </h2>
+<h2>
+One AI Assistant For
+<span>Every Sale</span>
+</h2>
 
-    <h4>
-      Powerful AI tools built for Shopify growth.
-    </h4>
+<h4>
+Layboka AI automates sales, support and cart recovery 24/7.
+</h4>
 
-  </div>
+</div>
 
-  <div class="feature-grid">
+<div class="feature-grid">
 
-    <div class="feature-card reveal">
+<div class="feature-card reveal">
+<div class="feature-icon">🤖</div>
+<h3>AI Sales Agent</h3>
+<p>
+Talk naturally with customers and recommend products automatically.
+</p>
+</div>
 
-      <div class="feature-icon">🤖</div>
+<div class="feature-card reveal">
+<div class="feature-icon">🛒</div>
+<h3>Checkout Recovery</h3>
+<p>
+Recover abandoned carts using smart AI reminders.
+</p>
+</div>
 
-      <h3>AI Sales Agent</h3>
+<div class="feature-card reveal">
+<div class="feature-icon">📲</div>
+<h3>WhatsApp Automation</h3>
+<p>
+Recover customers through WhatsApp automation instantly.
+</p>
+</div>
 
-      <p>
-        Convert visitors into buyers automatically.
-      </p>
+<div class="feature-card reveal">
+<div class="feature-icon">📊</div>
+<h3>Analytics Dashboard</h3>
+<p>
+Track chats, conversions and revenue in real time.
+</p>
+</div>
 
-    </div>
-
-    <div class="feature-card reveal">
-
-      <div class="feature-icon">🛒</div>
-
-      <h3>Checkout Recovery</h3>
-
-      <p>
-        Recover abandoned carts with smart AI reminders.
-      </p>
-
-    </div>
-
-    <div class="feature-card reveal">
-
-      <div class="feature-icon">📊</div>
-
-      <h3>Live Analytics</h3>
-
-      <p>
-        Track chats, conversions and revenue in real time.
-      </p>
-
-    </div>
-
-  </div>
+</div>
 
 </section>
-  <!-- ================= TESTIMONIALS ================= -->
+
+<!-- STATS -->
+
+<section class="stats reveal">
+
+<div class="stat-card">
+<h2>+38%</h2>
+<p>Average Conversion Increase</p>
+</div>
+
+<div class="stat-card">
+<h2>24/7</h2>
+<p>AI Customer Support</p>
+</div>
+
+<div class="stat-card">
+<h2>2 Min</h2>
+<p>Installation Time</p>
+</div>
+
+<div class="stat-card">
+<h2>40+</h2>
+<p>Languages Supported</p>
+</div>
+
+</section>
+
+<!-- TESTIMONIALS -->
 
 <section class="section">
 
-  <div class="section-title reveal">
+<div class="section-title reveal">
 
-    <p>TESTIMONIALS</p>
+<p>TESTIMONIALS</p>
 
-    <h2>
-      Shopify Brands Love
-      <span>Layboka AI</span>
-    </h2>
+<h2>
+Shopify Brands Love
+<span>Layboka AI</span>
+</h2>
 
-    <h4>
-      Trusted by growing eCommerce brands to increase sales,
-      automate support and recover more revenue.
-    </h4>
+</div>
 
-  </div>
+<div class="testimonial-wrapper">
 
-  <div class="testimonial-wrapper">
+<div class="testimonial active">
 
-    <!-- TESTIMONIAL 1 -->
+<img src="151.jpg" alt="Rahul">
 
-    <div class="testimonial active">
+<p>
+"Layboka AI increased our Shopify conversions by 32% in the first week."
+</p>
 
-      <img src="151.jpg" alt="Rahul">
+<h4>Rahul Sharma</h4>
 
-      <p>
-        "Layboka AI increased our Shopify conversions by 32% in the first week.
-        Customers love the instant replies and recommendations."
-      </p>
+</div>
 
-      <h4>
-        Rahul Sharma • Fashion Store Owner
-      </h4>
+<div class="testimonial">
 
-    </div>
+<img src="150.jpg" alt="Priya">
 
-    <!-- TESTIMONIAL 2 -->
+<p>
+"The abandoned cart recovery feature alone paid for the subscription."
+</p>
 
-    <div class="testimonial">
+<h4>Priya Mehta</h4>
 
-      <img src="150.jpg" alt="Priya">
+</div>
 
-      <p>
-        "The abandoned cart recovery feature alone paid for the subscription.
-        Our recovery rate improved dramatically."
-      </p>
+<div class="testimonial">
 
-      <h4>
-        Priya Mehta • Beauty Brand Founder
-      </h4>
+<img src="152.png" alt="Amit">
 
-    </div>
+<p>
+"Feels like having a real AI sales employee working 24/7."
+</p>
 
-    <!-- TESTIMONIAL 3 -->
+<h4>Amit Verma</h4>
 
-    <div class="testimonial">
+</div>
 
-      <img src="152.png" alt="Amit">
-
-      <p>
-        "Feels like having a real AI sales employee working 24/7.
-        Setup took less than 2 minutes."
-      </p>
-
-      <h4>
-        Amit Verma • Electronics Store
-      </h4>
-
-    </div>
-
-  </div>
+</div>
 
 </section>
 
-<!-- ================= TESTIMONIAL STYLE ================= -->
+<!-- CTA -->
 
-<style>
+<section class="cta reveal">
 
-.testimonial-wrapper{
-  max-width:900px;
-  margin:auto;
-  position:relative;
-}
+<h2>
+Install In Under 2 Minutes
+</h2>
 
-.testimonial{
-  display:none;
-  text-align:center;
-  background:rgba(255,255,255,0.04);
-  border:1px solid rgba(255,255,255,0.06);
-  padding:40px;
-  border-radius:28px;
-}
+<p>
+Start your premium AI trial today and automate your Shopify sales.
+</p>
 
-.testimonial.active{
-  display:block;
-}
+<a href="#storeInput">
+🚀 Install Free Trial
+</a>
 
-.testimonial img{
-  width:80px;
-  height:80px;
-  border-radius:50%;
-  object-fit:cover;
-  margin:0 auto 22px;
-  border:3px solid rgba(255,255,255,0.08);
-}
+</section>
 
-.testimonial p{
-  color:#d3d3d3;
-  line-height:1.9;
-  margin-bottom:20px;
-  font-size:18px;
-}
-
-.testimonial h4{
-  color:#ffb347;
-  font-size:18px;
-}
-
-@media(max-width:650px){
-
-  .testimonial{
-    padding:30px 20px;
-  }
-
-  .testimonial p{
-    font-size:15px;
-  }
-
-}
-
-</style>
-
-<!-- ================= TESTIMONIAL JS ================= -->
-
-<script>
-
-  let index = 0;
-
-  setInterval(()=>{
-
-    const items =
-    document.querySelectorAll(".testimonial");
-
-    items.forEach((i)=>
-      i.classList.remove("active")
-    );
-
-    index =
-    (index + 1) % items.length;
-
-    items[index]
-    .classList.add("active");
-
-  },4000);
-
-</script>
+<!-- FOOTER -->
 
 <footer>
 
-  <div class="footer-grid">
+<div class="footer-grid">
 
-    <div class="footer-box">
+<div class="footer-box">
 
-      <h3>Layboka AI</h3>
+<h3>Layboka AI</h3>
 
-      <a href="index.html">Home</a>
-      <a href="pricing.html">Pricing</a>
-      <a href="dashboard.html">Dashboard</a>
+<a href="index.html">Home</a>
+<a href="pricing.html">Pricing</a>
+<a href="dashboard.html">Dashboard</a>
 
-    </div>
+</div>
 
-    <div class="footer-box">
+<div class="footer-box">
 
-      <h3>Company</h3>
+<h3>Company</h3>
 
-      <a href="about.html">About</a>
-      <a href="contact.html">Contact</a>
-      <a href="privacy.html">Privacy</a>
-      <a href="terms.html">Terms</a>
+<a href="about.html">About</a>
+<a href="contact.html">Contact</a>
+<a href="privacy.html">Privacy</a>
+<a href="terms.html">Terms</a>
 
-    </div>
+</div>
 
-  </div>
+</div>
 
-  <div class="copyright">
-    © 2026 Layboka AI • All Rights Reserved
-  </div>
+<div class="copyright">
+© 2026 Layboka AI • All Rights Reserved
+</div>
 
 </footer>
 
 <script>
 
-  // ================= MOBILE MENU =================
+// MOBILE MENU
 
-  const menuBtn =
-  document.getElementById("menuBtn");
+const menuBtn =
+document.getElementById("menuBtn");
 
-  const nav =
-  document.getElementById("nav");
+const nav =
+document.getElementById("nav");
 
-  menuBtn.addEventListener("click",()=>{
+menuBtn.addEventListener("click",()=>{
 
-    nav.classList.toggle("show");
+nav.classList.toggle("show");
 
-    if(nav.classList.contains("show")){
-      menuBtn.innerHTML = "✕";
-    }else{
-      menuBtn.innerHTML = "☰";
-    }
+if(nav.classList.contains("show")){
+menuBtn.innerHTML = "✕";
+}else{
+menuBtn.innerHTML = "☰";
+}
 
-  });
+});
 
-  // CLOSE MENU ON CLICK OUTSIDE
+// CLOSE MENU OUTSIDE
 
-  document.addEventListener("click",(e)=>{
+document.addEventListener("click",(e)=>{
 
-    if(
-      nav.classList.contains("show") &&
-      !nav.contains(e.target) &&
-      !menuBtn.contains(e.target)
-    ){
+if(
+nav.classList.contains("show") &&
+!nav.contains(e.target) &&
+!menuBtn.contains(e.target)
+){
 
-      nav.classList.remove("show");
-      menuBtn.innerHTML = "☰";
+nav.classList.remove("show");
+menuBtn.innerHTML = "☰";
 
-    }
+}
 
-  });
+});
 
-  // ================= INSTALL =================
+// INSTALL
 
-  function startInstall(){
+function startInstall(){
 
-    let shop =
-    document.getElementById("storeInput")
-    .value
-    .trim();
+let shop =
+document.getElementById("storeInput")
+.value
+.trim();
 
-    if(!shop){
+if(!shop){
 
-      alert("Enter your Shopify store URL");
-      return;
+alert("Enter your Shopify store URL");
+return;
 
-    }
+}
 
-    shop = shop
-      .replace(/\s/g,'')
-      .replace("https://","")
-      .replace("http://","");
+shop = shop
+.replace(/\s/g,'')
+.replace("https://","")
+.replace("http://","");
 
-    const valid =
-    /^[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
-    .test(shop);
+const valid =
+/^[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
+.test(shop);
 
-    if(!valid){
+if(!valid){
 
-      alert(
-        "Enter valid Shopify domain or custom domain"
-      );
+alert(
+"Enter valid Shopify domain or custom domain"
+);
 
-      return;
+return;
 
-    }
+}
 
-    window.location.href =
-    "/auth?shop=" +
-    encodeURIComponent(shop);
+window.location.href =
+"/auth?shop=" +
+encodeURIComponent(shop);
 
-  }
+}
 
-  // ENTER KEY SUPPORT
+// ENTER SUPPORT
 
-  document
-  .getElementById("storeInput")
-  .addEventListener("keypress",(e)=>{
+document
+.getElementById("storeInput")
+.addEventListener("keypress",(e)=>{
 
-    if(e.key === "Enter"){
-      startInstall();
-    }
+if(e.key === "Enter"){
+startInstall();
+}
 
-  });
+});
 
-  // ================= SCROLL REVEAL =================
+// REVEAL
 
-  const reveals =
-  document.querySelectorAll(".reveal");
+const reveals =
+document.querySelectorAll(".reveal");
 
-  function revealOnScroll(){
+function revealOnScroll(){
 
-    reveals.forEach((el)=>{
+reveals.forEach((el)=>{
 
-      const top =
-      el.getBoundingClientRect().top;
+const top =
+el.getBoundingClientRect().top;
 
-      if(top < window.innerHeight - 100){
+if(top < window.innerHeight - 100){
 
-        el.classList.add("active");
+el.classList.add("active");
 
-      }
+}
 
-    });
+});
 
-  }
+}
 
-  window.addEventListener(
-    "scroll",
-    revealOnScroll
-  );
+window.addEventListener(
+"scroll",
+revealOnScroll
+);
 
-  revealOnScroll();
+revealOnScroll();
+
+// TESTIMONIALS
+
+let index = 0;
+
+setInterval(()=>{
+
+const items =
+document.querySelectorAll(".testimonial");
+
+items.forEach((i)=>
+i.classList.remove("active")
+);
+
+index =
+(index + 1) % items.length;
+
+items[index]
+.classList.add("active");
+
+},4000);
 
 </script>
 
