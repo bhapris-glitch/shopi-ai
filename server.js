@@ -6,8 +6,14 @@ const mongoose = require("mongoose");
 const crypto = require("crypto");
 const bodyParser = require("body-parser");
 const fetch = require("node-fetch");
-
 const Razorpay = require("razorpay");
+
+const Client = require("./models/Client");
+
+const app = express();
+
+const PORT = process.env.PORT || 3000;
+const BASE_URL = process.env.BASE_URL;
 
 // =======================
 // STRIPE SAFE LOAD
@@ -19,11 +25,21 @@ if (process.env.STRIPE_SECRET) {
   stripe = require("stripe")(process.env.STRIPE_SECRET);
 }
 
-const Client = require("./models/Client");
+// =======================
+// RAZORPAY INIT
+// =======================
 
-const app = express();
+let razorpay = null;
 
-const PORT = process.env.PORT || 3000;
+if (
+  process.env.RAZORPAY_KEY &&
+  process.env.RAZORPAY_SECRET
+) {
+  razorpay = new Razorpay({
+    key_id: process.env.RAZORPAY_KEY,
+    key_secret: process.env.RAZORPAY_SECRET
+  });
+}
 
 // =======================
 // MIDDLEWARE
@@ -40,7 +56,13 @@ app.use(
 
 app.use(cors());
 
-app.use(express.json());
+app.use(express.json({
+  limit: "10mb"
+}));
+
+app.use(express.urlencoded({
+  extended: true
+}));
 
 app.use(express.static("public"));
 
@@ -55,25 +77,34 @@ mongoose.connect(process.env.MONGO_URI)
 })
 
 .catch((err) => {
-  console.log("❌ DB Error:", err);
+  console.log("❌ MongoDB Error:", err);
 });
 
-const BASE_URL = process.env.BASE_URL;
+// =======================
+// HEALTH CHECK
+// =======================
+
+app.get("/", (req, res) => {
+
+  res.send("🚀 Layboka AI LIVE");
+
+});
 
 // =======================
 // SHOPIFY AUTH
 // =======================
+
 app.get("/auth", async (req, res) => {
 
   let shop = req.query.shop;
 
   if (!shop) {
-    return res.send("Missing store URL");
+    return res.send("❌ Missing store URL");
   }
 
   try {
 
-    // CLEAN URL
+    // CLEAN SHOP URL
     shop = shop
       .replace("https://", "")
       .replace("http://", "")
@@ -84,59 +115,113 @@ app.get("/auth", async (req, res) => {
 
     let finalShop = shop;
 
-    // IF CUSTOM DOMAIN
+    // =======================
+    // CUSTOM DOMAIN DETECTION
+    // =======================
+
     if (!shop.includes(".myshopify.com")) {
 
-      // Try detecting Shopify
-      const response = await fetch(`https://${shop}`, {
-        method: "GET",
-        redirect: "follow"
-      });
+      try {
 
-      // Shopify Header Detection
-      const shopifyDomain =
-        response.headers.get("x-shopify-shop-domain");
+        const response = await fetch(
+          `https://${shop}`,
+          {
+            method: "GET",
+            redirect: "follow",
+            timeout: 10000
+          }
+        );
 
-      // If found
-      if (shopifyDomain) {
+        // Shopify header
+        const shopifyDomain =
+          response.headers.get(
+            "x-shopify-shop-domain"
+          );
 
-        finalShop = shopifyDomain;
+        if (shopifyDomain) {
 
-      } else {
+          finalShop = shopifyDomain;
 
-        // Backup HTML Detection
-        const html = await response.text();
+        } else {
 
-        // Detect Shopify CDN/assets
-        const isShopify =
-          html.includes("cdn.shopify.com") ||
-          html.includes("shopify.theme") ||
-          html.includes("Shopify");
+          const html = await response.text();
 
-        if (!isShopify) {
-          return res.send("❌ This is not a Shopify store");
+          const hiddenMatch =
+            html.match(
+              /Shopify\.shop\s*=\s*"([^"]+)"/i
+            );
+
+          if (hiddenMatch?.[1]) {
+
+            finalShop = hiddenMatch[1];
+
+          } else {
+
+            const isShopify =
+              html.includes("cdn.shopify.com") ||
+              html.includes("shopify") ||
+              html.includes("Shopify.theme");
+
+            if (!isShopify) {
+
+              return res.send(
+                "❌ This is not a Shopify store"
+              );
+
+            }
+
+            return res.send(`
+              <h2 style="font-family:sans-serif;padding:30px">
+              ⚠ Shopify detected but hidden.<br><br>
+              Ask store owner for their
+              <b>myshopify.com</b> URL.
+              </h2>
+            `);
+
+          }
+
         }
 
-        // Still no myshopify domain found
-        return res.redirect(
-  "/find-store.html?domain=" + shop
-);
+      } catch (e) {
+
+        console.log(e);
+
+        return res.send(
+          "❌ Could not detect Shopify store"
+        );
+
       }
+
     }
 
+    // =======================
     // FINAL VALIDATION
+    // =======================
+
     if (
-      !/^[a-zA-Z0-9][a-zA-Z0-9-]*\.myshopify\.com$/.test(finalShop)
+      !/^[a-zA-Z0-9][a-zA-Z0-9-]*\.myshopify\.com$/
+      .test(finalShop)
     ) {
-      return res.send("❌ Invalid Shopify store");
+
+      return res.send(
+        "❌ Invalid Shopify store"
+      );
+
     }
 
-    // OAUTH URL
+    // =======================
+    // INSTALL URL
+    // =======================
+
     const installUrl =
+
       `https://${finalShop}/admin/oauth/authorize` +
+
       `?client_id=${process.env.SHOPIFY_API_KEY}` +
-      `&scope=read_products,write_script_tags` +
-      `&redirect_uri=${process.env.BASE_URL}/callback`;
+
+      `&scope=read_products,write_products,read_orders,write_script_tags` +
+
+      `&redirect_uri=${BASE_URL}/callback`;
 
     res.redirect(installUrl);
 
@@ -145,7 +230,7 @@ app.get("/auth", async (req, res) => {
     console.log(err);
 
     res.send(
-      "❌ Could not detect Shopify store"
+      "❌ Shopify auth failed"
     );
 
   }
@@ -153,25 +238,34 @@ app.get("/auth", async (req, res) => {
 });
 
 // =======================
-// CALLBACK (INSTALL)
+// CALLBACK
 // =======================
 
 app.get("/callback", async (req, res) => {
 
-  const { shop, code } = req.query;
-
-  if (
-    !shop ||
-    !/^[a-zA-Z0-9][a-zA-Z0-9-]*\.myshopify\.com$/.test(shop)
-  ) {
-    return res.send("Invalid shop");
-  }
-
   try {
 
+    const { shop, code } = req.query;
+
+    if (
+      !shop ||
+      !code
+    ) {
+
+      return res.send(
+        "❌ Missing shop/code"
+      );
+
+    }
+
+    // =======================
     // GET ACCESS TOKEN
+    // =======================
+
     const tokenRes = await fetch(
+
       `https://${shop}/admin/oauth/access_token`,
+
       {
         method: "POST",
 
@@ -180,49 +274,72 @@ app.get("/callback", async (req, res) => {
         },
 
         body: JSON.stringify({
-          client_id: process.env.SHOPIFY_API_KEY,
-          client_secret: process.env.SHOPIFY_API_SECRET,
+
+          client_id:
+            process.env.SHOPIFY_API_KEY,
+
+          client_secret:
+            process.env.SHOPIFY_API_SECRET,
+
           code
+
         })
+
       }
     );
 
-    const data = await tokenRes.json();
+    const tokenData =
+      await tokenRes.json();
 
-    if (!data.access_token) {
+    if (!tokenData.access_token) {
 
-      console.log(data);
+      console.log(tokenData);
 
       return res.send(
-        "❌ Failed to get Shopify access token"
+        "❌ Failed to get token"
       );
+
     }
 
-    // CHECK EXISTING CLIENT
-    let client = await Client.findOne({
-      store: shop
-    });
+    // =======================
+    // SAVE CLIENT
+    // =======================
 
-    // UPDATE EXISTING
+    let client =
+      await Client.findOne({
+        store: shop
+      });
+
     if (client) {
 
-      client.token = data.access_token;
-      client.status = "trial";
+      client.token =
+        tokenData.access_token;
+
+      client.status = "active";
 
       await client.save();
 
     } else {
 
-      // CREATE NEW CLIENT
       client = new Client({
+
         store: shop,
-        token: data.access_token,
+
+        token:
+          tokenData.access_token,
+
         trialEnds:
-          Date.now() + (3 * 24 * 60 * 60 * 1000),
+          Date.now() +
+          (3 * 24 * 60 * 60 * 1000),
+
         messages: 0,
+
         paid: false,
+
         status: "trial",
-        plan: "free"
+
+        plan: "starter"
+
       });
 
       await client.save();
@@ -234,58 +351,88 @@ app.get("/callback", async (req, res) => {
     // =======================
 
     await fetch(
+
       `https://${shop}/admin/api/2023-10/script_tags.json`,
+
       {
         method: "POST",
 
         headers: {
-          "X-Shopify-Access-Token": client.token,
-          "Content-Type": "application/json"
+
+          "X-Shopify-Access-Token":
+            client.token,
+
+          "Content-Type":
+            "application/json"
+
         },
 
         body: JSON.stringify({
+
           script_tag: {
+
             event: "onload",
+
             src:
-              `${BASE_URL}/widget.js?client=${client._id}`
+              `${BASE_URL}/chatbot.js?client=${client._id}`
+
           }
+
         })
+
       }
     );
 
     // =======================
-    // REGISTER UNINSTALL WEBHOOK
+    // REGISTER WEBHOOK
     // =======================
 
     await fetch(
+
       `https://${shop}/admin/api/2023-10/webhooks.json`,
+
       {
         method: "POST",
 
         headers: {
-          "X-Shopify-Access-Token": client.token,
-          "Content-Type": "application/json"
+
+          "X-Shopify-Access-Token":
+            client.token,
+
+          "Content-Type":
+            "application/json"
+
         },
 
         body: JSON.stringify({
+
           webhook: {
+
             topic: "app/uninstalled",
+
             address:
               `${BASE_URL}/shopify/uninstall`,
+
             format: "json"
+
           }
+
         })
+
       }
     );
 
-    // REDIRECT DASHBOARD
+    // =======================
+    // SUCCESS
+    // =======================
+
     res.redirect(
       `/dashboard.html?client=${client._id}`
     );
 
-  } catch (e) {
+  } catch (err) {
 
-    console.log(e);
+    console.log(err);
 
     res.send("❌ Install failed");
 
@@ -294,37 +441,72 @@ app.get("/callback", async (req, res) => {
 });
 
 // =======================
-// RAZORPAY INIT
+// GET CLIENT PLAN
 // =======================
 
-let razorpay = null;
+app.get("/client-plan/:id", async (req, res) => {
 
-if (
-  process.env.RAZORPAY_KEY &&
-  process.env.RAZORPAY_SECRET
-) {
+  try {
 
-  razorpay = new Razorpay({
-    key_id: process.env.RAZORPAY_KEY,
-    key_secret: process.env.RAZORPAY_SECRET
-  });
+    const client =
+      await Client.findById(
+        req.params.id
+      );
 
-}
+    if (!client) {
+
+      return res.json({
+        plan: "starter",
+        locked: false
+      });
+
+    }
+
+    const locked =
+      Date.now() > client.trialEnds &&
+      !client.paid;
+
+    res.json({
+
+      plan:
+        client.plan || "starter",
+
+      locked
+
+    });
+
+  } catch (err) {
+
+    console.log(err);
+
+    res.json({
+      plan: "starter",
+      locked: false
+    });
+
+  }
+
+});
 
 // =======================
-// CREATE RAZORPAY ORDER
+// CREATE ORDER
 // =======================
 
 app.post("/create-order", async (req, res) => {
 
   try {
 
-    const { plan, clientId } = req.body;
+    const {
+      plan,
+      clientId
+    } = req.body;
 
     if (!razorpay) {
+
       return res.status(500).json({
         error: "Razorpay not configured"
       });
+
     }
 
     const amount =
@@ -336,6 +518,7 @@ app.post("/create-order", async (req, res) => {
       await razorpay.orders.create({
 
         amount,
+
         currency: "INR",
 
         receipt:
@@ -359,7 +542,7 @@ app.post("/create-order", async (req, res) => {
     console.log(err);
 
     res.status(500).json({
-      error: "Order creation failed"
+      error: "Order failed"
     });
 
   }
@@ -382,7 +565,10 @@ app.post("/create-stripe", async (req, res) => {
 
     }
 
-    const { plan, clientId } = req.body;
+    const {
+      plan,
+      clientId
+    } = req.body;
 
     const price =
       plan === "premium"
@@ -403,7 +589,7 @@ app.post("/create-stripe", async (req, res) => {
             currency: "usd",
 
             product_data: {
-              name: "Layboka AI Plan"
+              name: "Layboka AI"
             },
 
             unit_amount: price,
@@ -458,42 +644,51 @@ app.post("/webhook", async (req, res) => {
     const sig =
       req.headers["x-razorpay-signature"];
 
-    if (!process.env.RAZORPAY_WEBHOOK_SECRET) {
+    if (
+      !process.env.RAZORPAY_WEBHOOK_SECRET
+    ) {
+
       return res.sendStatus(200);
+
     }
 
     const expected = crypto
+
       .createHmac(
         "sha256",
         process.env.RAZORPAY_WEBHOOK_SECRET
       )
+
       .update(req.body)
+
       .digest("hex");
 
     if (sig !== expected) {
+
       return res.sendStatus(400);
+
     }
 
     const event =
       JSON.parse(req.body);
 
-    // PAYMENT SUCCESS
-    if (event.event === "payment.captured") {
+    if (
+      event.event === "payment.captured"
+    ) {
 
       const notes =
         event.payload.payment.entity.notes;
 
-      const clientId = notes.clientId;
-
-      const plan = notes.plan;
-
       await Client.findByIdAndUpdate(
-        clientId,
+
+        notes.clientId,
+
         {
           paid: true,
           status: "active",
-          plan: plan
+          plan: notes.plan
         }
+
       );
 
     }
@@ -511,7 +706,7 @@ app.post("/webhook", async (req, res) => {
 });
 
 // =======================
-// SHOPIFY APP UNINSTALL
+// SHOPIFY UNINSTALL
 // =======================
 
 app.post(
@@ -522,39 +717,48 @@ app.post(
     try {
 
       const hmac =
-        req.headers["x-shopify-hmac-sha256"];
+        req.headers[
+          "x-shopify-hmac-sha256"
+        ];
 
       const digest = crypto
+
         .createHmac(
           "sha256",
           process.env.SHOPIFY_API_SECRET
         )
+
         .update(req.body, "utf8")
+
         .digest("base64");
 
-      // VERIFY SHOPIFY
       if (digest !== hmac) {
+
         return res.sendStatus(401);
+
       }
 
-      // PARSE BODY
       const data =
-        JSON.parse(req.body.toString());
+        JSON.parse(
+          req.body.toString()
+        );
 
-      const shop = data.domain;
-
-      // UPDATE DB
       await Client.findOneAndUpdate(
-        { store: shop },
+
+        {
+          store: data.domain
+        },
+
         {
           status: "uninstalled",
           paid: false
         }
+
       );
 
       console.log(
         "❌ App uninstalled:",
-        shop
+        data.domain
       );
 
       res.sendStatus(200);
@@ -571,61 +775,79 @@ app.post(
 );
 
 // =======================
-// CHAT API
+// AI CHAT API
 // =======================
 
 app.post("/chat", async (req, res) => {
 
-  const {
-    message,
-    clientId
-  } = req.body;
-
-  const client =
-    await Client.findById(clientId);
-
-  if (!client) {
-
-    return res.json({
-      reply: "👋 Hello"
-    });
-
-  }
-
-  // TRIAL LOCK
-  if (
-    Date.now() > client.trialEnds &&
-    !client.paid
-  ) {
-
-    return res.json({
-
-      reply:
-`⚠️ Trial expired
-
-Chats used: ${client.messages}
-
-👉 Upgrade your plan now.`,
-
-      locked: true
-
-    });
-
-  }
-
   try {
 
-    const aiRes = await fetch(
-      "https://api.openai.com/v1/chat/completions",
-      {
+    const {
+      message,
+      clientId
+    } = req.body;
 
+    const client =
+      await Client.findById(clientId);
+
+    let storeName =
+      "Shopify store";
+
+    if (client?.store) {
+
+      storeName =
+        client.store.replace(
+          ".myshopify.com",
+          ""
+        );
+
+    }
+
+    // =======================
+    // TRIAL LOCK
+    // =======================
+
+    if (client) {
+
+      if (
+        Date.now() > client.trialEnds &&
+        !client.paid
+      ) {
+
+        return res.json({
+
+          reply:
+`⚠️ Your free trial expired.
+
+Upgrade now to continue using Layboka AI.`,
+
+          locked: true
+
+        });
+
+      }
+
+    }
+
+    // =======================
+    // OPENAI API
+    // =======================
+
+    const aiRes = await fetch(
+
+      "https://api.openai.com/v1/chat/completions",
+
+      {
         method: "POST",
 
         headers: {
-          "Authorization":
+
+          Authorization:
             `Bearer ${process.env.OPENAI_API_KEY}`,
+
           "Content-Type":
             "application/json"
+
         },
 
         body: JSON.stringify({
@@ -636,8 +858,27 @@ Chats used: ${client.messages}
 
             {
               role: "system",
-              content:
-                "You are a Shopify AI sales assistant. Help customers and push users to checkout."
+
+              content: `
+You are Layboka AI.
+
+You are a premium Shopify sales assistant.
+
+Store Name:
+${storeName}
+
+Rules:
+- Sound human
+- Friendly tone
+- Help users buy
+- Recommend products
+- Increase sales
+- Keep replies short
+- Never say AI unavailable
+- Never say system error
+- Be persuasive
+- Use urgency naturally
+`
             },
 
             {
@@ -645,7 +886,11 @@ Chats used: ${client.messages}
               content: message
             }
 
-          ]
+          ],
+
+          temperature: 0.8,
+
+          max_tokens: 180
 
         })
 
@@ -655,157 +900,29 @@ Chats used: ${client.messages}
     const data =
       await aiRes.json();
 
-    client.messages++;
-
-    await client.save();
-
-    res.json({
-      reply:
-        data.choices?.[0]?.message?.content
-    });
-
-  } catch (e) {
-
-    console.log(e);
-
-    res.json({
-      reply: "AI error"
-    });
-
-  }
-
-});
-
-// =======================
-// HEALTH CHECK
-// =======================
-
-app.get("/", (req, res) => {
-
-  res.send("🚀 Layboka AI LIVE");
-
-});
-// ====================================
-// WEBSITE AI CHATBOT WITH CHAT API
-// ====================================
-
-app.post("/chat", async (req,res)=>{
-
-  try{
-
-    const { message, clientId } = req.body;
-
-    const client = await Client.findById(clientId);
-
-    // Default fallback
-    let storeName = "this Shopify store";
-
-    if(client?.store){
-      storeName = client.store
-        .replace(".myshopify.com","");
-    }
-
-    // Trial lock
-    if(client){
-
-      if(
-        Date.now() > client.trialEnds &&
-        !client.paid
-      ){
-
-        return res.json({
-          reply:
-`⚠️ Your Layboka AI trial expired.
-
-Total chats used: ${client.messages}
-
-Upgrade now to continue using AI sales automation.`,
-          locked:true
-        });
-
-      }
-
-    }
-
-    // OpenAI Request
-    const aiRes = await fetch(
-      "https://api.openai.com/v1/chat/completions",
-      {
-        method:"POST",
-
-        headers:{
-          "Authorization":
-          `Bearer ${process.env.OPENAI_API_KEY}`,
-
-          "Content-Type":"application/json"
-        },
-
-        body:JSON.stringify({
-
-          model:"gpt-4o-mini",
-
-          messages:[
-
-            {
-              role:"system",
-
-              content:
-`
-You are Layboka AI.
-
-You are a smart Shopify sales assistant.
-
-Behave like a real human sales expert.
-
-Rules:
-- Reply naturally
-- Keep responses short
-- Help customers buy products
-- Recommend products
-- Increase conversions
-- Be friendly and persuasive
-- Mention urgency sometimes
-- Never say you are an AI
-- Never say "AI reply unavailable"
-
-Store name:
-${storeName}
-`
-            },
-
-            {
-              role:"user",
-              content:message
-            }
-
-          ],
-
-          temperature:0.8,
-          max_tokens:180
-
-        })
-      }
-    );
-
-    const data = await aiRes.json();
-
-    console.log(data);
+    console.log("OPENAI:", data);
 
     let reply =
       data?.choices?.[0]?.message?.content;
 
-    // Better fallback
-    if(!reply){
+    // =======================
+    // FALLBACK REPLY
+    // =======================
+
+    if (!reply) {
 
       reply =
 `I'd love to help 😊
 
-Could you tell me which product you're looking for today?`;
+Which product are you looking for today?`;
 
     }
 
-    // Save messages
-    if(client){
+    // =======================
+    // SAVE MESSAGES
+    // =======================
+
+    if (client) {
 
       client.messages += 1;
 
@@ -813,11 +930,13 @@ Could you tell me which product you're looking for today?`;
 
     }
 
-    res.json({ reply });
+    res.json({
+      reply
+    });
 
-  }catch(err){
+  } catch (err) {
 
-    console.log(err);
+    console.log("CHAT ERROR:", err);
 
     res.json({
 
@@ -831,6 +950,7 @@ How can I help you today?`
   }
 
 });
+
 // =======================
 // START SERVER
 // =======================
