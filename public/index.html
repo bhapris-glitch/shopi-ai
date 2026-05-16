@@ -1124,6 +1124,397 @@ Start your premium AI trial today and automate your Shopify sales.
   },4000);
 
 </script>
+<!-- ================= AI WEBSITE CHATBOT ================= -->
 
+<style>
+
+.chatbot-toggle{
+
+position:fixed;
+bottom:25px;
+right:25px;
+
+width:65px;
+height:65px;
+
+border-radius:50%;
+
+background:linear-gradient(90deg,#ff7a00,#ffb347);
+
+display:flex;
+align-items:center;
+justify-content:center;
+
+font-size:28px;
+
+cursor:pointer;
+
+z-index:9999;
+
+box-shadow:
+0 10px 40px rgba(255,122,0,0.4);
+
+animation:pulse 2s infinite;
+
+}
+
+@keyframes pulse{
+
+0%{
+transform:scale(1);
+}
+
+50%{
+transform:scale(1.08);
+}
+
+100%{
+transform:scale(1);
+}
+
+}
+
+.chatbot{
+
+position:fixed;
+
+bottom:100px;
+right:25px;
+
+width:370px;
+max-width:92%;
+
+height:560px;
+
+background:#101827;
+
+border:1px solid rgba(255,255,255,0.08);
+
+border-radius:28px;
+
+overflow:hidden;
+
+display:none;
+
+flex-direction:column;
+
+z-index:9999;
+
+box-shadow:
+0 20px 60px rgba(0,0,0,0.4);
+
+}
+
+.chatbot.show{
+display:flex;
+}
+
+.chat-header{
+
+padding:18px 20px;
+
+background:linear-gradient(90deg,#ff7a00,#ffb347);
+
+color:black;
+
+display:flex;
+justify-content:space-between;
+align-items:center;
+
+font-weight:700;
+
+}
+
+.chat-close{
+cursor:pointer;
+font-size:24px;
+}
+
+.chat-messages{
+
+flex:1;
+
+padding:20px;
+
+overflow-y:auto;
+
+display:flex;
+flex-direction:column;
+
+gap:14px;
+
+background:#0f1726;
+
+}
+
+.chat-msg{
+
+max-width:85%;
+
+padding:14px 16px;
+
+border-radius:18px;
+
+line-height:1.7;
+
+font-size:14px;
+
+}
+
+.bot-msg{
+
+background:#1d2940;
+align-self:flex-start;
+color:white;
+
+}
+
+.user-msg{
+
+background:linear-gradient(90deg,#ff7a00,#ffb347);
+
+color:black;
+
+align-self:flex-end;
+
+font-weight:600;
+
+}
+
+.chat-input{
+
+padding:16px;
+
+display:flex;
+
+gap:10px;
+
+background:#101827;
+
+}
+
+.chat-input input{
+
+flex:1;
+
+padding:14px;
+
+border:none;
+
+border-radius:14px;
+
+background:#1b263d;
+
+color:white;
+
+outline:none;
+
+}
+
+.chat-input button{
+
+border:none;
+
+padding:14px 18px;
+
+border-radius:14px;
+
+background:linear-gradient(90deg,#ff7a00,#ffb347);
+
+font-weight:700;
+
+cursor:pointer;
+
+}
+
+.install-btn{
+
+display:inline-block;
+
+margin-top:10px;
+
+padding:12px 18px;
+
+border-radius:12px;
+
+background:linear-gradient(90deg,#ff7a00,#ffb347);
+
+color:black;
+
+font-weight:700;
+
+text-decoration:none;
+
+}
+
+</style>
+
+<!-- CHAT TOGGLE -->
+
+<div class="chatbot-toggle" id="chatToggle">
+💬
+</div>
+
+<!-- CHATBOT -->
+
+<div class="chatbot" id="chatbot">
+
+<div class="chat-header">
+
+<div>
+🤖 Layboka AI Assistant
+</div>
+
+<div class="chat-close" id="chatClose">
+✕
+</div>
+
+</div>
+
+<div class="chat-messages" id="chatMessages">
+
+<div class="chat-msg bot-msg">
+👋 Welcome to Layboka AI.
+
+I can help you increase Shopify sales, recover abandoned carts and automate support.
+
+Ask me anything.
+</div>
+
+</div>
+
+<div class="chat-input">
+
+<input
+type="text"
+id="chatInput"
+placeholder="Ask something..."
+>
+
+<button onclick="sendMessage()">
+➤
+</button>
+
+</div>
+
+</div>
+
+<script>
+
+// TOGGLE
+
+const chatbot =
+document.getElementById("chatbot");
+
+document
+.getElementById("chatToggle")
+.onclick = ()=>{
+
+chatbot.classList.toggle("show");
+
+};
+
+document
+.getElementById("chatClose")
+.onclick = ()=>{
+
+chatbot.classList.remove("show");
+
+};
+
+// SEND MESSAGE
+
+async function sendMessage(){
+
+const input =
+document.getElementById("chatInput");
+
+const text =
+input.value.trim();
+
+if(!text) return;
+
+const messages =
+document.getElementById("chatMessages");
+
+// USER MSG
+
+messages.innerHTML += `
+<div class="chat-msg user-msg">
+${text}
+</div>
+`;
+
+input.value = "";
+
+messages.scrollTop =
+messages.scrollHeight;
+
+// AI REQUEST
+
+try{
+
+const res = await fetch("/website-chat",{
+
+method:"POST",
+
+headers:{
+"Content-Type":"application/json"
+},
+
+body:JSON.stringify({
+message:text
+})
+
+});
+
+const data =
+await res.json();
+
+// BOT MSG
+
+messages.innerHTML += `
+<div class="chat-msg bot-msg">
+
+${data.reply}
+
+<br><br>
+
+<a href="install.html"
+class="install-btn">
+🚀 Start Free Trial
+</a>
+
+</div>
+`;
+
+messages.scrollTop =
+messages.scrollHeight;
+
+}catch(err){
+
+messages.innerHTML += `
+<div class="chat-msg bot-msg">
+⚠ AI server error
+</div>
+`;
+
+}
+
+}
+
+// ENTER SUPPORT
+
+document
+.getElementById("chatInput")
+.addEventListener("keypress",(e)=>{
+
+if(e.key === "Enter"){
+sendMessage();
+}
+
+});
+
+  </script>
 </body>
 </html>
