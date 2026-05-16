@@ -685,16 +685,49 @@ app.get("/", (req, res) => {
   res.send("🚀 Layboka AI LIVE");
 
 });
-// =======================
-// WEBSITE AI CHATBOT
-// =======================
+// ====================================
+// WEBSITE AI CHATBOT WITH CHAT API
+// ====================================
 
-app.post("/website-chat", async (req,res)=>{
+app.post("/chat", async (req,res)=>{
 
   try{
 
-    const { message } = req.body;
+    const { message, clientId } = req.body;
 
+    const client = await Client.findById(clientId);
+
+    // Default fallback
+    let storeName = "this Shopify store";
+
+    if(client?.store){
+      storeName = client.store
+        .replace(".myshopify.com","");
+    }
+
+    // Trial lock
+    if(client){
+
+      if(
+        Date.now() > client.trialEnds &&
+        !client.paid
+      ){
+
+        return res.json({
+          reply:
+`⚠️ Your Layboka AI trial expired.
+
+Total chats used: ${client.messages}
+
+Upgrade now to continue using AI sales automation.`,
+          locked:true
+        });
+
+      }
+
+    }
+
+    // OpenAI Request
     const aiRes = await fetch(
       "https://api.openai.com/v1/chat/completions",
       {
@@ -707,7 +740,7 @@ app.post("/website-chat", async (req,res)=>{
           "Content-Type":"application/json"
         },
 
-        body: JSON.stringify({
+        body:JSON.stringify({
 
           model:"gpt-4o-mini",
 
@@ -715,18 +748,29 @@ app.post("/website-chat", async (req,res)=>{
 
             {
               role:"system",
-              content:`
-You are Layboka AI sales assistant.
 
-Your goal:
-- Convince Shopify store owners to install Layboka AI
-- Explain benefits
-- Push free trial
-- Be short, smart and persuasive
-- Mention abandoned cart recovery
-- Mention AI sales automation
-- Mention 24/7 support
-              `
+              content:
+`
+You are Layboka AI.
+
+You are a smart Shopify sales assistant.
+
+Behave like a real human sales expert.
+
+Rules:
+- Reply naturally
+- Keep responses short
+- Help customers buy products
+- Recommend products
+- Increase conversions
+- Be friendly and persuasive
+- Mention urgency sometimes
+- Never say you are an AI
+- Never say "AI reply unavailable"
+
+Store name:
+${storeName}
+`
             },
 
             {
@@ -734,27 +778,54 @@ Your goal:
               content:message
             }
 
-          ]
+          ],
+
+          temperature:0.8,
+          max_tokens:180
 
         })
-
       }
     );
 
     const data = await aiRes.json();
 
-    res.json({
-      reply:
-      data.choices?.[0]?.message?.content ||
-      "AI reply unavailable"
-    });
+    console.log(data);
+
+    let reply =
+      data?.choices?.[0]?.message?.content;
+
+    // Better fallback
+    if(!reply){
+
+      reply =
+`I'd love to help 😊
+
+Could you tell me which product you're looking for today?`;
+
+    }
+
+    // Save messages
+    if(client){
+
+      client.messages += 1;
+
+      await client.save();
+
+    }
+
+    res.json({ reply });
 
   }catch(err){
 
     console.log(err);
 
     res.json({
-      reply:"AI server error"
+
+      reply:
+`👋 Welcome to Layboka AI.
+
+How can I help you today?`
+
     });
 
   }
