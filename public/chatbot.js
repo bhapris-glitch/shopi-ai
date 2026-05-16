@@ -1,5 +1,33 @@
 (function(){
+let clientId = "";
 
+// 1. Try script URL first
+const currentScript =
+document.currentScript;
+
+if(currentScript){
+
+  try{
+
+    const url =
+      new URL(currentScript.src);
+
+    clientId =
+      url.searchParams.get("client") || "";
+
+  }catch(e){}
+
+}
+
+// 2. Fallback from page URL
+if(!clientId){
+
+  clientId =
+    new URLSearchParams(
+      window.location.search
+    ).get("client") || "";
+
+}
   // =========================
   // CLIENT ID
   // =========================
