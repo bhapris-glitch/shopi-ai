@@ -787,8 +787,17 @@ app.post("/chat", async (req, res) => {
       clientId
     } = req.body;
 
-    const client =
-      await Client.findById(clientId);
+    let client = null;
+
+if(
+  clientId &&
+  mongoose.Types.ObjectId.isValid(clientId)
+){
+
+  client =
+    await Client.findById(clientId);
+
+}
 
     let storeName =
       "Shopify store";
