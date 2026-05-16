@@ -1,0 +1,39 @@
+.typing{
+  display:flex;
+  gap:6px;
+  padding:14px 18px;
+  width:fit-content;
+  background:#1a2640;
+  border-radius:18px;
+  margin-bottom:12px;
+}
+
+.typing span{
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  background:#ffb347;
+  animation:bounce 1.2s infinite;
+}
+
+.typing span:nth-child(2){
+  animation-delay:0.2s;
+}
+
+.typing span:nth-child(3){
+  animation-delay:0.4s;
+}
+
+@keyframes bounce{
+
+  0%,80%,100%{
+    transform:scale(0.7);
+    opacity:0.5;
+  }
+
+  40%{
+    transform:scale(1);
+    opacity:1;
+  }
+
+}
