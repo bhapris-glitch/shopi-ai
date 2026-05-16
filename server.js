@@ -685,7 +685,81 @@ app.get("/", (req, res) => {
   res.send("🚀 Layboka AI LIVE");
 
 });
+// =======================
+// WEBSITE AI CHATBOT
+// =======================
 
+app.post("/website-chat", async (req,res)=>{
+
+  try{
+
+    const { message } = req.body;
+
+    const aiRes = await fetch(
+      "https://api.openai.com/v1/chat/completions",
+      {
+        method:"POST",
+
+        headers:{
+          "Authorization":
+          `Bearer ${process.env.OPENAI_API_KEY}`,
+
+          "Content-Type":"application/json"
+        },
+
+        body: JSON.stringify({
+
+          model:"gpt-4o-mini",
+
+          messages:[
+
+            {
+              role:"system",
+              content:`
+You are Layboka AI sales assistant.
+
+Your goal:
+- Convince Shopify store owners to install Layboka AI
+- Explain benefits
+- Push free trial
+- Be short, smart and persuasive
+- Mention abandoned cart recovery
+- Mention AI sales automation
+- Mention 24/7 support
+              `
+            },
+
+            {
+              role:"user",
+              content:message
+            }
+
+          ]
+
+        })
+
+      }
+    );
+
+    const data = await aiRes.json();
+
+    res.json({
+      reply:
+      data.choices?.[0]?.message?.content ||
+      "AI reply unavailable"
+    });
+
+  }catch(err){
+
+    console.log(err);
+
+    res.json({
+      reply:"AI server error"
+    });
+
+  }
+
+});
 // =======================
 // START SERVER
 // =======================
