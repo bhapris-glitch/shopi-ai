@@ -24,6 +24,19 @@
 
   *{
     box-sizing:border-box;
+    font-family:Poppins,sans-serif;
+  }
+
+  @keyframes pulse{
+    0%{
+      transform:scale(1);
+    }
+    50%{
+      transform:scale(1.08);
+    }
+    100%{
+      transform:scale(1);
+    }
   }
 
   .qbtn{
@@ -36,17 +49,18 @@
     white-space:nowrap;
     font-size:13px;
     transition:0.3s;
+    font-weight:600;
   }
 
   .qbtn:hover{
     transform:translateY(-2px);
-    background:#00ffc3;
+    background:#ff9f2f;
     color:#000;
   }
 
   .productCard{
-    background:#0f172a;
-    border-radius:18px;
+    background:#101c35;
+    border-radius:20px;
     padding:14px;
     margin-top:12px;
     border:1px solid rgba(255,255,255,0.06);
@@ -55,23 +69,24 @@
 
   .productCard img{
     width:100%;
-    border-radius:12px;
+    border-radius:14px;
     margin-bottom:10px;
     height:180px;
     object-fit:cover;
   }
 
   .buyBtn{
-    margin-top:10px;
+    margin-top:12px;
     width:100%;
-    padding:13px;
+    padding:14px;
     border:none;
-    border-radius:12px;
-    background:linear-gradient(135deg,#00ffc3,#00aaff);
+    border-radius:14px;
+    background:linear-gradient(135deg,#ff8a00,#ffbf47);
     color:#000;
     font-weight:bold;
     cursor:pointer;
     transition:0.3s;
+    font-size:15px;
   }
 
   .buyBtn:hover{
@@ -79,9 +94,9 @@
   }
 
   .dot{
-    width:7px;
-    height:7px;
-    background:#9ca3af;
+    width:8px;
+    height:8px;
+    background:#d1d5db;
     border-radius:50%;
     animation:bounce 1s infinite;
   }
@@ -97,9 +112,11 @@
   @keyframes bounce{
     0%,80%,100%{
       transform:scale(0);
+      opacity:0.4;
     }
     40%{
       transform:scale(1);
+      opacity:1;
     }
   }
 
@@ -127,19 +144,19 @@
 
   button.style = `
     position:fixed;
-    bottom:20px;
-    right:20px;
-    width:65px;
-    height:65px;
+    bottom:22px;
+    right:22px;
+    width:72px;
+    height:72px;
     border-radius:50%;
-    background:linear-gradient(135deg,#00ffc3,#00aaff);
+    background:linear-gradient(135deg,#ff8a00,#ffbf47);
     display:flex;
     align-items:center;
     justify-content:center;
-    font-size:28px;
+    font-size:30px;
     cursor:pointer;
     z-index:999999;
-    box-shadow:0 0 30px rgba(0,255,200,0.5);
+    box-shadow:0 0 35px rgba(255,140,0,0.45);
     animation:pulse 2s infinite;
   `;
 
@@ -152,20 +169,19 @@
 
   box.style = `
     position:fixed;
-    bottom:95px;
+    bottom:108px;
     right:20px;
-    width:360px;
+    width:380px;
     max-width:95%;
-    height:540px;
-    background:#071421;
-    border-radius:24px;
+    height:620px;
+    background:#041126;
+    border-radius:34px;
     overflow:hidden;
     display:none;
     flex-direction:column;
     z-index:999999;
-    box-shadow:0 20px 60px rgba(0,0,0,0.5);
+    box-shadow:0 20px 60px rgba(0,0,0,0.55);
     border:1px solid rgba(255,255,255,0.08);
-    backdrop-filter:blur(12px);
   `;
 
   // =========================
@@ -175,8 +191,9 @@
 
   <div id="topBar"
   style="
-  padding:16px;
-  background:linear-gradient(135deg,#00ffc3,#00aaff);
+  padding:14px 18px;
+  min-height:78px;
+  background:linear-gradient(135deg,#ff8a00,#ffbf47);
   color:#000;
   font-weight:bold;
   display:flex;
@@ -185,24 +202,31 @@
   ">
 
     <div>
-      💁 Layboka Shop Manager
+
+      <div style="
+      font-size:17px;
+      font-weight:800;
+      ">
+      🤖 Layboka AI Assistant
+      </div>
+
       <div style="
       font-size:12px;
-      margin-top:4px;
+      margin-top:5px;
+      font-weight:600;
       ">
-      🟢 AI Online
+      🟢 Human-like AI Sales Agent
       </div>
+
     </div>
 
-    <div id="planBadge"
+    <div id="closeBtn"
     style="
-    background:#000;
-    color:#fff;
-    padding:5px 10px;
-    border-radius:30px;
-    font-size:12px;
+    font-size:32px;
+    cursor:pointer;
+    font-weight:300;
     ">
-    Starter
+    ✕
     </div>
 
   </div>
@@ -211,8 +235,8 @@
   style="
   flex:1;
   overflow:auto;
-  padding:14px;
-  background:#071421;
+  padding:18px;
+  background:#041126;
   color:#fff;
   ">
   </div>
@@ -220,50 +244,73 @@
   <div id="typing"
   style="
   display:none;
-  padding-left:14px;
-  padding-bottom:10px;
+  padding-left:18px;
+  padding-bottom:12px;
   ">
 
     <div style="
+    background:#16213c;
+    width:80px;
+    padding:12px;
+    border-radius:18px;
     display:flex;
-    gap:4px;
+    gap:6px;
     align-items:center;
+    justify-content:center;
     ">
+
       <div class="dot"></div>
       <div class="dot"></div>
       <div class="dot"></div>
+
     </div>
 
   </div>
 
   <div id="quickBtns"
   style="
-  padding:10px;
+  padding:10px 12px;
   display:flex;
   gap:8px;
   overflow:auto;
+  background:#041126;
   ">
   </div>
 
   <div style="
-  padding:12px;
+  padding:14px;
   border-top:1px solid rgba(255,255,255,0.08);
-  background:#0f172a;
+  background:#0b1730;
+  display:flex;
+  gap:10px;
   ">
 
     <input
     id="input"
-    placeholder="Ask about products..."
+    placeholder="Ask something..."
     style="
-    width:100%;
-    padding:14px;
+    flex:1;
+    padding:15px;
     border:none;
-    border-radius:14px;
+    border-radius:18px;
     outline:none;
-    background:#111827;
+    background:#17233f;
     color:#fff;
-    font-size:14px;
+    font-size:15px;
     ">
+
+    <button id="sendBtn"
+    style="
+    width:58px;
+    border:none;
+    border-radius:18px;
+    background:linear-gradient(135deg,#ff8a00,#ffbf47);
+    font-size:22px;
+    cursor:pointer;
+    font-weight:bold;
+    ">
+    ➤
+    </button>
 
   </div>
 
@@ -285,6 +332,14 @@
 
   };
 
+  box.querySelector("#closeBtn")
+  .onclick = ()=>{
+
+    opened = false;
+    box.style.display = "none";
+
+  };
+
   // =========================
   // ELEMENTS
   // =========================
@@ -300,8 +355,8 @@
   const quickBtns =
     box.querySelector("#quickBtns");
 
-  const badge =
-    box.querySelector("#planBadge");
+  const sendBtn =
+    box.querySelector("#sendBtn");
 
   // =========================
   // ADD MESSAGE
@@ -311,7 +366,7 @@
     const div =
       document.createElement("div");
 
-    div.style.margin = "10px 0";
+    div.style.margin = "12px 0";
 
     div.style.textAlign =
       type==="user"
@@ -330,21 +385,23 @@
         <h3 style="
         margin:0;
         color:white;
+        font-size:20px;
         ">
         ${text.title}
         </h3>
 
         <p style="
-        color:#9ca3af;
+        color:#c3cad7;
         font-size:14px;
-        margin-top:8px;
+        margin-top:10px;
+        line-height:1.6;
         ">
         ${text.description}
         </p>
 
         <h2 style="
-        color:#00ffc3;
-        margin-top:10px;
+        color:#ffbf47;
+        margin-top:12px;
         ">
         ${text.price}
         </h2>
@@ -360,26 +417,24 @@
 
       `;
 
-    }
-
-    // NORMAL CHAT
-    else{
+    }else{
 
       div.innerHTML = `
       <span style="
       display:inline-block;
-      padding:12px 14px;
-      border-radius:18px;
-      max-width:80%;
+      padding:14px 16px;
+      border-radius:20px;
+      max-width:82%;
       background:
         ${type==="user"
-          ? "linear-gradient(135deg,#00ffc3,#00aaff)"
-          : "#111827"};
+          ? "linear-gradient(135deg,#ff8a00,#ffbf47)"
+          : "#16213c"};
       color:
         ${type==="user"
           ? "#000"
           : "#fff"};
-      line-height:1.5;
+      line-height:1.7;
+      font-size:15px;
       ">
       ${text}
       </span>
@@ -430,25 +485,9 @@
   // =========================
   function applyPlan(){
 
-    // =====================
-    // PREMIUM
-    // =====================
     if(USER_PLAN === "premium"){
 
-      badge.innerHTML =
-        "Premium";
-
-      badge.style.background =
-        "#f59e0b";
-
       quickBtns.innerHTML = `
-
-      <button onclick="
-      quickAsk('discount')
-      "
-      class="qbtn">
-      🎁 Discounts
-      </button>
 
       <button onclick="
       quickAsk('best')
@@ -458,44 +497,29 @@
       </button>
 
       <button onclick="
+      quickAsk('offer')
+      "
+      class="qbtn">
+      🎁 Offers
+      </button>
+
+      <button onclick="
+      quickAsk('shipping')
+      "
+      class="qbtn">
+      🚚 Shipping
+      </button>
+
+      <button onclick="
       quickAsk('checkout')
       "
       class="qbtn">
       ⚡ Checkout
       </button>
 
-      <button onclick="
-      quickAsk('offer')
-      "
-      class="qbtn">
-      💰 Offers
-      </button>
-
       `;
 
-      setTimeout(()=>{
-
-        addMessage(`
-⚡ Premium AI Activated
-
-✔ AI Checkout Closer
-✔ Cart Recovery
-✔ Smart Upsells
-✔ Product Recommendations
-✔ Conversion Boosters
-        `,"ai");
-
-      },2000);
-
-    }
-
-    // =====================
-    // STARTER
-    // =====================
-    else{
-
-      badge.innerHTML =
-        "Starter";
+    }else{
 
       quickBtns.innerHTML = `
 
@@ -517,28 +541,6 @@
 
     }
 
-    // =====================
-    // LOCKED
-    // =====================
-    if(CHAT_LOCKED){
-
-      input.disabled = true;
-
-      input.placeholder =
-        "Subscription required";
-
-      addMessage(`
-🚫 Chatbot locked
-
-Upgrade your plan:
-<a href="/pricing.html?client=${clientId}"
-style="color:#00ffc3;">
-Upgrade Now
-</a>
-      `,"ai");
-
-    }
-
   }
 
   // =========================
@@ -546,43 +548,65 @@ Upgrade Now
   // =========================
   window.quickAsk = function(type){
 
-    if(type==="discount"){
-      sendMessage(
-        "Do you have discounts?"
-      );
-    }
-
-    if(type==="checkout"){
-      sendMessage(
-        "Help me checkout"
-      );
-    }
-
     if(type==="best"){
-      sendMessage(
-        "Show best sellers"
-      );
+      sendMessage("Show me best sellers");
     }
 
     if(type==="products"){
-      sendMessage(
-        "Show products"
-      );
+      sendMessage("Show products");
     }
 
     if(type==="shipping"){
-      sendMessage(
-        "What are shipping times?"
-      );
+      sendMessage("What are shipping times?");
     }
 
     if(type==="offer"){
-      sendMessage(
-        "What offers are available?"
-      );
+      sendMessage("What offers are available?");
+    }
+
+    if(type==="checkout"){
+      sendMessage("Help me checkout");
     }
 
   };
+
+  // =========================
+  // HUMAN STYLE REPLY
+  // =========================
+  function smartReply(msg){
+
+    const text = msg.toLowerCase();
+
+    if(text.includes("hello") || text.includes("hi")){
+      return "👋 Hey! Welcome to our store. What kind of product are you looking for today?";
+    }
+
+    if(text.includes("hoodie")){
+      return "🔥 Our premium oversized hoodies are trending right now. Super soft cotton, premium fit and fast shipping available.";
+    }
+
+    if(text.includes("price")){
+      return "💰 Prices depend on the collection, but we currently have limited-time offers running today.";
+    }
+
+    if(text.includes("shipping")){
+      return "🚚 Standard delivery usually takes 3-7 business days depending on your location.";
+    }
+
+    if(text.includes("discount") || text.includes("offer")){
+      return "🎁 Yes! We currently have special discounts on selected products plus extra savings during checkout.";
+    }
+
+    if(text.includes("checkout")){
+      return "⚡ I can help you complete checkout quickly. Add your favorite product to cart and proceed securely.";
+    }
+
+    if(text.includes("best")){
+      return "🔥 Our best sellers this week are oversized hoodies, premium smartwatches and sneakers.";
+    }
+
+    return "😊 I’m here to help you choose products, answer questions and guide you to the best deals available right now.";
+  }
 
   // =========================
   // SEND MESSAGE
@@ -593,70 +617,26 @@ Upgrade Now
 
     addMessage(msg,"user");
 
-    typing.style.display = "block";
-
     input.value = "";
 
-    try{
+    typing.style.display = "block";
 
-      const res =
-        await fetch("/chat",{
+    chat.scrollTop = chat.scrollHeight;
 
-          method:"POST",
+    setTimeout(()=>{
 
-          headers:{
-            "Content-Type":"application/json"
-          },
+      typing.style.display = "none";
 
-          body: JSON.stringify({
+      const reply = smartReply(msg);
 
-            message:msg,
-            clientId
+      addMessage(reply,"ai");
 
-          })
-
-        });
-
-      const data =
-        await res.json();
-
-      typing.style.display =
-        "none";
-
-      addMessage(
-        data.reply,
-        "ai"
-      );
-
-      // =====================
-      // SALES PUSH
-      // =====================
-
-      if(
-      msg.toLowerCase().includes("buy") ||
-      msg.toLowerCase().includes("price") ||
-      msg.toLowerCase().includes("best")
-      ){
-
-        setTimeout(()=>{
-
-          addMessage(`
-🔥 Today's Offer:
-Extra 10% OFF if you checkout today.
-          `,"ai");
-
-        },1200);
-
-      }
-
-      // =====================
       // PRODUCT CARD
-      // =====================
-
       if(
       msg.toLowerCase().includes("hoodie") ||
       msg.toLowerCase().includes("product") ||
-      msg.toLowerCase().includes("show")
+      msg.toLowerCase().includes("show") ||
+      msg.toLowerCase().includes("best")
       ){
 
         setTimeout(()=>{
@@ -665,10 +645,10 @@ Extra 10% OFF if you checkout today.
 
             type:"product",
 
-            title:"Premium Hoodie",
+            title:"Premium Oversized Hoodie",
 
             description:
-            "Ultra-soft premium cotton hoodie loved by customers.",
+            "🔥 Best Seller • Heavy Premium Cotton • Trending Fashion Fit • Limited Stock Available",
 
             price:"₹1,999",
 
@@ -679,50 +659,44 @@ Extra 10% OFF if you checkout today.
 
           },"ai");
 
-        },1500);
+        },700);
 
       }
 
-      // =====================
-      // AUTO CHECKOUT PUSH
-      // =====================
-
+      // SALES PUSH
       if(
+      msg.toLowerCase().includes("buy") ||
+      msg.toLowerCase().includes("price") ||
       msg.toLowerCase().includes("checkout")
       ){
 
         setTimeout(()=>{
 
-          addMessage(`
-⚡ Complete your order now before stock runs out.
-          `,"ai");
+          addMessage(
+          "🚀 Complete your order today and unlock extra checkout savings.",
+          "ai"
+          );
 
         },1000);
 
       }
 
-      // 🔒 LOCK
-      if(data.locked){
+    },1800);
 
-        CHAT_LOCKED = true;
+  }
 
-        input.disabled = true;
+  // =========================
+  // SEND BUTTON
+  // =========================
+  sendBtn.onclick = ()=>{
 
-      }
+    if(input.value.trim() !== ""){
 
-    }catch(e){
-
-      typing.style.display =
-        "none";
-
-      addMessage(
-        "⚠️ Error",
-        "ai"
-      );
+      sendMessage(input.value);
 
     }
 
-  }
+  };
 
   // =========================
   // ENTER SEND
@@ -751,14 +725,14 @@ Extra 10% OFF if you checkout today.
   setTimeout(()=>{
 
     addMessage(
-      "👋 Hi There! Need help choosing the perfect product?",
+      "👋 Hi there! I’m your AI shopping assistant. Ask me anything about products, offers or shipping.",
       "ai"
     );
 
-  },1000);
+  },1200);
 
   // =========================
-  // DEMO PRODUCT CARD
+  // DEMO PRODUCT
   // =========================
   setTimeout(()=>{
 
@@ -766,24 +740,24 @@ Extra 10% OFF if you checkout today.
 
       type:"product",
 
-      title:"Premium Oversized Hoodie",
+      title:"Premium Smart Watch",
 
       description:
-      "🔥 Best Seller • Premium Cotton • Limited Stock",
+      "⌚ AMOLED Display • 7-Day Battery • Waterproof • Best Seller",
 
-      price:"₹1,999",
+      price:"₹4,999",
 
       image:
-      "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab",
+      "https://images.unsplash.com/photo-1546868871-7041f2a55e12",
 
       url:"#"
 
     },"ai");
 
-  },3000);
+  },3500);
 
   // =========================
-  // ABANDONED CART RECOVERY
+  // INACTIVITY SALES PUSH
   // =========================
   document.addEventListener(
     "mousemove",
@@ -797,13 +771,12 @@ Extra 10% OFF if you checkout today.
     const inactive =
       Date.now() - lastActivity;
 
-    if(inactive > 60000){
+    if(inactive > 60000 && opened){
 
-      addMessage(`
-🛒 Still thinking?
-
-Complete your purchase before today's offer expires.
-      `,"ai");
+      addMessage(
+      "🛒 Still browsing? Today's discount may expire soon.",
+      "ai"
+      );
 
     }
 
