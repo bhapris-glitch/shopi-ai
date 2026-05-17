@@ -1,56 +1,47 @@
 (function(){
 
-  // ===================================
-  // CLIENT ID DETECTION
-  // ===================================
-  let clientId = "";
-
-  // From script URL
-  const currentScript = document.currentScript;
-
-  if(currentScript){
-
-    try{
-
-      const url = new URL(currentScript.src);
-
-      clientId =
-        url.searchParams.get("client") || "";
-
-    }catch(e){
-      console.log(e);
-    }
-
-  }
-
-  // From page URL fallback
-  if(!clientId){
-
-    clientId =
-      new URLSearchParams(
-        window.location.search
-      ).get("client") || "";
-
-  }
-
-  // ===================================
+  // =====================================
   // CONFIG
-  // ===================================
+  // =====================================
+
+  const API_BASE =
+    "https://shopi-ai.render.com";
+
   let USER_PLAN = "starter";
   let CHAT_LOCKED = false;
   let lastActivity = Date.now();
 
-  // IMPORTANT:
-  // CHANGE THIS TO YOUR LIVE BACKEND
-  const API_BASE =
-window.location.hostname.includes("render.com")
-? window.location.origin
-: "https://shopi-ai.render.com";
+  // =====================================
+  // CLIENT ID
+  // =====================================
 
-  // ===================================
+  let clientId = "";
+
+  try{
+
+    const currentScript =
+      document.currentScript;
+
+    if(currentScript){
+
+      const url =
+        new URL(currentScript.src);
+
+      clientId =
+        url.searchParams.get("client") || "";
+
+    }
+
+  }catch(e){
+    console.log("CLIENT ERROR:",e);
+  }
+
+  // =====================================
   // CSS
-  // ===================================
-  const style = document.createElement("style");
+  // =====================================
+
+  const style =
+    document.createElement("style");
 
   style.innerHTML = `
 
@@ -59,19 +50,13 @@ window.location.hostname.includes("render.com")
     font-family:Poppins,sans-serif;
   }
 
-  @keyframes pulse{
-    0%{
-      transform:scale(1);
-    }
-    50%{
-      transform:scale(1.08);
-    }
-    100%{
-      transform:scale(1);
-    }
+  @keyframes layPulse{
+    0%{transform:scale(1);}
+    50%{transform:scale(1.08);}
+    100%{transform:scale(1);}
   }
 
-  @keyframes fadeIn{
+  @keyframes layFade{
     from{
       opacity:0;
       transform:translateY(10px);
@@ -82,10 +67,10 @@ window.location.hostname.includes("render.com")
     }
   }
 
-  @keyframes bounce{
+  @keyframes layBounce{
     0%,80%,100%{
       transform:scale(0);
-      opacity:0.4;
+      opacity:.4;
     }
     40%{
       transform:scale(1);
@@ -93,40 +78,32 @@ window.location.hostname.includes("render.com")
     }
   }
 
-  .layboka-qbtn{
+  .layboka-btn{
     border:none;
     padding:10px 14px;
     border-radius:12px;
-    background:#17233f;
+    background:#16213c;
     color:#fff;
     cursor:pointer;
     white-space:nowrap;
     font-size:13px;
-    transition:0.3s;
     font-weight:600;
   }
 
-  .layboka-qbtn:hover{
-    transform:translateY(-2px);
-    background:#ffb347;
-    color:#000;
-  }
-
-  .layboka-product{
+  .layboka-card{
     background:#101c35;
-    border-radius:20px;
+    border-radius:18px;
     padding:14px;
     margin-top:12px;
-    border:1px solid rgba(255,255,255,0.06);
-    animation:fadeIn .4s ease;
+    border:1px solid rgba(255,255,255,.06);
+    animation:layFade .3s ease;
   }
 
-  .layboka-product img{
+  .layboka-card img{
     width:100%;
     height:180px;
     object-fit:cover;
     border-radius:14px;
-    margin-bottom:12px;
   }
 
   .layboka-buy{
@@ -136,47 +113,43 @@ window.location.hostname.includes("render.com")
     border:none;
     border-radius:14px;
     background:linear-gradient(135deg,#ff8a00,#ffbf47);
-    color:#000;
     font-weight:700;
     cursor:pointer;
-    transition:0.3s;
   }
 
-  .layboka-buy:hover{
-    transform:scale(1.03);
-  }
-
-  .layboka-dot{
+  .laydot{
     width:8px;
     height:8px;
     border-radius:50%;
     background:#fff;
-    animation:bounce 1s infinite;
+    animation:layBounce 1s infinite;
   }
 
-  .layboka-dot:nth-child(2){
-    animation-delay:0.2s;
+  .laydot:nth-child(2){
+    animation-delay:.2s;
   }
 
-  .layboka-dot:nth-child(3){
-    animation-delay:0.4s;
+  .laydot:nth-child(3){
+    animation-delay:.4s;
   }
 
   `;
 
   document.head.appendChild(style);
 
-  // ===================================
+  // =====================================
   // FLOAT BUTTON
-  // ===================================
-  const button = document.createElement("div");
+  // =====================================
+
+  const button =
+    document.createElement("div");
 
   button.innerHTML = "💬";
 
   button.style = `
     position:fixed;
-    bottom:22px;
-    right:22px;
+    right:20px;
+    bottom:20px;
     width:70px;
     height:70px;
     border-radius:50%;
@@ -187,41 +160,41 @@ window.location.hostname.includes("render.com")
     font-size:30px;
     cursor:pointer;
     z-index:999999;
-    box-shadow:0 0 35px rgba(255,140,0,0.45);
-    animation:pulse 2s infinite;
+    box-shadow:0 0 35px rgba(255,140,0,.4);
+    animation:layPulse 2s infinite;
   `;
 
   document.body.appendChild(button);
 
-  // ===================================
-  // CHATBOX
-  // ===================================
-  const box = document.createElement("div");
+  // =====================================
+  // BOX
+  // =====================================
+
+  const box =
+    document.createElement("div");
 
   box.style = `
     position:fixed;
-    bottom:105px;
     right:20px;
+    bottom:100px;
     width:380px;
     max-width:95%;
     height:620px;
     background:#041126;
-    border-radius:30px;
+    border-radius:28px;
     overflow:hidden;
     display:none;
     flex-direction:column;
     z-index:999999;
-    box-shadow:0 20px 60px rgba(0,0,0,0.55);
-    border:1px solid rgba(255,255,255,0.08);
+    border:1px solid rgba(255,255,255,.06);
+    box-shadow:0 20px 60px rgba(0,0,0,.5);
   `;
 
   box.innerHTML = `
 
-  <div
-  style="
-  padding:14px 18px;
-  min-height:74px;
+  <div style="
   background:linear-gradient(135deg,#ff8a00,#ffbf47);
+  padding:14px 18px;
   display:flex;
   justify-content:space-between;
   align-items:center;
@@ -230,7 +203,7 @@ window.location.hostname.includes("render.com")
     <div>
 
       <div style="
-      font-size:17px;
+      font-size:18px;
       font-weight:800;
       color:#000;
       ">
@@ -239,19 +212,19 @@ window.location.hostname.includes("render.com")
 
       <div style="
       font-size:12px;
-      margin-top:4px;
       color:#111;
+      margin-top:4px;
       font-weight:600;
       ">
-      🟢 Human-like Sales Assistant
+      🟢 Live AI Sales Assistant
       </div>
 
     </div>
 
-    <div id="layboka-close"
+    <div id="lay-close"
     style="
-    font-size:30px;
     cursor:pointer;
+    font-size:28px;
     color:#000;
     ">
     ✕
@@ -259,17 +232,17 @@ window.location.hostname.includes("render.com")
 
   </div>
 
-  <div id="layboka-chat"
+  <div id="lay-chat"
   style="
   flex:1;
   overflow:auto;
   padding:18px;
-  background:#041126;
   color:#fff;
+  background:#041126;
   ">
   </div>
 
-  <div id="layboka-typing"
+  <div id="lay-typing"
   style="
   display:none;
   padding-left:18px;
@@ -277,27 +250,26 @@ window.location.hostname.includes("render.com")
   ">
 
     <div style="
-    background:#16213c;
     width:80px;
     padding:12px;
-    border-radius:18px;
+    border-radius:16px;
+    background:#16213c;
     display:flex;
-    justify-content:center;
-    align-items:center;
     gap:6px;
+    justify-content:center;
     ">
 
-      <div class="layboka-dot"></div>
-      <div class="layboka-dot"></div>
-      <div class="layboka-dot"></div>
+      <div class="laydot"></div>
+      <div class="laydot"></div>
+      <div class="laydot"></div>
 
     </div>
 
   </div>
 
-  <div id="layboka-quick"
+  <div id="lay-quick"
   style="
-  padding:10px 12px;
+  padding:10px;
   display:flex;
   gap:8px;
   overflow:auto;
@@ -305,38 +277,34 @@ window.location.hostname.includes("render.com")
   ">
   </div>
 
-  <div
-  style="
+  <div style="
   padding:14px;
-  border-top:1px solid rgba(255,255,255,0.08);
   background:#0b1730;
+  border-top:1px solid rgba(255,255,255,.06);
   display:flex;
   gap:10px;
   ">
 
     <input
-    id="layboka-input"
-    placeholder="Ask about products..."
+    id="lay-input"
+    placeholder="Ask something..."
     style="
     flex:1;
     padding:15px;
     border:none;
-    border-radius:18px;
+    border-radius:16px;
     outline:none;
     background:#17233f;
     color:#fff;
-    font-size:15px;
     ">
 
-    <button id="layboka-send"
+    <button id="lay-send"
     style="
     width:58px;
     border:none;
-    border-radius:18px;
-    background:linear-gradient(135deg,#ff8a00,#ffbf47);
+    border-radius:16px;
     cursor:pointer;
-    font-size:20px;
-    font-weight:bold;
+    background:linear-gradient(135deg,#ff8a00,#ffbf47);
     ">
     ➤
     </button>
@@ -347,27 +315,29 @@ window.location.hostname.includes("render.com")
 
   document.body.appendChild(box);
 
-  // ===================================
+  // =====================================
   // ELEMENTS
-  // ===================================
+  // =====================================
+
   const chat =
-    box.querySelector("#layboka-chat");
+    box.querySelector("#lay-chat");
 
   const input =
-    box.querySelector("#layboka-input");
+    box.querySelector("#lay-input");
 
   const sendBtn =
-    box.querySelector("#layboka-send");
+    box.querySelector("#lay-send");
 
   const typing =
-    box.querySelector("#layboka-typing");
+    box.querySelector("#lay-typing");
 
   const quick =
-    box.querySelector("#layboka-quick");
+    box.querySelector("#lay-quick");
 
-  // ===================================
-  // OPEN / CLOSE
-  // ===================================
+  // =====================================
+  // OPEN CLOSE
+  // =====================================
+
   let opened = false;
 
   button.onclick = ()=>{
@@ -379,7 +349,7 @@ window.location.hostname.includes("render.com")
 
   };
 
-  box.querySelector("#layboka-close")
+  box.querySelector("#lay-close")
   .onclick = ()=>{
 
     opened = false;
@@ -388,9 +358,22 @@ window.location.hostname.includes("render.com")
 
   };
 
-  // ===================================
-  // ADD MESSAGE
-  // ===================================
+  // =====================================
+  // ESCAPE HTML
+  // =====================================
+
+  function escapeHtml(text){
+
+    return text
+      .replace(/&/g,"&amp;")
+      .replace(/</g,"&lt;")
+      .replace(/>/g,"&gt;");
+  }
+
+  // =====================================
+  // MESSAGE
+  // =====================================
+
   function addMessage(text,type){
 
     const div =
@@ -403,84 +386,32 @@ window.location.hostname.includes("render.com")
       ? "right"
       : "left";
 
-    // PRODUCT CARD
-    if(
-      typeof text === "object" &&
-      text.type === "product"
-    ){
+    div.innerHTML = `
 
-      div.innerHTML = `
+    <span style="
+    display:inline-block;
+    max-width:82%;
+    padding:14px 16px;
+    border-radius:20px;
+    line-height:1.6;
+    font-size:15px;
+    background:
+    ${
+      type==="user"
+      ? "linear-gradient(135deg,#ff8a00,#ffbf47)"
+      : "#16213c"
+    };
+    color:
+    ${
+      type==="user"
+      ? "#000"
+      : "#fff"
+    };
+    ">
+    ${escapeHtml(text)}
+    </span>
 
-      <div class="layboka-product">
-
-        <img src="${text.image}">
-
-        <h3 style="
-        margin:0;
-        font-size:20px;
-        color:#fff;
-        ">
-        ${text.title}
-        </h3>
-
-        <p style="
-        color:#cbd5e1;
-        line-height:1.6;
-        font-size:14px;
-        margin-top:10px;
-        ">
-        ${text.description}
-        </p>
-
-        <h2 style="
-        color:#ffbf47;
-        margin-top:12px;
-        ">
-        ${text.price}
-        </h2>
-
-        <button
-        class="layboka-buy"
-        onclick="
-        window.location.href='${text.url}'
-        ">
-        🛒 Add To Cart
-        </button>
-
-      </div>
-
-      `;
-
-    }else{
-
-      div.innerHTML = `
-
-      <span style="
-      display:inline-block;
-      max-width:82%;
-      padding:14px 16px;
-      border-radius:20px;
-      line-height:1.7;
-      font-size:15px;
-      background:
-      ${
-        type === "user"
-        ? "linear-gradient(135deg,#ff8a00,#ffbf47)"
-        : "#16213c"
-      };
-      color:
-      ${
-        type === "user"
-        ? "#000"
-        : "#fff"
-      };
-      ">
-      ${text}
-      </span>
-
-      `;
-
-    }
+    `;
 
     chat.appendChild(div);
 
@@ -489,76 +420,41 @@ window.location.hostname.includes("render.com")
 
   }
 
-  // ===================================
+  // =====================================
   // QUICK BUTTONS
-  // ===================================
-  quick.innerHTML = `
+  // =====================================
 
-    <button class="layboka-qbtn">
-    🔥 Best Sellers
-    </button>
+  const quicks = [
+    "🔥 Best Sellers",
+    "🎁 Offers",
+    "🚚 Shipping",
+    "⚡ Checkout"
+  ];
 
-    <button class="layboka-qbtn">
-    🎁 Offers
-    </button>
+  quicks.forEach((q)=>{
 
-    <button class="layboka-qbtn">
-    🚚 Shipping
-    </button>
+    const btn =
+      document.createElement("button");
 
-    <button class="layboka-qbtn">
-    ⚡ Checkout
-    </button>
+    btn.className =
+      "layboka-btn";
 
-  `;
+    btn.innerText = q;
 
-  const qBtns =
-    quick.querySelectorAll(".layboka-qbtn");
+    btn.onclick = ()=>{
 
-  qBtns[0].onclick = ()=>{
-    sendMessage("Show best sellers");
-  };
+      sendMessage(q);
 
-  qBtns[1].onclick = ()=>{
-    sendMessage("Show offers");
-  };
+    };
 
-  qBtns[2].onclick = ()=>{
-    sendMessage("Shipping times");
-  };
+    quick.appendChild(btn);
 
-  qBtns[3].onclick = ()=>{
-    sendMessage("Help me checkout");
-  };
+  });
 
-  // ===================================
-  // PRODUCT CARD DEMO
-  // ===================================
-  function showProduct(){
-
-    addMessage({
-
-      type:"product",
-
-      title:"Premium Oversized Hoodie",
-
-      description:
-      "🔥 Trending premium cotton hoodie with ultra-soft comfort and limited stock available.",
-
-      price:"₹1,999",
-
-      image:
-      "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?q=80&w=1200",
-
-      url:"#"
-
-    },"ai");
-
-  }
-
-  // ===================================
+  // =====================================
   // SEND MESSAGE
-  // ===================================
+  // =====================================
+
   async function sendMessage(msg){
 
     if(!msg || CHAT_LOCKED){
@@ -569,18 +465,24 @@ window.location.hostname.includes("render.com")
 
     input.value = "";
 
-    typing.style.display = "block";
-
-    chat.scrollTop =
-      chat.scrollHeight;
+    typing.style.display =
+      "block";
 
     try{
+
+      const controller =
+        new AbortController();
+
+      const timeout =
+        setTimeout(
+          ()=>controller.abort(),
+          20000
+        );
 
       const res =
         await fetch(
           API_BASE + "/chat",
           {
-
             method:"POST",
 
             headers:{
@@ -588,14 +490,24 @@ window.location.hostname.includes("render.com")
             },
 
             body:JSON.stringify({
-
               message:msg,
               clientId
+            }),
 
-            })
-
+            signal:
+              controller.signal
           }
         );
+
+      clearTimeout(timeout);
+
+      if(!res.ok){
+
+        throw new Error(
+          "API ERROR"
+        );
+
+      }
 
       const data =
         await res.json();
@@ -609,47 +521,18 @@ window.location.hostname.includes("render.com")
         "ai"
       );
 
-      // PRODUCT PUSH
-      if(
-        msg.toLowerCase().includes("product") ||
-        msg.toLowerCase().includes("hoodie") ||
-        msg.toLowerCase().includes("best") ||
-        msg.toLowerCase().includes("show")
-      ){
-
-        setTimeout(()=>{
-          showProduct();
-        },700);
-
-      }
-
-      // SALES PUSH
-      if(
-        msg.toLowerCase().includes("buy") ||
-        msg.toLowerCase().includes("checkout") ||
-        msg.toLowerCase().includes("price")
-      ){
-
-        setTimeout(()=>{
-
-          addMessage(
-          "🚀 Complete your order today before stock runs out.",
-          "ai"
-          );
-
-        },1200);
-
-      }
-
     }catch(err){
 
-      console.log(err);
+      console.log(
+        "CHATBOT ERROR:",
+        err
+      );
 
       typing.style.display =
         "none";
 
       addMessage(
-      "⚠️ AI server error. Please try again in a moment.",
+      "⚠️ Connection issue. Please try again.",
       "ai"
       );
 
@@ -657,12 +540,13 @@ window.location.hostname.includes("render.com")
 
   }
 
-  // ===================================
+  // =====================================
   // SEND BUTTON
-  // ===================================
+  // =====================================
+
   sendBtn.onclick = ()=>{
 
-    if(input.value.trim() !== ""){
+    if(input.value.trim()){
 
       sendMessage(
         input.value.trim()
@@ -672,16 +556,13 @@ window.location.hostname.includes("render.com")
 
   };
 
-  // ===================================
-  // ENTER SEND
-  // ===================================
   input.addEventListener(
     "keypress",
     (e)=>{
 
       if(
         e.key === "Enter" &&
-        input.value.trim() !== ""
+        input.value.trim()
       ){
 
         sendMessage(
@@ -693,54 +574,17 @@ window.location.hostname.includes("render.com")
     }
   );
 
-  // ===================================
+  // =====================================
   // GREETING
-  // ===================================
+  // =====================================
+
   setTimeout(()=>{
 
     addMessage(
-      "👋 Hi there! I’m your shopping assistant. Ask me about products, shipping, offers or recommendations.",
+      "👋 Hi! Ask me about products, shipping or offers.",
       "ai"
     );
 
-  },1200);
-
-  // ===================================
-  // DEMO PRODUCT
-  // ===================================
-  setTimeout(()=>{
-
-    showProduct();
-
-  },3200);
-
-  // ===================================
-  // INACTIVITY SALES PUSH
-  // ===================================
-  document.addEventListener(
-    "mousemove",
-    ()=>{
-      lastActivity = Date.now();
-    }
-  );
-
-  setInterval(()=>{
-
-    const inactive =
-      Date.now() - lastActivity;
-
-    if(
-      inactive > 60000 &&
-      opened
-    ){
-
-      addMessage(
-      "🛒 Still browsing? Today's special discount may expire soon.",
-      "ai"
-      );
-
-    }
-
-  },30000);
+  },1000);
 
 })();
