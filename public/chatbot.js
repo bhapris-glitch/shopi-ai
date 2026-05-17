@@ -1,51 +1,55 @@
 (function(){
-let clientId = "";
 
-// 1. Try script URL first
-const currentScript =
-document.currentScript;
+  // ===================================
+  // CLIENT ID DETECTION
+  // ===================================
+  let clientId = "";
 
-if(currentScript){
+  // From script URL
+  const currentScript = document.currentScript;
 
-  try{
+  if(currentScript){
 
-    const url =
-      new URL(currentScript.src);
+    try{
+
+      const url = new URL(currentScript.src);
+
+      clientId =
+        url.searchParams.get("client") || "";
+
+    }catch(e){
+      console.log(e);
+    }
+
+  }
+
+  // From page URL fallback
+  if(!clientId){
 
     clientId =
-      url.searchParams.get("client") || "";
+      new URLSearchParams(
+        window.location.search
+      ).get("client") || "";
 
-  }catch(e){}
+  }
 
-}
-
-// 2. Fallback from page URL
-if(!clientId){
-
-  clientId =
-    new URLSearchParams(
-      window.location.search
-    ).get("client") || "";
-
-}
-  // =========================
-  // CLIENT ID
-  // =========================
-  const clientId =
-    new URLSearchParams(window.location.search)
-    .get("client") || "";
-
+  // ===================================
+  // CONFIG
+  // ===================================
   let USER_PLAN = "starter";
   let CHAT_LOCKED = false;
-
-  // =========================
-  // GLOBAL STATE
-  // =========================
   let lastActivity = Date.now();
 
-  // =========================
-  // PREMIUM CSS
-  // =========================
+  // IMPORTANT:
+  // CHANGE THIS TO YOUR LIVE BACKEND
+  const API_BASE =
+window.location.hostname.includes("render.com")
+? window.location.origin
+: "https://shopi-ai.render.com";
+
+  // ===================================
+  // CSS
+  // ===================================
   const style = document.createElement("style");
 
   style.innerHTML = `
@@ -67,74 +71,15 @@ if(!clientId){
     }
   }
 
-  .qbtn{
-    border:none;
-    padding:10px 14px;
-    border-radius:12px;
-    background:#111827;
-    color:#fff;
-    cursor:pointer;
-    white-space:nowrap;
-    font-size:13px;
-    transition:0.3s;
-    font-weight:600;
-  }
-
-  .qbtn:hover{
-    transform:translateY(-2px);
-    background:#ff9f2f;
-    color:#000;
-  }
-
-  .productCard{
-    background:#101c35;
-    border-radius:20px;
-    padding:14px;
-    margin-top:12px;
-    border:1px solid rgba(255,255,255,0.06);
-    animation:fadeIn .4s ease;
-  }
-
-  .productCard img{
-    width:100%;
-    border-radius:14px;
-    margin-bottom:10px;
-    height:180px;
-    object-fit:cover;
-  }
-
-  .buyBtn{
-    margin-top:12px;
-    width:100%;
-    padding:14px;
-    border:none;
-    border-radius:14px;
-    background:linear-gradient(135deg,#ff8a00,#ffbf47);
-    color:#000;
-    font-weight:bold;
-    cursor:pointer;
-    transition:0.3s;
-    font-size:15px;
-  }
-
-  .buyBtn:hover{
-    transform:scale(1.03);
-  }
-
-  .dot{
-    width:8px;
-    height:8px;
-    background:#d1d5db;
-    border-radius:50%;
-    animation:bounce 1s infinite;
-  }
-
-  .dot:nth-child(2){
-    animation-delay:0.2s;
-  }
-
-  .dot:nth-child(3){
-    animation-delay:0.4s;
+  @keyframes fadeIn{
+    from{
+      opacity:0;
+      transform:translateY(10px);
+    }
+    to{
+      opacity:1;
+      transform:translateY(0);
+    }
   }
 
   @keyframes bounce{
@@ -148,24 +93,82 @@ if(!clientId){
     }
   }
 
-  @keyframes fadeIn{
-    from{
-      opacity:0;
-      transform:translateY(10px);
-    }
-    to{
-      opacity:1;
-      transform:translateY(0);
-    }
+  .layboka-qbtn{
+    border:none;
+    padding:10px 14px;
+    border-radius:12px;
+    background:#17233f;
+    color:#fff;
+    cursor:pointer;
+    white-space:nowrap;
+    font-size:13px;
+    transition:0.3s;
+    font-weight:600;
+  }
+
+  .layboka-qbtn:hover{
+    transform:translateY(-2px);
+    background:#ffb347;
+    color:#000;
+  }
+
+  .layboka-product{
+    background:#101c35;
+    border-radius:20px;
+    padding:14px;
+    margin-top:12px;
+    border:1px solid rgba(255,255,255,0.06);
+    animation:fadeIn .4s ease;
+  }
+
+  .layboka-product img{
+    width:100%;
+    height:180px;
+    object-fit:cover;
+    border-radius:14px;
+    margin-bottom:12px;
+  }
+
+  .layboka-buy{
+    width:100%;
+    margin-top:12px;
+    padding:14px;
+    border:none;
+    border-radius:14px;
+    background:linear-gradient(135deg,#ff8a00,#ffbf47);
+    color:#000;
+    font-weight:700;
+    cursor:pointer;
+    transition:0.3s;
+  }
+
+  .layboka-buy:hover{
+    transform:scale(1.03);
+  }
+
+  .layboka-dot{
+    width:8px;
+    height:8px;
+    border-radius:50%;
+    background:#fff;
+    animation:bounce 1s infinite;
+  }
+
+  .layboka-dot:nth-child(2){
+    animation-delay:0.2s;
+  }
+
+  .layboka-dot:nth-child(3){
+    animation-delay:0.4s;
   }
 
   `;
 
   document.head.appendChild(style);
 
-  // =========================
+  // ===================================
   // FLOAT BUTTON
-  // =========================
+  // ===================================
   const button = document.createElement("div");
 
   button.innerHTML = "💬";
@@ -174,8 +177,8 @@ if(!clientId){
     position:fixed;
     bottom:22px;
     right:22px;
-    width:72px;
-    height:72px;
+    width:70px;
+    height:70px;
     border-radius:50%;
     background:linear-gradient(135deg,#ff8a00,#ffbf47);
     display:flex;
@@ -190,20 +193,20 @@ if(!clientId){
 
   document.body.appendChild(button);
 
-  // =========================
+  // ===================================
   // CHATBOX
-  // =========================
+  // ===================================
   const box = document.createElement("div");
 
   box.style = `
     position:fixed;
-    bottom:108px;
+    bottom:105px;
     right:20px;
     width:380px;
     max-width:95%;
     height:620px;
     background:#041126;
-    border-radius:34px;
+    border-radius:30px;
     overflow:hidden;
     display:none;
     flex-direction:column;
@@ -212,18 +215,13 @@ if(!clientId){
     border:1px solid rgba(255,255,255,0.08);
   `;
 
-  // =========================
-  // HTML
-  // =========================
   box.innerHTML = `
 
-  <div id="topBar"
+  <div
   style="
   padding:14px 18px;
-  min-height:78px;
+  min-height:74px;
   background:linear-gradient(135deg,#ff8a00,#ffbf47);
-  color:#000;
-  font-weight:bold;
   display:flex;
   justify-content:space-between;
   align-items:center;
@@ -234,32 +232,34 @@ if(!clientId){
       <div style="
       font-size:17px;
       font-weight:800;
+      color:#000;
       ">
-      🤖 Layboka AI Assistant
+      🤖 Layboka AI
       </div>
 
       <div style="
       font-size:12px;
-      margin-top:5px;
+      margin-top:4px;
+      color:#111;
       font-weight:600;
       ">
-      🟢 Human-like AI Sales Agent
+      🟢 Human-like Sales Assistant
       </div>
 
     </div>
 
-    <div id="closeBtn"
+    <div id="layboka-close"
     style="
-    font-size:32px;
+    font-size:30px;
     cursor:pointer;
-    font-weight:300;
+    color:#000;
     ">
     ✕
     </div>
 
   </div>
 
-  <div id="chat"
+  <div id="layboka-chat"
   style="
   flex:1;
   overflow:auto;
@@ -269,7 +269,7 @@ if(!clientId){
   ">
   </div>
 
-  <div id="typing"
+  <div id="layboka-typing"
   style="
   display:none;
   padding-left:18px;
@@ -282,20 +282,20 @@ if(!clientId){
     padding:12px;
     border-radius:18px;
     display:flex;
-    gap:6px;
-    align-items:center;
     justify-content:center;
+    align-items:center;
+    gap:6px;
     ">
 
-      <div class="dot"></div>
-      <div class="dot"></div>
-      <div class="dot"></div>
+      <div class="layboka-dot"></div>
+      <div class="layboka-dot"></div>
+      <div class="layboka-dot"></div>
 
     </div>
 
   </div>
 
-  <div id="quickBtns"
+  <div id="layboka-quick"
   style="
   padding:10px 12px;
   display:flex;
@@ -305,7 +305,8 @@ if(!clientId){
   ">
   </div>
 
-  <div style="
+  <div
+  style="
   padding:14px;
   border-top:1px solid rgba(255,255,255,0.08);
   background:#0b1730;
@@ -314,8 +315,8 @@ if(!clientId){
   ">
 
     <input
-    id="input"
-    placeholder="Ask something..."
+    id="layboka-input"
+    placeholder="Ask about products..."
     style="
     flex:1;
     padding:15px;
@@ -327,14 +328,14 @@ if(!clientId){
     font-size:15px;
     ">
 
-    <button id="sendBtn"
+    <button id="layboka-send"
     style="
     width:58px;
     border:none;
     border-radius:18px;
     background:linear-gradient(135deg,#ff8a00,#ffbf47);
-    font-size:22px;
     cursor:pointer;
+    font-size:20px;
     font-weight:bold;
     ">
     ➤
@@ -346,9 +347,27 @@ if(!clientId){
 
   document.body.appendChild(box);
 
-  // =========================
+  // ===================================
+  // ELEMENTS
+  // ===================================
+  const chat =
+    box.querySelector("#layboka-chat");
+
+  const input =
+    box.querySelector("#layboka-input");
+
+  const sendBtn =
+    box.querySelector("#layboka-send");
+
+  const typing =
+    box.querySelector("#layboka-typing");
+
+  const quick =
+    box.querySelector("#layboka-quick");
+
+  // ===================================
   // OPEN / CLOSE
-  // =========================
+  // ===================================
   let opened = false;
 
   button.onclick = ()=>{
@@ -360,35 +379,18 @@ if(!clientId){
 
   };
 
-  box.querySelector("#closeBtn")
+  box.querySelector("#layboka-close")
   .onclick = ()=>{
 
     opened = false;
+
     box.style.display = "none";
 
   };
 
-  // =========================
-  // ELEMENTS
-  // =========================
-  const chat =
-    box.querySelector("#chat");
-
-  const input =
-    box.querySelector("#input");
-
-  const typing =
-    box.querySelector("#typing");
-
-  const quickBtns =
-    box.querySelector("#quickBtns");
-
-  const sendBtn =
-    box.querySelector("#sendBtn");
-
-  // =========================
+  // ===================================
   // ADD MESSAGE
-  // =========================
+  // ===================================
   function addMessage(text,type){
 
     const div =
@@ -397,32 +399,35 @@ if(!clientId){
     div.style.margin = "12px 0";
 
     div.style.textAlign =
-      type==="user"
+      type === "user"
       ? "right"
       : "left";
 
     // PRODUCT CARD
-    if(typeof text === "object" && text.type === "product"){
+    if(
+      typeof text === "object" &&
+      text.type === "product"
+    ){
 
       div.innerHTML = `
 
-      <div class="productCard">
+      <div class="layboka-product">
 
         <img src="${text.image}">
 
         <h3 style="
         margin:0;
-        color:white;
         font-size:20px;
+        color:#fff;
         ">
         ${text.title}
         </h3>
 
         <p style="
-        color:#c3cad7;
+        color:#cbd5e1;
+        line-height:1.6;
         font-size:14px;
         margin-top:10px;
-        line-height:1.6;
         ">
         ${text.description}
         </p>
@@ -434,7 +439,8 @@ if(!clientId){
         ${text.price}
         </h2>
 
-        <button class="buyBtn"
+        <button
+        class="layboka-buy"
         onclick="
         window.location.href='${text.url}'
         ">
@@ -448,24 +454,30 @@ if(!clientId){
     }else{
 
       div.innerHTML = `
+
       <span style="
       display:inline-block;
+      max-width:82%;
       padding:14px 16px;
       border-radius:20px;
-      max-width:82%;
-      background:
-        ${type==="user"
-          ? "linear-gradient(135deg,#ff8a00,#ffbf47)"
-          : "#16213c"};
-      color:
-        ${type==="user"
-          ? "#000"
-          : "#fff"};
       line-height:1.7;
       font-size:15px;
+      background:
+      ${
+        type === "user"
+        ? "linear-gradient(135deg,#ff8a00,#ffbf47)"
+        : "#16213c"
+      };
+      color:
+      ${
+        type === "user"
+        ? "#000"
+        : "#fff"
+      };
       ">
       ${text}
       </span>
+
       `;
 
     }
@@ -477,171 +489,81 @@ if(!clientId){
 
   }
 
-  // =========================
-  // LOAD PLAN
-  // =========================
-  async function loadPlan(){
+  // ===================================
+  // QUICK BUTTONS
+  // ===================================
+  quick.innerHTML = `
 
-    try{
+    <button class="layboka-qbtn">
+    🔥 Best Sellers
+    </button>
 
-      const res =
-        await fetch(
-          "/client-plan/" + clientId
-        );
+    <button class="layboka-qbtn">
+    🎁 Offers
+    </button>
 
-      const data =
-        await res.json();
+    <button class="layboka-qbtn">
+    🚚 Shipping
+    </button>
 
-      USER_PLAN =
-        data.plan || "starter";
+    <button class="layboka-qbtn">
+    ⚡ Checkout
+    </button>
 
-      CHAT_LOCKED =
-        data.locked;
+  `;
 
-      applyPlan();
+  const qBtns =
+    quick.querySelectorAll(".layboka-qbtn");
 
-    }catch(e){
-
-      console.log(e);
-
-    }
-
-  }
-
-  // =========================
-  // APPLY PLAN
-  // =========================
-  function applyPlan(){
-
-    if(USER_PLAN === "premium"){
-
-      quickBtns.innerHTML = `
-
-      <button onclick="
-      quickAsk('best')
-      "
-      class="qbtn">
-      🔥 Best Sellers
-      </button>
-
-      <button onclick="
-      quickAsk('offer')
-      "
-      class="qbtn">
-      🎁 Offers
-      </button>
-
-      <button onclick="
-      quickAsk('shipping')
-      "
-      class="qbtn">
-      🚚 Shipping
-      </button>
-
-      <button onclick="
-      quickAsk('checkout')
-      "
-      class="qbtn">
-      ⚡ Checkout
-      </button>
-
-      `;
-
-    }else{
-
-      quickBtns.innerHTML = `
-
-      <button onclick="
-      quickAsk('products')
-      "
-      class="qbtn">
-      🛍 Products
-      </button>
-
-      <button onclick="
-      quickAsk('shipping')
-      "
-      class="qbtn">
-      🚚 Shipping
-      </button>
-
-      `;
-
-    }
-
-  }
-
-  // =========================
-  // QUICK ASK
-  // =========================
-  window.quickAsk = function(type){
-
-    if(type==="best"){
-      sendMessage("Show me best sellers");
-    }
-
-    if(type==="products"){
-      sendMessage("Show products");
-    }
-
-    if(type==="shipping"){
-      sendMessage("What are shipping times?");
-    }
-
-    if(type==="offer"){
-      sendMessage("What offers are available?");
-    }
-
-    if(type==="checkout"){
-      sendMessage("Help me checkout");
-    }
-
+  qBtns[0].onclick = ()=>{
+    sendMessage("Show best sellers");
   };
 
-  // =========================
-  // HUMAN STYLE REPLY
-  // =========================
-  function smartReply(msg){
+  qBtns[1].onclick = ()=>{
+    sendMessage("Show offers");
+  };
 
-    const text = msg.toLowerCase();
+  qBtns[2].onclick = ()=>{
+    sendMessage("Shipping times");
+  };
 
-    if(text.includes("hello") || text.includes("hi")){
-      return "👋 Hey! Welcome to our store. What kind of product are you looking for today?";
-    }
+  qBtns[3].onclick = ()=>{
+    sendMessage("Help me checkout");
+  };
 
-    if(text.includes("hoodie")){
-      return "🔥 Our premium oversized hoodies are trending right now. Super soft cotton, premium fit and fast shipping available.";
-    }
+  // ===================================
+  // PRODUCT CARD DEMO
+  // ===================================
+  function showProduct(){
 
-    if(text.includes("price")){
-      return "💰 Prices depend on the collection, but we currently have limited-time offers running today.";
-    }
+    addMessage({
 
-    if(text.includes("shipping")){
-      return "🚚 Standard delivery usually takes 3-7 business days depending on your location.";
-    }
+      type:"product",
 
-    if(text.includes("discount") || text.includes("offer")){
-      return "🎁 Yes! We currently have special discounts on selected products plus extra savings during checkout.";
-    }
+      title:"Premium Oversized Hoodie",
 
-    if(text.includes("checkout")){
-      return "⚡ I can help you complete checkout quickly. Add your favorite product to cart and proceed securely.";
-    }
+      description:
+      "🔥 Trending premium cotton hoodie with ultra-soft comfort and limited stock available.",
 
-    if(text.includes("best")){
-      return "🔥 Our best sellers this week are oversized hoodies, premium smartwatches and sneakers.";
-    }
+      price:"₹1,999",
 
-    return "😊 I’m here to help you choose products, answer questions and guide you to the best deals available right now.";
+      image:
+      "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?q=80&w=1200",
+
+      url:"#"
+
+    },"ai");
+
   }
 
-  // =========================
+  // ===================================
   // SEND MESSAGE
-  // =========================
+  // ===================================
   async function sendMessage(msg){
 
-    if(CHAT_LOCKED) return;
+    if(!msg || CHAT_LOCKED){
+      return;
+    }
 
     addMessage(msg,"user");
 
@@ -649,97 +571,121 @@ if(!clientId){
 
     typing.style.display = "block";
 
-    chat.scrollTop = chat.scrollHeight;
+    chat.scrollTop =
+      chat.scrollHeight;
 
-    setTimeout(()=>{
+    try{
 
-      typing.style.display = "none";
+      const res =
+        await fetch(
+          API_BASE + "/chat",
+          {
 
-      const reply = smartReply(msg);
+            method:"POST",
 
-      addMessage(reply,"ai");
+            headers:{
+              "Content-Type":"application/json"
+            },
 
-      // PRODUCT CARD
+            body:JSON.stringify({
+
+              message:msg,
+              clientId
+
+            })
+
+          }
+        );
+
+      const data =
+        await res.json();
+
+      typing.style.display =
+        "none";
+
+      addMessage(
+        data.reply ||
+        "😊 How can I help you today?",
+        "ai"
+      );
+
+      // PRODUCT PUSH
       if(
-      msg.toLowerCase().includes("hoodie") ||
-      msg.toLowerCase().includes("product") ||
-      msg.toLowerCase().includes("show") ||
-      msg.toLowerCase().includes("best")
+        msg.toLowerCase().includes("product") ||
+        msg.toLowerCase().includes("hoodie") ||
+        msg.toLowerCase().includes("best") ||
+        msg.toLowerCase().includes("show")
       ){
 
         setTimeout(()=>{
-
-          addMessage({
-
-            type:"product",
-
-            title:"Premium Oversized Hoodie",
-
-            description:
-            "🔥 Best Seller • Heavy Premium Cotton • Trending Fashion Fit • Limited Stock Available",
-
-            price:"₹1,999",
-
-            image:
-            "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab",
-
-            url:"#"
-
-          },"ai");
-
+          showProduct();
         },700);
 
       }
 
       // SALES PUSH
       if(
-      msg.toLowerCase().includes("buy") ||
-      msg.toLowerCase().includes("price") ||
-      msg.toLowerCase().includes("checkout")
+        msg.toLowerCase().includes("buy") ||
+        msg.toLowerCase().includes("checkout") ||
+        msg.toLowerCase().includes("price")
       ){
 
         setTimeout(()=>{
 
           addMessage(
-          "🚀 Complete your order today and unlock extra checkout savings.",
+          "🚀 Complete your order today before stock runs out.",
           "ai"
           );
 
-        },1000);
+        },1200);
 
       }
 
-    },1800);
+    }catch(err){
+
+      console.log(err);
+
+      typing.style.display =
+        "none";
+
+      addMessage(
+      "⚠️ AI server error. Please try again in a moment.",
+      "ai"
+      );
+
+    }
 
   }
 
-  // =========================
+  // ===================================
   // SEND BUTTON
-  // =========================
+  // ===================================
   sendBtn.onclick = ()=>{
 
     if(input.value.trim() !== ""){
 
-      sendMessage(input.value);
+      sendMessage(
+        input.value.trim()
+      );
 
     }
 
   };
 
-  // =========================
+  // ===================================
   // ENTER SEND
-  // =========================
+  // ===================================
   input.addEventListener(
     "keypress",
     (e)=>{
 
       if(
-        e.key==="Enter" &&
+        e.key === "Enter" &&
         input.value.trim() !== ""
       ){
 
         sendMessage(
-          input.value
+          input.value.trim()
         );
 
       }
@@ -747,46 +693,30 @@ if(!clientId){
     }
   );
 
-  // =========================
+  // ===================================
   // GREETING
-  // =========================
+  // ===================================
   setTimeout(()=>{
 
     addMessage(
-      "👋 Hi there! I’m your AI shopping assistant. Ask me anything about products, offers or shipping.",
+      "👋 Hi there! I’m your shopping assistant. Ask me about products, shipping, offers or recommendations.",
       "ai"
     );
 
   },1200);
 
-  // =========================
+  // ===================================
   // DEMO PRODUCT
-  // =========================
+  // ===================================
   setTimeout(()=>{
 
-    addMessage({
+    showProduct();
 
-      type:"product",
+  },3200);
 
-      title:"Premium Smart Watch",
-
-      description:
-      "⌚ AMOLED Display • 7-Day Battery • Waterproof • Best Seller",
-
-      price:"₹4,999",
-
-      image:
-      "https://images.unsplash.com/photo-1546868871-7041f2a55e12",
-
-      url:"#"
-
-    },"ai");
-
-  },3500);
-
-  // =========================
+  // ===================================
   // INACTIVITY SALES PUSH
-  // =========================
+  // ===================================
   document.addEventListener(
     "mousemove",
     ()=>{
@@ -799,20 +729,18 @@ if(!clientId){
     const inactive =
       Date.now() - lastActivity;
 
-    if(inactive > 60000 && opened){
+    if(
+      inactive > 60000 &&
+      opened
+    ){
 
       addMessage(
-      "🛒 Still browsing? Today's discount may expire soon.",
+      "🛒 Still browsing? Today's special discount may expire soon.",
       "ai"
       );
 
     }
 
   },30000);
-
-  // =========================
-  // LOAD PLAN
-  // =========================
-  loadPlan();
 
 })();
