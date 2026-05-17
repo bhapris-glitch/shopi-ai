@@ -5,7 +5,6 @@ const cors = require("cors");
 const mongoose = require("mongoose");
 const crypto = require("crypto");
 const bodyParser = require("body-parser");
-const fetch = require("node-fetch");
 const Razorpay = require("razorpay");
 
 const Client = require("./models/Client");
@@ -626,6 +625,10 @@ Upgrade now to continue using Layboka AI.`,
       !process.env.OPENAI_API_KEY
     ){
 
+      console.log(
+        "❌ OPENAI_API_KEY missing"
+      );
+
       return res.json({
 
         reply:
@@ -638,7 +641,7 @@ How can I help you today?`
     }
 
     // ===================
-    // OPENAI
+    // OPENAI REQUEST
     // ===================
 
     const aiRes =
@@ -717,6 +720,27 @@ Rules:
       "OPENAI RESPONSE:",
       data
     );
+
+    // ===================
+    // OPENAI ERROR
+    // ===================
+
+    if(!aiRes.ok){
+
+      console.log(
+        "❌ OPENAI FAILED"
+      );
+
+      return res.json({
+
+        reply:
+`😊 I'm here to help.
+
+Please try again in a moment.`
+
+      });
+
+    }
 
     let reply =
 
@@ -892,6 +916,11 @@ app.post(
           paid:false
         }
 
+      );
+
+      console.log(
+        "❌ App uninstalled:",
+        data.domain
       );
 
       res.sendStatus(200);
