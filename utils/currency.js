@@ -119,6 +119,94 @@ async function convertPrice({
 
   try{
 
+    if(from === to){
+
+      return {
+
+        success:true,
+
+        amount,
+
+        currency:to,
+
+        symbol:
+          getCurrencySymbol(to)
+
+      };
+
+    }
+
+    // =========================
+    // FREE API
+    // =========================
+
+    const response =
+      await fetch(
+
+`https://open.er-api.com/v6/latest/${from}`
+
+      );
+
+    const data =
+      await response.json();
+
+    if(
+      !data.rates ||
+      !data.rates[to]
+    ){
+
+      throw new Error(
+        "Rate not found"
+      );
+
+    }
+
+    const rate =
+      data.rates[to];
+
+    const converted =
+      amount * rate;
+
+    return {
+
+      success:true,
+
+      amount:
+        Number(
+          converted.toFixed(2)
+        ),
+
+      currency:to,
+
+      symbol:
+        getCurrencySymbol(to)
+
+    };
+
+  }catch(err){
+
+    console.log(
+      "❌ Currency Error:",
+      err.message
+    );
+
+    return {
+
+      success:false,
+
+      amount,
+
+      currency:from,
+
+      symbol:
+        getCurrencySymbol(from)
+
+    };
+
+  }
+
+}
+
     // ======================================
     // SAME CURRENCY
     // ======================================
