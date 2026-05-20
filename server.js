@@ -538,6 +538,15 @@ app.get("/callback",async(req,res)=>{
 // =======================
 // CHAT API
 // =======================
+const {
+  detectCountry
+} = require("./utils/geo");
+
+const {
+  convertPrice,
+  getCurrencyFromCountry,
+  formatPrice
+} = require("./utils/currency");
 
 app.post("/chat",async(req,res)=>{
 
