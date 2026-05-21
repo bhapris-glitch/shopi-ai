@@ -80,6 +80,12 @@ if(
 // MIDDLEWARE
 // ======================================
 
+app.use(pricingRoutes);
+
+app.use(analyticsRoutes);
+
+app.use(productRoutes);
+
 // Razorpay webhook raw
 app.use(
   "/webhook",
