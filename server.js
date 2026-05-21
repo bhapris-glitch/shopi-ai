@@ -14,6 +14,16 @@ const bodyParser = require("body-parser");
 const Razorpay = require("razorpay");
 const fetch = require("node-fetch");
 
+const cartRoutes =
+require("./routes/cart");
+
+const pushRoutes =
+require("./routes/push");
+
+// START CRON
+require(
+  "./cron/abandonedCartCron"
+);
 const Client = require("./models/Client");
 
 const {
@@ -79,11 +89,10 @@ if(
 // ======================================
 // MIDDLEWARE
 // ======================================
-
+app.use(cartRoutes);
+app.use(pushRoutes);
 app.use(pricingRoutes);
-
 app.use(analyticsRoutes);
-
 app.use(productRoutes);
 
 // Razorpay webhook raw
