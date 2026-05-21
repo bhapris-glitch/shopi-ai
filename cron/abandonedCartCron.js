@@ -20,6 +20,122 @@ const sendRecoveryEmail =
 const sendWhatsAppRecovery =
   require("../services/whatsapp");
 
+const cron =
+require("node-cron");
+
+const Cart =
+require("../models/Cart");
+
+// ======================================
+// RUN EVERY 15 MINUTES
+// ======================================
+
+cron.schedule(
+
+  "*/15 * * * *",
+
+  async()=>{
+
+    console.log(
+      "🛒 Checking abandoned carts..."
+    );
+
+    try{
+
+      const oneHourAgo =
+        new Date(
+          Date.now() -
+          60*60*1000
+        );
+
+      // ===================================
+      // 1 HOUR REMINDER
+      // ===================================
+
+      const carts =
+        await Cart.find({
+
+          abandoned:true,
+
+          reminderSent1h:false,
+
+          createdAt:{
+            $lte:oneHourAgo
+          }
+
+        });
+
+      for(const cart of carts){
+
+        console.log(
+
+          "📧 Send 1H reminder to:",
+
+          cart.email
+
+        );
+
+        // EMAIL LOGIC HERE
+
+        cart.reminderSent1h =
+          true;
+
+        await cart.save();
+
+      }
+
+      // ===================================
+      // 24 HOUR REMINDER
+      // ===================================
+
+      const oneDayAgo =
+        new Date(
+          Date.now() -
+          24*60*60*1000
+        );
+
+      const carts24 =
+        await Cart.find({
+
+          abandoned:true,
+
+          reminderSent24h:false,
+
+          createdAt:{
+            $lte:oneDayAgo
+          }
+
+        });
+
+      for(const cart of carts24){
+
+        console.log(
+
+          "📧 Send 24H reminder to:",
+
+          cart.email
+
+        );
+
+        // EMAIL LOGIC HERE
+
+        cart.reminderSent24h =
+          true;
+
+        await cart.save();
+
+      }
+
+    }catch(err){
+
+      console.log(err);
+
+    }
+
+  }
+
+);
+
 // ======================================
 // START CRON
 // EVERY 15 MINUTES
