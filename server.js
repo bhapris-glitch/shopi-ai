@@ -666,6 +666,45 @@ app.get("/callback",async(req,res)=>{
     }
 
     // ======================================
+// AUTO PRODUCT SYNC
+// ======================================
+
+try{
+
+  await fetch(
+
+    `${BASE_URL}/sync-products`,
+
+    {
+
+      method:"POST",
+
+      headers:{
+        "Content-Type":
+          "application/json"
+      },
+
+      body:JSON.stringify({
+
+        clientId:
+          client._id
+
+      })
+
+    }
+
+  );
+
+}catch(syncErr){
+
+  console.log(
+    "SYNC ERROR:",
+    syncErr.message
+  );
+
+}
+    
+    // ======================================
     // INSTALL CHATBOT
     // ======================================
 
