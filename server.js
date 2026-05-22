@@ -13,6 +13,10 @@ const crypto = require("crypto");
 const bodyParser = require("body-parser");
 const Razorpay = require("razorpay");
 const fetch = require("node-fetch");
+const {
+  saveEvent,
+  getAnalytics
+} = require("./utils/analytics");
 
 const cartRoutes =
 require("./routes/cart");
