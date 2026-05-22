@@ -1,7 +1,9 @@
 // ======================================
 // server.js
-// Layboka AI - Production Ready
+// Layboka AI -
 // Real-Time Shopify AI SaaS Backend
+// FULL PRODUCTION REAL-TIME SERVER
+// US • UK • CANADA, UAE READY
 // ======================================
 
 require("dotenv").config();
@@ -13,10 +15,10 @@ const crypto = require("crypto");
 const bodyParser = require("body-parser");
 const Razorpay = require("razorpay");
 const fetch = require("node-fetch");
-const {
-  saveEvent,
-  getAnalytics
-} = require("./utils/analytics");
+
+// ======================================
+// ROUTES
+// ======================================
 
 const cartRoutes =
 require("./routes/cart");
@@ -24,11 +26,39 @@ require("./routes/cart");
 const pushRoutes =
 require("./routes/push");
 
-// START CRON
+const pricingRoutes =
+require("./routes/pricing");
+
+const analyticsRoutes =
+require("./routes/analytics");
+
+const productRoutes =
+require("./routes/products");
+
+// ======================================
+// CRON
+// ======================================
+
 require(
   "./cron/abandonedCartCron"
 );
-const Client = require("./models/Client");
+
+// ======================================
+// MODELS
+// ======================================
+
+const Client =
+require("./models/Client");
+
+const Product =
+require("./models/Product");
+
+const Analytics =
+require("./models/Analytics");
+
+// ======================================
+// UTILS
+// ======================================
 
 const {
   detectCountry
@@ -39,6 +69,15 @@ const {
   getCurrencyFromCountry,
   formatPrice
 } = require("./utils/currency");
+
+const {
+  saveEvent,
+  getAnalytics
+} = require("./utils/analytics");
+
+// ======================================
+// APP
+// ======================================
 
 const app = express();
 
@@ -93,13 +132,14 @@ if(
 // ======================================
 // MIDDLEWARE
 // ======================================
+
 app.use(cartRoutes);
 app.use(pushRoutes);
 app.use(pricingRoutes);
 app.use(analyticsRoutes);
 app.use(productRoutes);
 
-// Razorpay webhook raw
+// RAW BODY
 app.use(
   "/webhook",
   bodyParser.raw({
@@ -107,7 +147,6 @@ app.use(
   })
 );
 
-// Shopify uninstall raw
 app.use(
   "/shopify/uninstall",
   bodyParser.raw({
@@ -172,7 +211,7 @@ app.get("/",(req,res)=>{
 });
 
 // ======================================
-// HEALTH CHECK
+// HEALTH
 // ======================================
 
 app.get("/health",(req,res)=>{
@@ -181,12 +220,14 @@ app.get("/health",(req,res)=>{
 
     success:true,
 
-    server:"LIVE",
-
     mongodb:
-      mongoose.connection.readyState === 1
-      ? "CONNECTED"
-      : "DISCONNECTED"
+      mongoose.connection.readyState === 1,
+
+    openai:
+      !!process.env.OPENAI_API_KEY,
+
+    razorpay:
+      !!process.env.RAZORPAY_KEY
 
   });
 
@@ -269,7 +310,7 @@ app.get(
 );
 
 // ======================================
-// PRICING API
+// GLOBAL PRICING API
 // ======================================
 
 app.get(
@@ -298,11 +339,28 @@ app.get(
           geo.countryCode
         );
 
+      // ======================================
+      // USD BASE PRICES
+      // ======================================
+
+      const starterUSD = 19;
+      const growthUSD = 49;
+      const premiumUSD = 99;
+
       const starter =
         await convertPrice({
 
-          amount:399,
-          from:"INR",
+          amount:starterUSD,
+          from:"USD",
+          to:currency
+
+        });
+
+      const growth =
+        await convertPrice({
+
+          amount:growthUSD,
+          from:"USD",
           to:currency
 
         });
@@ -310,8 +368,8 @@ app.get(
       const premium =
         await convertPrice({
 
-          amount:799,
-          from:"INR",
+          amount:premiumUSD,
+          from:"USD",
           to:currency
 
         });
@@ -338,7 +396,51 @@ app.get(
 
               currency
 
-            })
+            }),
+
+          features:[
+
+            "AI sales Agent",
+            "1000 chats",
+            "Basic analytics",
+            "Product recommendations",
+            "Cart recovery",
+            "Currency detection"
+
+          ]
+
+        },
+
+        growth:{
+
+          raw:
+            growth.amount,
+
+          formatted:
+            formatPrice({
+
+              amount:
+                growth.amount,
+
+              currency
+
+            }),
+
+          features:[
+
+            "Unlimited chats",
+            "AI upsells",
+            "Cart recovery",
+            "Push notifications"
+            "Everything in Starter",
+            "Real Shopify product sync",
+            "Abandoned cart AI",
+            "Email reminders",
+            "10,000 chats",
+            "Smart upsells",
+            "Multi-currency"
+
+          ]
 
         },
 
@@ -355,7 +457,20 @@ app.get(
 
               currency
 
-            })
+            }),
+
+          features:[
+
+            "Everything in Growth included",
+            "Advanced analytics",
+            "AI product recommendations",
+            "Priority support",
+            "AI sales automation",
+            "VIP customer targeting",
+             "Unlimited chats",
+             "Multi-store"
+
+          ]
 
         }
 
@@ -405,95 +520,21 @@ app.get("/auth",async(req,res)=>{
       .trim()
       .toLowerCase();
 
-    let finalShop = shop;
-
-    // ======================================
-    // CUSTOM DOMAIN DETECTION
-    // ======================================
-
     if(
       !shop.includes(
         ".myshopify.com"
       )
     ){
 
-      const response =
-        await fetch(
-          `https://${shop}`,
-          {
-            redirect:"follow"
-          }
-        );
-
-      const shopifyDomain =
-
-        response.headers.get(
-          "x-shopify-shop-domain"
-        );
-
-      if(shopifyDomain){
-
-        finalShop =
-          shopifyDomain;
-
-      }else{
-
-        const html =
-          await response.text();
-
-        const hiddenMatch =
-          html.match(
-            /Shopify\.shop\s*=\s*"([^"]+)"/i
-          );
-
-        if(hiddenMatch?.[1]){
-
-          finalShop =
-            hiddenMatch[1];
-
-        }else{
-
-          return res.send(`
-          <h2 style="
-          font-family:sans-serif;
-          padding:30px;
-          ">
-          ❌ Could not detect Shopify store.
-          <br><br>
-          Please use your
-          <b>.myshopify.com</b>
-          URL.
-          </h2>
-          `);
-
-        }
-
-      }
-
-    }
-
-    // ======================================
-    // VALIDATION
-    // ======================================
-
-    if(
-      !/^[a-zA-Z0-9][a-zA-Z0-9-]*\.myshopify\.com$/
-      .test(finalShop)
-    ){
-
       return res.send(
-        "❌ Invalid Shopify store"
+        "❌ Use .myshopify.com URL"
       );
 
     }
 
-    // ======================================
-    // INSTALL URL
-    // ======================================
-
     const installUrl =
 
-      `https://${finalShop}/admin/oauth/authorize` +
+      `https://${shop}/admin/oauth/authorize` +
 
       `?client_id=${process.env.SHOPIFY_API_KEY}` +
 
@@ -536,10 +577,6 @@ app.get("/callback",async(req,res)=>{
 
     }
 
-    // ======================================
-    // ACCESS TOKEN
-    // ======================================
-
     const tokenRes =
       await fetch(
 
@@ -580,14 +617,10 @@ app.get("/callback",async(req,res)=>{
       console.log(tokenData);
 
       return res.send(
-        "❌ Failed to get access token"
+        "❌ Failed to get token"
       );
 
     }
-
-    // ======================================
-    // SAVE CLIENT
-    // ======================================
 
     let client =
       await Client.findOne({
@@ -616,7 +649,7 @@ app.get("/callback",async(req,res)=>{
 
           trialEnds:
             Date.now() +
-            (3*24*60*60*1000),
+            (7*24*60*60*1000),
 
           messages:0,
 
@@ -671,47 +704,6 @@ app.get("/callback",async(req,res)=>{
 
     );
 
-    // ======================================
-    // UNINSTALL WEBHOOK
-    // ======================================
-
-    await fetch(
-
-      `https://${shop}/admin/api/2023-10/webhooks.json`,
-
-      {
-
-        method:"POST",
-
-        headers:{
-
-          "X-Shopify-Access-Token":
-            client.token,
-
-          "Content-Type":
-            "application/json"
-
-        },
-
-        body:JSON.stringify({
-
-          webhook:{
-
-            topic:"app/uninstalled",
-
-            address:
-              `${BASE_URL}/shopify/uninstall`,
-
-            format:"json"
-
-          }
-
-        })
-
-      }
-
-    );
-
     res.redirect(
       `/dashboard.html?client=${client._id}`
     );
@@ -743,10 +735,6 @@ app.post("/chat",async(req,res)=>{
 
     let client = null;
 
-    // ======================================
-    // CLIENT FIND
-    // ======================================
-
     if(
 
       clientId &&
@@ -764,7 +752,43 @@ app.post("/chat",async(req,res)=>{
     }
 
     // ======================================
-    // STORE NAME
+    // TRACK CHAT
+    // ======================================
+
+    await saveEvent({
+
+      type:"chat",
+
+      clientId,
+
+      message
+
+    });
+
+    // ======================================
+    // GEO DETECT
+    // ======================================
+
+    const ip =
+
+      req.headers[
+        "x-forwarded-for"
+      ] ||
+
+      req.socket.remoteAddress ||
+
+      "";
+
+    const geo =
+      await detectCountry(ip);
+
+    const currency =
+      getCurrencyFromCountry(
+        geo.countryCode
+      );
+
+    // ======================================
+    // STORE
     // ======================================
 
     let storeName =
@@ -781,176 +805,158 @@ app.post("/chat",async(req,res)=>{
     }
 
     // ======================================
-    // TRIAL LOCK
+    // PRODUCTS
     // ======================================
 
-    if(client){
+    let products =
+      await Product.find({
+        clientId
+      })
 
-      if(
+      .limit(4)
 
-        Date.now() >
-        client.trialEnds &&
+      .sort({
+        sales:-1
+      });
 
-        !client.paid
+    let productText = "";
 
-      ){
+    for(const product of products){
 
-        return res.json({
+      const converted =
+        await convertPrice({
 
-          reply:
-`⚠️ Your free trial expired.
+          amount:
+            product.price,
 
-Upgrade now to continue using Layboka AI.`,
+          from:"USD",
 
-          locked:true
+          to:currency
 
         });
 
-      }
+      const formattedPrice =
+        formatPrice({
+
+          amount:
+            converted.amount,
+
+          currency
+        });
+
+      productText +=
+
+`
+${product.title}
+Price: ${formattedPrice}
+Description: ${product.description}
+
+`;
 
     }
 
     // ======================================
-    // OPENAI CHECK
+    // OPENAI
     // ======================================
 
-    if(
-      !process.env.OPENAI_API_KEY
-    ){
+    let reply = "";
 
-      console.log(
-        "❌ OPENAI_API_KEY missing"
-      );
+    if(process.env.OPENAI_API_KEY){
 
-      return res.json({
+      const aiRes =
+        await fetch(
 
-        reply:
-`👋 Welcome to ${storeName}.
+          "https://api.openai.com/v1/chat/completions",
 
-How can I help you today?`
+          {
 
-      });
+            method:"POST",
 
-    }
+            headers:{
 
-    // ======================================
-    // AI REQUEST
-    // ======================================
+              Authorization:
+                `Bearer ${process.env.OPENAI_API_KEY}`,
 
-    const aiRes =
-      await fetch(
+              "Content-Type":
+                "application/json"
 
-        "https://api.openai.com/v1/chat/completions",
+            },
 
-        {
+            body:JSON.stringify({
 
-          method:"POST",
+              model:"gpt-4o-mini",
 
-          headers:{
+              messages:[
 
-            Authorization:
-              `Bearer ${process.env.OPENAI_API_KEY}`,
+                {
 
-            "Content-Type":
-              "application/json"
+                  role:"system",
 
-          },
-
-          body:JSON.stringify({
-
-            model:"gpt-4o-mini",
-
-            messages:[
-
-              {
-
-                role:"system",
-
-                content:`
+                  content:`
 
 You are Layboka AI.
 
-You are a premium Shopify sales assistant for ${storeName}.
+You are a premium Shopify AI sales assistant for ${storeName}.
+
+Customer country:
+${geo.countryCode}
+
+Currency:
+${currency}
+
+Available products:
+${productText}
 
 Rules:
-- Sound human
+- Human-like
+- Persuasive
 - Friendly
 - Short replies
-- Increase conversions
+- Increase sales
 - Recommend products
-- Be persuasive naturally
-- Never say AI unavailable
-- Never say server error
+- Upsell naturally
+- Sound premium
+- Never mention AI limitations
 
 `
 
-              },
+                },
 
-              {
+                {
 
-                role:"user",
+                  role:"user",
 
-                content:
-                  message || "Hello"
+                  content:
+                    message || "Hello"
 
-              }
+                }
 
-            ],
+              ],
 
-            temperature:0.8,
+              temperature:0.8,
 
-            max_tokens:180
+              max_tokens:220
 
-          })
+            })
 
-        }
+          }
 
-      );
+        );
 
-    const data =
-      await aiRes.json();
+      const data =
+        await aiRes.json();
 
-    console.log(
-      "OPENAI:",
-      data
-    );
+      reply =
 
-    // ======================================
-    // OPENAI FAILED
-    // ======================================
-
-    if(!aiRes.ok){
-
-      console.log(
-        "❌ OPENAI FAILED"
-      );
-
-      return res.json({
-
-        reply:
-`😊 I'm here to help.
-
-Please try again in a moment.`
-
-      });
+        data?.choices?.[0]
+        ?.message?.content;
 
     }
-
-    let reply =
-
-      data?.choices?.[0]
-      ?.message?.content;
-
-    // ======================================
-    // FALLBACK
-    // ======================================
 
     if(!reply){
 
       reply =
-`😊 I'd love to help.
-
-What product are you looking for today?`;
+`👋 Welcome to ${storeName}. What are you shopping for today?`;
 
     }
 
@@ -968,7 +974,16 @@ What product are you looking for today?`;
 
     res.json({
 
-      reply
+      success:true,
+
+      country:
+        geo.countryCode,
+
+      currency,
+
+      reply,
+
+      products
 
     });
 
@@ -982,15 +997,68 @@ What product are you looking for today?`;
     res.json({
 
       reply:
-`👋 Welcome.
-
-How can I help you today?`
+`👋 Welcome. How can I help you today?`
 
     });
 
   }
 
 });
+
+// ======================================
+// TRACK ABANDONED CART
+// ======================================
+
+app.post(
+
+  "/track-cart",
+
+  async(req,res)=>{
+
+    try{
+
+      const {
+        clientId,
+        email,
+        products,
+        total
+      } = req.body;
+
+      await saveEvent({
+
+        type:"abandoned_cart",
+
+        clientId,
+
+        email,
+
+        total,
+
+        products
+
+      });
+
+      res.json({
+
+        success:true
+
+      });
+
+    }catch(err){
+
+      console.log(err);
+
+      res.json({
+
+        success:false
+
+      });
+
+    }
+
+  }
+
+);
 
 // ======================================
 // CREATE ORDER
@@ -1021,11 +1089,23 @@ app.post(
 
       }
 
-      const amount =
+      // ======================================
+      // USD PRICING
+      // ======================================
 
-        plan === "premium"
-        ? 79900
-        : 39900;
+      let amount = 1900;
+
+      if(plan === "growth"){
+
+        amount = 4900;
+
+      }
+
+      if(plan === "premium"){
+
+        amount = 9900;
+
+      }
 
       const order =
 
@@ -1033,7 +1113,7 @@ app.post(
 
           amount,
 
-          currency:"INR",
+          currency:"USD",
 
           receipt:
             "rcpt_" + Date.now(),
@@ -1045,11 +1125,27 @@ app.post(
 
         });
 
+      // ======================================
+      // TRACK SALES
+      // ======================================
+
+      await saveEvent({
+
+        type:"sale",
+
+        clientId,
+
+        plan,
+
+        amount
+
+      });
+
       res.json({
 
-        ...order,
-        plan,
-        clientId
+        success:true,
+
+        ...order
 
       });
 
@@ -1060,6 +1156,47 @@ app.post(
       res.status(500).json({
 
         error:"Order failed"
+
+      });
+
+    }
+
+  }
+
+);
+
+// ======================================
+// ANALYTICS DASHBOARD API
+// ======================================
+
+app.get(
+
+  "/dashboard-analytics/:clientId",
+
+  async(req,res)=>{
+
+    try{
+
+      const analytics =
+        await getAnalytics(
+          req.params.clientId
+        );
+
+      res.json({
+
+        success:true,
+
+        analytics
+
+      });
+
+    }catch(err){
+
+      console.log(err);
+
+      res.json({
+
+        success:false
 
       });
 
