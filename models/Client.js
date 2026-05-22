@@ -1,7 +1,24 @@
 const mongoose = require("mongoose");
 
 const ClientSchema = new mongoose.Schema({
+analytics:[
+  {
 
+    type:String,
+
+    value:Number,
+
+    product:String,
+
+    country:String,
+
+    createdAt:{
+      type:Date,
+      default:Date.now
+    }
+
+  }
+],
   // =========================
   // STORE
   // =========================
