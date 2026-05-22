@@ -1,37 +1,125 @@
-const mongoose = require("mongoose");
+// ======================================
+// models/Product.js
+// Layboka AI Products Model
+// ======================================
 
-const ProductSchema = new mongoose.Schema({
+const mongoose =
+  require("mongoose");
 
-  clientId:String,
+const ProductSchema =
+  new mongoose.Schema({
 
-  shopifyId:String,
+    clientId:{
+      type:
+        mongoose.Schema.Types.ObjectId,
 
-  title:String,
+      ref:"Client",
 
-  description:String,
+      required:true
+    },
 
-  image:String,
+    shop:{
+      type:String,
 
-  price:Number,
+      required:true
+    },
 
-  currency:{
-    type:String,
-    default:"USD"
+    productId:{
+      type:String,
+
+      required:true
+    },
+
+    title:{
+      type:String,
+
+      default:""
+    },
+
+    description:{
+      type:String,
+
+      default:""
+    },
+
+    image:{
+      type:String,
+
+      default:""
+    },
+
+    handle:{
+      type:String,
+
+      default:""
+    },
+
+    vendor:{
+      type:String,
+
+      default:""
+    },
+
+    productType:{
+      type:String,
+
+      default:""
+    },
+
+    tags:[String],
+
+    variants:[
+      {
+
+        id:String,
+
+        title:String,
+
+        price:Number,
+
+        compareAtPrice:Number,
+
+        inventory:Number,
+
+        sku:String
+
+      }
+    ],
+
+    price:{
+      type:Number,
+
+      default:0
+    },
+
+    currency:{
+      type:String,
+
+      default:"USD"
+    },
+
+    active:{
+      type:Boolean,
+
+      default:true
+    },
+
+    syncedAt:{
+      type:Date,
+
+      default:Date.now
+    }
+
   },
 
-  url:String,
-
-  synced:{
-    type:Boolean,
-    default:false
+  {
+    timestamps:true
   }
 
-},{
-  timestamps:true
-});
+);
 
 module.exports =
-mongoose.model(
-  "Product",
-  ProductSchema
-);
+  mongoose.model(
+    "Product",
+    ProductSchema
+  );
