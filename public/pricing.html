@@ -1,0 +1,1619 @@
+<!-- ========================================= -->
+<!-- public/pricing.html -->
+<!-- Layboka AI - Premium Global Pricing -->
+<!-- US / UK / Canada / Australia Optimized -->
+<!-- ========================================= -->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="UTF-8"/>
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
+
+  <title>
+    Pricing • Layboka AI
+  </title>
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  />
+
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+  <style>
+
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+    }
+
+    html{
+      scroll-behavior:smooth;
+    }
+
+    body{
+      font-family:'Poppins',sans-serif;
+      background:#081120;
+      color:#fff;
+      overflow-x:hidden;
+    }
+
+    body::before{
+      content:"";
+      position:fixed;
+      inset:0;
+      background:
+      radial-gradient(circle at top left,
+      rgba(255,122,0,.15),
+      transparent 30%),
+
+      radial-gradient(circle at bottom right,
+      rgba(255,122,0,.12),
+      transparent 30%);
+      z-index:-1;
+    }
+
+    a{
+      text-decoration:none;
+      color:white;
+    }
+
+    /* ================= HEADER ================= */
+
+    .header{
+      width:100%;
+      position:sticky;
+      top:0;
+      z-index:999;
+      background:rgba(8,17,32,.88);
+      backdrop-filter:blur(14px);
+      border-bottom:1px solid rgba(255,255,255,.06);
+    }
+
+    .header-inner{
+      width:100%;
+      max-width:1300px;
+      margin:auto;
+      padding:18px 24px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+    }
+
+    .logo{
+      font-size:30px;
+      font-weight:800;
+      background:linear-gradient(
+      90deg,
+      #ff7a00,
+      #ffb347
+      );
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+    }
+
+    nav{
+      display:flex;
+      align-items:center;
+      gap:28px;
+    }
+
+    nav a{
+      color:#d8d8d8;
+      font-size:15px;
+      transition:.3s;
+      font-weight:500;
+    }
+
+    nav a:hover{
+      color:#ff8a00;
+    }
+
+    .header-btn{
+      background:linear-gradient(
+      135deg,
+      #ff7a00,
+      #ffb347
+      );
+      color:#000;
+      padding:12px 18px;
+      border-radius:14px;
+      font-weight:700;
+      font-size:14px;
+    }
+
+    .menu-btn{
+      display:none;
+      width:46px;
+      height:46px;
+      border:none;
+      border-radius:12px;
+      background:rgba(255,255,255,.08);
+      color:white;
+      font-size:25px;
+      cursor:pointer;
+    }
+
+    /* ================= HERO ================= */
+
+    .hero{
+      width:100%;
+      max-width:1200px;
+      margin:auto;
+      padding:100px 24px 70px;
+      text-align:center;
+    }
+
+    .tag{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      background:rgba(255,122,0,.12);
+      border:1px solid rgba(255,122,0,.22);
+      padding:12px 18px;
+      border-radius:40px;
+      color:#ffb347;
+      font-size:13px;
+      margin-bottom:28px;
+    }
+
+    .hero h1{
+      font-size:68px;
+      line-height:1.1;
+      font-weight:800;
+      margin-bottom:25px;
+    }
+
+    .hero span{
+      background:linear-gradient(
+      90deg,
+      #ff7a00,
+      #ffb347
+      );
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+    }
+
+    .hero p{
+      max-width:860px;
+      margin:auto;
+      color:#9ea6b7;
+      font-size:18px;
+      line-height:1.9;
+    }
+
+    .hero-badges{
+      display:flex;
+      justify-content:center;
+      gap:14px;
+      flex-wrap:wrap;
+      margin-top:40px;
+    }
+
+    .hero-badge{
+      padding:14px 18px;
+      border-radius:16px;
+      background:rgba(255,255,255,.04);
+      border:1px solid rgba(255,255,255,.06);
+      color:#ddd;
+      font-size:14px;
+    }
+
+    /* ================= PRICING ================= */
+
+    .pricing-wrap{
+      width:100%;
+      max-width:1380px;
+      margin:auto;
+      padding:0 24px 80px;
+    }
+
+    .pricing{
+      display:grid;
+      grid-template-columns:
+      repeat(auto-fit,minmax(340px,1fr));
+      gap:30px;
+    }
+
+    .card{
+      background:
+      linear-gradient(
+      180deg,
+      rgba(255,255,255,.06),
+      rgba(255,255,255,.03)
+      );
+
+      border:1px solid rgba(255,255,255,.08);
+
+      border-radius:34px;
+
+      padding:36px;
+
+      position:relative;
+
+      overflow:hidden;
+
+      transition:.4s;
+
+      backdrop-filter:blur(18px);
+    }
+
+    .card:hover{
+      transform:translateY(-8px);
+      border-color:#ff7a00;
+      box-shadow:
+      0 20px 60px rgba(255,122,0,.18);
+    }
+
+    .popular{
+      border:2px solid #ff7a00;
+      transform:scale(1.03);
+    }
+
+    .popular:hover{
+      transform:scale(1.03)
+      translateY(-8px);
+    }
+
+    .badge{
+      position:absolute;
+      top:20px;
+      right:20px;
+      background:linear-gradient(
+      135deg,
+      #ff7a00,
+      #ffb347
+      );
+      color:#000;
+      padding:10px 16px;
+      border-radius:40px;
+      font-size:11px;
+      font-weight:800;
+      letter-spacing:.5px;
+    }
+
+    .plan{
+      font-size:34px;
+      font-weight:800;
+      margin-bottom:10px;
+    }
+
+    .sub{
+      color:#9da4b5;
+      font-size:14px;
+      line-height:1.7;
+      margin-bottom:30px;
+    }
+
+    .price{
+      font-size:64px;
+      font-weight:800;
+      line-height:1;
+    }
+
+    .currency{
+      font-size:24px;
+      vertical-align:top;
+      margin-right:4px;
+    }
+
+    .monthly{
+      color:#9da4b5;
+      margin-top:12px;
+      font-size:14px;
+    }
+
+    .divider{
+      width:100%;
+      height:1px;
+      background:rgba(255,255,255,.08);
+      margin:30px 0;
+    }
+
+    .features{
+      display:flex;
+      flex-direction:column;
+      gap:14px;
+    }
+
+    .feature{
+      display:flex;
+      align-items:flex-start;
+      gap:14px;
+      padding:14px;
+      border-radius:16px;
+      background:rgba(255,255,255,.03);
+      border:1px solid rgba(255,255,255,.04);
+    }
+
+    .icon{
+      width:36px;
+      height:36px;
+      min-width:36px;
+      border-radius:12px;
+      background:rgba(255,122,0,.12);
+      border:1px solid rgba(255,122,0,.2);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:#ff9d3f;
+      font-size:16px;
+    }
+
+    .feature-text{
+      font-size:14px;
+      color:#ddd;
+      line-height:1.7;
+    }
+
+    .feature-text strong{
+      display:block;
+      color:#fff;
+      margin-bottom:2px;
+      font-size:15px;
+    }
+
+    .btn{
+      width:100%;
+      margin-top:32px;
+      border:none;
+      border-radius:18px;
+      padding:18px;
+      font-size:16px;
+      font-weight:700;
+      cursor:pointer;
+      transition:.3s;
+      background:
+      linear-gradient(
+      135deg,
+      #ff7a00,
+      #ffb347
+      );
+      color:#000;
+      font-family:'Poppins',sans-serif;
+    }
+
+    .btn:hover{
+      transform:scale(1.02);
+    }
+
+    /* ================= WHY ================= */
+
+    .why{
+      width:100%;
+      max-width:1300px;
+      margin:auto;
+      padding:20px 24px 100px;
+    }
+
+    .why h2{
+      text-align:center;
+      font-size:52px;
+      margin-bottom:60px;
+    }
+
+    .why-grid{
+      display:grid;
+      grid-template-columns:
+      repeat(auto-fit,minmax(260px,1fr));
+      gap:24px;
+    }
+
+    .why-card{
+      background:rgba(255,255,255,.04);
+      border-radius:28px;
+      padding:30px;
+      border:1px solid rgba(255,255,255,.06);
+    }
+
+    .why-icon{
+      width:58px;
+      height:58px;
+      border-radius:18px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:24px;
+      color:#ff8a00;
+      background:rgba(255,122,0,.12);
+      border:1px solid rgba(255,122,0,.2);
+      margin-bottom:22px;
+    }
+
+    .why-card h3{
+      font-size:22px;
+      margin-bottom:16px;
+    }
+
+    .why-card p{
+      color:#aeb6c8;
+      line-height:1.8;
+      font-size:15px;
+    }
+
+    /* ================= FAQ ================= */
+
+    .faq{
+      width:100%;
+      max-width:1000px;
+      margin:auto;
+      padding:0 24px 100px;
+    }
+
+    .faq h2{
+      text-align:center;
+      font-size:48px;
+      margin-bottom:50px;
+    }
+
+    .faq-item{
+      padding:28px;
+      border-radius:24px;
+      background:rgba(255,255,255,.04);
+      border:1px solid rgba(255,255,255,.06);
+      margin-bottom:20px;
+    }
+
+    .faq-item h3{
+      margin-bottom:12px;
+      font-size:21px;
+    }
+
+    .faq-item p{
+      color:#aab3c5;
+      line-height:1.9;
+      font-size:15px;
+    }
+
+    /* ================= CTA ================= */
+
+    .cta{
+      width:100%;
+      max-width:1250px;
+      margin:auto;
+      padding:0 24px 100px;
+    }
+
+    .cta-box{
+      border-radius:38px;
+      padding:70px 40px;
+      text-align:center;
+      background:
+      linear-gradient(
+      135deg,
+      rgba(255,122,0,.18),
+      rgba(255,179,71,.08)
+      );
+
+      border:1px solid rgba(255,122,0,.22);
+    }
+
+    .cta-box h2{
+      font-size:52px;
+      margin-bottom:20px;
+    }
+
+    .cta-box p{
+      max-width:820px;
+      margin:auto;
+      line-height:1.9;
+      color:#c4cad8;
+      font-size:17px;
+    }
+
+    .cta-btn{
+      display:inline-block;
+      margin-top:34px;
+      padding:18px 34px;
+      border-radius:18px;
+      background:
+      linear-gradient(
+      135deg,
+      #ff7a00,
+      #ffb347
+      );
+      color:#000;
+      font-weight:800;
+      font-size:16px;
+    }
+
+    /* ================= FOOTER ================= */
+
+    footer{
+      width:100%;
+      border-top:1px solid rgba(255,255,255,.06);
+      padding:60px 24px 40px;
+    }
+
+    .footer-wrap{
+      width:100%;
+      max-width:1300px;
+      margin:auto;
+    }
+
+    .footer-top{
+      display:flex;
+      justify-content:space-between;
+      gap:50px;
+      flex-wrap:wrap;
+      margin-bottom:50px;
+    }
+
+    .footer-brand{
+      max-width:420px;
+    }
+
+    .footer-brand h3{
+      font-size:34px;
+      margin-bottom:18px;
+      background:linear-gradient(
+      90deg,
+      #ff7a00,
+      #ffb347
+      );
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+    }
+
+    .footer-brand p{
+      color:#aeb6c8;
+      line-height:1.9;
+      font-size:15px;
+    }
+
+    .footer-links{
+      display:flex;
+      gap:70px;
+      flex-wrap:wrap;
+    }
+
+    .footer-links h4{
+      margin-bottom:18px;
+      font-size:17px;
+    }
+
+    .footer-links a{
+      display:block;
+      margin-bottom:12px;
+      color:#aeb6c8;
+      font-size:14px;
+    }
+
+    .footer-links a:hover{
+      color:#ff8a00;
+    }
+
+    .copyright{
+      border-top:1px solid rgba(255,255,255,.06);
+      padding-top:28px;
+      text-align:center;
+      color:#8992a7;
+      font-size:14px;
+    }
+
+    /* ================= MOBILE ================= */
+
+    @media(max-width:900px){
+
+      .hero h1{
+        font-size:48px;
+      }
+
+      .why h2,
+      .faq h2,
+      .cta-box h2{
+        font-size:38px;
+      }
+
+      nav{
+        position:fixed;
+        top:0;
+        right:-100%;
+        width:280px;
+        height:100vh;
+        background:#0d172a;
+        flex-direction:column;
+        align-items:flex-start;
+        padding:100px 30px;
+        transition:.4s;
+      }
+
+      nav.active{
+        right:0;
+      }
+
+      .menu-btn{
+        display:block;
+      }
+
+    }
+
+    @media(max-width:600px){
+
+      .hero{
+        padding-top:70px;
+      }
+
+      .hero h1{
+        font-size:38px;
+      }
+
+      .hero p{
+        font-size:15px;
+      }
+
+      .price{
+        font-size:52px;
+      }
+
+      .card{
+        padding:28px;
+      }
+
+      .cta-box{
+        padding:50px 24px;
+      }
+
+      .footer-top{
+        flex-direction:column;
+      }
+
+    }
+
+  </style>
+
+</head>
+
+<body>
+
+<!-- ================= HEADER ================= -->
+
+<header class="header">
+
+  <div class="header-inner">
+
+    <div class="logo">
+      Layboka AI
+    </div>
+
+    <button
+      class="menu-btn"
+      id="menuBtn"
+    >
+      ☰
+    </button>
+
+    <nav id="nav">
+
+      <a href="index.html">
+        Home
+      </a>
+
+      <a href="features.html">
+        Features
+      </a>
+
+      <a href="dashboard.html">
+        Dashboard
+      </a>
+
+      <a href="pricing.html">
+        Pricing
+      </a>
+
+      <a href="contact.html">
+        Contact
+      </a>
+
+      <a
+        href="dashboard.html"
+        class="header-btn"
+      >
+        Get Started
+      </a>
+
+    </nav>
+
+  </div>
+
+</header>
+
+<!-- ================= HERO ================= -->
+
+<section class="hero">
+
+  <div class="tag">
+    ⚡ AI Revenue Automation For Shopify Brands
+  </div>
+
+  <h1>
+
+    Built To Increase
+    <span>
+      Sales & Conversions
+    </span>
+
+  </h1>
+
+  <p>
+
+    Layboka AI helps Shopify brands in the
+    United States, United Kingdom,
+    Canada and Australia recover carts,
+    automate sales conversations,
+    increase repeat purchases and convert
+    visitors automatically using AI.
+
+  </p>
+
+  <div class="hero-badges">
+
+    <div class="hero-badge">
+      🟠 AI Chat Automation
+    </div>
+
+    <div class="hero-badge">
+      🟠 Abandoned Cart Recovery
+    </div>
+
+    <div class="hero-badge">
+      🟠 WhatsApp + Instagram AI
+    </div>
+
+    <div class="hero-badge">
+      🟠 Multi-Currency AI
+    </div>
+
+  </div>
+
+</section>
+
+<!-- ================= PRICING ================= -->
+
+<section class="pricing-wrap">
+
+  <div class="pricing">
+
+    <!-- ================= STARTER ================= -->
+
+    <div class="card">
+
+      <div class="plan">
+        Starter
+      </div>
+
+      <div class="sub">
+
+        Best for small Shopify stores
+        starting AI sales automation.
+
+      </div>
+
+      <div class="price">
+
+        <span
+          class="currency"
+          id="starterCurrency"
+        >
+          $
+        </span>
+
+        <span id="starterPrice">
+          29
+        </span>
+
+      </div>
+
+      <div class="monthly">
+        Per month • Cancel anytime
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="features">
+
+        <div class="feature">
+
+          <div class="icon">
+            ◉
+          </div>
+
+          <div class="feature-text">
+
+            <strong>
+              AI Chatbot
+            </strong>
+
+            Premium AI assistant
+            for Shopify stores.
+
+          </div>
+
+        </div>
+
+        <div class="feature">
+
+          <div class="icon">
+            ◉
+          </div>
+
+          <div class="feature-text">
+
+            <strong>
+              Product Recommendations
+            </strong>
+
+            Real AI product suggestions
+            based on shopper intent.
+
+          </div>
+
+        </div>
+
+        <div class="feature">
+
+          <div class="icon">
+            ◉
+          </div>
+
+          <div class="feature-text">
+
+            <strong>
+              Cart Recovery
+            </strong>
+
+            Recover abandoned carts
+            automatically.
+
+          </div>
+
+        </div>
+
+        <div class="feature">
+
+          <div class="icon">
+            ◉
+          </div>
+
+          <div class="feature-text">
+
+            <strong>
+              Multi Currency
+            </strong>
+
+            Detect visitor country
+            automatically.
+
+          </div>
+
+        </div>
+
+        <div class="feature">
+
+          <div class="icon">
+            ◉
+          </div>
+
+          <div class="feature-text">
+
+            <strong>
+              1,000 AI Chats
+            </strong>
+
+            Enough for growing stores.
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <button
+        class="btn"
+        onclick="pay('starter')"
+      >
+        Start Starter
+      </button>
+
+    </div>
+
+    <!-- ================= GROWTH ================= -->
+
+    <div class="card popular">
+
+      <div class="badge">
+        MOST POPULAR
+      </div>
+
+      <div class="plan">
+        Growth
+      </div>
+
+      <div class="sub">
+
+        Perfect for scaling brands
+        generating consistent sales.
+
+      </div>
+
+      <div class="price">
+
+        <span
+          class="currency"
+          id="growthCurrency"
+        >
+          $
+        </span>
+
+        <span id="growthPrice">
+          79
+        </span>
+
+      </div>
+
+      <div class="monthly">
+        Per month • Cancel anytime
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="features">
+
+        <div class="feature">
+
+          <div class="icon">
+            ◉
+          </div>
+
+          <div class="feature-text">
+
+            <strong>
+              Everything In Starter
+            </strong>
+
+            Includes all Starter features.
+
+          </div>
+
+        </div>
+
+        <div class="feature">
+
+          <div class="icon">
+            ◉
+          </div>
+
+          <div class="feature-text">
+
+            <strong>
+              Real Product Sync
+            </strong>
+
+            Live Shopify product sync.
+
+          </div>
+
+        </div>
+
+        <div class="feature">
+
+          <div class="icon">
+            ◉
+          </div>
+
+          <div class="feature-text">
+
+            <strong>
+              AI Upsells
+            </strong>
+
+            AI boosts average order value.
+
+          </div>
+
+        </div>
+
+        <div class="feature">
+
+          <div class="icon">
+            ◉
+          </div>
+
+          <div class="feature-text">
+
+            <strong>
+              WhatsApp Recovery
+            </strong>
+
+            Recover carts through WhatsApp.
+
+          </div>
+
+        </div>
+
+        <div class="feature">
+
+          <div class="icon">
+            ◉
+          </div>
+
+          <div class="feature-text">
+
+            <strong>
+              10,000 AI Chats
+            </strong>
+
+            Built for growing brands.
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <button
+        class="btn"
+        onclick="pay('growth')"
+      >
+        Upgrade To Growth
+      </button>
+
+    </div>
+
+    <!-- ================= SCALE ================= -->
+
+    <div class="card">
+
+      <div class="plan">
+        Scale
+      </div>
+
+      <div class="sub">
+
+        Enterprise-grade AI sales
+        automation for large brands.
+
+      </div>
+
+      <div class="price">
+
+        <span
+          class="currency"
+          id="scaleCurrency"
+        >
+          $
+        </span>
+
+        <span id="scalePrice">
+          199
+        </span>
+
+      </div>
+
+      <div class="monthly">
+        Per month • Priority support
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="features">
+
+        <div class="feature">
+
+          <div class="icon">
+            ◉
+          </div>
+
+          <div class="feature-text">
+
+            <strong>
+              Unlimited AI Chats
+            </strong>
+
+            No limits for high traffic stores.
+
+          </div>
+
+        </div>
+
+        <div class="feature">
+
+          <div class="icon">
+            ◉
+          </div>
+
+          <div class="feature-text">
+
+            <strong>
+              VIP Customer Targeting
+            </strong>
+
+            AI detects high-value shoppers.
+
+          </div>
+
+        </div>
+
+        <div class="feature">
+
+          <div class="icon">
+            ◉
+          </div>
+
+          <div class="feature-text">
+
+            <strong>
+              Predictive AI Sales
+            </strong>
+
+            Smart AI sales forecasting.
+
+          </div>
+
+        </div>
+
+        <div class="feature">
+
+          <div class="icon">
+            ◉
+          </div>
+
+          <div class="feature-text">
+
+            <strong>
+              Omnichannel AI
+            </strong>
+
+            Instagram, WhatsApp,
+            Messenger & Email AI.
+
+          </div>
+
+        </div>
+
+        <div class="feature">
+
+          <div class="icon">
+            ◉
+          </div>
+
+          <div class="feature-text">
+
+            <strong>
+              Multi Store Support
+            </strong>
+
+            Manage multiple Shopify stores.
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <button
+        class="btn"
+        onclick="pay('scale')"
+      >
+        Start Scaling
+      </button>
+
+    </div>
+
+  </div>
+
+</section>
+
+<!-- ================= WHY ================= -->
+
+<section class="why">
+
+  <h2>
+    Why Shopify Brands Choose Layboka AI
+  </h2>
+
+  <div class="why-grid">
+
+    <div class="why-card">
+
+      <div class="why-icon">
+        ◉
+      </div>
+
+      <h3>
+        Increase Revenue
+      </h3>
+
+      <p>
+        AI recommendations and
+        upsells increase order value
+        automatically.
+      </p>
+
+    </div>
+
+    <div class="why-card">
+
+      <div class="why-icon">
+        ◉
+      </div>
+
+      <h3>
+        Recover More Carts
+      </h3>
+
+      <p>
+        Automated reminders through
+        AI chat, WhatsApp and email.
+      </p>
+
+    </div>
+
+    <div class="why-card">
+
+      <div class="why-icon">
+        ◉
+      </div>
+
+      <h3>
+        Global AI Commerce
+      </h3>
+
+      <p>
+        Supports US, UK, Canada
+        and Australia customers.
+      </p>
+
+    </div>
+
+    <div class="why-card">
+
+      <div class="why-icon">
+        ◉
+      </div>
+
+      <h3>
+        Real Automation
+      </h3>
+
+      <p>
+        AI handles support,
+        sales, recommendations
+        and customer engagement.
+      </p>
+
+    </div>
+
+  </div>
+
+</section>
+
+<!-- ================= FAQ ================= -->
+
+<section class="faq">
+
+  <h2>
+    Frequently Asked Questions
+  </h2>
+
+  <div class="faq-item">
+
+    <h3>
+      Can I cancel anytime?
+    </h3>
+
+    <p>
+      Yes. All plans support cancel anytime
+      with no long-term contracts.
+    </p>
+
+  </div>
+
+  <div class="faq-item">
+
+    <h3>
+      Does Layboka AI support Stripe?
+    </h3>
+
+    <p>
+      Yes. Stripe subscriptions work
+      for US, UK, Canada and Australia.
+    </p>
+
+  </div>
+
+  <div class="faq-item">
+
+    <h3>
+      Is multi-currency included?
+    </h3>
+
+    <p>
+      Yes. Visitors automatically see
+      localized pricing and AI responses.
+    </p>
+
+  </div>
+
+</section>
+
+<!-- ================= CTA ================= -->
+
+<section class="cta">
+
+  <div class="cta-box">
+
+    <h2>
+      Ready To Scale Your Shopify Store?
+    </h2>
+
+    <p>
+
+      Join modern Shopify brands using
+      AI automation to increase
+      conversions, recover carts,
+      and automate customer engagement.
+
+    </p>
+
+    <a
+      href="dashboard.html"
+      class="cta-btn"
+    >
+      Launch Layboka AI
+    </a>
+
+  </div>
+
+</section>
+
+<!-- ================= FOOTER ================= -->
+
+<footer>
+
+  <div class="footer-wrap">
+
+    <div class="footer-top">
+
+      <div class="footer-brand">
+
+        <h3>
+          Layboka AI
+        </h3>
+
+        <p>
+
+          AI-powered Shopify sales automation
+          platform for modern ecommerce brands.
+
+        </p>
+
+      </div>
+
+      <div class="footer-links">
+
+        <div>
+
+          <h4>
+            Product
+          </h4>
+
+          <a href="pricing.html">
+            Pricing
+          </a>
+
+          <a href="dashboard.html">
+            Dashboard
+          </a>
+
+          <a href="features.html">
+            Features
+          </a>
+
+        </div>
+
+        <div>
+
+          <h4>
+            Company
+          </h4>
+
+          <a href="contact.html">
+            Contact
+          </a>
+
+          <a href="privacy.html">
+            Privacy
+          </a>
+
+          <a href="terms.html">
+            Terms
+          </a>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="copyright">
+
+      © 2026 Layboka AI.
+      All Rights Reserved.
+
+    </div>
+
+  </div>
+
+</footer>
+
+<!-- ================= JS ================= -->
+
+<script>
+
+  // ================= MOBILE MENU =================
+
+  const menuBtn =
+    document.getElementById(
+      "menuBtn"
+    );
+
+  const nav =
+    document.getElementById(
+      "nav"
+    );
+
+  menuBtn.onclick = ()=>{
+
+    nav.classList.toggle(
+      "active"
+    );
+
+  };
+
+  // ================= CLIENT =================
+
+  const clientId =
+    new URLSearchParams(
+      window.location.search
+    ).get("client");
+
+  // ================= COUNTRY =================
+
+  let currentCurrency = "USD";
+
+  async function detectCountry(){
+
+    try{
+
+      const res =
+        await fetch("/pricing");
+
+      const data =
+        await res.json();
+
+      if(!data.success){
+        return;
+      }
+
+      currentCurrency =
+        data.currency;
+
+      // STARTER
+
+      document.getElementById(
+        "starterCurrency"
+      ).innerText =
+        data.currencySymbol || "$";
+
+      document.getElementById(
+        "starterPrice"
+      ).innerText =
+        data.starter?.raw || 29;
+
+      // GROWTH
+
+      document.getElementById(
+        "growthCurrency"
+      ).innerText =
+        data.currencySymbol || "$";
+
+      document.getElementById(
+        "growthPrice"
+      ).innerText =
+        data.growth?.raw || 79;
+
+      // SCALE
+
+      document.getElementById(
+        "scaleCurrency"
+      ).innerText =
+        data.currencySymbol || "$";
+
+      document.getElementById(
+        "scalePrice"
+      ).innerText =
+        data.scale?.raw || 199;
+
+    }catch(err){
+
+      console.log(err);
+
+    }
+
+  }
+
+  detectCountry();
+
+  // ================= PAYMENT =================
+
+  async function pay(plan){
+
+    try{
+
+      // ================= STRIPE =================
+
+      const res =
+        await fetch(
+          "/create-stripe-checkout",
+          {
+
+            method:"POST",
+
+            headers:{
+              "Content-Type":
+              "application/json"
+            },
+
+            body:JSON.stringify({
+
+              plan,
+              clientId,
+              currency:
+                currentCurrency
+
+            })
+
+          }
+        );
+
+      const data =
+        await res.json();
+
+      if(data.url){
+
+        window.location.href =
+          data.url;
+
+      }else{
+
+        alert(
+          "Payment failed"
+        );
+
+      }
+
+    }catch(err){
+
+      console.log(err);
+
+      alert(
+        "Payment error"
+      );
+
+    }
+
+  }
+
+</script>
+
+</body>
+</html>
