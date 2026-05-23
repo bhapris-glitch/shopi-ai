@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8" />
+
+<meta
+name="viewport"
+content="width=device-width, initial-scale=1.0"
+/>
+
+<title>
+Layboka AI Dashboard
+</title>
+
+<link
+rel="stylesheet"
+href="https://unpkg.com/@shopify/polaris@12.0.0/build/esm/styles.css"
+/>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+
+body{
+  margin:0;
+  background:#071224;
+  font-family:Poppins,sans-serif;
+  color:#fff;
+}
+
+.sidebar{
+  width:260px;
+  background:#0c1a30;
+  height:100vh;
+  position:fixed;
+  left:0;
+  top:0;
+  padding:20px;
+}
+
+.logo{
+  font-size:28px;
+  font-weight:800;
+  color:#ff8a00;
+}
+
+.menu{
+  margin-top:40px;
+}
+
+.menu div{
+  padding:14px;
+  margin-bottom:10px;
+  border-radius:14px;
+  background:#12233f;
+  cursor:pointer;
+}
+
+.main{
+  margin-left:280px;
+  padding:30px;
+}
+
+.cards{
+  display:grid;
+  grid-template-columns:
+  repeat(auto-fit,minmax(220px,1fr));
+  gap:20px;
+}
+
+.card{
+  background:#0f2038;
+  padding:25px;
+  border-radius:22px;
+}
+
+.card h2{
+  font-size:32px;
+  color:#ff8a00;
+}
+
+.chart-box{
+  margin-top:30px;
+  background:#0f2038;
+  padding:20px;
+  border-radius:22px;
+}
+
+button{
+  background:#ff8a00;
+  color:#000;
+  border:none;
+  padding:12px 20px;
+  border-radius:12px;
+  font-weight:700;
+  cursor:pointer;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="sidebar">
+
+<div class="logo">
+Layboka AI
+</div>
+
+<div class="menu">
+
+<div>
+📊 Analytics
+</div>
+
+<div>
+🤖 AI Campaigns
+</div>
+
+<div>
+💳 Billing
+</div>
+
+<div>
+🛒 Shopify
+</div>
+
+<div>
+👑 VIP Customers
+</div>
+
+</div>
+
+</div>
+
+<div class="main">
+
+<h1>
+AI Analytics Dashboard
+</h1>
+
+<div class="cards">
+
+<div class="card">
+<p>Total Chats</p>
+<h2 id="chats">0</h2>
+</div>
+
+<div class="card">
+<p>Total Sales</p>
+<h2 id="sales">0</h2>
+</div>
+
+<div class="card">
+<p>Revenue</p>
+<h2 id="revenue">$0</h2>
+</div>
+
+<div class="card">
+<p>Conversion</p>
+<h2 id="conversion">0%</h2>
+</div>
+
+</div>
+
+<div class="chart-box">
+
+<canvas id="salesChart"></canvas>
+
+</div>
+
+<div
+style="
+margin-top:30px;
+background:#0f2038;
+padding:20px;
+border-radius:22px;
+"
+>
+
+<h2>
+AI Campaign Manager
+</h2>
+
+<input
+id="campaignName"
+placeholder="Campaign Name"
+style="
+width:100%;
+padding:14px;
+border-radius:12px;
+border:none;
+margin-bottom:14px;
+"
+/>
+
+<textarea
+id="campaignContent"
+placeholder="Campaign Content"
+style="
+width:100%;
+height:120px;
+padding:14px;
+border-radius:12px;
+border:none;
+margin-bottom:14px;
+"
+></textarea>
+
+<button onclick="createCampaign()">
+Launch Campaign
+</button>
+
+</div>
+
+</div>
+
+<script>
+
+const clientId =
+new URLSearchParams(
+window.location.search
+).get("client");
+
+async function loadAnalytics(){
+
+  const res =
+    await fetch(
+      `/dashboard-analytics/${clientId}`
+    );
+
+  const data =
+    await res.json();
+
+  const m =
+    data.metrics;
+
+  document
+  .getElementById("chats")
+  .innerText =
+    m.chats;
+
+  document
+  .getElementById("sales")
+  .innerText =
+    m.sales;
+
+  document
+  .getElementById("revenue")
+  .innerText =
+    "$" + m.revenue;
+
+  document
+  .getElementById("conversion")
+  .innerText =
+    m.conversionRate.toFixed(1)
+    + "%";
+
+  new Chart(
+
+    document
+    .getElementById(
+      "salesChart"
+    ),
+
+    {
+
+      type:"line",
+
+      data:{
+
+        labels:[
+          "Mon",
+          "Tue",
+          "Wed",
+          "Thu",
+          "Fri",
+          "Sat",
+          "Sun"
+        ],
+
+        datasets:[{
+
+          label:"Sales",
+
+          data:[
+            12,
+            19,
+            7,
+            14,
+            20,
+            28,
+            35
+          ]
+
+        }]
+
+      }
+
+    }
+
+  );
+
+}
+
+loadAnalytics();
+
+// ====================================
+// CREATE CAMPAIGN
+// ====================================
+
+async function createCampaign(){
+
+  const name =
+    document
+    .getElementById(
+      "campaignName"
+    ).value;
+
+  const content =
+    document
+    .getElementById(
+      "campaignContent"
+    ).value;
+
+  const res =
+    await fetch(
+
+      "/campaign/create",
+
+      {
+
+        method:"POST",
+
+        headers:{
+          "Content-Type":
+          "application/json"
+        },
+
+        body:JSON.stringify({
+
+          clientId,
+
+          name,
+
+          type:"email",
+
+          audience:"all",
+
+          content
+
+        })
+
+      }
+
+    );
+
+  const data =
+    await res.json();
+
+  if(data.success){
+
+    alert(
+      "Campaign launched"
+    );
+
+  }
+
+}
+
+</script>
+
+</body>
+</html>
