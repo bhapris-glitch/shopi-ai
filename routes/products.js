@@ -306,61 +306,47 @@ router.get(
 
 );
 
+
 // ======================================
 // SEARCH PRODUCTS
 // ======================================
 
 router.get(
-
   "/search-products",
+  async(req,res)=>{
+    ...
+  }
+);
+
+// ======================================
+// UPSELL PRODUCTS
+// ======================================
+
+router.get(
+
+  "/upsells/:clientId",
 
   async(req,res)=>{
 
     try{
 
       const {
-        clientId,
-        q
-      } = req.query;
+        getUpsells
+      } = require("../utils/upsells");
 
-      const products =
-        await Product.find({
+      const upsells =
+        await getUpsells({
 
-          clientId,
+          clientId:
+            req.params.clientId
 
-          active:true,
-
-          $or:[
-
-            {
-
-              title:{
-                $regex:q,
-                $options:"i"
-              }
-
-            },
-
-            {
-
-              productType:{
-                $regex:q,
-                $options:"i"
-              }
-
-            }
-
-          ]
-
-        })
-
-        .limit(10);
+        });
 
       res.json({
 
         success:true,
 
-        products
+        upsells
 
       });
 
@@ -368,10 +354,10 @@ router.get(
 
       console.log(err);
 
-      res.status(500)
-      .json({
+      res.status(500).json({
 
         success:false
+
       });
 
     }
@@ -380,5 +366,8 @@ router.get(
 
 );
 
-module.exports =
-  router;
+// ======================================
+// EXPORT
+// ======================================
+
+module.exports = router;
