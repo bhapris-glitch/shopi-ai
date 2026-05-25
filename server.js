@@ -27,8 +27,8 @@ require("./middleware/auth");
 const adminAuth =
 require("./middleware/adminAuth");
 
-const rateLimiter =
-require("./middleware/rateLimiter");
+
+
 
 const verifyWebhook =
 require("./middleware/verifyWebhook");
