@@ -367,7 +367,40 @@ router.get(
 );
 
 // ======================================
+// INDEXES
+// ======================================
+
+ProductSchema.index({
+  clientId:1
+});
+
+ProductSchema.index({
+  sales:-1
+});
+
+ProductSchema.index({
+  category:1
+});
+
+ProductSchema.index({
+  active:1
+});
+
+ProductSchema.index({
+  tags:1
+});
+
+ProductSchema.index({
+  title:"text",
+  description:"text"
+});
+
+// ======================================
 // EXPORT
 // ======================================
 
-module.exports = router;
+module.exports =
+mongoose.model(
+  "Product",
+  ProductSchema
+);
