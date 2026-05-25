@@ -982,7 +982,7 @@ app.post("/chat",async(req,res)=>{
         clientId
       })
 
-      .limit(4)
+      .limit(3)
 
       .sort({
         sales:-1
