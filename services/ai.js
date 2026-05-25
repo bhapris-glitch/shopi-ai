@@ -177,9 +177,9 @@ ${JSON.stringify(products)}
 
             ],
 
-            temperature:0.8,
+            temperature:0.7,
 
-            max_tokens:300
+            max_tokens:250
 
           })
 
