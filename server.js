@@ -1399,6 +1399,82 @@ app.post(
 );
 
 // ======================================
+// UPDATE AGENT NAME
+// ======================================
+
+app.post(
+
+  "/update-agent-name",
+
+  auth,
+
+  async(req,res)=>{
+
+    try{
+
+      const {
+        agentName
+      } = req.body;
+
+      if(!agentName){
+
+        return res.status(400).json({
+
+          success:false,
+
+          message:
+            "Agent name required"
+
+        });
+
+      }
+
+      const client =
+        await Client.findByIdAndUpdate(
+
+          req.user.id,
+
+          {
+
+            agentName:
+              agentName.trim()
+
+          },
+
+          {
+
+            new:true
+
+          }
+
+        );
+
+      res.json({
+
+        success:true,
+
+        agentName:
+          client.agentName
+
+      });
+
+    }catch(err){
+
+      console.log(err);
+
+      res.status(500).json({
+
+        success:false
+
+      });
+
+    }
+
+  }
+
+);
+
+// ======================================
 // 404
 // ======================================
 
