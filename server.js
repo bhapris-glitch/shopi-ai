@@ -639,6 +639,9 @@ app.get(
 
         success:true,
 
+        agentName:
+  client?.agentName || "Emma",
+
         country:
           geo.countryCode,
 
