@@ -32,6 +32,11 @@ analytics:[
     default:""
   },
 
+  agentName:{
+  type:String,
+  default:"Emma"
+},
+
   // =========================
   // PLAN
   // =========================
