@@ -559,254 +559,656 @@ body::before{
 
   <aside class="sidebar" id="sidebar">
 
-    <h3>Navigation</h3>
+    <!DOCTYPE html>
 
-    <div class="menu">
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<title>Dashboard • Layboka AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
-      <a href="#">🏠 Overview</a>
+<style>
 
-      <a href="#">💬 Chats</a>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
 
-      <a href="#">📈 Analytics</a>
+html{
+  scroll-behavior:smooth;
+}
 
-      <a href="#">🛒 Conversions</a>
+body{
+  font-family:'Poppins',sans-serif;
+  background:#0b1020;
+  color:white;
+  overflow-x:hidden;
+  -webkit-text-size-adjust:100%;
+}
 
-      <a href="#">📦 Products</a>
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  background:
+  radial-gradient(circle at top left,#ff7a0025,transparent 35%),
+  radial-gradient(circle at bottom right,#ff7a0020,transparent 35%);
+  z-index:-1;
+}
 
-      <a href="#">💳 Billing</a>
+.header{
+  width:100%;
+  padding:18px 6%;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  border-bottom:1px solid rgba(255,255,255,0.08);
+  backdrop-filter:blur(14px);
+  position:sticky;
+  top:0;
+  z-index:1000;
+  background:rgba(11,16,32,0.82);
+}
 
-      <a href="#">⚙ Settings</a>
+.logo{
+  font-size:30px;
+  font-weight:800;
+  background:linear-gradient(90deg,#ff7a00,#ffb347);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
 
-      <a href="pricing.html">🚀 Upgrade Plan</a>
+.tagline{
+  color:#9da6c7;
+  font-size:12px;
+  margin-top:2px;
+}
 
-      <a href="contact.html">📩 Support</a>
+.dashboard{
+  display:grid;
+  grid-template-columns:260px 1fr;
+  min-height:100vh;
+}
 
-    </div>
+.sidebar{
+  border-right:1px solid rgba(255,255,255,0.06);
+  padding:30px 20px;
+  background:rgba(255,255,255,0.03);
+  backdrop-filter:blur(14px);
+}
+
+.sidebar h3{
+  margin-bottom:24px;
+  font-size:13px;
+  text-transform:uppercase;
+  letter-spacing:1px;
+  color:#777;
+}
+
+.menu{
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+}
+
+.menu a{
+  text-decoration:none;
+  color:white;
+  padding:15px 18px;
+  border-radius:16px;
+  transition:0.3s;
+  background:rgba(255,255,255,0.03);
+}
+
+.menu a:hover{
+  background:linear-gradient(90deg,#ff7a00,#ffb347);
+  color:black;
+}
+
+.main{
+  padding:40px;
+}
+
+.welcome h1{
+  font-size:42px;
+  margin-bottom:12px;
+}
+
+.welcome p{
+  color:#aaa;
+  line-height:1.8;
+  max-width:760px;
+}
+
+.agent-box{
+  margin-top:30px;
+  margin-bottom:35px;
+  background:rgba(255,255,255,0.04);
+  border:1px solid rgba(255,255,255,0.08);
+  border-radius:24px;
+  padding:28px;
+}
+
+.agent-box label{
+  display:block;
+  margin-bottom:14px;
+  font-size:15px;
+  color:#bbb;
+}
+
+.agent-box input{
+  width:100%;
+  padding:16px;
+  border:none;
+  border-radius:14px;
+  background:rgba(255,255,255,0.06);
+  color:white;
+  font-size:16px;
+  margin-bottom:18px;
+}
+
+.agent-box button{
+  background:linear-gradient(90deg,#ff7a00,#ffb347);
+  color:black;
+  border:none;
+  padding:15px 22px;
+  border-radius:14px;
+  font-weight:700;
+  cursor:pointer;
+}
+
+.agent-preview{
+  margin-top:16px;
+  color:#9da6c7;
+}
+
+.stats{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+  gap:24px;
+  margin-bottom:40px;
+}
+
+.card{
+  background:rgba(255,255,255,0.04);
+  border:1px solid rgba(255,255,255,0.08);
+  border-radius:26px;
+  padding:28px;
+  backdrop-filter:blur(14px);
+}
+
+.card h2{
+  font-size:15px;
+  color:#aaa;
+  margin-bottom:14px;
+}
+
+.card h1{
+  font-size:42px;
+  margin-bottom:10px;
+}
+
+.card span{
+  color:#00ff88;
+  font-size:14px;
+}
+
+.analytics{
+  display:grid;
+  grid-template-columns:2fr 1fr;
+  gap:24px;
+}
+
+.chart,
+.plan-box,
+.activity{
+  background:rgba(255,255,255,0.04);
+  border-radius:28px;
+  padding:30px;
+  border:1px solid rgba(255,255,255,0.06);
+}
+
+.fake-chart{
+  height:280px;
+  border-radius:22px;
+  background:
+  linear-gradient(180deg,rgba(255,122,0,0.35),transparent),
+  rgba(255,255,255,0.03);
+  position:relative;
+  overflow:hidden;
+}
+
+.fake-chart::before{
+  content:"";
+  position:absolute;
+  width:200%;
+  height:2px;
+  background:linear-gradient(90deg,transparent,#ff7a00,transparent);
+  animation:move 4s linear infinite;
+  top:50%;
+}
+
+@keyframes move{
+  from{ transform:translateX(-50%); }
+  to{ transform:translateX(50%); }
+}
+
+.plan{
+  background:linear-gradient(135deg,#ff7a00,#ffb347);
+  color:black;
+  padding:24px;
+  border-radius:24px;
+}
+
+.plan h3{
+  font-size:30px;
+  margin-bottom:12px;
+}
+
+.plan p{
+  line-height:1.8;
+  font-weight:500;
+}
+
+.upgrade-btn{
+  display:inline-block;
+  margin-top:22px;
+  background:black;
+  color:white;
+  padding:14px 22px;
+  border-radius:14px;
+  text-decoration:none;
+  font-weight:600;
+}
+
+.activity{
+  margin-top:40px;
+}
+
+.activity-item{
+  padding:18px 0;
+  border-bottom:1px solid rgba(255,255,255,0.06);
+  display:flex;
+  justify-content:space-between;
+  color:#d2d2d2;
+}
+
+.activity-item:last-child{
+  border-bottom:none;
+}
+
+.live-badge{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  background:rgba(0,255,136,0.12);
+  color:#00ff88;
+  padding:10px 14px;
+  border-radius:50px;
+  margin-top:18px;
+  font-size:14px;
+}
+
+.live-dot{
+  width:10px;
+  height:10px;
+  border-radius:50%;
+  background:#00ff88;
+  box-shadow:0 0 10px #00ff88;
+}
+
+@media(max-width:950px){
+
+  .dashboard{
+    grid-template-columns:1fr;
+  }
+
+  .sidebar{
+    display:none;
+  }
+
+  .analytics{
+    grid-template-columns:1fr;
+  }
+
+  .main{
+    padding:22px;
+  }
+
+}
+
+</style>
+
+</head>
+<body>
+
+<header class="header">
+
+  <div>
+    <div class="logo">Layboka AI</div>
+    <div class="tagline">Shopify AI Sales Assistant</div>
+  </div>
+
+  <div class="live-badge">
+    <div class="live-dot"></div>
+    Live AI Dashboard
+  </div>
+
+</header>
+
+<div class="dashboard">
+
+  <aside class="sidebar">
+
+```
+<h3>Navigation</h3>
+
+<div class="menu">
+  <a href="#">🏠 Overview</a>
+  <a href="#">💬 Chats</a>
+  <a href="#">📈 Analytics</a>
+  <a href="#">🛒 Conversions</a>
+  <a href="#">📦 Products</a>
+  <a href="#">💳 Billing</a>
+  <a href="#">⚙ Settings</a>
+  <a href="pricing.html">🚀 Upgrade Plan</a>
+</div>
+```
 
   </aside>
 
-  <!-- MAIN -->
-
   <main class="main">
 
-    <!-- WELCOME -->
+```
+<div class="welcome">
 
-    <div class="welcome">
+  <h1>🚀 Welcome Back</h1>
 
-      <h1>
-        🚀 Welcome Back
-      </h1>
-
-      <p>
-        Your AI sales assistant is actively converting visitors into buyers 24/7.
-        Track conversations, revenue, recovered carts, analytics and customer activity in real time.
-      </p>
-
-    </div>
-
-    <div class="agent-box">
-
-  <label>
-    Change Sales Agent Name
-  </label>
-
-  <input
-    type="text"
-    id="agentName"
-    placeholder="Emma"
-  />
-
-  <button onclick="saveAgentName()">
-    Save Agent
-  </button>
+  <p>
+    Your AI chatbot is helping visitors discover products, recover carts and increase conversions in real time.
+  </p>
 
 </div>
 
-    <!-- STATS -->
+<div class="agent-box">
 
-    <div class="stats">
+  <label>Change Your AI Sales Agent Name</label>
 
-      <div class="card">
+  <input type="text" id="agentName" placeholder="Emma" />
 
-        <h2>Total Chats</h2>
+  <button onclick="saveAgentName()">
+    Save Agent Name
+  </button>
 
-        <h1 id="chatCount">120</h1>
+  <div class="agent-preview">
+    Current AI Agent: <strong id="agentPreview">Emma</strong>
+  </div>
 
-        <span>+22% this week</span>
+</div>
 
-      </div>
+<div class="stats">
 
-      <div class="card">
+  <div class="card">
+    <h2>Total Chats</h2>
+    <h1 id="chatCount">0</h1>
+    <span id="chatGrowth">Live visitor conversations</span>
+  </div>
 
-        <h2>Interested Users</h2>
+  <div class="card">
+    <h2>Interested Buyers</h2>
+    <h1 id="interestCount">0</h1>
+    <span id="interestGrowth">AI product recommendations</span>
+  </div>
 
-        <h1 id="interestCount">45</h1>
+  <div class="card">
+    <h2>Recovered Carts</h2>
+    <h1 id="recoveryCount">0</h1>
+    <span id="recoveredRevenue">Live recovered sales</span>
+  </div>
 
-        <span>+15% conversion</span>
+  <div class="card">
+    <h2>Total Revenue</h2>
+    <h1 id="totalRevenue">0</h1>
+    <span id="growthPercent">Live AI performance</span>
+  </div>
 
-      </div>
+</div>
 
-      <div class="card">
+<div class="analytics">
 
-        <h2>Recovered Carts</h2>
+  <div class="chart">
 
-        <h1 id="recoveryCount">18</h1>
+    <h2>📊 AI Conversion Analytics</h2>
 
-        <span>₹12,500 recovered</span>
+    <div class="fake-chart"></div>
 
-      </div>
+  </div>
 
-      <div class="card">
+  <div class="plan-box">
 
-        <h2>Total Revenue</h2>
+    <h2>💎 Current Plan</h2>
 
-        <h1>₹32K</h1>
+    <div class="plan">
 
-        <span>+38% growth</span>
+      <h3 id="planName">Premium</h3>
 
-      </div>
+      <p>
+        AI Checkout Closer<br>
+        WhatsApp Recovery<br>
+        Smart Upsells<br>
+        Human AI Replies<br>
+        Cart Recovery Automation
+      </p>
 
-    </div>
-
-    <!-- ANALYTICS -->
-
-    <div class="analytics">
-
-      <div class="chart">
-
-        <h2>📊 AI Conversion Analytics</h2>
-
-        <div class="fake-chart"></div>
-
-      </div>
-
-      <div class="plan-box">
-
-        <h2>💎 Current Plan</h2>
-
-        <div class="plan">
-
-          <h3>Premium</h3>
-
-          <p>
-            AI Checkout Closer<br>
-            WhatsApp Recovery<br>
-            Abandoned Cart AI<br>
-            Premium UI<br>
-            Smart Recommendations
-          </p>
-
-          <a href="pricing.html" class="upgrade-btn">
-            Manage Billing
-          </a>
-
-        </div>
-
-      </div>
+      <a href="pricing.html" class="upgrade-btn">
+        Manage Billing
+      </a>
 
     </div>
 
-    <!-- ACTIVITY -->
+  </div>
 
-    <div class="activity">
+</div>
 
-      <h2>⚡ Recent Activity</h2>
+<div class="activity">
 
-      <div class="activity-item">
-        <span>AI recovered abandoned cart</span>
-        <span>2 mins ago</span>
-      </div>
+  <h2>⚡ Live Activity</h2>
 
-      <div class="activity-item">
-        <span>New Shopify store installed chatbot</span>
-        <span>10 mins ago</span>
-      </div>
+  <div id="activityList">
 
-      <div class="activity-item">
-        <span>Premium subscription activated</span>
-        <span>30 mins ago</span>
-      </div>
-
-      <div class="activity-item">
-        <span>AI recommended best-selling product</span>
-        <span>1 hour ago</span>
-      </div>
-
+    <div class="activity-item">
+      <span>Loading live activity...</span>
+      <span>Now</span>
     </div>
+
+  </div>
+
+</div>
+```
 
   </main>
 
 </div>
 
-<!-- ================= JS ================= -->
-
 <script>
 
-const sidebar =
-document.getElementById("sidebar");
+const clientId =
+new URLSearchParams(window.location.search)
+.get("client");
 
-const overlay =
-document.getElementById("overlay");
+// ================================
+// LOAD DASHBOARD ANALYTICS
+// ================================
 
-const menuBtn =
-document.getElementById("menuBtn");
+async function loadDashboard(){
 
-function toggleMenu(){
+  try{
 
-  sidebar.classList.toggle("show");
-  overlay.classList.toggle("show");
+    const res = await fetch(
+      `/dashboard-analytics/${clientId}`
+    );
 
-  if(sidebar.classList.contains("show")){
-    menuBtn.innerHTML = "✕";
-  }else{
-    menuBtn.innerHTML = "☰";
+    const data = await res.json();
+
+    const analytics =
+      data.analytics || {};
+
+    document.getElementById("chatCount")
+    .innerText = analytics.totalChats || 0;
+
+    document.getElementById("interestCount")
+    .innerText = analytics.interestedUsers || 0;
+
+    document.getElementById("recoveryCount")
+    .innerText = analytics.recoveredCarts || 0;
+
+    document.getElementById("totalRevenue")
+    .innerText =
+      analytics.revenueFormatted || "$0";
+
+    document.getElementById("growthPercent")
+    .innerText =
+      `${analytics.growth || 0}% AI conversion growth`;
+
+    document.getElementById("recoveredRevenue")
+    .innerText =
+      analytics.recoveredFormatted ||
+      "Live recovered sales";
+
+    // ================================
+    // LIVE ACTIVITY
+    // ================================
+
+    const activityList =
+    document.getElementById("activityList");
+
+    activityList.innerHTML = "";
+
+    const activities =
+      analytics.activities || [];
+
+    if(!activities.length){
+
+      activityList.innerHTML = `
+      <div class="activity-item">
+        <span>No recent activity yet</span>
+        <span>Live</span>
+      </div>`;
+
+    }
+
+    activities.forEach(item=>{
+
+      activityList.innerHTML += `
+      <div class="activity-item">
+        <span>${item.text}</span>
+        <span>${item.time}</span>
+      </div>`;
+
+    });
+
+  }catch(err){
+
+    console.log(err);
+
   }
 
 }
 
-function closeMenu(){
+// ================================
+// SAVE AGENT NAME
+// ================================
 
-  sidebar.classList.remove("show");
-  overlay.classList.remove("show");
+async function saveAgentName(){
 
-  menuBtn.innerHTML = "☰";
+  try{
 
-}
+    const agentName =
+    document.getElementById("agentName")
+    .value.trim();
 
-// ================= COUNTER =================
-
-function animateValue(id,start,end,duration){
-
-  let obj = document.getElementById(id);
-
-  let range = end - start;
-
-  let current = start;
-
-  let increment = end > start ? 1 : -1;
-
-  let stepTime =
-  Math.abs(Math.floor(duration / range));
-
-  let timer = setInterval(function(){
-
-    current += increment;
-
-    obj.innerHTML = current;
-
-    if(current == end){
-      clearInterval(timer);
+    if(!agentName){
+      return alert("Enter agent name");
     }
 
-  }, stepTime);
+    const res = await fetch(
+      "/save-agent-name",
+      {
+        method:"POST",
+        headers:{
+          "Content-Type":"application/json"
+        },
+        body:JSON.stringify({
+          clientId,
+          agentName
+        })
+      }
+    );
+
+    const data = await res.json();
+
+    if(data.success){
+
+      document.getElementById("agentPreview")
+      .innerText = agentName;
+
+      alert("AI Agent updated successfully");
+
+    }
+
+  }catch(err){
+
+    console.log(err);
+
+  }
 
 }
 
-animateValue("chatCount",80,120,2000);
+// ================================
+// LOAD AGENT NAME
+// ================================
 
-animateValue("interestCount",20,45,2000);
+async function loadAgent(){
 
-animateValue("recoveryCount",5,18,2000);
+  try{
+
+    const res = await fetch(
+      `/client-plan/${clientId}`
+    );
+
+    const data = await res.json();
+
+    if(data.agentName){
+
+      document.getElementById("agentName")
+      .value = data.agentName;
+
+      document.getElementById("agentPreview")
+      .innerText = data.agentName;
+
+    }
+
+    if(data.plan){
+
+      document.getElementById("planName")
+      .innerText = data.plan;
+
+    }
+
+  }catch(err){
+
+    console.log(err);
+
+  }
+
+}
+
+loadDashboard();
+loadAgent();
+
+setInterval(loadDashboard,15000);
 
 </script>
 
