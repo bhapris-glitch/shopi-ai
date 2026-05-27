@@ -20,6 +20,67 @@ async function loadDashboard(){
     const data =
     await res.json();
 
+async function saveAgentName(){
+
+  try{
+
+    const agentName =
+
+      document.getElementById(
+        "agentName"
+      ).value;
+
+    const token =
+      localStorage.getItem("token");
+
+    const res =
+      await fetch(
+
+        "/update-agent-name",
+
+        {
+
+          method:"POST",
+
+          headers:{
+
+            "Content-Type":
+              "application/json",
+
+            Authorization:
+              "Bearer " + token
+
+          },
+
+          body:JSON.stringify({
+
+            agentName
+
+          })
+
+        }
+
+      );
+
+    const data =
+      await res.json();
+
+    if(data.success){
+
+      alert(
+        "Agent updated successfully"
+      );
+
+    }
+
+  }catch(err){
+
+    console.log(err);
+
+  }
+
+}
+    
     // =========================
     // BASIC INFO
     // =========================
