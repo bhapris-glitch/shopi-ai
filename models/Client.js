@@ -12,6 +12,37 @@ analytics:[
 
     country:String,
 
+    referralCode:{
+  type:String,
+  default:"",
+  index:true
+},
+
+agentName:{
+  type:String,
+  default:"Emma"
+},
+
+agentAvatar:{
+  type:String,
+  default:""
+},
+
+revenue:{
+  type:Number,
+  default:0
+},
+
+orders:{
+  type:Number,
+  default:0
+},
+
+onlineVisitors:{
+  type:Number,
+  default:0
+}
+
     createdAt:{
       type:Date,
       default:Date.now
