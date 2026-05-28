@@ -60,6 +60,9 @@ require("./routes/analytics");
 const productRoutes =
 require("./routes/products");
 
+const referralRoutes =
+require("./routes/referral");
+
 const stripeRoutes =
 require("./routes/stripe");
 
@@ -219,6 +222,8 @@ app.use(productRoutes);
 app.use("/stripe",stripeRoutes);
 
 app.use("/webhooks",webhookRoutes);
+
+app.use(referralRoutes);
 
 // ======================================
 // DATABASE
@@ -1483,6 +1488,63 @@ app.post(
 
   }
 
+);
+
+// ======================================
+// UPDATE AGENT
+// ======================================
+
+app.post(
+  "/update-agent-profile",
+  auth,
+  async(req,res)=>{
+
+    try{
+
+      const {
+        agentName,
+        agentAvatar
+      } = req.body;
+
+      const client =
+        await Client.findById(
+          req.user.id
+        );
+
+      if(!client){
+
+        return res.status(404).json({
+          success:false
+        });
+
+      }
+
+      if(agentName){
+        client.agentName = agentName;
+      }
+
+      if(agentAvatar){
+        client.agentAvatar = agentAvatar;
+      }
+
+      await client.save();
+
+      res.json({
+        success:true,
+        client
+      });
+
+    }catch(err){
+
+      console.log(err);
+
+      res.status(500).json({
+        success:false
+      });
+
+    }
+
+  }
 );
 
 // ======================================
