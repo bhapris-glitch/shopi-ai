@@ -1,17 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
 <meta charset="UTF-8" />
-
-<meta
-name="viewport"
-content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
-/>
-
-<title>Dashboard • Layboka AI</title>
-
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Layboka AI Dashboard</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
 <style>
@@ -22,1195 +14,346 @@ content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable
   box-sizing:border-box;
 }
 
-html{
-  scroll-behavior:smooth;
-}
-
 body{
-  font-family:'Poppins',sans-serif;
   background:#0b1020;
   color:white;
-  overflow-x:hidden;
-  -webkit-text-size-adjust:100%;
+  font-family:'Poppins',sans-serif;
 }
-
-body::before{
-  content:"";
-  position:fixed;
-  inset:0;
-  background:
-  radial-gradient(circle at top left,#ff7a0025,transparent 35%),
-  radial-gradient(circle at bottom right,#ff7a0020,transparent 35%);
-  z-index:-1;
-}
-
-/* ================= HEADER ================= */
 
 .header{
-
-  width:100%;
-  padding:18px 6%;
-
+  padding:20px 6%;
+  border-bottom:1px solid rgba(255,255,255,0.08);
   display:flex;
   justify-content:space-between;
   align-items:center;
-
-  border-bottom:1px solid rgba(255,255,255,0.08);
-
-  backdrop-filter:blur(14px);
-
-  position:sticky;
-  top:0;
-  z-index:1000;
-
-  background:rgba(11,16,32,0.82);
-
-}
-
-.logo-wrap{
-  display:flex;
-  flex-direction:column;
 }
 
 .logo{
-  font-size:30px;
+  font-size:28px;
   font-weight:800;
-
   background:linear-gradient(90deg,#ff7a00,#ffb347);
-
   -webkit-background-clip:text;
   -webkit-text-fill-color:transparent;
 }
 
-.tagline{
-  color:#9da6c7;
-  font-size:12px;
-  margin-top:2px;
+.main{
+  padding:40px 6%;
 }
 
-.header-right{
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  gap:24px;
+}
+
+.card{
+  background:rgba(255,255,255,0.04);
+  border:1px solid rgba(255,255,255,0.08);
+  border-radius:24px;
+  padding:24px;
+}
+
+.card h2{
+  font-size:15px;
+  color:#aaa;
+  margin-bottom:14px;
+}
+
+.card h1{
+  font-size:38px;
+}
+
+.agent-box,
+.referral-box,
+.activity-box{
+  margin-top:30px;
+  background:rgba(255,255,255,0.04);
+  border:1px solid rgba(255,255,255,0.08);
+  border-radius:24px;
+  padding:28px;
+}
+
+.agent-profile{
   display:flex;
   align-items:center;
   gap:18px;
+  margin-top:20px;
 }
 
-.status{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  color:#bbb;
-  font-size:14px;
-}
-
-.live-dot{
-  width:10px;
-  height:10px;
+.agent-avatar{
+  width:90px;
+  height:90px;
   border-radius:50%;
-  background:#00ff88;
-  box-shadow:0 0 12px #00ff88;
+  object-fit:cover;
+  border:3px solid #ff7a00;
 }
 
-.menu-toggle{
-  display:none;
-  width:45px;
-  height:45px;
-  border-radius:12px;
-  background:rgba(255,255,255,0.06);
-  border:1px solid rgba(255,255,255,0.08);
-
-  align-items:center;
-  justify-content:center;
-
-  font-size:24px;
-  cursor:pointer;
-}
-
-/* ================= LAYOUT ================= */
-
-.dashboard{
-  display:grid;
-  grid-template-columns:260px 1fr;
-  min-height:100vh;
-}
-
-/* ================= SIDEBAR ================= */
-
-.sidebar{
-
-  border-right:1px solid rgba(255,255,255,0.06);
-
-  padding:30px 20px;
-
-  background:rgba(255,255,255,0.03);
-
-  backdrop-filter:blur(14px);
-
-  transition:0.35s ease;
-}
-
-.sidebar h3{
-  margin-bottom:24px;
-  font-size:13px;
-  text-transform:uppercase;
-  letter-spacing:1px;
-  color:#777;
-}
-
-.menu{
-  display:flex;
-  flex-direction:column;
-  gap:14px;
-}
-
-.menu a{
-
-  text-decoration:none;
-  color:white;
-
-  padding:15px 18px;
-
-  border-radius:16px;
-
-  transition:0.3s;
-
-  background:rgba(255,255,255,0.03);
-
-  border:1px solid transparent;
-
-  font-size:15px;
-}
-
-.menu a:hover{
-  background:linear-gradient(90deg,#ff7a00,#ffb347);
-  color:black;
-  transform:translateX(4px);
-}
-
-/* ================= OVERLAY ================= */
-
-.overlay{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,0.45);
-  z-index:998;
-  opacity:0;
-  visibility:hidden;
-  transition:0.3s;
-}
-
-.overlay.show{
-  opacity:1;
-  visibility:visible;
-}
-
-/* ================= MAIN ================= */
-
-.main{
-  padding:40px;
-}
-
-.welcome{
-  margin-bottom:35px;
-}
-
-.welcome h1{
-  font-size:42px;
-  margin-bottom:12px;
-}
-
-.welcome p{
-  color:#aaa;
-  line-height:1.8;
-  max-width:760px;
-}
-
-/* ================= STATS ================= */
-
-.stats{
-
-  display:grid;
-
-  grid-template-columns:
-  repeat(auto-fit,minmax(230px,1fr));
-
-  gap:24px;
-
-  margin-bottom:40px;
-}
-
-.card{
-
-  background:rgba(255,255,255,0.04);
-
-  border:1px solid rgba(255,255,255,0.08);
-
-  border-radius:26px;
-
-  padding:28px;
-
-  transition:0.4s;
-
-  backdrop-filter:blur(14px);
-}
-
-.card:hover{
-  transform:translateY(-8px);
-  border-color:#ff7a00;
-  box-shadow:0 14px 50px rgba(255,122,0,0.18);
-}
-
-.card h2{
-  font-size:15px;
-  color:#aaa;
-  margin-bottom:14px;
-}
-
-.card h1{
-  font-size:42px;
-  margin-bottom:10px;
-}
-
-.card span{
-  color:#00ff88;
-  font-size:14px;
-}
-
-/* ================= ANALYTICS ================= */
-
-.analytics{
-
-  display:grid;
-  grid-template-columns:2fr 1fr;
-  gap:24px;
-}
-
-.chart,
-.plan-box{
-
-  background:rgba(255,255,255,0.04);
-
-  border-radius:28px;
-
-  padding:30px;
-
-  border:1px solid rgba(255,255,255,0.06);
-
-  backdrop-filter:blur(14px);
-}
-
-.chart h2,
-.plan-box h2{
-  margin-bottom:24px;
-  font-size:24px;
-}
-
-.fake-chart{
-
-  height:280px;
-
-  border-radius:22px;
-
-  background:
-  linear-gradient(180deg,rgba(255,122,0,0.35),transparent),
-  rgba(255,255,255,0.03);
-
-  position:relative;
-  overflow:hidden;
-}
-
-.fake-chart::before{
-
-  content:"";
-
-  position:absolute;
-
-  width:200%;
-  height:2px;
-
-  background:
-  linear-gradient(90deg,transparent,#ff7a00,transparent);
-
-  animation:move 4s linear infinite;
-
-  top:50%;
-}
-
-@keyframes move{
-
-  from{
-    transform:translateX(-50%);
-  }
-
-  to{
-    transform:translateX(50%);
-  }
-
-}
-
-/* ================= PLAN ================= */
-
-.plan{
-
-  background:
-  linear-gradient(135deg,#ff7a00,#ffb347);
-
-  color:black;
-
-  padding:24px;
-
-  border-radius:24px;
-}
-
-.plan h3{
-  font-size:30px;
-  margin-bottom:12px;
-}
-
-.plan p{
-  line-height:1.8;
-  font-weight:500;
-}
-
-.upgrade-btn{
-
-  display:inline-block;
-
-  margin-top:22px;
-
-  background:black;
-
-  color:white;
-
-  padding:14px 22px;
-
-  border-radius:14px;
-
-  text-decoration:none;
-
-  font-weight:600;
-
-  transition:0.3s;
-}
-
-.upgrade-btn:hover{
-  transform:scale(1.04);
-}
-
-/* ================= ACTIVITY ================= */
-
-.activity{
-
-  margin-top:40px;
-
-  background:rgba(255,255,255,0.04);
-
-  border-radius:28px;
-
-  padding:30px;
-
-  border:1px solid rgba(255,255,255,0.06);
-}
-
-.activity h2{
-  margin-bottom:24px;
-}
-
-.activity-item{
-
-  padding:18px 0;
-
-  border-bottom:1px solid rgba(255,255,255,0.06);
-
-  display:flex;
-  justify-content:space-between;
-  gap:20px;
-
-  color:#d2d2d2;
-}
-
-.activity-item:last-child{
-  border-bottom:none;
-}
-
-/* ================= MOBILE ================= */
-
-@media(max-width:950px){
-
-  .dashboard{
-    grid-template-columns:1fr;
-  }
-
-  .menu-toggle{
-    display:flex;
-  }
-
-  .sidebar{
-
-    position:fixed;
-
-    top:0;
-    left:-280px;
-
-    width:260px;
-    height:100vh;
-
-    z-index:999;
-
-    background:#10192d;
-
-    overflow-y:auto;
-  }
-
-  .sidebar.show{
-    left:0;
-  }
-
-  .analytics{
-    grid-template-columns:1fr;
-  }
-
-  .main{
-    padding:25px;
-  }
-
-}
-
-@media(max-width:700px){
-
-  .header{
-    padding:16px 5%;
-  }
-
-  .logo{
-    font-size:26px;
-  }
-
-  .welcome h1{
-    font-size:30px;
-  }
-
-  .card h1{
-    font-size:34px;
-  }
-
-  .chart,
-  .plan-box,
-  .activity{
-    padding:22px;
-  }
-
-  .main{
-    padding:20px;
-  }
-
-  .activity-item{
-    flex-direction:column;
-    gap:8px;
-  }
-
-}
-
-</style>
-
-</head>
-
-<body>
-
-<!-- ================= OVERLAY ================= -->
-
-<div class="overlay" id="overlay" onclick="closeMenu()"></div>
-
-<!-- ================= HEADER ================= -->
-
-<header class="header">
-
-  <div class="logo-wrap">
-
-    <div class="logo">
-      Layboka AI
-    </div>
-
-    <div class="tagline">
-      Shopify AI Sales Assistant
-    </div>
-
-  </div>
-
-  <div class="header-right">
-
-    <div class="status">
-      <div class="live-dot"></div>
-      Live Dashboard
-    </div>
-
-    <div class="menu-toggle" id="menuBtn" onclick="toggleMenu()">
-      ☰
-    </div>
-
-  </div>
-
-</header>
-
-<!-- ================= DASHBOARD ================= -->
-
-<div class="dashboard">
-
-  <!-- SIDEBAR -->
-
-  <aside class="sidebar" id="sidebar">
-
-    <!DOCTYPE html>
-
-<html lang="en">
-<head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-<title>Dashboard • Layboka AI</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-
-<style>
-
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
-}
-
-html{
-  scroll-behavior:smooth;
-}
-
-body{
-  font-family:'Poppins',sans-serif;
-  background:#0b1020;
-  color:white;
-  overflow-x:hidden;
-  -webkit-text-size-adjust:100%;
-}
-
-body::before{
-  content:"";
-  position:fixed;
-  inset:0;
-  background:
-  radial-gradient(circle at top left,#ff7a0025,transparent 35%),
-  radial-gradient(circle at bottom right,#ff7a0020,transparent 35%);
-  z-index:-1;
-}
-
-.header{
-  width:100%;
-  padding:18px 6%;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  border-bottom:1px solid rgba(255,255,255,0.08);
-  backdrop-filter:blur(14px);
-  position:sticky;
-  top:0;
-  z-index:1000;
-  background:rgba(11,16,32,0.82);
-}
-
-.logo{
-  font-size:30px;
-  font-weight:800;
-  background:linear-gradient(90deg,#ff7a00,#ffb347);
-  -webkit-background-clip:text;
-  -webkit-text-fill-color:transparent;
-}
-
-.tagline{
-  color:#9da6c7;
-  font-size:12px;
-  margin-top:2px;
-}
-
-.dashboard{
-  display:grid;
-  grid-template-columns:260px 1fr;
-  min-height:100vh;
-}
-
-.sidebar{
-  border-right:1px solid rgba(255,255,255,0.06);
-  padding:30px 20px;
-  background:rgba(255,255,255,0.03);
-  backdrop-filter:blur(14px);
-}
-
-.sidebar h3{
-  margin-bottom:24px;
-  font-size:13px;
-  text-transform:uppercase;
-  letter-spacing:1px;
-  color:#777;
-}
-
-.menu{
-  display:flex;
-  flex-direction:column;
-  gap:14px;
-}
-
-.menu a{
-  text-decoration:none;
-  color:white;
-  padding:15px 18px;
-  border-radius:16px;
-  transition:0.3s;
-  background:rgba(255,255,255,0.03);
-}
-
-.menu a:hover{
-  background:linear-gradient(90deg,#ff7a00,#ffb347);
-  color:black;
-}
-
-.main{
-  padding:40px;
-}
-
-.welcome h1{
-  font-size:42px;
-  margin-bottom:12px;
-}
-
-.welcome p{
-  color:#aaa;
-  line-height:1.8;
-  max-width:760px;
-}
-
-.agent-box{
-  margin-top:30px;
-  margin-bottom:35px;
-  background:rgba(255,255,255,0.04);
-  border:1px solid rgba(255,255,255,0.08);
-  border-radius:24px;
-  padding:28px;
-}
-
-.agent-box label{
-  display:block;
-  margin-bottom:14px;
-  font-size:15px;
-  color:#bbb;
-}
-
-.agent-box input{
-  width:100%;
-  padding:16px;
-  border:none;
-  border-radius:14px;
-  background:rgba(255,255,255,0.06);
-  color:white;
-  font-size:16px;
-  margin-bottom:18px;
-}
-
-.agent-box button{
-  background:linear-gradient(90deg,#ff7a00,#ffb347);
-  color:black;
-  border:none;
-  padding:15px 22px;
-  border-radius:14px;
-  font-weight:700;
-  cursor:pointer;
-}
-
-.agent-preview{
-  margin-top:16px;
-  color:#9da6c7;
-}
-
-.stats{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
-  gap:24px;
-  margin-bottom:40px;
-}
-
-.card{
-  background:rgba(255,255,255,0.04);
-  border:1px solid rgba(255,255,255,0.08);
-  border-radius:26px;
-  padding:28px;
-  backdrop-filter:blur(14px);
-}
-
-.card h2{
-  font-size:15px;
-  color:#aaa;
-  margin-bottom:14px;
-}
-
-.card h1{
-  font-size:42px;
-  margin-bottom:10px;
-}
-
-.card span{
-  color:#00ff88;
-  font-size:14px;
-}
-
-.analytics{
-  display:grid;
-  grid-template-columns:2fr 1fr;
-  gap:24px;
-}
-
-.chart,
-.plan-box,
-.activity{
-  background:rgba(255,255,255,0.04);
-  border-radius:28px;
-  padding:30px;
-  border:1px solid rgba(255,255,255,0.06);
-}
-
-.fake-chart{
-  height:280px;
-  border-radius:22px;
-  background:
-  linear-gradient(180deg,rgba(255,122,0,0.35),transparent),
-  rgba(255,255,255,0.03);
-  position:relative;
-  overflow:hidden;
-}
-
-.fake-chart::before{
-  content:"";
-  position:absolute;
-  width:200%;
-  height:2px;
-  background:linear-gradient(90deg,transparent,#ff7a00,transparent);
-  animation:move 4s linear infinite;
-  top:50%;
-}
-
-@keyframes move{
-  from{ transform:translateX(-50%); }
-  to{ transform:translateX(50%); }
-}
-
-.plan{
-  background:linear-gradient(135deg,#ff7a00,#ffb347);
-  color:black;
-  padding:24px;
-  border-radius:24px;
-}
-
-.plan h3{
-  font-size:30px;
-  margin-bottom:12px;
-}
-
-.plan p{
-  line-height:1.8;
-  font-weight:500;
-}
-
-.upgrade-btn{
-  display:inline-block;
-  margin-top:22px;
-  background:black;
-  color:white;
-  padding:14px 22px;
-  border-radius:14px;
-  text-decoration:none;
-  font-weight:600;
-}
-
-.activity{
-  margin-top:40px;
-}
-
-.activity-item{
-  padding:18px 0;
-  border-bottom:1px solid rgba(255,255,255,0.06);
-  display:flex;
-  justify-content:space-between;
-  color:#d2d2d2;
-}
-
-.activity-item:last-child{
-  border-bottom:none;
-}
-
-.live-badge{
-  display:inline-flex;
-  align-items:center;
-  gap:8px;
-  background:rgba(0,255,136,0.12);
-  color:#00ff88;
-  padding:10px 14px;
-  border-radius:50px;
-  margin-top:18px;
-  font-size:14px;
-}
-
-.live-dot{
-  width:10px;
-  height:10px;
+.online-dot{
+  width:12px;
+  height:12px;
   border-radius:50%;
   background:#00ff88;
   box-shadow:0 0 10px #00ff88;
 }
 
-@media(max-width:950px){
+input{
+  width:100%;
+  margin-top:14px;
+  padding:14px;
+  border:none;
+  border-radius:14px;
+  background:#151d33;
+  color:white;
+}
 
-  .dashboard{
-    grid-template-columns:1fr;
-  }
+button{
+  margin-top:16px;
+  background:linear-gradient(90deg,#ff7a00,#ffb347);
+  color:black;
+  border:none;
+  padding:14px 20px;
+  border-radius:14px;
+  font-weight:700;
+  cursor:pointer;
+}
 
-  .sidebar{
-    display:none;
-  }
+.referral-card{
+  margin-top:22px;
+  background:#12192c;
+  border-radius:20px;
+  padding:20px;
+}
 
-  .analytics{
-    grid-template-columns:1fr;
-  }
+.progress{
+  width:100%;
+  height:14px;
+  background:#1f2942;
+  border-radius:20px;
+  overflow:hidden;
+  margin-top:16px;
+}
+
+.progress-bar{
+  height:100%;
+  width:50%;
+  background:linear-gradient(90deg,#ff7a00,#ffb347);
+}
+
+.ref-link{
+  background:#0f1729;
+  padding:14px;
+  border-radius:12px;
+  margin-top:14px;
+  word-break:break-all;
+}
+
+.activity-item{
+  display:flex;
+  justify-content:space-between;
+  padding:16px 0;
+  border-bottom:1px solid rgba(255,255,255,0.06);
+}
+
+.activity-item:last-child{
+  border-bottom:none;
+}
+
+@media(max-width:700px){
 
   .main{
-    padding:22px;
+    padding:24px;
+  }
+
+  .agent-profile{
+    flex-direction:column;
+    align-items:flex-start;
   }
 
 }
 
 </style>
-
 </head>
+
 <body>
 
 <header class="header">
-
+  <div class="logo">Layboka AI</div>
   <div>
-    <div class="logo">Layboka AI</div>
-    <div class="tagline">Shopify AI Sales Assistant</div>
+    <span class="online-dot"></span>
+    AI Live
   </div>
-
-  <div class="live-badge">
-    <div class="live-dot"></div>
-    Live AI Dashboard
-  </div>
-
 </header>
 
-<div class="dashboard">
+<div class="main">
 
-  <aside class="sidebar">
+  <div class="grid">
 
-```
-<h3>Navigation</h3>
+    <div class="card">
+      <h2>Total Chats</h2>
+      <h1 id="chatCount">0</h1>
+    </div>
 
-<div class="menu">
-  <a href="#">🏠 Overview</a>
-  <a href="#">💬 Chats</a>
-  <a href="#">📈 Analytics</a>
-  <a href="#">🛒 Conversions</a>
-  <a href="#">📦 Products</a>
-  <a href="#">💳 Billing</a>
-  <a href="#">⚙ Settings</a>
-  <a href="pricing.html">🚀 Upgrade Plan</a>
-</div>
-```
+    <div class="card">
+      <h2>Total Revenue</h2>
+      <h1 id="revenueCount">$0</h1>
+    </div>
 
-  </aside>
+    <div class="card">
+      <h2>Recovered Carts</h2>
+      <h1 id="recoveryCount">0</h1>
+    </div>
 
-  <main class="main">
-
-```
-<div class="welcome">
-
-  <h1>🚀 Welcome Back</h1>
-
-  <p>
-    Your AI chatbot is helping visitors discover products, recover carts and increase conversions in real time.
-  </p>
-
-</div>
-
-<div class="agent-box">
-
-  <label>Change Your AI Sales Agent Name</label>
-
-  <input type="text" id="agentName" placeholder="Emma" />
-
-  <button onclick="saveAgentName()">
-    Save Agent Name
-  </button>
-
-  <div class="agent-preview">
-    Current AI Agent: <strong id="agentPreview">Emma</strong>
-  </div>
-
-</div>
-
-<div class="stats">
-
-  <div class="card">
-    <h2>Total Chats</h2>
-    <h1 id="chatCount">0</h1>
-    <span id="chatGrowth">Live visitor conversations</span>
-  </div>
-
-  <div class="card">
-    <h2>Interested Buyers</h2>
-    <h1 id="interestCount">0</h1>
-    <span id="interestGrowth">AI product recommendations</span>
-  </div>
-
-  <div class="card">
-    <h2>Recovered Carts</h2>
-    <h1 id="recoveryCount">0</h1>
-    <span id="recoveredRevenue">Live recovered sales</span>
-  </div>
-
-  <div class="card">
-    <h2>Total Revenue</h2>
-    <h1 id="totalRevenue">0</h1>
-    <span id="growthPercent">Live AI performance</span>
-  </div>
-
-</div>
-
-<div class="analytics">
-
-  <div class="chart">
-
-    <h2>📊 AI Conversion Analytics</h2>
-
-    <div class="fake-chart"></div>
+    <div class="card">
+      <h2>Current Plan</h2>
+      <h1 id="planName">Starter</h1>
+    </div>
 
   </div>
 
-  <div class="plan-box">
+  <div class="agent-box">
 
-    <h2>💎 Current Plan</h2>
+    <h2>🤖 AI Sales Agent</h2>
 
-    <div class="plan">
+    <div class="agent-profile">
 
-      <h3 id="planName">Premium</h3>
+      <img
+      src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
+      class="agent-avatar"
+      id="agentPreview"
+      />
+
+      <div>
+        <h3 id="agentLiveName">Emma</h3>
+        <p>
+          Online AI Sales Representative
+        </p>
+      </div>
+
+    </div>
+
+    <input
+    type="text"
+    id="agentName"
+    placeholder="Enter AI Agent Name"
+    />
+
+    <input
+    type="file"
+    id="agentImage"
+    accept="image/*"
+    />
+
+    <button onclick="saveAgentProfile()">
+      Save AI Agent
+    </button>
+
+  </div>
+
+  <div class="referral-box">
+
+    <h2>🚀 Referral Challenges</h2>
+
+    <div class="referral-card">
+
+      <h3>
+        Starter Challenge
+      </h3>
 
       <p>
-        AI Checkout Closer<br>
-        WhatsApp Recovery<br>
-        Smart Upsells<br>
-        Human AI Replies<br>
-        Cart Recovery Automation
+        Invite 2 paid stores within 40 days
+        and get next 2 months FREE.
       </p>
 
-      <a href="pricing.html" class="upgrade-btn">
-        Manage Billing
-      </a>
+      <div class="progress">
+        <div class="progress-bar" id="starterBar"></div>
+      </div>
 
+      <p style="margin-top:14px;">
+        Promo Code: LAY2R40
+      </p>
+
+    </div>
+
+    <div class="referral-card">
+
+      <h3>
+        Growth Challenge
+      </h3>
+
+      <p>
+        Invite 2 paid stores within 30 days
+        and unlock 1 FREE Premium month.
+      </p>
+
+      <div class="progress">
+        <div class="progress-bar" id="growthBar"></div>
+      </div>
+
+      <p style="margin-top:14px;">
+        Promo Code: LAY2R30
+      </p>
+
+    </div>
+
+    <div class="referral-card">
+
+      <h3>
+        Premium Challenge
+      </h3>
+
+      <p>
+        Invite 2 paid stores within 40 days
+        and your next billing becomes FREE.
+      </p>
+
+      <div class="progress">
+        <div class="progress-bar" id="premiumBar"></div>
+      </div>
+
+      <p style="margin-top:14px;">
+        Limited Time Campaign
+      </p>
+
+    </div>
+
+    <div class="ref-link" id="referralLink">
+      Loading referral link...
+    </div>
+
+    <button onclick="copyReferralLink()">
+      Copy Referral Link
+    </button>
+
+  </div>
+
+  <div class="activity-box">
+
+    <h2>⚡ Recent Activity</h2>
+
+    <div id="activityList">
+
+      <div class="activity-item">
+        <span>AI recovered abandoned cart</span>
+        <span>2 mins ago</span>
+      </div>
+
+      <div class="activity-item">
+        <span>New referral joined</span>
+        <span>12 mins ago</span>
+      </div>
+
+      <div class="activity-item">
+        <span>Premium campaign activated</span>
+        <span>1 hour ago</span>
+      </div>
+      
     </div>
 
   </div>
 
 </div>
 
-<div class="activity">
-
-  <h2>⚡ Live Activity</h2>
-
-  <div id="activityList">
-
-    <div class="activity-item">
-      <span>Loading live activity...</span>
-      <span>Now</span>
-    </div>
-
-  </div>
-
-</div>
-```
-
-  </main>
-
-</div>
-
-<script>
-
-const clientId =
-new URLSearchParams(window.location.search)
-.get("client");
-
-// ================================
-// LOAD DASHBOARD ANALYTICS
-// ================================
-
-async function loadDashboard(){
-
-  try{
-
-    const res = await fetch(
-      `/dashboard-analytics/${clientId}`
-    );
-
-    const data = await res.json();
-
-    const analytics =
-      data.analytics || {};
-
-    document.getElementById("chatCount")
-    .innerText = analytics.totalChats || 0;
-
-    document.getElementById("interestCount")
-    .innerText = analytics.interestedUsers || 0;
-
-    document.getElementById("recoveryCount")
-    .innerText = analytics.recoveredCarts || 0;
-
-    document.getElementById("totalRevenue")
-    .innerText =
-      analytics.revenueFormatted || "$0";
-
-    document.getElementById("growthPercent")
-    .innerText =
-      `${analytics.growth || 0}% AI conversion growth`;
-
-    document.getElementById("recoveredRevenue")
-    .innerText =
-      analytics.recoveredFormatted ||
-      "Live recovered sales";
-
-    // ================================
-    // LIVE ACTIVITY
-    // ================================
-
-    const activityList =
-    document.getElementById("activityList");
-
-    activityList.innerHTML = "";
-
-    const activities =
-      analytics.activities || [];
-
-    if(!activities.length){
-
-      activityList.innerHTML = `
-      <div class="activity-item">
-        <span>No recent activity yet</span>
-        <span>Live</span>
-      </div>`;
-
-    }
-
-    activities.forEach(item=>{
-
-      activityList.innerHTML += `
-      <div class="activity-item">
-        <span>${item.text}</span>
-        <span>${item.time}</span>
-      </div>`;
-
-    });
-
-  }catch(err){
-
-    console.log(err);
-
-  }
-
-}
-
-// ================================
-// SAVE AGENT NAME
-// ================================
-
-async function saveAgentName(){
-
-  try{
-
-    const agentName =
-    document.getElementById("agentName")
-    .value.trim();
-
-    if(!agentName){
-      return alert("Enter agent name");
-    }
-
-    const res = await fetch(
-      "/save-agent-name",
-      {
-        method:"POST",
-        headers:{
-          "Content-Type":"application/json"
-        },
-        body:JSON.stringify({
-          clientId,
-          agentName
-        })
-      }
-    );
-
-    const data = await res.json();
-
-    if(data.success){
-
-      document.getElementById("agentPreview")
-      .innerText = agentName;
-
-      alert("AI Agent updated successfully");
-
-    }
-
-  }catch(err){
-
-    console.log(err);
-
-  }
-
-}
-
-// ================================
-// LOAD AGENT NAME
-// ================================
-
-async function loadAgent(){
-
-  try{
-
-    const res = await fetch(
-      `/client-plan/${clientId}`
-    );
-
-    const data = await res.json();
-
-    if(data.agentName){
-
-      document.getElementById("agentName")
-      .value = data.agentName;
-
-      document.getElementById("agentPreview")
-      .innerText = data.agentName;
-
-    }
-
-    if(data.plan){
-
-      document.getElementById("planName")
-      .innerText = data.plan;
-
-    }
-
-  }catch(err){
-
-    console.log(err);
-
-  }
-
-}
-
-loadDashboard();
-loadAgent();
-
-setInterval(loadDashboard,15000);
-
-</script>
+<script src="/js/dashboard.js"></script>
 
 </body>
 </html>
