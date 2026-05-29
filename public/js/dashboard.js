@@ -418,3 +418,61 @@ if(canvas){
   ctx.stroke();
 
 }
+// ======================================
+// LIVE PREVIEW
+// ======================================
+
+const previewName =
+document.getElementById(
+  "previewAgentName"
+);
+
+const previewAvatar =
+document.getElementById(
+  "previewAvatar"
+);
+
+const agentInput =
+document.getElementById(
+  "agentName"
+);
+
+const avatarInput =
+document.getElementById(
+  "agentAvatar"
+);
+
+if(agentInput){
+
+  agentInput.addEventListener(
+    "input",
+    ()=>{
+
+      previewName.innerHTML =
+      agentInput.value || "Emma";
+
+    }
+  );
+
+}
+
+if(avatarInput){
+
+  avatarInput.addEventListener(
+    "change",
+    ()=>{
+
+      const file =
+      avatarInput.files[0];
+
+      if(file){
+
+        previewAvatar.src =
+        URL.createObjectURL(file);
+
+      }
+
+    }
+  );
+
+}
