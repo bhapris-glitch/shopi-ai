@@ -19,6 +19,11 @@ referralCount:{
   default:0
 },
 rewardUnlocked:String
+  }.
+storeDisplayName:{
+  type:String,
+  default:""
+},
 
 agentName:{
   type:String,
@@ -28,7 +33,7 @@ agentName:{
 agentAvatar:{
   type:String,
   default:""
-},
+}
 
 revenue:{
   type:Number,
