@@ -12,11 +12,13 @@ analytics:[
 
     country:String,
 
-    referralCode:{
-  type:String,
-  default:"",
-  index:true
+    referralCode:String,
+referredBy:String,
+referralCount:{
+  type:Number,
+  default:0
 },
+rewardUnlocked:String
 
 agentName:{
   type:String,
