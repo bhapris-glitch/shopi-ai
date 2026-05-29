@@ -280,24 +280,127 @@ button{
 
   <div class="agent-box">
 
-    <h2>🤖 AI Sales Agent</h2>
+  <h2>
+    🤖 AI Sales Agent Branding
+  </h2>
 
-    <div class="agent-profile">
+  <p class="agent-sub">
+    Customize your AI agent identity for your customers.
+  </p>
 
-      <img
-      src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
-      class="agent-avatar"
-      id="agentPreview"
-      />
+  <!-- STORE DISPLAY NAME -->
 
-      <div>
-        <h3 id="agentLiveName">Emma</h3>
-        <p>
-          Online AI Sales Representative
-        </p>
+  <div class="field-group">
+
+    <label>
+      Store Display Name
+    </label>
+
+    <input
+      type="text"
+      id="storeDisplayName"
+      placeholder="Nike Official Store"
+    />
+
+  </div>
+
+  <!-- AGENT NAME -->
+
+  <div class="field-group">
+
+    <label>
+      AI Sales Agent Name
+    </label>
+
+    <input
+      type="text"
+      id="agentName"
+      placeholder="Emma"
+    />
+
+  </div>
+
+  <!-- AVATAR -->
+
+  <div class="field-group">
+
+    <label>
+      Agent Profile Photo
+    </label>
+
+    <input
+      type="file"
+      id="agentAvatar"
+      accept="image/*"
+    />
+
+  </div>
+
+  <!-- PREVIEW -->
+
+  <div class="agent-preview">
+
+    <div class="preview-header">
+
+      <div class="preview-left">
+
+        <img
+          id="previewAvatar"
+          src="/default-avatar.png"
+          class="preview-avatar"
+        />
+
+        <div>
+
+          <h3 id="previewAgentName">
+            Emma
+          </h3>
+
+          <span class="online-status">
+            ● Online
+          </span>
+
+        </div>
+
       </div>
 
     </div>
+
+    <div class="preview-chat">
+
+      Hi 👋  
+      I'm here to help you choose the best products.
+
+    </div>
+
+    <div class="preview-footer">
+
+      <small>
+        Powered by
+      </small>
+
+      <span>
+        Layboka AI
+      </span>
+
+      <small class="chatgpt-tag">
+        & ChatGPT
+      </small>
+
+    </div>
+
+  </div>
+
+  <!-- SAVE -->
+
+  <button
+    class="save-agent-btn"
+    onclick="saveAgentSettings()"
+  >
+    Save AI Branding
+  </button>
+
+</div>
 
     <input
     type="text"
