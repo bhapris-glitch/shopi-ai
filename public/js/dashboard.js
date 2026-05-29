@@ -80,6 +80,122 @@ async function saveAgentName(){
   }
 
 }
+    // ======================================
+// SAVE AGENT SETTINGS
+// ======================================
+
+async function saveAgentSettings(){
+
+  try{
+
+    const token =
+      localStorage.getItem("token");
+
+    const agentName =
+      document.getElementById(
+        "agentName"
+      ).value;
+
+    const storeDisplayName =
+      document.getElementById(
+        "storeDisplayName"
+      ).value;
+
+    const avatarFile =
+      document.getElementById(
+        "agentAvatar"
+      ).files[0];
+
+    let avatarBase64 = "";
+
+    // =========================
+    // CONVERT IMAGE
+    // =========================
+
+    if(avatarFile){
+
+      avatarBase64 =
+        await toBase64(
+          avatarFile
+        );
+
+    }
+
+    const res =
+      await fetch(
+
+        "/update-agent-settings",
+
+        {
+
+          method:"POST",
+
+          headers:{
+
+            "Content-Type":
+              "application/json",
+
+            Authorization:
+              "Bearer " + token
+
+          },
+
+          body:JSON.stringify({
+
+            agentName,
+
+            storeDisplayName,
+
+            agentAvatar:
+              avatarBase64
+
+          })
+
+        }
+
+      );
+
+    const data =
+      await res.json();
+
+    if(data.success){
+
+      alert(
+        "✅ AI branding updated"
+      );
+
+    }
+
+  }catch(err){
+
+    console.log(err);
+
+  }
+
+}
+
+// ======================================
+// BASE64
+// ======================================
+
+function toBase64(file){
+
+  return new Promise((resolve,reject)=>{
+
+    const reader =
+      new FileReader();
+
+    reader.readAsDataURL(file);
+
+    reader.onload = ()=>
+      resolve(reader.result);
+
+    reader.onerror = error =>
+      reject(error);
+
+  });
+
+}
     
     // =========================
     // BASIC INFO
