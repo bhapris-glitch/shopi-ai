@@ -1,200 +1,326 @@
 const mongoose = require("mongoose");
 
-const ClientSchema = new mongoose.Schema({
-analytics:[
+// ======================================
+// MULTI AGENT SCHEMA
+// ======================================
+
+const AgentSchema = new mongoose.Schema(
   {
+    name: {
+      type: String,
+      default: ""
+    },
 
-    type:String,
+    role: {
+      type: String,
+      default: "sales"
+    },
 
-    value:Number,
+    avatar: {
+      type: String,
+      default: ""
+    },
 
-    product:String,
-
-    country:String,
-
-    referralCode:String,
-referredBy:String,
-referralCount:{
-  type:Number,
-  default:0
-},
-rewardUnlocked:String
-  }.
-storeDisplayName:{
-  type:String,
-  default:""
-},
-
-agentName:{
-  type:String,
-  default:"Emma"
-},
-
-agentAvatar:{
-  type:String,
-  default:""
-}
-
-revenue:{
-  type:Number,
-  default:0
-},
-
-orders:{
-  type:Number,
-  default:0
-},
-
-onlineVisitors:{
-  type:Number,
-  default:0
-}
-
-    createdAt:{
-      type:Date,
-      default:Date.now
+    active: {
+      type: Boolean,
+      default: true
     }
+  },
+  { _id: false }
+);
 
-  }
-],
-  // =========================
+// ======================================
+// CLIENT SCHEMA
+// ======================================
+
+const ClientSchema = new mongoose.Schema({
+
+  // ======================================
   // STORE
-  // =========================
-  store:{
-    type:String,
-    required:true
+  // ======================================
+
+  store: {
+    type: String,
+    required: true,
+    unique: true,
+    trim: true
   },
 
-  token:{
-    type:String,
-    default:""
+  storeDisplayName: {
+    type: String,
+    default: ""
   },
 
-  agentName:{
-  type:String,
-  default:"Emma"
-},
+  token: {
+    type: String,
+    default: ""
+  },
 
-  // =========================
+  // ======================================
+  // BRANDING
+  // ======================================
+
+  agentName: {
+    type: String,
+    default: "Emma"
+  },
+
+  agentAvatar: {
+    type: String,
+    default: ""
+  },
+
+  poweredByHidden: {
+    type: Boolean,
+    default: false
+  },
+
+  // ======================================
   // PLAN
-  // =========================
-  plan:{
-    type:String,
-    default:"starter"
+  // ======================================
+
+  plan: {
+    type: String,
+    enum: [
+      "free",
+      "starter",
+      "growth",
+      "premium"
+    ],
+    default: "free"
   },
 
-  // =========================
-  // PAYMENT STATUS
-  // =========================
-  paid:{
-    type:Boolean,
-    default:false
+  // ======================================
+  // PAYMENT
+  // ======================================
+
+  paid: {
+    type: Boolean,
+    default: false
   },
 
-  paymentProvider:{
-    type:String,
-    default:""
+  paymentProvider: {
+    type: String,
+    default: ""
   },
 
-  subscriptionId:{
-    type:String,
-    default:""
+  subscriptionId: {
+    type: String,
+    default: ""
   },
 
-  status:{
-    type:String,
-    default:"trial"
+  status: {
+    type: String,
+    default: "trial"
   },
 
-  // =========================
+  // ======================================
   // TRIAL
-  // =========================
-  trialEnds:{
-    type:Number,
-    default:()=>Date.now() + (3*24*60*60*1000)
+  // ======================================
+
+  trialEnds: {
+    type: Number,
+    default: () =>
+      Date.now() +
+      (3 * 24 * 60 * 60 * 1000)
   },
 
-  // =========================
-  // AUTO RENEW
-  // =========================
-  renewalDate:{
-    type:Number,
-    default:0
+  renewalDate: {
+    type: Number,
+    default: 0
   },
 
-  // =========================
-  // ANALYTICS
-  // =========================
-  messages:{
-    type:Number,
-    default:0
+  // ======================================
+  // REFERRAL
+  // ======================================
+
+  referralCode: {
+    type: String,
+    default: ""
   },
 
-  opens:{
-    type:Number,
-    default:0
+  referredBy: {
+    type: String,
+    default: ""
   },
 
-  conversions:{
-    type:Number,
-    default:0
+  referralCount: {
+    type: Number,
+    default: 0
   },
 
-  recoveredCarts:{
-    type:Number,
-    default:0
+  rewardUnlocked: {
+    type: String,
+    default: ""
   },
 
-  revenue:{
-    type:Number,
-    default:0
+  // ======================================
+  // DASHBOARD ANALYTICS
+  // ======================================
+
+  messages: {
+    type: Number,
+    default: 0
   },
 
-  // =========================
+  opens: {
+    type: Number,
+    default: 0
+  },
+
+  conversions: {
+    type: Number,
+    default: 0
+  },
+
+  recoveredCarts: {
+    type: Number,
+    default: 0
+  },
+
+  revenue: {
+    type: Number,
+    default: 0
+  },
+
+  recoveredRevenue: {
+    type: Number,
+    default: 0
+  },
+
+  aiInfluencedRevenue: {
+    type: Number,
+    default: 0
+  },
+
+  potentialRevenue: {
+    type: Number,
+    default: 347
+  },
+
+  orders: {
+    type: Number,
+    default: 0
+  },
+
+  addToCartCount: {
+    type: Number,
+    default: 0
+  },
+
+  checkoutVisits: {
+    type: Number,
+    default: 0
+  },
+
+  onlineVisitors: {
+    type: Number,
+    default: 0
+  },
+
+  // ======================================
   // FEATURES
-  // =========================
-  whatsappRecovery:{
-    type:Boolean,
-    default:false
+  // ======================================
+
+  memoryEnabled: {
+    type: Boolean,
+    default: false
   },
 
-  abandonedCartAI:{
-    type:Boolean,
-    default:false
+  supportAgentEnabled: {
+    type: Boolean,
+    default: false
   },
 
-  checkoutCloser:{
-    type:Boolean,
-    default:false
+  referralEnabled: {
+    type: Boolean,
+    default: false
   },
 
-  premiumUI:{
-    type:Boolean,
-    default:false
+  whatsappEnabled: {
+    type: Boolean,
+    default: false
   },
 
-  // =========================
+  abandonedCartAI: {
+    type: Boolean,
+    default: false
+  },
+
+  checkoutCloser: {
+    type: Boolean,
+    default: false
+  },
+
+  premiumUI: {
+    type: Boolean,
+    default: false
+  },
+
+  loyaltyEnabled: {
+    type: Boolean,
+    default: false
+  },
+
+  vipEnabled: {
+    type: Boolean,
+    default: false
+  },
+
+  orderTrackingEnabled: {
+    type: Boolean,
+    default: false
+  },
+
+  voiceEnabled: {
+    type: Boolean,
+    default: false
+  },
+
+  multiAgentEnabled: {
+    type: Boolean,
+    default: false
+  },
+
+  // ======================================
+  // FUTURE MULTI AGENT SYSTEM
+  // ======================================
+
+  agents: {
+    type: [AgentSchema],
+    default: []
+  },
+
+  // ======================================
   // CONTACT
-  // =========================
-  email:{
-    type:String,
-    default:""
+  // ======================================
+
+  email: {
+    type: String,
+    default: ""
   },
 
-  phone:{
-    type:String,
-    default:""
+  phone: {
+    type: String,
+    default: ""
   },
 
-  // =========================
+  // ======================================
   // CREATED
-  // =========================
-  createdAt:{
-    type:Date,
-    default:Date.now
+  // ======================================
+
+  createdAt: {
+    type: Date,
+    default: Date.now
   }
 
 });
 
-module.exports =
-  mongoose.model("Client", ClientSchema);
+// ======================================
+// EXPORT
+// ======================================
+
+module.exports = mongoose.model(
+  "Client",
+  ClientSchema
+);
