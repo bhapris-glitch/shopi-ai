@@ -1,75 +1,200 @@
-// ===============================
-// CLIENT ID
-// ===============================
+// ======================================
+// public/js/dashboard.js
+// Layboka AI Dashboard
+// Production Version
+// ======================================
+
+// ======================================
+// CONFIG
+// ======================================
 
 const clientId =
 new URLSearchParams(window.location.search)
 .get("client");
 
-// ===============================
-// FETCH CLIENT DATA
-// ===============================
+const token =
+localStorage.getItem("token");
+
+// ======================================
+// INIT
+// ======================================
+
+document.addEventListener(
+  "DOMContentLoaded",
+  () => {
+
+    loadDashboard();
+    setupLivePreview();
+
+    setInterval(
+      loadDashboard,
+      30000
+    );
+
+  }
+);
+
+// ======================================
+// LOAD DASHBOARD
+// ======================================
 
 async function loadDashboard(){
 
   try{
 
     const res =
-    await fetch("/client/" + clientId);
-
-    const data =
-    await res.json();
-
-async function saveAgentName(){
-
-  try{
-
-    const agentName =
-
-      document.getElementById(
-        "agentName"
-      ).value;
-
-    const token =
-      localStorage.getItem("token");
-
-    const res =
       await fetch(
-
-        "/update-agent-name",
-
-        {
-
-          method:"POST",
-
-          headers:{
-
-            "Content-Type":
-              "application/json",
-
-            Authorization:
-              "Bearer " + token
-
-          },
-
-          body:JSON.stringify({
-
-            agentName
-
-          })
-
-        }
-
+        "/client/" + clientId
       );
 
     const data =
       await res.json();
 
-    if(data.success){
+    updateDashboard(data);
 
-      alert(
-        "Agent updated successfully"
+    await loadReferralData();
+
+  }catch(err){
+
+    console.log(
+      "Dashboard Error:",
+      err
+    );
+
+  }
+
+}
+
+// ======================================
+// UPDATE DASHBOARD
+// ======================================
+
+function updateDashboard(data){
+
+  setText(
+    "chatCount",
+    data.messages || 0
+  );
+
+  setText(
+    "revenueCount",
+    "$" + (data.revenue || 0)
+  );
+
+  setText(
+    "recoveryCount",
+    data.recoveredCarts || 0
+  );
+
+  setText(
+    "planName",
+    capitalize(
+      data.plan || "free"
+    )
+  );
+
+  // Agent
+
+  if(data.agentName){
+
+    const preview =
+      document.getElementById(
+        "previewAgentName"
       );
+
+    if(preview){
+
+      preview.textContent =
+        data.agentName;
+
+    }
+
+  }
+
+  if(data.agentAvatar){
+
+    const avatar =
+      document.getElementById(
+        "previewAvatar"
+      );
+
+    if(avatar){
+
+      avatar.src =
+        data.agentAvatar;
+
+    }
+
+  }
+
+  renderPlanFeatures(
+    data.plan
+  );
+
+}
+
+// ======================================
+// PLAN FEATURES
+// ======================================
+
+function renderPlanFeatures(plan){
+
+  const potentialRevenue =
+    document.getElementById(
+      "potentialRevenue"
+    );
+
+  if(potentialRevenue){
+
+    if(plan === "free"){
+
+      potentialRevenue.innerHTML =
+      "$347";
+
+    }else{
+
+      potentialRevenue.innerHTML =
+      "Unlocked";
+
+    }
+
+  }
+
+}
+
+// ======================================
+// REFERRAL
+// ======================================
+
+async function loadReferralData(){
+
+  try{
+
+    const res =
+      await fetch(
+        "/referral/me",
+        {
+          headers:{
+            Authorization:
+            "Bearer " + token
+          }
+        }
+      );
+
+    const data =
+      await res.json();
+
+    if(!data.success) return;
+
+    const link =
+      document.getElementById(
+        "referralLink"
+      );
+
+    if(link){
+
+      link.innerHTML =
+      data.referralLink;
 
     }
 
@@ -80,16 +205,34 @@ async function saveAgentName(){
   }
 
 }
-    // ======================================
+
+// ======================================
+// COPY REFERRAL
+// ======================================
+
+function copyReferralLink(){
+
+  const text =
+    document.getElementById(
+      "referralLink"
+    ).innerText;
+
+  navigator.clipboard
+  .writeText(text);
+
+  alert(
+    "Referral link copied"
+  );
+
+}
+
+// ======================================
 // SAVE AGENT SETTINGS
 // ======================================
 
 async function saveAgentSettings(){
 
   try{
-
-    const token =
-      localStorage.getItem("token");
 
     const agentName =
       document.getElementById(
@@ -106,53 +249,41 @@ async function saveAgentSettings(){
         "agentAvatar"
       ).files[0];
 
-    let avatarBase64 = "";
-
-    // =========================
-    // CONVERT IMAGE
-    // =========================
+    let agentAvatar = "";
 
     if(avatarFile){
 
-      avatarBase64 =
-        await toBase64(
-          avatarFile
-        );
+      agentAvatar =
+      await toBase64(
+        avatarFile
+      );
 
     }
 
     const res =
       await fetch(
-
         "/update-agent-settings",
-
         {
 
           method:"POST",
 
           headers:{
-
             "Content-Type":
-              "application/json",
+            "application/json",
 
             Authorization:
-              "Bearer " + token
-
+            "Bearer " + token
           },
 
           body:JSON.stringify({
 
             agentName,
-
             storeDisplayName,
-
-            agentAvatar:
-              avatarBase64
+            agentAvatar
 
           })
 
         }
-
       );
 
     const data =
@@ -161,8 +292,10 @@ async function saveAgentSettings(){
     if(data.success){
 
       alert(
-        "✅ AI branding updated"
+        "✅ AI Branding Saved"
       );
+
+      loadDashboard();
 
     }
 
@@ -175,304 +308,154 @@ async function saveAgentSettings(){
 }
 
 // ======================================
-// BASE64
+// LIVE PREVIEW
 // ======================================
+
+function setupLivePreview(){
+
+  const nameInput =
+    document.getElementById(
+      "agentName"
+    );
+
+  const avatarInput =
+    document.getElementById(
+      "agentAvatar"
+    );
+
+  const previewName =
+    document.getElementById(
+      "previewAgentName"
+    );
+
+  const previewAvatar =
+    document.getElementById(
+      "previewAvatar"
+    );
+
+  if(nameInput){
+
+    nameInput.addEventListener(
+      "input",
+      () => {
+
+        previewName.innerHTML =
+        nameInput.value ||
+        "Emma";
+
+      }
+    );
+
+  }
+
+  if(avatarInput){
+
+    avatarInput.addEventListener(
+      "change",
+      () => {
+
+        const file =
+          avatarInput.files[0];
+
+        if(file){
+
+          previewAvatar.src =
+          URL.createObjectURL(
+            file
+          );
+
+        }
+
+      }
+    );
+
+  }
+
+}
+
+// ======================================
+// HELPERS
+// ======================================
+
+function setText(id,value){
+
+  const el =
+    document.getElementById(id);
+
+  if(el){
+
+    el.innerHTML = value;
+
+  }
+
+}
+
+function capitalize(text){
+
+  return text
+    ? text.charAt(0)
+      .toUpperCase() +
+      text.slice(1)
+    : "";
+
+}
 
 function toBase64(file){
 
-  return new Promise((resolve,reject)=>{
+  return new Promise(
+    (resolve,reject)=>{
 
-    const reader =
-      new FileReader();
+      const reader =
+        new FileReader();
 
-    reader.readAsDataURL(file);
-
-    reader.onload = ()=>
-      resolve(reader.result);
-
-    reader.onerror = error =>
-      reject(error);
-
-  });
-
-}
-    
-    // =========================
-    // BASIC INFO
-    // =========================
-
-    const store =
-    document.getElementById("storeName");
-
-    const plan =
-    document.getElementById("planName");
-
-    const status =
-    document.getElementById("statusText");
-
-    const chats =
-    document.getElementById("chatCount");
-
-    const revenue =
-    document.getElementById("revenueCount");
-
-    const orders =
-    document.getElementById("orderCount");
-
-    if(store){
-      store.innerHTML = data.store || "-";
-    }
-
-    if(plan){
-      plan.innerHTML =
-      data.plan || "trial";
-    }
-
-    if(status){
-      status.innerHTML =
-      data.status || "trial";
-    }
-
-    if(chats){
-      chats.innerHTML =
-      data.messages || 0;
-    }
-
-    if(revenue){
-      revenue.innerHTML =
-      "₹" + (data.revenue || 0);
-    }
-
-    if(orders){
-      orders.innerHTML =
-      data.orders || 0;
-    }
-
-    // =========================
-    // PLAN BADGE
-    // =========================
-
-    const badge =
-    document.getElementById("planBadge");
-
-    if(badge){
-
-      if(data.plan === "premium"){
-
-        badge.innerHTML =
-        "PREMIUM";
-
-        badge.style.background =
-        "#1f4227";
-
-        badge.style.color =
-        "#55ff99";
-
-      } else {
-
-        badge.innerHTML =
-        "TRIAL";
-
-        badge.style.background =
-        "#4a3512";
-
-        badge.style.color =
-        "#ffb347";
-
-      }
-
-    }
-
-    // =========================
-    // DAYS LEFT
-    // =========================
-
-    const days =
-    document.getElementById("daysLeft");
-
-    if(days){
-
-      const now =
-      Date.now();
-
-      const trial =
-      new Date(data.trialEnds).getTime();
-
-      const diff =
-      Math.max(
-        0,
-        Math.ceil(
-          (trial - now) /
-          (1000 * 60 * 60 * 24)
-        )
+      reader.readAsDataURL(
+        file
       );
 
-      days.innerHTML =
-      diff + " Days";
+      reader.onload =
+        () =>
+          resolve(
+            reader.result
+          );
+
+      reader.onerror =
+        reject;
 
     }
+  );
 
-    // =========================
-    // UPGRADE BUTTON
-    // =========================
+}
 
-    const upgrade =
-    document.getElementById("upgradeBtn");
+// ======================================
+// RULES POPUP
+// ======================================
 
-    if(upgrade){
+function toggleRules(){
 
-      if(data.paid){
+  const box =
+    document.getElementById(
+      "rulesBox"
+    );
 
-        upgrade.innerHTML =
-        "Premium Active";
+  if(box){
 
-        upgrade.disabled = true;
-
-      } else {
-
-        upgrade.onclick = ()=>{
-
-          window.location.href =
-          "/pricing.html?client=" +
-          clientId;
-
-        };
-
-      }
-
-    }
-
-  }catch(err){
-
-    console.log(err);
+    box.classList.toggle(
+      "show"
+    );
 
   }
 
 }
 
-loadDashboard();
-
-// ===============================
+// ======================================
 // LOGOUT
-// ===============================
+// ======================================
 
 function logout(){
 
   localStorage.clear();
 
   window.location.href =
-  "/index.html";
-
-}
-
-// ===============================
-// AUTO REFRESH
-// ===============================
-
-setInterval(()=>{
-  loadDashboard();
-},30000);
-
-// ===============================
-// MINI CHART
-// ===============================
-
-const canvas =
-document.getElementById("salesChart");
-
-if(canvas){
-
-  const ctx =
-  canvas.getContext("2d");
-
-  const values =
-  [20,40,35,70,90,120,150];
-
-  let x = 20;
-
-  ctx.beginPath();
-
-  ctx.strokeStyle = "#ff7a00";
-
-  ctx.lineWidth = 4;
-
-  values.forEach((v,i)=>{
-
-    const y =
-    180 - v;
-
-    if(i === 0){
-
-      ctx.moveTo(x,y);
-
-    } else {
-
-      ctx.lineTo(x,y);
-
-    }
-
-    x += 70;
-
-  });
-
-  ctx.stroke();
-
-}
-// ======================================
-// LIVE PREVIEW
-// ======================================
-
-const previewName =
-document.getElementById(
-  "previewAgentName"
-);
-
-const previewAvatar =
-document.getElementById(
-  "previewAvatar"
-);
-
-const agentInput =
-document.getElementById(
-  "agentName"
-);
-
-const avatarInput =
-document.getElementById(
-  "agentAvatar"
-);
-
-if(agentInput){
-
-  agentInput.addEventListener(
-    "input",
-    ()=>{
-
-      previewName.innerHTML =
-      agentInput.value || "Emma";
-
-    }
-  );
-
-}
-
-if(avatarInput){
-
-  avatarInput.addEventListener(
-    "change",
-    ()=>{
-
-      const file =
-      avatarInput.files[0];
-
-      if(file){
-
-        previewAvatar.src =
-        URL.createObjectURL(file);
-
-      }
-
-    }
-  );
+    "/index.html";
 
 }
