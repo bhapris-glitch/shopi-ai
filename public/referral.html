@@ -1,174 +1,735 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Referral Program • Layboka AI</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/css/referral.css" />
-<style> 
-  .rules-wrap{
-  margin-top:30px;
-  position:relative;
+
+<meta charset="UTF-8">
+<meta
+name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>
+Referral Program • Layboka AI
+</title>
+
+<link
+href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+rel="stylesheet">
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Poppins',sans-serif;
+}
+
+body{
+
+background:#07111f;
+color:white;
+padding:25px;
+
+}
+
+.referral-container{
+
+max-width:1200px;
+margin:auto;
+
+}
+
+.page-title{
+
+font-size:34px;
+font-weight:800;
+
+margin-bottom:10px;
+
+}
+
+.page-subtitle{
+
+opacity:.8;
+
+margin-bottom:30px;
+
+}
+
+.top-grid{
+
+display:grid;
+
+grid-template-columns:
+repeat(auto-fit,minmax(280px,1fr));
+
+gap:20px;
+
+margin-bottom:25px;
+
+}
+
+.card{
+
+background:#101c35;
+
+padding:22px;
+
+border-radius:22px;
+
+border:1px solid rgba(255,255,255,.08);
+
+}
+
+.card-title{
+
+font-size:14px;
+
+opacity:.7;
+
+margin-bottom:8px;
+
+}
+
+.big-text{
+
+font-size:28px;
+
+font-weight:800;
+
+}
+
+.referral-code{
+
+font-size:26px;
+
+font-weight:800;
+
+color:#ff9b28;
+
+margin-top:12px;
+
+word-break:break-word;
+
+}
+
+.link-input{
+
+width:100%;
+
+padding:14px;
+
+border:none;
+
+border-radius:12px;
+
+margin-top:15px;
+
+background:#16233f;
+
+color:white;
+
+}
+
+.btn-row{
+
+display:flex;
+
+gap:10px;
+
+flex-wrap:wrap;
+
+margin-top:15px;
+
+}
+
+.btn{
+
+border:none;
+
+padding:12px 18px;
+
+border-radius:12px;
+
+cursor:pointer;
+
+font-weight:700;
+
+}
+
+.orange{
+
+background:#ff7a00;
+color:white;
+
+}
+
+.dark{
+
+background:#16233f;
+color:white;
+
+}
+
+.progress-card{
+
+margin-top:20px;
+
+}
+
+.progress-bar{
+
+width:100%;
+height:16px;
+
+background:#16233f;
+
+border-radius:50px;
+
+overflow:hidden;
+
+margin-top:15px;
+
+}
+
+.progress-fill{
+
+height:100%;
+
+width:0;
+
+background:
+linear-gradient(
+90deg,
+#ff7a00,
+#ffb347
+);
+
+transition:.4s;
+
+}
+
+.stats-grid{
+
+display:grid;
+
+grid-template-columns:
+repeat(auto-fit,minmax(220px,1fr));
+
+gap:18px;
+
+margin-top:25px;
+
+}
+
+.stat-box{
+
+background:#101c35;
+
+padding:20px;
+
+border-radius:18px;
+
+text-align:center;
+
+}
+
+.stat-number{
+
+font-size:28px;
+font-weight:800;
+
+margin-top:10px;
+
+color:#ffb347;
+
+}
+
+.reward-card{
+
+margin-top:25px;
+
+background:
+linear-gradient(
+135deg,
+#ff7a00,
+#ffb347
+);
+
+padding:25px;
+
+border-radius:22px;
+
+color:#000;
+
+}
+
+.reward-title{
+
+font-size:24px;
+
+font-weight:800;
+
+}
+
+.reward-value{
+
+margin-top:8px;
+
+font-weight:700;
+
+}
+
+.claim-btn{
+
+margin-top:15px;
+
+padding:12px 20px;
+
+border:none;
+
+border-radius:12px;
+
+font-weight:800;
+
+cursor:pointer;
+
+}
+
+.leaderboard{
+
+margin-top:30px;
+
+background:#101c35;
+
+border-radius:22px;
+
+padding:20px;
+
+}
+
+.leader-title{
+
+font-size:24px;
+
+font-weight:800;
+
+margin-bottom:15px;
+
+}
+
+.leader-row{
+
+display:flex;
+
+justify-content:space-between;
+
+padding:14px;
+
+border-bottom:
+1px solid rgba(255,255,255,.08);
+
+}
+
+.reward-grid{
+
+display:grid;
+
+grid-template-columns:
+repeat(auto-fit,minmax(250px,1fr));
+
+gap:20px;
+
+margin-top:30px;
+
+}
+
+.reward-box{
+
+background:#101c35;
+
+padding:22px;
+
+border-radius:18px;
+
+}
+
+.reward-box h3{
+
+margin-bottom:10px;
+
+}
+
+.reward-box span{
+
+display:block;
+
+margin-top:12px;
+
+font-size:22px;
+
+font-weight:800;
+
+color:#ffb347;
+
+}
+
+.rules-wrap{
+
+margin-top:35px;
+
+position:relative;
+
 }
 
 .rules-btn{
-  display:inline-block;
-  padding:10px 18px;
-  border-radius:12px;
-  background:#ff7a00;
-  color:white;
-  cursor:pointer;
-  font-size:14px;
+
+display:inline-block;
+
+padding:12px 18px;
+
+border-radius:12px;
+
+background:#ff7a00;
+
+cursor:pointer;
+
 }
 
 .rules-box{
 
-  position:absolute;
+display:none;
 
-  top:55px;
-  left:0;
+position:absolute;
 
-  width:100%;
+top:60px;
 
-  max-width:520px;
+left:0;
 
-  background:white;
+width:100%;
 
-  color:#222;
+max-width:650px;
 
-  padding:20px;
+background:white;
 
-  border-radius:18px;
+color:#222;
 
-  box-shadow:0 20px 60px rgba(0,0,0,0.18);
+padding:20px;
 
-  display:none;
+border-radius:20px;
 
-  z-index:999;
+box-shadow:
+0 20px 60px rgba(0,0,0,.25);
 
-  font-size:13px;
+z-index:999;
 
-  line-height:1.8;
+font-size:13px;
+
+line-height:1.9;
 
 }
 
 .rules-box.show{
-  display:block;
+
+display:block;
+
 }
 
-.online-dot{
+@media(max-width:768px){
 
-  width:12px;
-  height:12px;
+.page-title{
 
-  background:#00ff88;
+font-size:28px;
 
-  border-radius:50%;
+}
 
-  position:absolute;
+.big-text{
 
-  bottom:6px;
-  right:6px;
+font-size:22px;
 
-  box-shadow:0 0 12px #00ff88;
+}
 
-} 
+}
+
 </style>
 
 </head>
+
 <body>
 
 <div class="referral-container">
 
-<h1>🎁 Referral Rewards</h1>
+<h1 class="page-title">
+🎁 Referral Rewards Program
+</h1>
 
-<p>
-Invite Shopify store owners and unlock premium rewards.
+<p class="page-subtitle">
+Invite Shopify merchants and unlock premium rewards.
 </p>
 
-<div class="referral-card">
+<div class="top-grid">
 
-<h2>Your Referral Code</h2>
+<div class="card">
 
-<div id="referralCode">
-Loading...
+<div class="card-title">
+Your Referral Code
 </div>
 
-<button onclick="copyReferral()">
+<div
+class="referral-code"
+id="referralCode">
+
+Loading...
+
+</div>
+
+<div class="btn-row">
+
+<button
+class="btn orange"
+onclick="copyReferral()">
+
 Copy Code
+
 </button>
+
+</div>
+
+</div>
+
+<div class="card">
+
+<div class="card-title">
+Referral Link
+</div>
+
+<input
+id="referralLink"
+class="link-input"
+readonly>
+
+<div class="btn-row">
+
+<button
+class="btn orange"
+onclick="copyReferralLink()">
+
+Copy Link
+
+</button>
+
+<button
+class="btn dark"
+onclick="shareReferral()">
+
+Share
+
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="card progress-card">
+
+<div class="card-title">
+Reward Progress
+</div>
+
+<div class="progress-bar">
+
+<div
+id="progressFill"
+class="progress-fill">
+</div>
+
+</div>
+
+</div>
+
+<div class="stats-grid">
+
+<div class="stat-box">
+
+<div>Total Referrals</div>
+
+<div
+class="stat-number"
+id="totalReferrals">
+
+0
+
+</div>
+
+</div>
+
+<div class="stat-box">
+
+<div>Starter Referrals</div>
+
+<div
+class="stat-number"
+id="starterReferrals">
+
+0
+
+</div>
+
+</div>
+
+<div class="stat-box">
+
+<div>Growth Referrals</div>
+
+<div
+class="stat-number"
+id="growthReferrals">
+
+0
+
+</div>
+
+</div>
+
+<div class="stat-box">
+
+<div>Premium Referrals</div>
+
+<div
+class="stat-number"
+id="premiumReferrals">
+
+0
+
+</div>
+
+</div>
+
+</div>
+
+<div
+id="rewardCard"
+class="reward-card">
+
+<div class="reward-title">
+No reward unlocked yet
+</div>
+
+<div class="reward-value">
+Refer merchants to unlock rewards.
+</div>
 
 </div>
 
 <div class="reward-grid">
 
 <div class="reward-box">
+
 <h3>Starter Plan</h3>
+
 <p>
-2 Paid Referrals in 40 Days
+2 paid referrals within 40 days
 </p>
+
 <span>
 2 Months FREE
 </span>
+
 </div>
 
 <div class="reward-box">
+
 <h3>Growth Plan</h3>
+
 <p>
-2 Paid Referrals in 30 Days
+2 paid referrals within 30 days
 </p>
+
 <span>
 1 Month Premium FREE
 </span>
+
 </div>
 
 <div class="reward-box">
+
 <h3>Premium Plan</h3>
+
 <p>
-2 Paid Referrals in 40 Days
+2 paid referrals within 40 days
 </p>
+
 <span>
 Next Month FREE
 </span>
+
 </div>
+
+</div>
+
+<div class="leaderboard">
+
+<div class="leader-title">
+🏆 Referral Leaderboard
+</div>
+
+<div id="leaderboard"></div>
 
 </div>
 
 <div class="rules-wrap">
 
-<div class="rules-btn" onclick="toggleRules()">
+<div
+class="rules-btn"
+onclick="toggleRules()">
+
 📜 Rules & Terms
+
 </div>
 
-<div class="rules-box" id="rulesBox">
+<div
+class="rules-box"
+id="rulesBox">
 
 <ul>
 
 <li>
-Referral rewards are promotional and may change anytime.
+Referral rewards are promotional and may change, pause or end at any time.
 </li>
 
 <li>
-Fraud, fake accounts, refunds, abuse or duplicate payments void rewards.
+Fraud, duplicate accounts, refunds, chargebacks or abuse will void rewards.
 </li>
 
 <li>
-Rewards apply only for active paid subscriptions.
+Rewards apply only to active paid subscriptions.
 </li>
 
 <li>
-Referral windows:
-40 days for Starter/Premium.
-30 days for Growth.
+Starter: 2 paid referrals within 40 days.
 </li>
 
 <li>
-Layboka AI may pause or modify rewards based on platform costs, infrastructure expenses, regional pricing, market conditions, or abuse prevention.
+Growth: 2 paid referrals within 30 days.
 </li>
 
 <li>
-Limited-time promotional rewards may expire without notice.
+Premium: 2 paid referrals within 40 days.
+</li>
+
+<li>
+Referral rewards may change based on platform costs, infrastructure expenses, regional pricing and market conditions.
+</li>
+
+<li>
+Limited-time promotions may expire without notice.
+</li>
+
+<li>
+Layboka AI reserves the right to review, approve, reject, suspend or revoke referral rewards.
 </li>
 
 </ul>
