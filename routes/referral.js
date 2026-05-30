@@ -1,4 +1,12 @@
+// ==========================================
+// routes/referral.js
+// Layboka AI
+// Referral System
+// Production Version
+// ==========================================
+
 const express = require("express");
+const crypto = require("crypto");
 
 const router = express.Router();
 
@@ -11,39 +19,55 @@ const {
   calculateReferralRewards
 } = require("../utils/referralRewards");
 
-// ======================================
+// ==========================================
 // GENERATE REFERRAL CODE
-// ======================================
+// ==========================================
+
+function generateReferralCode() {
+
+  return (
+    "LAY" +
+    crypto
+      .randomBytes(3)
+      .toString("hex")
+      .toUpperCase()
+  );
+
+}
+
+// ==========================================
+// MY REFERRAL DASHBOARD
+// ==========================================
 
 router.get(
   "/referral/me",
   auth,
-  async(req,res)=>{
+  async (req, res) => {
 
-    try{
+    try {
 
-      const client = await Client.findById(
-        req.user.id
-      );
+      const client =
+        await Client.findById(
+          req.user.id
+        );
 
-      if(!client){
+      if (!client) {
 
         return res.status(404).json({
-          success:false
+          success: false,
+          message: "Client not found"
         });
 
       }
 
-      if(!client.referralCode){
+      // ======================
+      // CREATE CODE
+      // ======================
 
-        const code =
-          "LAY" +
-          Math.random()
-          .toString(36)
-          .substring(2,8)
-          .toUpperCase();
+      if (!client.referralCode) {
 
-        client.referralCode = code;
+        client.referralCode =
+          generateReferralCode();
 
         await client.save();
 
@@ -56,7 +80,7 @@ router.get(
 
       res.json({
 
-        success:true,
+        success: true,
 
         referralCode:
           client.referralCode,
@@ -68,12 +92,12 @@ router.get(
 
       });
 
-    }catch(err){
+    } catch (err) {
 
       console.log(err);
 
       res.status(500).json({
-        success:false
+        success: false
       });
 
     }
@@ -81,51 +105,161 @@ router.get(
   }
 );
 
-// ======================================
+// ==========================================
+// REFERRAL STATS
+// ==========================================
+
+router.get(
+  "/referral/stats",
+  auth,
+  async (req, res) => {
+
+    try {
+
+      const rewards =
+        await calculateReferralRewards(
+          req.user.id
+        );
+
+      res.json({
+        success: true,
+        rewards
+      });
+
+    } catch (err) {
+
+      console.log(err);
+
+      res.status(500).json({
+        success: false
+      });
+
+    }
+
+  }
+);
+
+// ==========================================
 // APPLY REFERRAL
-// ======================================
+// ==========================================
 
 router.post(
   "/referral/apply",
-  async(req,res)=>{
+  async (req, res) => {
 
-    try{
+    try {
 
       const {
+
         referralCode,
         referredClientId,
         referredStore,
         referredPlan,
         amount
+
       } = req.body;
+
+      if (!referralCode) {
+
+        return res.json({
+
+          success: false,
+          message: "Referral code required"
+
+        });
+
+      }
 
       const referrer =
         await Client.findOne({
+
           referralCode
+
         });
 
-      if(!referrer){
+      if (!referrer) {
 
         return res.json({
-          success:false,
-          message:"Invalid referral code"
+
+          success: false,
+          message: "Invalid referral code"
+
         });
 
       }
 
-      const exists =
+      // ======================
+      // SELF REFERRAL BLOCK
+      // ======================
+
+      if (
+        referredClientId &&
+        String(referrer._id) ===
+        String(referredClientId)
+      ) {
+
+        return res.json({
+
+          success: false,
+          message:
+            "Self referral not allowed"
+
+        });
+
+      }
+
+      // ======================
+      // DUPLICATE CLIENT
+      // ======================
+
+      const existingReferral =
         await Referral.findOne({
+
           referredClientId
+
         });
 
-      if(exists){
+      if (existingReferral) {
 
         return res.json({
-          success:false,
-          message:"Referral already used"
+
+          success: false,
+          message:
+            "Referral already used"
+
         });
 
       }
+
+      // ======================
+      // DUPLICATE STORE
+      // ======================
+
+      const duplicateStore =
+        await Referral.findOne({
+
+          referredStore
+
+        });
+
+      if (
+        duplicateStore &&
+        referredStore
+      ) {
+
+        return res.json({
+
+          success: false,
+          message:
+            "Store already referred"
+
+        });
+
+      }
+
+      // ======================
+      // SAVE REFERRAL
+      // ======================
 
       await Referral.create({
 
@@ -140,27 +274,159 @@ router.post(
 
         referralCode,
 
-        amount,
+        amount: amount || 0,
 
-        paid:true
+        paid: true,
+
+        rewarded: false
 
       });
+
+      // ======================
+      // UPDATE COUNTER
+      // ======================
+
+      await Client.findByIdAndUpdate(
+
+        referrer._id,
+
+        {
+          $inc: {
+            referralCount: 1
+          }
+        }
+
+      );
 
       res.json({
-        success:true
+
+        success: true,
+
+        message:
+          "Referral recorded"
+
       });
 
-    }catch(err){
+    } catch (err) {
 
       console.log(err);
 
       res.status(500).json({
-        success:false
+
+        success: false
+
       });
 
     }
 
   }
 );
+
+// ==========================================
+// CLAIM REWARD
+// ==========================================
+
+router.post(
+  "/referral/claim",
+  auth,
+  async (req, res) => {
+
+    try {
+
+      const rewards =
+        await calculateReferralRewards(
+          req.user.id
+        );
+
+      if (
+        !rewards ||
+        !rewards.reward
+      ) {
+
+        return res.json({
+
+          success: false,
+
+          message:
+            "Reward not unlocked"
+
+        });
+
+      }
+
+      res.json({
+
+        success: true,
+
+        reward:
+          rewards.reward
+
+      });
+
+    } catch (err) {
+
+      console.log(err);
+
+      res.status(500).json({
+
+        success: false
+
+      });
+
+    }
+
+  }
+);
+
+// ==========================================
+// REFERRAL LEADERBOARD
+// FUTURE MULTI AGENT
+// ==========================================
+
+router.get(
+  "/referral/leaderboard",
+  async (req, res) => {
+
+    try {
+
+      const top =
+        await Client.find()
+
+        .sort({
+          referralCount: -1
+        })
+
+        .limit(10)
+
+        .select(
+          "store referralCount plan"
+        );
+
+      res.json({
+
+        success: true,
+
+        leaderboard: top
+
+      });
+
+    } catch (err) {
+
+      console.log(err);
+
+      res.status(500).json({
+
+        success: false
+
+      });
+
+    }
+
+  }
+);
+
+// ==========================================
+// EXPORT
+// ==========================================
 
 module.exports = router;
