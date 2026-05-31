@@ -1,7 +1,8 @@
 // ======================================
 // utils/bundles.js
-// AI Product Bundle Engine
-// Production Ready
+// Layboka AI Bundle Engine
+// Production Version
+// Updated 1Jun, 2026
 // ======================================
 
 // ======================================
@@ -20,62 +21,73 @@ function generateBundles({
 
   try{
 
-    // ====================================
-    // VALIDATION
-    // ====================================
-
-    if(!products.length){
+    if(!Array.isArray(products)){
 
       return [];
 
     }
 
-    // ====================================
-    // AI BUNDLE RULES
-    // ====================================
+    if(products.length < 2){
+
+      return [];
+
+    }
 
     const bundles = [];
 
-    // ====================================
-    // PAIR PRODUCTS
-    // ====================================
+    for(
 
-    for(let i=0;i<products.length;i+=2){
+      let i = 0;
+
+      i < products.length - 1;
+
+      i += 2
+
+    ){
 
       const first =
         products[i];
 
       const second =
-        products[i+1];
+        products[i + 1];
 
-      if(!first || !second){
+      if(
+
+        !first ||
+        !second
+
+      ){
 
         continue;
 
       }
 
-      // ==================================
-      // PRICES
-      // ==================================
-
       const firstPrice =
-        Number(first.price || 0);
+        Number(
+          first.price || 0
+        );
 
       const secondPrice =
-        Number(second.price || 0);
+        Number(
+          second.price || 0
+        );
 
       const originalPrice =
 
         firstPrice +
         secondPrice;
 
-      // ==================================
-      // DISCOUNT
-      // ==================================
-
       let discount = 10;
 
-      if(customerType === "vip"){
+      // ==========================
+      // VIP BOOST
+      // ==========================
+
+      if(
+
+        customerType === "vip"
+
+      ){
 
         discount = 15;
 
@@ -93,22 +105,23 @@ function generateBundles({
 
       }
 
-      // ==================================
-      // FINAL PRICE
-      // ==================================
+      if(country === "AU"){
+
+        discount += 1;
+
+      }
 
       const saved =
 
-        (originalPrice * discount)
-        / 100;
+        (
+          originalPrice *
+          discount
+        ) / 100;
 
       const bundlePrice =
 
-        originalPrice - saved;
-
-      // ==================================
-      // BUNDLE OBJECT
-      // ==================================
+        originalPrice -
+        saved;
 
       bundles.push({
 
@@ -122,49 +135,67 @@ function generateBundles({
 
           {
 
-            id:first.id,
+            id:
+              first._id ||
+              first.id,
 
-            title:first.title,
+            title:
+              first.title || "",
 
-            image:first.image,
+            image:
+              first.image || "",
 
-            price:firstPrice
+            price:
+              firstPrice
 
           },
 
           {
 
-            id:second.id,
+            id:
+              second._id ||
+              second.id,
 
-            title:second.title,
+            title:
+              second.title || "",
 
-            image:second.image,
+            image:
+              second.image || "",
 
-            price:secondPrice
+            price:
+              secondPrice
 
           }
 
         ],
 
         originalPrice:
+
           Number(
-            originalPrice.toFixed(2)
+            originalPrice
+            .toFixed(2)
           ),
 
         bundlePrice:
+
           Number(
-            bundlePrice.toFixed(2)
+            bundlePrice
+            .toFixed(2)
           ),
 
         saved:
+
           Number(
-            saved.toFixed(2)
+            saved
+            .toFixed(2)
           ),
 
         discount,
 
         badge:
-          getBundleBadge(discount),
+          getBundleBadge(
+            discount
+          ),
 
         urgency:
           getUrgency(saved)
@@ -173,23 +204,25 @@ function generateBundles({
 
     }
 
-    // ====================================
-    // SORT BEST BUNDLES
-    // ====================================
+    bundles.sort(
 
-    bundles.sort((a,b)=>{
+      (a,b)=>
 
-      return b.saved - a.saved;
+        b.saved -
+        a.saved
 
-    });
+    );
 
     return bundles;
 
   }catch(err){
 
     console.log(
+
       "BUNDLE ERROR:",
-      err
+
+      err.message
+
     );
 
     return [];
@@ -202,7 +235,11 @@ function generateBundles({
 // BADGE
 // ======================================
 
-function getBundleBadge(discount){
+function getBundleBadge(
+
+  discount
+
+){
 
   if(discount >= 20){
 
@@ -224,7 +261,11 @@ function getBundleBadge(discount){
 // URGENCY
 // ======================================
 
-function getUrgency(saved){
+function getUrgency(
+
+  saved
+
+){
 
   if(saved >= 50){
 
@@ -243,7 +284,7 @@ function getUrgency(saved){
 }
 
 // ======================================
-// AI RECOMMENDATION
+// RECOMMEND BEST BUNDLE
 // ======================================
 
 function recommendBundle({
@@ -256,46 +297,99 @@ function recommendBundle({
 
   try{
 
-    if(!bundles.length){
+    if(
+
+      !Array.isArray(bundles) ||
+
+      !bundles.length
+
+    ){
 
       return null;
 
     }
 
-    // ====================================
-    // HIGH VALUE CART
-    // ====================================
+    // ==========================
+    // HIGH VALUE CUSTOMER
+    // ==========================
 
     if(cartValue >= 200){
 
-      return bundles.sort((a,b)=>{
+      return bundles
 
-        return b.bundlePrice -
-        a.bundlePrice;
+      .sort(
 
-      })[0];
+        (a,b)=>
+
+          b.bundlePrice -
+          a.bundlePrice
+
+      )[0];
 
     }
 
-    // ====================================
-    // LOW CART
-    // ====================================
+    // ==========================
+    // NORMAL CUSTOMER
+    // ==========================
 
-    return bundles.sort((a,b)=>{
+    return bundles
 
-      return b.discount -
-      a.discount;
+    .sort(
 
-    })[0];
+      (a,b)=>
+
+        b.discount -
+        a.discount
+
+    )[0];
 
   }catch(err){
 
     console.log(
-      "RECOMMEND ERROR:",
-      err
+
+      "BUNDLE RECOMMEND ERROR:",
+
+      err.message
+
     );
 
     return null;
+
+  }
+
+}
+
+// ======================================
+// CALCULATE BUNDLE SAVINGS
+// ======================================
+
+function calculateBundleSavings(
+
+  bundle
+
+){
+
+  try{
+
+    if(!bundle){
+
+      return 0;
+
+    }
+
+    return Number(
+
+      (
+        bundle.originalPrice -
+        bundle.bundlePrice
+      )
+      .toFixed(2)
+
+    );
+
+  }catch(err){
+
+    return 0;
 
   }
 
@@ -309,6 +403,8 @@ module.exports = {
 
   generateBundles,
 
-  recommendBundle
+  recommendBundle,
+
+  calculateBundleSavings
 
 };
