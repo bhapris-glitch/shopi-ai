@@ -1,20 +1,99 @@
 // ======================================
 // utils/learningAI.js
 // Layboka AI Learning Engine
-// Real-Time AI Learning System
+// Premium Persistent Memory
+// Updated 1Jun, 2026
 // ======================================
 
 const Client =
 require("../models/Client");
 
+const ChatMemory =
+require("../models/ChatMemory");
+
 // ======================================
-// LEARNING MEMORY
+// MEMORY CACHE
 // ======================================
 
 const learningMemory = {};
 
 // ======================================
-// SAVE USER BEHAVIOR
+// LOAD MEMORY
+// ======================================
+
+async function loadMemory(
+  visitorId
+){
+
+  try{
+
+    if(
+      learningMemory[visitorId]
+    ){
+
+      return learningMemory[
+        visitorId
+      ];
+
+    }
+
+    const memory =
+      await ChatMemory.findOne({
+
+        sessionId:
+          visitorId
+
+      });
+
+    if(!memory){
+
+      return null;
+
+    }
+
+    const user = {
+
+      viewedProducts:
+        memory.viewedProducts || [],
+
+      cartProducts:
+        memory.cartItems || [],
+
+      purchaseIntent:
+        memory.purchaseIntent || 0,
+
+      avgSpend:
+        memory.avgSpend || 0,
+
+      actions:
+        memory.actions || [],
+
+      lastSeen:
+        memory.lastSeen || new Date()
+
+    };
+
+    learningMemory[
+      visitorId
+    ] = user;
+
+    return user;
+
+  }catch(err){
+
+    console.log(
+      "LOAD MEMORY ERROR:",
+      err
+    );
+
+    return null;
+
+  }
+
+}
+
+// ======================================
+// SAVE LEARNING
 // ======================================
 
 async function saveLearning({
@@ -31,22 +110,21 @@ async function saveLearning({
   try{
 
     if(!visitorId){
-      return;
+
+      return {
+        success:false
+      };
+
     }
 
-    // ================================
-    // INIT MEMORY
-    // ================================
-
-    if(
-      !learningMemory[visitorId]
-    ){
-
-      learningMemory[
+    let user =
+      await loadMemory(
         visitorId
-      ] = {
+      );
 
-        interests:[],
+    if(!user){
+
+      user = {
 
         viewedProducts:[],
 
@@ -64,14 +142,9 @@ async function saveLearning({
 
     }
 
-    const user =
-      learningMemory[
-        visitorId
-      ];
-
-    // ================================
-    // SAVE MESSAGE
-    // ================================
+    // ====================================
+    // MESSAGE
+    // ====================================
 
     if(message){
 
@@ -84,10 +157,6 @@ async function saveLearning({
         at:new Date()
 
       });
-
-      // ================================
-      // BUY INTENT KEYWORDS
-      // ================================
 
       const keywords = [
 
@@ -120,37 +189,60 @@ async function saveLearning({
 
     }
 
-    // ================================
-    // PRODUCT VIEW
-    // ================================
+    // ====================================
+    // VIEW PRODUCT
+    // ====================================
 
-    if(action === "view_product"){
+    if(
 
-      user.viewedProducts.push(
-        product
-      );
+      action ===
+      "view_product"
+
+    ){
+
+      if(product){
+
+        user.viewedProducts.push(
+          product
+        );
+
+      }
 
     }
 
-    // ================================
-    // CART
-    // ================================
+    // ====================================
+    // ADD TO CART
+    // ====================================
 
-    if(action === "add_to_cart"){
+    if(
 
-      user.cartProducts.push(
-        product
-      );
+      action ===
+      "add_to_cart"
+
+    ){
+
+      if(product){
+
+        user.cartProducts.push(
+          product
+        );
+
+      }
 
       user.purchaseIntent += 20;
 
     }
 
-    // ================================
+    // ====================================
     // PURCHASE
-    // ================================
+    // ====================================
 
-    if(action === "purchase"){
+    if(
+
+      action ===
+      "purchase"
+
+    ){
 
       user.purchaseIntent += 50;
 
@@ -160,23 +252,86 @@ async function saveLearning({
 
           (
             user.avgSpend +
-            value
+            Number(value)
           ) / 2;
 
       }
 
     }
 
-    // ================================
-    // UPDATE LAST SEEN
-    // ================================
-
     user.lastSeen =
       new Date();
 
-    // ================================
-    // SAVE CLIENT LEARNING
-    // ================================
+    // ====================================
+    // CACHE UPDATE
+    // ====================================
+
+    learningMemory[
+      visitorId
+    ] = user;
+
+    // ====================================
+    // DATABASE SAVE
+    // ====================================
+
+    await ChatMemory.findOneAndUpdate(
+
+      {
+
+        sessionId:
+          visitorId
+
+      },
+
+      {
+
+        sessionId:
+          visitorId,
+
+        clientId:
+          clientId || "",
+
+        viewedProducts:
+          user.viewedProducts,
+
+        cartItems:
+          user.cartProducts,
+
+        actions:
+          user.actions,
+
+        purchaseIntent:
+          user.purchaseIntent,
+
+        avgSpend:
+          user.avgSpend,
+
+        lastSeen:
+          user.lastSeen,
+
+        $push:{
+          messages:{
+            role:"user",
+            content:
+              message || ""
+          }
+        }
+
+      },
+
+      {
+
+        upsert:true,
+
+        new:true
+
+      }
+
+    );
+
+    // ====================================
+    // CLIENT ANALYTICS
+    // ====================================
 
     if(clientId){
 
@@ -225,36 +380,7 @@ async function saveLearning({
 // GET USER PROFILE
 // ======================================
 
-function getUserLearning(
-
-  visitorId
-
-){
-
-  try{
-
-    return (
-
-      learningMemory[
-        visitorId
-      ] ||
-
-      null
-
-    );
-
-  }catch(err){
-
-    return null;
-  }
-
-}
-
-// ======================================
-// AI SEGMENTATION
-// ======================================
-
-function detectSegment(
+async function getUserLearning(
 
   visitorId
 
@@ -263,9 +389,36 @@ function detectSegment(
   try{
 
     const user =
-      learningMemory[
+      await loadMemory(
         visitorId
-      ];
+      );
+
+    return user;
+
+  }catch(err){
+
+    return null;
+
+  }
+
+}
+
+// ======================================
+// SEGMENTATION
+// ======================================
+
+async function detectSegment(
+
+  visitorId
+
+){
+
+  try{
+
+    const user =
+      await loadMemory(
+        visitorId
+      );
 
     if(!user){
 
@@ -273,48 +426,40 @@ function detectSegment(
 
     }
 
-    // ================================
-    // VIP
-    // ================================
-
     if(
+
       user.avgSpend > 300
+
     ){
 
       return "vip";
 
     }
 
-    // ================================
-    // HIGH BUYER
-    // ================================
-
     if(
+
       user.purchaseIntent > 70
+
     ){
 
       return "hot_buyer";
 
     }
 
-    // ================================
-    // CART USER
-    // ================================
-
     if(
+
       user.cartProducts.length > 0
+
     ){
 
       return "cart_user";
 
     }
 
-    // ================================
-    // BROWSER
-    // ================================
-
     if(
+
       user.viewedProducts.length > 5
+
     ){
 
       return "browser";
@@ -326,6 +471,40 @@ function detectSegment(
   }catch(err){
 
     return "unknown";
+
+  }
+
+}
+
+// ======================================
+// CLEAR MEMORY
+// ======================================
+
+async function clearMemory(
+
+  visitorId
+
+){
+
+  try{
+
+    delete learningMemory[
+      visitorId
+    ];
+
+    await ChatMemory.deleteOne({
+
+      sessionId:
+        visitorId
+
+    });
+
+    return true;
+
+  }catch(err){
+
+    return false;
+
   }
 
 }
@@ -340,6 +519,8 @@ module.exports = {
 
   getUserLearning,
 
-  detectSegment
+  detectSegment,
+
+  clearMemory
 
 };
