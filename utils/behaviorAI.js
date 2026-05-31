@@ -1,6 +1,7 @@
 // ======================================
 // utils/behaviorAI.js
 // Layboka AI Behavior Engine
+// Updated 1Jun, 2026
 // ======================================
 
 const {
@@ -24,10 +25,6 @@ function detectBehaviorMood(
       .join(" ")
       .toLowerCase();
 
-    // ================================
-    // EXCITED
-    // ================================
-
     if(
 
       text.includes("love") ||
@@ -41,10 +38,6 @@ function detectBehaviorMood(
       return "excited";
 
     }
-
-    // ================================
-    // PRICE SENSITIVE
-    // ================================
 
     if(
 
@@ -62,10 +55,6 @@ function detectBehaviorMood(
 
     }
 
-    // ================================
-    // URGENT
-    // ================================
-
     if(
 
       text.includes("fast") ||
@@ -79,10 +68,6 @@ function detectBehaviorMood(
       return "urgent";
 
     }
-
-    // ================================
-    // CONFUSED
-    // ================================
 
     if(
 
@@ -103,12 +88,13 @@ function detectBehaviorMood(
   }catch(err){
 
     return "normal";
+
   }
 
 }
 
 // ======================================
-// AI RESPONSE STYLE
+// RESPONSE STRATEGY
 // ======================================
 
 function getBehaviorStrategy(
@@ -125,8 +111,7 @@ function getBehaviorStrategy(
 
         tone:"energetic",
 
-        action:
-        "upsell",
+        action:"upsell",
 
         message:
         "Show premium recommendations"
@@ -139,8 +124,7 @@ function getBehaviorStrategy(
 
         tone:"discount",
 
-        action:
-        "coupon",
+        action:"coupon",
 
         message:
         "Offer bundle or coupon"
@@ -153,8 +137,7 @@ function getBehaviorStrategy(
 
         tone:"fast",
 
-        action:
-        "checkout",
+        action:"checkout",
 
         message:
         "Push fast checkout"
@@ -167,8 +150,7 @@ function getBehaviorStrategy(
 
         tone:"helpful",
 
-        action:
-        "guide",
+        action:"guide",
 
         message:
         "Recommend best products"
@@ -181,8 +163,7 @@ function getBehaviorStrategy(
 
         tone:"normal",
 
-        action:
-        "engage",
+        action:"engage",
 
         message:
         "Continue conversation"
@@ -194,10 +175,10 @@ function getBehaviorStrategy(
 }
 
 // ======================================
-// PRODUCT RECOMMENDATIONS
+// RECOMMENDATIONS
 // ======================================
 
-function behaviorRecommendations(
+async function behaviorRecommendations(
 
   visitorId
 
@@ -206,23 +187,22 @@ function behaviorRecommendations(
   try{
 
     const user =
-      getUserLearning(
+      await getUserLearning(
         visitorId
       );
 
     if(!user){
 
       return [];
-    }
 
-    // ================================
-    // AI RECOMMENDATIONS
-    // ================================
+    }
 
     const recommendations = [];
 
     if(
+
       user.purchaseIntent > 70
+
     ){
 
       recommendations.push(
@@ -238,7 +218,10 @@ function behaviorRecommendations(
     }
 
     if(
+
+      user.cartProducts &&
       user.cartProducts.length > 0
+
     ){
 
       recommendations.push(
@@ -252,7 +235,10 @@ function behaviorRecommendations(
     }
 
     if(
+
+      user.viewedProducts &&
       user.viewedProducts.length > 5
+
     ){
 
       recommendations.push(
@@ -270,11 +256,15 @@ function behaviorRecommendations(
   }catch(err){
 
     console.log(
+
       "BEHAVIOR AI ERROR:",
+
       err
+
     );
 
     return [];
+
   }
 
 }
