@@ -118,6 +118,27 @@ const ProductSchema =
 
 );
 
+// ======================================
+// INDEXES
+// ======================================
+
+ProductSchema.index({
+  clientId: 1
+});
+
+ProductSchema.index({
+  active: 1
+});
+
+ProductSchema.index({
+  tags: 1
+});
+
+ProductSchema.index({
+  title: "text",
+  description: "text"
+});
+
 module.exports =
   mongoose.model(
     "Product",
