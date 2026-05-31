@@ -1,11 +1,13 @@
 // ======================================
 // utils/behaviorAI.js
 // Layboka AI Behavior Engine
-// Updated 1Jun, 2026
+// Production Version
+// Updated 1 Jun, 2026
 // ======================================
 
 const {
-  getUserLearning
+  getUserLearning,
+  detectSegment
 } = require("./learningAI");
 
 // ======================================
@@ -21,9 +23,14 @@ function detectBehaviorMood(
   try{
 
     const text =
+
       messages
       .join(" ")
       .toLowerCase();
+
+    // ==========================
+    // EXCITED
+    // ==========================
 
     if(
 
@@ -31,13 +38,19 @@ function detectBehaviorMood(
 
       text.includes("awesome") ||
 
-      text.includes("amazing")
+      text.includes("amazing") ||
+
+      text.includes("perfect")
 
     ){
 
       return "excited";
 
     }
+
+    // ==========================
+    // PRICE SENSITIVE
+    // ==========================
 
     if(
 
@@ -47,7 +60,9 @@ function detectBehaviorMood(
 
       text.includes("offer") ||
 
-      text.includes("price")
+      text.includes("price") ||
+
+      text.includes("budget")
 
     ){
 
@@ -55,13 +70,19 @@ function detectBehaviorMood(
 
     }
 
+    // ==========================
+    // URGENT
+    // ==========================
+
     if(
 
       text.includes("fast") ||
 
       text.includes("today") ||
 
-      text.includes("urgent")
+      text.includes("urgent") ||
+
+      text.includes("now")
 
     ){
 
@@ -69,11 +90,17 @@ function detectBehaviorMood(
 
     }
 
+    // ==========================
+    // CONFUSED
+    // ==========================
+
     if(
 
       text.includes("help") ||
 
       text.includes("which") ||
+
+      text.includes("recommend") ||
 
       text.includes("confused")
 
@@ -114,7 +141,7 @@ function getBehaviorStrategy(
         action:"upsell",
 
         message:
-        "Show premium recommendations"
+        "Show premium products"
 
       };
 
@@ -127,7 +154,7 @@ function getBehaviorStrategy(
         action:"coupon",
 
         message:
-        "Offer bundle or coupon"
+        "Offer discount bundle"
 
       };
 
@@ -140,7 +167,7 @@ function getBehaviorStrategy(
         action:"checkout",
 
         message:
-        "Push fast checkout"
+        "Push quick checkout"
 
       };
 
@@ -153,7 +180,7 @@ function getBehaviorStrategy(
         action:"guide",
 
         message:
-        "Recommend best products"
+        "Guide customer"
 
       };
 
@@ -175,7 +202,7 @@ function getBehaviorStrategy(
 }
 
 // ======================================
-// RECOMMENDATIONS
+// AI RECOMMENDATIONS
 // ======================================
 
 async function behaviorRecommendations(
@@ -187,6 +214,7 @@ async function behaviorRecommendations(
   try{
 
     const user =
+
       await getUserLearning(
         visitorId
       );
@@ -199,6 +227,20 @@ async function behaviorRecommendations(
 
     const recommendations = [];
 
+    // ==========================
+    // SEGMENT
+    // ==========================
+
+    const segment =
+
+      detectSegment(
+        visitorId
+      );
+
+    // ==========================
+    // HOT BUYER
+    // ==========================
+
     if(
 
       user.purchaseIntent > 70
@@ -209,18 +251,21 @@ async function behaviorRecommendations(
 
         "premium_products",
 
-        "fast_checkout",
+        "vip_discount",
 
-        "vip_discount"
+        "fast_checkout"
 
       );
 
     }
 
+    // ==========================
+    // CART USER
+    // ==========================
+
     if(
 
-      user.cartProducts &&
-      user.cartProducts.length > 0
+      user.cartProducts?.length > 0
 
     ){
 
@@ -234,10 +279,13 @@ async function behaviorRecommendations(
 
     }
 
+    // ==========================
+    // BROWSER
+    // ==========================
+
     if(
 
-      user.viewedProducts &&
-      user.viewedProducts.length > 5
+      user.viewedProducts?.length > 5
 
     ){
 
@@ -251,7 +299,35 @@ async function behaviorRecommendations(
 
     }
 
-    return recommendations;
+    // ==========================
+    // VIP
+    // ==========================
+
+    if(segment === "vip"){
+
+      recommendations.push(
+
+        "vip_access",
+
+        "premium_bundle",
+
+        "exclusive_offer"
+
+      );
+
+    }
+
+    // ==========================
+    // REMOVE DUPLICATES
+    // ==========================
+
+    return [
+
+      ...new Set(
+        recommendations
+      )
+
+    ];
 
   }catch(err){
 
@@ -270,6 +346,59 @@ async function behaviorRecommendations(
 }
 
 // ======================================
+// CUSTOMER PROFILE
+// ======================================
+
+async function getBehaviorProfile(
+
+  visitorId
+
+){
+
+  try{
+
+    const user =
+
+      await getUserLearning(
+        visitorId
+      );
+
+    if(!user){
+
+      return null;
+
+    }
+
+    return {
+
+      purchaseIntent:
+        user.purchaseIntent || 0,
+
+      viewedProducts:
+        user.viewedProducts?.length || 0,
+
+      cartProducts:
+        user.cartProducts?.length || 0,
+
+      avgSpend:
+        user.avgSpend || 0,
+
+      segment:
+        detectSegment(
+          visitorId
+        )
+
+    };
+
+  }catch(err){
+
+    return null;
+
+  }
+
+}
+
+// ======================================
 // EXPORTS
 // ======================================
 
@@ -279,6 +408,8 @@ module.exports = {
 
   getBehaviorStrategy,
 
-  behaviorRecommendations
+  behaviorRecommendations,
+
+  getBehaviorProfile
 
 };
