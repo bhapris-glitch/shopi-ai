@@ -312,10 +312,115 @@ router.get(
 // ======================================
 
 router.get(
+
   "/search-products",
+
   async(req,res)=>{
-    ...
+
+    try{
+
+      const {
+        clientId,
+        q
+      } = req.query;
+
+      if(!clientId){
+
+        return res.status(400)
+        .json({
+
+          success:false,
+
+          error:"clientId required"
+
+        });
+
+      }
+
+      const search =
+        (q || "").trim();
+
+      let query = {
+
+        clientId,
+
+        active:true
+
+      };
+
+      if(search){
+
+        query.$or = [
+
+          {
+            title:{
+              $regex:search,
+              $options:"i"
+            }
+          },
+
+          {
+            description:{
+              $regex:search,
+              $options:"i"
+            }
+          },
+
+          {
+            vendor:{
+              $regex:search,
+              $options:"i"
+            }
+          },
+
+          {
+            productType:{
+              $regex:search,
+              $options:"i"
+            }
+          }
+
+        ];
+
+      }
+
+      const products =
+        await Product.find(query)
+
+        .limit(20)
+
+        .sort({
+          createdAt:-1
+        });
+
+      res.json({
+
+        success:true,
+
+        count:
+          products.length,
+
+        products
+
+      });
+
+    }catch(err){
+
+      console.log(err);
+
+      res.status(500)
+      .json({
+
+        success:false,
+
+        error:"Search failed"
+
+      });
+
+    }
+
   }
+
 );
 
 // ======================================
@@ -365,3 +470,5 @@ router.get(
   }
 
 );
+
+module.exports = router;
