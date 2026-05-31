@@ -1,6 +1,8 @@
 // ======================================
 // utils/churnPrediction.js
-// Layboka AI Churn Prediction
+// Layboka AI Churn Prediction Engine
+// Production Version
+// Updated 1Jun, 2026
 // ======================================
 
 const {
@@ -8,7 +10,7 @@ const {
 } = require("./learningAI");
 
 // ======================================
-// CHURN ANALYSIS
+// PREDICT CHURN
 // ======================================
 
 function predictChurn(
@@ -30,7 +32,10 @@ function predictChurn(
 
         risk:"medium",
 
-        score:50
+        score:50,
+
+        reason:
+          "No learning data"
 
       };
 
@@ -38,14 +43,19 @@ function predictChurn(
 
     let score = 0;
 
-    // ================================
+    const reasons = [];
+
+    // ==================================
     // LAST ACTIVE
-    // ================================
+    // ==================================
 
     const hoursInactive =
 
       (
-        Date.now() -
+
+        Date.now()
+
+        -
 
         new Date(
           user.lastSeen
@@ -55,53 +65,113 @@ function predictChurn(
 
       /
 
-      (1000*60*60);
+      (1000 * 60 * 60);
 
     if(hoursInactive > 72){
 
       score += 40;
 
+      reasons.push(
+        "inactive_72h"
+      );
+
     }
 
-    // ================================
+    else if(
+
+      hoursInactive > 24
+
+    ){
+
+      score += 20;
+
+      reasons.push(
+        "inactive_24h"
+      );
+
+    }
+
+    // ==================================
     // LOW BUY INTENT
-    // ================================
+    // ==================================
 
     if(
+
       user.purchaseIntent < 20
+
     ){
 
       score += 30;
 
+      reasons.push(
+        "low_intent"
+      );
+
     }
 
-    // ================================
+    else if(
+
+      user.purchaseIntent < 50
+
+    ){
+
+      score += 10;
+
+    }
+
+    // ==================================
     // CART ABANDONMENT
-    // ================================
+    // ==================================
 
     if(
 
+      user.cartProducts &&
       user.cartProducts.length > 0 &&
-
       hoursInactive > 24
 
     ){
 
       score += 40;
 
+      reasons.push(
+        "abandoned_cart"
+      );
+
     }
 
-    // ================================
+    // ==================================
+    // NO PRODUCT INTEREST
+    // ==================================
+
+    if(
+
+      !user.viewedProducts ||
+
+      user.viewedProducts.length === 0
+
+    ){
+
+      score += 10;
+
+      reasons.push(
+        "low_engagement"
+      );
+
+    }
+
+    // ==================================
     // FINAL RISK
-    // ================================
+    // ==================================
 
     let risk = "low";
 
-    if(score > 70){
+    if(score >= 70){
 
       risk = "high";
 
-    }else if(score > 40){
+    }
+
+    else if(score >= 40){
 
       risk = "medium";
 
@@ -111,22 +181,36 @@ function predictChurn(
 
       risk,
 
-      score
+      score,
+
+      reasons,
+
+      hoursInactive:
+        Math.floor(
+          hoursInactive
+        )
 
     };
 
-  }catch(err){
+  }
+
+  catch(err){
 
     console.log(
+
       "CHURN ERROR:",
-      err
+
+      err.message
+
     );
 
     return {
 
       risk:"unknown",
 
-      score:0
+      score:0,
+
+      reasons:[]
 
     };
 
@@ -144,46 +228,90 @@ function generateRetentionOffer(
 
 ){
 
-  if(risk === "high"){
+  try{
+
+    if(risk === "high"){
+
+      return {
+
+        type:"discount",
+
+        value:"20% OFF",
+
+        message:
+          "Complete your order today and save 20%."
+
+      };
+
+    }
+
+    if(risk === "medium"){
+
+      return {
+
+        type:"free_shipping",
+
+        value:"FREE SHIPPING",
+
+        message:
+          "Free shipping available for a limited time."
+
+      };
+
+    }
 
     return {
 
-      type:"discount",
+      type:"upsell",
 
-      value:"20% OFF",
+      value:"BONUS OFFER",
 
       message:
-      "Complete your order today & save 20%"
+        "Recommended products waiting for you."
 
     };
+
+  }
+
+  catch(err){
+
+    return {
+
+      type:"none",
+
+      value:"",
+
+      message:""
+
+    };
+
+  }
+
+}
+
+// ======================================
+// RETENTION PRIORITY
+// ======================================
+
+function getRetentionPriority(
+
+  risk
+
+){
+
+  if(risk === "high"){
+
+    return 1;
 
   }
 
   if(risk === "medium"){
 
-    return {
-
-      type:"shipping",
-
-      value:"FREE SHIPPING",
-
-      message:
-      "Free shipping available today"
-
-    };
+    return 2;
 
   }
 
-  return {
-
-    type:"upsell",
-
-    value:"BONUS",
-
-    message:
-    "Recommended products waiting for you"
-
-  };
+  return 3;
 
 }
 
@@ -195,6 +323,8 @@ module.exports = {
 
   predictChurn,
 
-  generateRetentionOffer
+  generateRetentionOffer,
+
+  getRetentionPriority
 
 };
