@@ -1,10 +1,12 @@
 // ======================================
 // utils/analytics.js
-// Real-Time AI Analytics Engine
+// Layboka AI Analytics Engine
+// Production Version
+// Updated 1Jun, 2026
 // ======================================
 
 const Client =
-require("../models/Client");
+  require("../models/Client");
 
 // ======================================
 // SAVE EVENT
@@ -13,21 +15,45 @@ require("../models/Client");
 async function saveEvent({
 
   clientId,
+
   type,
+
   value = 0,
+
   product = "",
-  country = "US"
+
+  country = "US",
+
+  message = "",
+
+  email = "",
+
+  plan = ""
 
 }){
 
   try{
 
+    if(!clientId){
+
+      return false;
+
+    }
+
     const client =
-      await Client.findById(clientId);
+      await Client.findById(
+        clientId
+      );
 
     if(!client){
-      return;
+
+      return false;
+
     }
+
+    // ==================================
+    // CREATE ANALYTICS ARRAY
+    // ==================================
 
     if(!client.analytics){
 
@@ -38,21 +64,80 @@ async function saveEvent({
     client.analytics.push({
 
       type,
+
       value,
+
       product,
+
       country,
-      createdAt:new Date()
+
+      message,
+
+      email,
+
+      plan,
+
+      createdAt:
+        new Date()
 
     });
 
+    // ==================================
+    // UPDATE DASHBOARD STATS
+    // ==================================
+
+    if(type === "chat"){
+
+      client.messages =
+        (client.messages || 0) + 1;
+
+    }
+
+    if(type === "sale"){
+
+      client.orders =
+        (client.orders || 0) + 1;
+
+      client.revenue =
+        Number(
+          client.revenue || 0
+        ) +
+        Number(value || 0);
+
+    }
+
+    if(type === "abandoned_cart"){
+
+      client.checkoutVisits =
+        (client.checkoutVisits || 0) + 1;
+
+    }
+
+    if(type === "recovered_cart"){
+
+      client.recoveredCarts =
+        (client.recoveredCarts || 0) + 1;
+
+      client.recoveredRevenue =
+        Number(
+          client.recoveredRevenue || 0
+        ) +
+        Number(value || 0);
+
+    }
+
     await client.save();
+
+    return true;
 
   }catch(err){
 
     console.log(
-      "Analytics Error:",
+      "ANALYTICS SAVE ERROR:",
       err.message
     );
+
+    return false;
 
   }
 
@@ -62,12 +147,18 @@ async function saveEvent({
 // GET ANALYTICS
 // ======================================
 
-async function getAnalytics(clientId){
+async function getAnalytics(
+
+  clientId
+
+){
 
   try{
 
     const client =
-      await Client.findById(clientId);
+      await Client.findById(
+        clientId
+      );
 
     if(!client){
 
@@ -86,56 +177,147 @@ async function getAnalytics(clientId){
 
     let abandonedCarts = 0;
 
+    let recoveredCarts = 0;
+
     const productMap = {};
 
-    analytics.forEach((item)=>{
+    analytics.forEach(
 
-      if(item.type === "sale"){
+      (item)=>{
 
-        totalRevenue +=
-          Number(item.value || 0);
+        if(
 
-        totalOrders++;
+          item.type === "sale"
 
-      }
+        ){
 
-      if(item.type === "chat"){
+          totalRevenue +=
+            Number(
+              item.value || 0
+            );
 
-        totalChats++;
-
-      }
-
-      if(item.type === "abandoned_cart"){
-
-        abandonedCarts++;
-
-      }
-
-      if(item.product){
-
-        if(!productMap[item.product]){
-
-          productMap[item.product] = 0;
+          totalOrders++;
 
         }
 
-        productMap[item.product]++;
+        if(
+
+          item.type === "chat"
+
+        ){
+
+          totalChats++;
+
+        }
+
+        if(
+
+          item.type ===
+          "abandoned_cart"
+
+        ){
+
+          abandonedCarts++;
+
+        }
+
+        if(
+
+          item.type ===
+          "recovered_cart"
+
+        ){
+
+          recoveredCarts++;
+
+        }
+
+        if(item.product){
+
+          if(
+
+            !productMap[
+              item.product
+            ]
+
+          ){
+
+            productMap[
+              item.product
+            ] = 0;
+
+          }
+
+          productMap[
+            item.product
+          ]++;
+
+        }
 
       }
 
-    });
+    );
+
+    // ==================================
+    // TOP PRODUCTS
+    // ==================================
 
     const topProducts =
-      Object.entries(productMap)
 
-      .sort((a,b)=>b[1]-a[1])
+      Object.entries(
+        productMap
+      )
 
-      .slice(0,5);
+      .sort(
+        (a,b)=>
+          b[1] - a[1]
+      )
+
+      .slice(0,5)
+
+      .map(
+        ([name,count])=>({
+
+          product:name,
+
+          views:count
+
+        })
+      );
+
+    // ==================================
+    // CONVERSION RATE
+    // ==================================
+
+    const conversionRate =
+
+      totalChats > 0
+
+      ?
+
+      Number(
+
+        (
+          (
+            totalOrders /
+            totalChats
+          ) * 100
+        )
+        .toFixed(2)
+
+      )
+
+      :
+
+      0;
+
+    // ==================================
+    // RETURN
+    // ==================================
 
     return {
 
-      totalRevenue:
-        totalRevenue.toFixed(2),
+      totalRevenue,
 
       totalOrders,
 
@@ -143,28 +325,42 @@ async function getAnalytics(clientId){
 
       abandonedCarts,
 
-      conversionRate:
+      recoveredCarts,
 
-        totalChats > 0
+      conversionRate,
 
-        ?
+      topProducts,
 
-        (
-          totalOrders /
-          totalChats
-        ) * 100
+      dashboard:{
 
-        :
+        messages:
+          client.messages || 0,
 
-        0,
+        revenue:
+          client.revenue || 0,
 
-      topProducts
+        orders:
+          client.orders || 0,
+
+        recoveredRevenue:
+          client.recoveredRevenue || 0,
+
+        recoveredCarts:
+          client.recoveredCarts || 0,
+
+        aiInfluencedRevenue:
+          client.aiInfluencedRevenue || 0
+
+      }
 
     };
 
   }catch(err){
 
-    console.log(err);
+    console.log(
+      "ANALYTICS FETCH ERROR:",
+      err.message
+    );
 
     return null;
 
@@ -172,9 +368,14 @@ async function getAnalytics(clientId){
 
 }
 
+// ======================================
+// EXPORTS
+// ======================================
+
 module.exports = {
 
   saveEvent,
+
   getAnalytics
 
 };
