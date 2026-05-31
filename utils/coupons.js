@@ -1,6 +1,7 @@
 // ======================================
 // utils/coupons.js
 // Layboka AI Smart Coupons
+// Updated 1Jun, 2026
 // ======================================
 
 const crypto =
@@ -44,6 +45,8 @@ function calculateDiscount({
   country = "US"
 
 }){
+
+  cartValue = Number(cartValue) || 0;
 
   let discount = 5;
 
@@ -139,11 +142,11 @@ function generateOfferMessage({
 
 function createCoupon({
 
-  cartValue,
+  cartValue = 0,
 
-  customerType,
+  customerType = "new",
 
-  country
+  country = "US"
 
 }){
 
@@ -178,7 +181,9 @@ function createCoupon({
 
       }),
 
-    expiresIn:"24h"
+    expiresIn:"24h",
+
+    createdAt:new Date()
 
   };
 
