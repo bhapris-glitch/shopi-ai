@@ -1,49 +1,240 @@
 // ======================================
 // utils/recommendationEngine.js
+// Layboka AI Recommendation Engine
+// Memory + Cart + Intent Based
+// Updated 1Jun, 2026
 // ======================================
 
-function smartRecommendations({
+const {
+  getUserLearning
+} = require("./learningAI");
+
+// ======================================
+// SMART RECOMMENDATIONS
+// ======================================
+
+async function smartRecommendations({
+
+  visitorId = null,
 
   viewed = [],
 
   cart = [],
 
-  products = []
+  products = [],
+
+  limit = 4
 
 }){
 
-  // ====================================
-  // MATCH CATEGORY
-  // ====================================
+  try{
 
-  const keywords = [
+    // ====================================
+    // LOAD AI MEMORY
+    // ====================================
 
-    ...viewed,
-    ...cart
+    let memory = null;
 
-  ].map((x)=>
-    x.toLowerCase()
-  );
+    if(visitorId){
 
-  const recommendations =
+      memory =
+        await getUserLearning(
+          visitorId
+        );
 
-    products.filter((p)=>{
+    }
 
-      return keywords.some((k)=>
+    // ====================================
+    // MERGE HISTORY
+    // ====================================
 
-        p.title
-        .toLowerCase()
-        .includes(k)
+    const viewedProducts = [
 
-      );
+      ...viewed,
 
-    });
+      ...(memory?.viewedProducts || [])
 
-  return recommendations
-  .slice(0,4);
+    ];
+
+    const cartProducts = [
+
+      ...cart,
+
+      ...(memory?.cartProducts || [])
+
+    ];
+
+    const keywords = [
+
+      ...viewedProducts,
+
+      ...cartProducts
+
+    ]
+
+    .filter(Boolean)
+
+    .map((x)=>
+
+      String(x)
+      .toLowerCase()
+
+    );
+
+    // ====================================
+    // SCORE PRODUCTS
+    // ====================================
+
+    const scoredProducts =
+
+      products.map((product)=>{
+
+        let score = 0;
+
+        const title =
+
+          (
+            product.title || ""
+          )
+          .toLowerCase();
+
+        const description =
+
+          (
+            product.description || ""
+          )
+          .toLowerCase();
+
+        // ===============================
+        // KEYWORD MATCH
+        // ===============================
+
+        keywords.forEach((keyword)=>{
+
+          if(
+
+            title.includes(keyword)
+
+          ){
+
+            score += 50;
+
+          }
+
+          if(
+
+            description.includes(
+              keyword
+            )
+
+          ){
+
+            score += 20;
+
+          }
+
+        });
+
+        // ===============================
+        // TRENDING
+        // ===============================
+
+        if(
+
+          product.tags &&
+
+          product.tags.includes(
+            "trending"
+          )
+
+        ){
+
+          score += 40;
+
+        }
+
+        // ===============================
+        // BEST SELLER
+        // ===============================
+
+        if(product.sales){
+
+          score += product.sales;
+
+        }
+
+        // ===============================
+        // HIGH INTENT
+        // ===============================
+
+        if(
+
+          memory?.purchaseIntent >
+
+          70
+
+        ){
+
+          if(product.price > 100){
+
+            score += 50;
+
+          }
+
+        }
+
+        return {
+
+          ...product,
+
+          score
+
+        };
+
+      });
+
+    // ====================================
+    // SORT
+    // ====================================
+
+    scoredProducts.sort(
+
+      (a,b)=>
+
+        b.score - a.score
+
+    );
+
+    // ====================================
+    // RETURN
+    // ====================================
+
+    return scoredProducts
+
+      .slice(0,limit);
+
+  }catch(err){
+
+    console.log(
+
+      "RECOMMENDATION ERROR:",
+
+      err
+
+    );
+
+    return [];
+
+  }
 
 }
 
+// ======================================
+// EXPORTS
+// ======================================
+
 module.exports = {
+
   smartRecommendations
+
 };
