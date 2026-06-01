@@ -1,21 +1,25 @@
 // ======================================
 // utils/geo.js
 // Detect Visitor Country
-// ======================================
+// Production Ready
+// updated 1 Jun 2026
+// =======================
+===============
 
-const fetch = require("node-fetch");
+const fetch =
+  require("node-fetch");
 
 // ======================================
-// COUNTRY DETECTION
+// DETECT COUNTRY
 // ======================================
 
 async function detectCountry(ip){
 
   try{
 
-    // ======================================
+    // ====================================
     // LOCALHOST
-    // ======================================
+    // ====================================
 
     if(
 
@@ -37,37 +41,38 @@ async function detectCountry(ip){
 
     }
 
-    // ======================================
+    // ====================================
     // CLEAN IP
-    // ======================================
+    // ====================================
 
-    ip = ip.replace("::ffff:","");
+    ip =
+      ip.replace(
+        "::ffff:",
+        ""
+      );
 
-    // ======================================
-    // GEO API
-    // ======================================
+    // ====================================
+    // GEOLOOKUP
+    // ====================================
 
     const response =
       await fetch(
 
-        `http://ip-api.com/json/${ip}`
+        `https://ipapi.co/${ip}/json/`
 
       );
 
     const data =
       await response.json();
 
-    // ======================================
-    // RESULT
-    // ======================================
-
-    if(data?.countryCode){
+    if(data?.country_code){
 
       return {
 
         success:true,
 
-        country:data.countryCode
+        country:
+          data.country_code
 
       };
 
@@ -84,8 +89,11 @@ async function detectCountry(ip){
   }catch(err){
 
     console.log(
-      "❌ GEO ERROR:",
+
+      "GEO ERROR:",
+
       err.message
+
     );
 
     return {
