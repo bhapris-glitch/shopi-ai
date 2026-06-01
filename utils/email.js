@@ -1,6 +1,7 @@
 // ======================================
 // utils/email.js
 // Layboka AI Email Service
+// updated 1 Jun, 2026
 // ======================================
 
 const nodemailer = require("nodemailer");
