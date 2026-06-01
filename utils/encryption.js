@@ -1,6 +1,7 @@
 // ======================================
 // utils/encryption.js
 // Layboka AI Encryption Utilities
+// updated 1 Jin, 2026
 // ======================================
 
 const crypto = require("crypto");
@@ -24,11 +25,13 @@ function encrypt(text){
   try{
 
     const iv =
-      crypto.randomBytes(IV_LENGTH);
+      crypto.randomBytes(
+        IV_LENGTH
+      );
 
     const cipher =
       crypto.createCipheriv(
-        "aes-256-cbc",
+        "aes-256-gcm",
         SECRET_KEY,
         iv
       );
@@ -43,17 +46,24 @@ function encrypt(text){
     encrypted +=
       cipher.final("hex");
 
-    return (
-      iv.toString("hex") +
-      ":" +
+    const authTag =
+      cipher.getAuthTag();
+
+    return [
+
+      iv.toString("hex"),
+
+      authTag.toString("hex"),
+
       encrypted
-    );
+
+    ].join(":");
 
   }catch(err){
 
     console.log(
       "ENCRYPT ERROR:",
-      err
+      err.message
     );
 
     return null;
@@ -75,29 +85,41 @@ function decrypt(text){
 
     const iv =
       Buffer.from(
-        parts.shift(),
+        parts[0],
         "hex"
       );
 
-    const encryptedText =
-      parts.join(":");
+    const authTag =
+      Buffer.from(
+        parts[1],
+        "hex"
+      );
+
+    const encrypted =
+      parts[2];
 
     const decipher =
       crypto.createDecipheriv(
-        "aes-256-cbc",
+        "aes-256-gcm",
         SECRET_KEY,
         iv
       );
 
+    decipher.setAuthTag(
+      authTag
+    );
+
     let decrypted =
       decipher.update(
-        encryptedText,
+        encrypted,
         "hex",
         "utf8"
       );
 
     decrypted +=
-      decipher.final("utf8");
+      decipher.final(
+        "utf8"
+      );
 
     return decrypted;
 
@@ -105,7 +127,7 @@ function decrypt(text){
 
     console.log(
       "DECRYPT ERROR:",
-      err
+      err.message
     );
 
     return null;
@@ -113,6 +135,10 @@ function decrypt(text){
   }
 
 }
+
+// ======================================
+// EXPORTS
+// ======================================
 
 module.exports = {
 
