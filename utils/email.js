@@ -1,13 +1,16 @@
 // ======================================
 // utils/email.js
 // Layboka AI Email Service
-// updated 1 Jun, 2026
+// Production Ready
+// Updated 1 Jun 2026
 // ======================================
+
+require("dotenv").config();
 
 const nodemailer = require("nodemailer");
 
 // ======================================
-// TRANSPORTER
+// SMTP CONFIG
 // ======================================
 
 const transporter = nodemailer.createTransport({
@@ -17,13 +20,12 @@ const transporter = nodemailer.createTransport({
     "smtp.gmail.com",
 
   port:
-    Number(
-      process.env.EMAIL_PORT
-    ) || 587,
+    Number(process.env.EMAIL_PORT) || 587,
 
-  secure:false,
+  secure:
+    Number(process.env.EMAIL_PORT) === 465,
 
-  auth:{
+  auth: {
 
     user:
       process.env.EMAIL_USER,
@@ -36,16 +38,47 @@ const transporter = nodemailer.createTransport({
 });
 
 // ======================================
+// VERIFY CONNECTION
+// ======================================
+
+async function verifyEmailConnection(){
+
+  try{
+
+    await transporter.verify();
+
+    console.log(
+      "📧 Email server connected"
+    );
+
+    return true;
+
+  }catch(err){
+
+    console.log(
+      "❌ Email connection failed:",
+      err.message
+    );
+
+    return false;
+
+  }
+
+}
+
+// ======================================
 // SEND EMAIL
 // ======================================
 
-async function sendEmail(
+async function sendEmail({
 
   to,
   subject,
-  html
+  html,
+  text = "",
+  attachments = []
 
-){
+}){
 
   try{
 
@@ -53,14 +86,20 @@ async function sendEmail(
       await transporter.sendMail({
 
         from:
+
           process.env.EMAIL_FROM ||
-          process.env.EMAIL_USER,
+
+          `"Layboka AI" <${process.env.EMAIL_USER}>`,
 
         to,
 
         subject,
 
-        html
+        html,
+
+        text,
+
+        attachments
 
       });
 
@@ -76,8 +115,11 @@ async function sendEmail(
   }catch(err){
 
     console.log(
+
       "EMAIL ERROR:",
+
       err.message
+
     );
 
     return {
@@ -94,8 +136,185 @@ async function sendEmail(
 }
 
 // ======================================
-// EXPORT
+// SEND RECOVERY EMAIL
 // ======================================
 
-module.exports =
-  sendEmail;
+async function sendRecoveryEmail({
+
+  to,
+  name = "Customer",
+  store = "Store",
+  recoveryUrl,
+  secondReminder = false
+
+}){
+
+  try{
+
+    const subject = secondReminder
+
+      ? `⏰ Last Chance To Complete Your Order`
+
+      : `🛒 You Left Something Behind`;
+
+    const html = `
+
+      <div style="font-family:Arial;padding:20px;">
+
+        <h2>Hello ${name},</h2>
+
+        <p>
+          You left items in your cart at
+          <strong>${store}</strong>.
+        </p>
+
+        <p>
+          Complete your order before it expires.
+        </p>
+
+        <a
+          href="${recoveryUrl}"
+          style="
+            display:inline-block;
+            padding:12px 20px;
+            background:#000;
+            color:#fff;
+            text-decoration:none;
+            border-radius:8px;
+          "
+        >
+          Complete Order
+        </a>
+
+      </div>
+
+    `;
+
+    return await sendEmail({
+
+      to,
+
+      subject,
+
+      html
+
+    });
+
+  }catch(err){
+
+    console.log(
+      "Recovery Email Error:",
+      err.message
+    );
+
+    return {
+
+      success:false
+
+    };
+
+  }
+
+}
+
+// ======================================
+// SEND REFERRAL EMAIL
+// ======================================
+
+async function sendReferralEmail({
+
+  to,
+  name,
+  referralLink
+
+}){
+
+  const html = `
+
+    <h2>Hello ${name}</h2>
+
+    <p>
+      Invite friends and earn rewards.
+    </p>
+
+    <p>
+
+      <a href="${referralLink}">
+        ${referralLink}
+      </a>
+
+    </p>
+
+  `;
+
+  return sendEmail({
+
+    to,
+
+    subject:
+      "🎁 Your Referral Rewards",
+
+    html
+
+  });
+
+}
+
+// ======================================
+// SEND SUBSCRIPTION EMAIL
+// ======================================
+
+async function sendSubscriptionEmail({
+
+  to,
+  plan,
+  amount
+
+}){
+
+  const html = `
+
+    <h2>Subscription Activated</h2>
+
+    <p>
+      Plan:
+      <strong>${plan}</strong>
+    </p>
+
+    <p>
+      Amount:
+      <strong>${amount}</strong>
+    </p>
+
+  `;
+
+  return sendEmail({
+
+    to,
+
+    subject:
+      "✅ Subscription Activated",
+
+    html
+
+  });
+
+}
+
+// ======================================
+// EXPORTS
+// ======================================
+
+module.exports = {
+
+  sendEmail,
+
+  sendRecoveryEmail,
+
+  sendReferralEmail,
+
+  sendSubscriptionEmail,
+
+  verifyEmailConnection
+
+};
