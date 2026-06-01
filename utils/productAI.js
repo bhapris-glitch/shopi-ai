@@ -1,44 +1,99 @@
 // ======================================
 // utils/productAI.js
+// Real Shopify Product Detection
+// updated 1 Jun 2026
 // ======================================
 
-async function findProductsFromMessage(
-  message
-){
+const Product =
+require("../models/Product");
 
-  const products = [
+// ======================================
+// FIND PRODUCTS FROM MESSAGE
+// ======================================
 
-    {
-      title:"Premium Hoodie",
-      price:"$79"
-    },
+async function findProductsFromMessage({
 
-    {
-      title:"Sneakers",
-      price:"$129"
-    },
+  clientId,
 
-    {
-      title:"Luxury Watch",
-      price:"$299"
+  message = ""
+
+}){
+
+  try{
+
+    if(!clientId){
+
+      return [];
+
     }
 
-  ];
+    const products =
 
-  return products.filter((p)=>
+      await Product.find({
 
-    message
-    .toLowerCase()
-    .includes(
-      p.title
-      .toLowerCase()
-      .split(" ")[0]
-    )
+        clientId,
 
-  );
+        active:true
+
+      })
+
+      .limit(200);
+
+    const lowerMessage =
+
+      message.toLowerCase();
+
+    const matches =
+
+      products.filter((product)=>{
+
+        const title =
+
+          (product.title || "")
+          .toLowerCase();
+
+        const words =
+
+          title.split(" ");
+
+        return words.some((word)=>{
+
+          return (
+
+            word.length > 2 &&
+
+            lowerMessage.includes(word)
+
+          );
+
+        });
+
+      });
+
+    return matches.slice(0,5);
+
+  }catch(err){
+
+    console.log(
+
+      "PRODUCT AI ERROR:",
+
+      err
+
+    );
+
+    return [];
+
+  }
 
 }
 
+// ======================================
+// EXPORTS
+// ======================================
+
 module.exports = {
+
   findProductsFromMessage
+
 };
