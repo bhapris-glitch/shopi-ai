@@ -19,8 +19,9 @@ const Client =
 const sendEmail =
   require("../services/email");
 
-const sendWhatsApp =
-  require("../services/whatsapp");
+const {
+  sendWhatsAppRecovery
+} = require("../services/whatsapp");
 
 // ======================================
 // INIT RAZORPAY
