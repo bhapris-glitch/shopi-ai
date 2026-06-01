@@ -1,6 +1,7 @@
 // ======================================
 // utils/jwt.js
 // Layboka AI JWT Utilities
+// updated 1 Jun 2026
 // ======================================
 
 const jwt = require("jsonwebtoken");
