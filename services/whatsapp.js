@@ -452,16 +452,19 @@ right now.
 // ======================================
 // EXPORTS
 // ======================================
-
 module.exports = {
 
   sendWhatsApp,
 
   sendCartRecovery,
 
+  sendWhatsAppRecovery,
+
   sendOrderUpdate,
 
   sendPaymentSuccess,
+
+  sendPaymentFailedWhatsApp,
 
   sendSubscriptionExpiry,
 
