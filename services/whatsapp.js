@@ -22,15 +22,35 @@ const client = twilio(
 // ======================================
 // SEND SIMPLE MESSAGE
 // ======================================
+// COMPATIBLE SEND WHATSAPP
+// Supports:
+// sendWhatsApp({to,message})
+// sendWhatsApp({phone,message})
+// ======================================
 
 async function sendWhatsApp({
 
   to,
+  phone,
   message
 
 }){
 
   try{
+
+    const recipient = to || phone;
+
+    if(!recipient){
+
+      return {
+
+        success:false,
+
+        error:"Phone number missing"
+
+      };
+
+    }
 
     const response =
       await client.messages.create({
@@ -39,7 +59,7 @@ async function sendWhatsApp({
           `whatsapp:${process.env.TWILIO_WHATSAPP_NUMBER}`,
 
         to:
-          `whatsapp:${to}`,
+          `whatsapp:${recipient}`,
 
         body: message
 
@@ -77,6 +97,126 @@ async function sendWhatsApp({
 
 }
 
+// ======================================
+// RECOVERY WRAPPER
+// Used by abandonedCartCron.js
+// ======================================
+
+async function sendWhatsAppRecovery({
+
+  phone,
+  name,
+  store,
+  recoveryUrl,
+  secondReminder = false
+
+}){
+
+  try{
+
+    const message = secondReminder
+
+      ?
+
+`🛒 Hi ${name || "there"}!
+
+Your cart at ${store}
+is still waiting.
+
+Complete checkout:
+
+${recoveryUrl}
+
+This reminder may expire soon.`
+
+      :
+
+`🛒 Hi ${name || "there"}!
+
+You left items in your cart at ${store}.
+
+Complete your checkout:
+
+${recoveryUrl}
+
+We'll save your cart for a limited time.`;
+
+    return await sendWhatsApp({
+
+      phone,
+
+      message
+
+    });
+
+  }catch(err){
+
+    console.log(
+      "Recovery WhatsApp Error:",
+      err.message
+    );
+
+    return {
+
+      success:false
+
+    };
+
+  }
+
+}
+
+// ======================================
+// PAYMENT FAILED ALERT
+// Used by renewalCron.js
+// ======================================
+
+async function sendPaymentFailedWhatsApp({
+
+  phone,
+  paymentUrl
+
+}){
+
+  try{
+
+    const message = `
+
+❌ Payment Failed
+
+Your Layboka AI subscription
+could not be renewed.
+
+Renew now:
+
+${paymentUrl}
+
+`;
+
+    return await sendWhatsApp({
+
+      phone,
+
+      message
+
+    });
+
+  }catch(err){
+
+    console.log(
+      "Payment Failed WhatsApp Error:",
+      err.message
+    );
+
+    return {
+
+      success:false
+
+    };
+
+  }
+
+}
 // ======================================
 // SEND CART RECOVERY
 // ======================================
