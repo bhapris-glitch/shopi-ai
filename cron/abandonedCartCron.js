@@ -16,8 +16,9 @@ const Client = require("../models/Client");
 const sendRecoveryEmail =
 require("../services/email");
 
-const sendWhatsAppRecovery =
-require("../services/whatsapp");
+const {
+  sendWhatsAppRecovery
+} = require("../utils/whatsapp");
 
 // ======================================
 // CONFIG
