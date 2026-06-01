@@ -1,435 +1,445 @@
 // ======================================
 // cron/abandonedCartCron.js
+// Layboka AI
 // Production Abandoned Cart Recovery
-// Auto WhatsApp + Email Recovery
+// updated 1 Jun 2026
 // ======================================
 
 require("dotenv").config();
 
 const cron = require("node-cron");
+const jwt = require("jsonwebtoken");
 
-const Client =
-  require("../models/Client");
-
-const Recovery =
-  require("../models/Recovery");
+const Recovery = require("../models/Recovery");
+const Client = require("../models/Client");
 
 const sendRecoveryEmail =
-  require("../services/email");
+require("../services/email");
 
 const sendWhatsAppRecovery =
-  require("../services/whatsapp");
-
-const cron =
-require("node-cron");
-
-const Cart =
-require("../models/Cart");
+require("../services/whatsapp");
 
 // ======================================
-// RUN EVERY 15 MINUTES
+// CONFIG
 // ======================================
 
-cron.schedule(
+const JWT_SECRET =
+process.env.JWT_SECRET;
 
-  "*/15 * * * *",
+const BASE_URL =
+process.env.BASE_URL;
 
-  async()=>{
+// ======================================
+// PREVENT DUPLICATE STARTS
+// ======================================
+
+let cronStarted = false;
+
+// ======================================
+// CREATE RECOVERY LINK
+// ======================================
+
+function createRecoveryLink(cartId){
+
+  const token = jwt.sign(
+
+    {
+      cartId
+    },
+
+    JWT_SECRET,
+
+    {
+      expiresIn:"7d"
+    }
+
+  );
+
+  return `${BASE_URL}/recover/${token}`;
+
+}
+
+// ======================================
+// SEND REMINDER
+// ======================================
+
+async function sendReminder({
+
+  recovery,
+  client,
+  stage
+
+}){
+
+  try{
+
+    const recoveryUrl =
+      createRecoveryLink(
+        recovery.cartId
+      );
+
+    // ====================================
+    // EMAIL
+    // ====================================
+
+    if(recovery.email){
+
+      await sendRecoveryEmail({
+
+        to: recovery.email,
+
+        name:
+          recovery.name ||
+          "Customer",
+
+        store:
+          client.store ||
+
+          client.storeName ||
+
+          "Store",
+
+        cart:
+          recovery.cart || [],
+
+        recoveryUrl,
+
+        stage
+
+      });
+
+    }
+
+    // ====================================
+    // WHATSAPP
+    // ====================================
+
+    if(recovery.phone){
+
+      await sendWhatsAppRecovery({
+
+        phone:
+          recovery.phone,
+
+        name:
+          recovery.name ||
+          "Customer",
+
+        store:
+          client.store ||
+
+          client.storeName ||
+
+          "Store",
+
+        recoveryUrl,
+
+        stage
+
+      });
+
+    }
+
+    return true;
+
+  }catch(err){
 
     console.log(
-      "🛒 Checking abandoned carts..."
+      "Reminder Send Error:",
+      err.message
     );
+
+    return false;
+
+  }
+
+}
+
+// ======================================
+// FIRST REMINDER
+// 30 MINUTES
+// ======================================
+
+async function processFirstReminder(){
+
+  const threshold =
+    new Date(
+      Date.now() -
+      30 * 60 * 1000
+    );
+
+  const recoveries =
+    await Recovery.find({
+
+      recovered:false,
+
+      reminderSent:false,
+
+      createdAt:{
+        $lte: threshold
+      }
+
+    })
+
+    .limit(200);
+
+  for(const recovery of recoveries){
 
     try{
 
-      const oneHourAgo =
-        new Date(
-          Date.now() -
-          60*60*1000
+      const client =
+        await Client.findById(
+          recovery.clientId
         );
 
-      // ===================================
-      // 1 HOUR REMINDER
-      // ===================================
+      if(!client){
 
-      const carts =
-        await Cart.find({
-
-          abandoned:true,
-
-          reminderSent1h:false,
-
-          createdAt:{
-            $lte:oneHourAgo
-          }
-
-        });
-
-      for(const cart of carts){
-
-        console.log(
-
-          "📧 Send 1H reminder to:",
-
-          cart.email
-
-        );
-
-        // EMAIL LOGIC HERE
-
-        cart.reminderSent1h =
-          true;
-
-        await cart.save();
-
+        continue;
       }
 
-      // ===================================
-      // 24 HOUR REMINDER
-      // ===================================
+      const success =
+        await sendReminder({
 
-      const oneDayAgo =
-        new Date(
-          Date.now() -
-          24*60*60*1000
-        );
-
-      const carts24 =
-        await Cart.find({
-
-          abandoned:true,
-
-          reminderSent24h:false,
-
-          createdAt:{
-            $lte:oneDayAgo
-          }
+          recovery,
+          client,
+          stage:"first"
 
         });
 
-      for(const cart of carts24){
+      if(success){
 
-        console.log(
+        recovery.reminderSent = true;
 
-          "📧 Send 24H reminder to:",
+        recovery.reminderSentAt =
+          new Date();
 
-          cart.email
-
-        );
-
-        // EMAIL LOGIC HERE
-
-        cart.reminderSent24h =
-          true;
-
-        await cart.save();
+        await recovery.save();
 
       }
 
     }catch(err){
 
-      console.log(err);
+      console.log(
+        err.message
+      );
 
     }
 
   }
 
-);
+}
+
+// ======================================
+// SECOND REMINDER
+// 24 HOURS
+// ======================================
+
+async function processSecondReminder(){
+
+  const threshold =
+    new Date(
+      Date.now() -
+      24 * 60 * 60 * 1000
+    );
+
+  const recoveries =
+    await Recovery.find({
+
+      recovered:false,
+
+      reminderSent:true,
+
+      secondReminderSent:false,
+
+      reminderSentAt:{
+        $lte: threshold
+      }
+
+    })
+
+    .limit(200);
+
+  for(const recovery of recoveries){
+
+    try{
+
+      const client =
+        await Client.findById(
+          recovery.clientId
+        );
+
+      if(!client){
+
+        continue;
+      }
+
+      const success =
+        await sendReminder({
+
+          recovery,
+          client,
+          stage:"second"
+
+        });
+
+      if(success){
+
+        recovery.secondReminderSent =
+          true;
+
+        recovery.secondReminderSentAt =
+          new Date();
+
+        await recovery.save();
+
+      }
+
+    }catch(err){
+
+      console.log(
+        err.message
+      );
+
+    }
+
+  }
+
+}
+
+// ======================================
+// THIRD REMINDER
+// 72 HOURS
+// ======================================
+
+async function processThirdReminder(){
+
+  const threshold =
+    new Date(
+      Date.now() -
+      72 * 60 * 60 * 1000
+    );
+
+  const recoveries =
+    await Recovery.find({
+
+      recovered:false,
+
+      secondReminderSent:true,
+
+      thirdReminderSent:false,
+
+      secondReminderSentAt:{
+        $lte: threshold
+      }
+
+    })
+
+    .limit(200);
+
+  for(const recovery of recoveries){
+
+    try{
+
+      const client =
+        await Client.findById(
+          recovery.clientId
+        );
+
+      if(!client){
+
+        continue;
+      }
+
+      const success =
+        await sendReminder({
+
+          recovery,
+          client,
+          stage:"third"
+
+        });
+
+      if(success){
+
+        recovery.thirdReminderSent =
+          true;
+
+        recovery.thirdReminderSentAt =
+          new Date();
+
+        await recovery.save();
+
+      }
+
+    }catch(err){
+
+      console.log(
+        err.message
+      );
+
+    }
+
+  }
+
+}
 
 // ======================================
 // START CRON
-// EVERY 15 MINUTES
 // ======================================
 
-const startAbandonedCartCron = ()=>{
+function startAbandonedCartCron(){
+
+  if(cronStarted){
+
+    console.log(
+      "Abandoned Cart Cron already running"
+    );
+
+    return;
+  }
+
+  cronStarted = true;
 
   console.log(
-    "🛒 Abandoned Cart Recovery Started"
+    "🛒 Layboka Abandoned Cart Recovery Started"
   );
 
-  // ======================================
+  // ================================
   // EVERY 15 MINUTES
-  // ======================================
+  // ================================
 
-  cron.schedule("*/15 * * * *", async ()=>{
+  cron.schedule(
 
-    try{
+    "*/15 * * * *",
 
-      console.log(
-        "🔍 Checking abandoned carts..."
-      );
+    async()=>{
 
-      // ======================================
-      // FIND RECOVERIES
-      // ======================================
+      try{
 
-      const recoveries =
-        await Recovery.find({
+        console.log(
+          "🛒 Checking abandoned carts..."
+        );
 
-          recovered:false,
+        await processFirstReminder();
 
-          reminderSent:false,
+        await processSecondReminder();
 
-          createdAt:{
-            $lte:
-              new Date(
-                Date.now() -
-                30 * 60 * 1000
-              )
-          }
+        await processThirdReminder();
 
-        });
+      }catch(err){
 
-      console.log(
-        `🛒 Found ${recoveries.length} abandoned carts`
-      );
-
-      // ======================================
-      // LOOP USERS
-      // ======================================
-
-      for(const item of recoveries){
-
-        try{
-
-          // ======================================
-          // GET CLIENT
-          // ======================================
-
-          const client =
-            await Client.findById(
-              item.clientId
-            );
-
-          if(!client){
-
-            console.log(
-              "❌ Client not found"
-            );
-
-            continue;
-
-          }
-
-          // ======================================
-          // RECOVERY URL
-          // ======================================
-
-          const recoveryUrl =
-
-            `${process.env.BASE_URL}/checkout?cart=${item.cartId}`;
-
-          // ======================================
-          // EMAIL RECOVERY
-          // ======================================
-
-          if(item.email){
-
-            await sendRecoveryEmail({
-
-              to:item.email,
-
-              name:item.name || "Customer",
-
-              store:client.store,
-
-              cart:item.cart,
-
-              recoveryUrl
-
-            });
-
-            console.log(
-              `📧 Recovery email sent to ${item.email}`
-            );
-
-          }
-
-          // ======================================
-          // WHATSAPP RECOVERY
-          // ======================================
-
-          if(item.phone){
-
-            await sendWhatsAppRecovery({
-
-              phone:item.phone,
-
-              name:item.name || "Customer",
-
-              store:client.store,
-
-              recoveryUrl
-
-            });
-
-            console.log(
-              `📱 WhatsApp sent to ${item.phone}`
-            );
-
-          }
-
-          // ======================================
-          // UPDATE STATUS
-          // ======================================
-
-          item.reminderSent = true;
-
-          item.reminderSentAt =
-            new Date();
-
-          await item.save();
-
-        }catch(err){
-
-          console.log(
-            "❌ Recovery Error:",
-            err.message
-          );
-
-        }
+        console.log(
+          "Cron Error:",
+          err.message
+        );
 
       }
 
-    }catch(err){
-
-      console.log(
-        "❌ Cron Error:",
-        err.message
-      );
-
     }
 
-  });
+  );
 
-  // ======================================
-  // SECOND REMINDER
-  // AFTER 24 HOURS
-  // ======================================
-
-  cron.schedule("0 * * * *", async ()=>{
-
-    try{
-
-      console.log(
-        "⏰ Checking second reminders..."
-      );
-
-      const secondReminders =
-        await Recovery.find({
-
-          recovered:false,
-
-          secondReminderSent:false,
-
-          reminderSent:true,
-
-          reminderSentAt:{
-            $lte:
-              new Date(
-                Date.now() -
-                24 * 60 * 60 * 1000
-              )
-          }
-
-        });
-
-      for(const item of secondReminders){
-
-        try{
-
-          const client =
-            await Client.findById(
-              item.clientId
-            );
-
-          if(!client) continue;
-
-          const recoveryUrl =
-
-            `${process.env.BASE_URL}/checkout?cart=${item.cartId}`;
-
-          // ======================================
-          // SECOND EMAIL
-          // ======================================
-
-          if(item.email){
-
-            await sendRecoveryEmail({
-
-              to:item.email,
-
-              name:item.name || "Customer",
-
-              store:client.store,
-
-              cart:item.cart,
-
-              recoveryUrl,
-
-              secondReminder:true
-
-            });
-
-          }
-
-          // ======================================
-          // SECOND WHATSAPP
-          // ======================================
-
-          if(item.phone){
-
-            await sendWhatsAppRecovery({
-
-              phone:item.phone,
-
-              name:item.name || "Customer",
-
-              store:client.store,
-
-              recoveryUrl,
-
-              secondReminder:true
-
-            });
-
-          }
-
-          item.secondReminderSent = true;
-
-          await item.save();
-
-          console.log(
-            `✅ Second reminder sent`
-          );
-
-        }catch(err){
-
-          console.log(
-            "❌ Second Reminder Error:",
-            err.message
-          );
-
-        }
-
-      }
-
-    }catch(err){
-
-      console.log(
-        "❌ Cron Error:",
-        err.message
-      );
-
-    }
-
-  });
-
-};
-
-// ======================================
-// EXPORT
-// ======================================
+}
 
 module.exports =
-  startAbandonedCartCron;
+startAbandonedCartCron;
