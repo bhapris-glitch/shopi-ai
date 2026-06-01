@@ -20,7 +20,8 @@ const sendEmail =
   require("../services/email");
 
 const {
-  sendWhatsAppRecovery
+  sendWhatsApp,
+  sendPaymentFailedWhatsApp
 } = require("../services/whatsapp");
 
 // ======================================
