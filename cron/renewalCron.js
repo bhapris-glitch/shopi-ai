@@ -196,33 +196,17 @@ const startRenewalCron = ()=>{
                   // EMAIL
                   if(client.email){
 
-                    await sendEmail({
-
-                      to:client.email,
-
-                      subject:
-                        "Payment Failed",
-
-                      html:`
-
-                      <h2>
-                      Subscription Expired
-                      </h2>
-
-                      <p>
-                      Your AI chatbot
-                      has been paused.
-                      </p>
-
-                      <a href="${process.env.BASE_URL}/pricing.html">
-                      Renew Subscription
-                      </a>
-
-                      `
-
-                    });
-
-                  }
+                    await sendEmail(
+  client.email,
+  "Payment Failed",
+  `
+  <h2>Subscription Expired</h2>
+  <p>Your AI chatbot has been paused.</p>
+  <a href="${process.env.BASE_URL}/pricing.html">
+    Renew Subscription
+  </a>
+  `
+);
 
                   // WHATSAPP
                   if(client.phone){
@@ -277,6 +261,18 @@ ${process.env.BASE_URL}/pricing.html
                     client.subscriptionId
 
                   );
+
+                await sendEmail(
+  client.email,
+  "Subscription Expired",
+  `
+  <h2>Payment Failed</h2>
+  <p>Your chatbot has been locked.</p>
+  <a href="${process.env.BASE_URL}/pricing.html">
+    Renew Now
+  </a>
+  `
+);
 
                 // ======================================
                 // ACTIVE
