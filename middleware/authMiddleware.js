@@ -2,32 +2,34 @@
 // middleware/authMiddleware.js
 // JWT Auth Middleware
 // Protect API Routes
+// updated 2 Jun, 2026
 // ======================================
 
 require("dotenv").config();
 
 const jwt = require("jsonwebtoken");
 
+const JWT_SECRET =
+  process.env.JWT_SECRET ||
+  "layboka_super_secret";
+
 // ======================================
 // VERIFY TOKEN
 // ======================================
 
-const authMiddleware = async (req, res, next) => {
+const authMiddleware = (req, res, next) => {
 
   try {
 
-    // ======================================
-    // GET TOKEN
-    // ======================================
-
     const authHeader =
-      req.headers.authorization;
+      req.headers.authorization || "";
 
     if (!authHeader) {
 
       return res.status(401).json({
         success: false,
-        message: "Access denied. No token provided."
+        message:
+          "Access denied. No token provided."
       });
 
     }
@@ -38,13 +40,16 @@ const authMiddleware = async (req, res, next) => {
     // ======================================
 
     const token =
-      authHeader.split(" ")[1];
+      authHeader
+        .replace(/^Bearer\s+/i, "")
+        .trim();
 
     if (!token) {
 
       return res.status(401).json({
         success: false,
-        message: "Invalid token format."
+        message:
+          "Invalid token format."
       });
 
     }
@@ -56,12 +61,8 @@ const authMiddleware = async (req, res, next) => {
     const decoded =
       jwt.verify(
         token,
-        process.env.JWT_SECRET
+        JWT_SECRET
       );
-
-    // ======================================
-    // SAVE USER
-    // ======================================
 
     req.user = decoded;
 
@@ -98,17 +99,34 @@ const adminMiddleware = (req, res, next) => {
     if (!req.user) {
 
       return res.status(401).json({
+
         success: false,
-        message: "Unauthorized"
+
+        message:
+          "Unauthorized"
+
       });
 
     }
 
-    if (req.user.role !== "admin") {
+    const role =
+      req.user?.role || "";
+
+    if (
+
+      role !== "admin" &&
+
+      role !== "superadmin"
+
+    ) {
 
       return res.status(403).json({
+
         success: false,
-        message: "Admin access required"
+
+        message:
+          "Admin access required"
+
       });
 
     }
@@ -118,8 +136,12 @@ const adminMiddleware = (req, res, next) => {
   } catch (err) {
 
     return res.status(500).json({
+
       success: false,
-      message: "Middleware error"
+
+      message:
+        "Middleware error"
+
     });
 
   }
@@ -136,7 +158,7 @@ const optionalAuth = (req, res, next) => {
   try {
 
     const authHeader =
-      req.headers.authorization;
+      req.headers.authorization || "";
 
     if (!authHeader) {
 
@@ -145,7 +167,9 @@ const optionalAuth = (req, res, next) => {
     }
 
     const token =
-      authHeader.split(" ")[1];
+      authHeader
+        .replace(/^Bearer\s+/i, "")
+        .trim();
 
     if (!token) {
 
@@ -156,7 +180,7 @@ const optionalAuth = (req, res, next) => {
     const decoded =
       jwt.verify(
         token,
-        process.env.JWT_SECRET
+        JWT_SECRET
       );
 
     req.user = decoded;
