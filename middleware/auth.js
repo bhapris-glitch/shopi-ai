@@ -1,6 +1,8 @@
+
 // ======================================
 // middleware/auth.js
 // Layboka AI Auth Middleware
+// updated 2 Jun 2026
 // ======================================
 
 const {
@@ -11,7 +13,7 @@ const {
 // AUTH MIDDLEWARE
 // ======================================
 
-module.exports = async(
+module.exports = (
   req,
   res,
   next
@@ -25,11 +27,15 @@ module.exports = async(
 
       "";
 
+    // ======================================
+    // EXTRACT TOKEN
+    // ======================================
+
     const token =
-      authHeader.replace(
-        "Bearer ",
-        ""
-      );
+
+      authHeader
+        .replace(/^Bearer\s+/i, "")
+        .trim();
 
     if(!token){
 
@@ -44,6 +50,10 @@ module.exports = async(
       });
 
     }
+
+    // ======================================
+    // VERIFY TOKEN
+    // ======================================
 
     const decoded =
       verifyToken(token);
@@ -73,7 +83,8 @@ module.exports = async(
       err
     );
 
-    res.status(500).json({
+    return res.status(500)
+    .json({
 
       success:false,
 
