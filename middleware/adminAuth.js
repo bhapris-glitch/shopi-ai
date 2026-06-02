@@ -1,6 +1,7 @@
 // ======================================
 // middleware/adminAuth.js
 // Layboka AI Admin Protection
+// updated 2 Jun 2026
 // ======================================
 
 module.exports = (
@@ -25,15 +26,18 @@ module.exports = (
 
     }
 
+    const role =
+      req.user?.role || "";
+
     // ======================================
     // ADMIN CHECK
     // ======================================
 
     if(
 
-      req.user.role !== "admin" &&
+      role !== "admin" &&
 
-      req.user.role !== "superadmin"
+      role !== "superadmin"
 
     ){
 
@@ -58,9 +62,13 @@ module.exports = (
       err
     );
 
-    res.status(500).json({
+    return res.status(500)
+    .json({
 
-      success:false
+      success:false,
+
+      message:
+        "Internal server error"
 
     });
 
