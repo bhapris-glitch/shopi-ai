@@ -79,11 +79,9 @@ router.post(
 
       const response =
         await fetch(
-
-          `https://${client.store}/admin/api/2024-01/products.json?limit=250,
-
-          {
-
+  `https://${client.store}/admin/api/2024-01/products.json?limit=250`,
+  {
+    
             headers:{
 
               "X-Shopify-Access-Token":
