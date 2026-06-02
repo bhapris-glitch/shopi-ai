@@ -1,34 +1,18 @@
 // ======================================
 // routes/emailMarketing.js
+// Email Campaign Management
+// updated 2 Jun, 2026
 // ======================================
 
 const express = require("express");
-const nodemailer = require("nodemailer");
+
+const router = express.Router();
 
 const Campaign =
 require("../models/Campaign");
 
-const router =
-  express.Router();
-
-// ======================================
-// TRANSPORT
-// ======================================
-
-const transporter =
-  nodemailer.createTransport({
-
-    service:"gmail",
-
-    auth:{
-      user:
-        process.env.EMAIL_USER,
-
-      pass:
-        process.env.EMAIL_PASS
-    }
-
-  });
+const sendEmail =
+require("../services/email");
 
 // ======================================
 // SEND CAMPAIGN
@@ -36,7 +20,7 @@ const transporter =
 
 router.post(
   "/email/send",
-  async(req,res)=>{
+  async (req,res)=>{
 
     try{
 
@@ -46,10 +30,28 @@ router.post(
         content
       } = req.body;
 
-      await transporter.sendMail({
+      if(
+        !email ||
+        !subject ||
+        !content
+      ){
 
-        from:
-          process.env.EMAIL_USER,
+        return res.status(400).json({
+
+          success:false,
+
+          message:
+          "Missing required fields"
+
+        });
+
+      }
+
+      // ===============================
+      // SEND EMAIL
+      // ===============================
+
+      await sendEmail({
 
         to:email,
 
@@ -59,28 +61,44 @@ router.post(
 
       });
 
+      // ===============================
+      // SAVE CAMPAIGN LOG
+      // ===============================
+
       await Campaign.create({
 
         email,
+
         subject,
+
         content,
+
         status:"sent"
 
       });
 
-      res.json({
+      return res.json({
 
-        success:true
+        success:true,
+
+        message:
+        "Campaign sent"
 
       });
 
     }catch(err){
 
-      console.log(err);
+      console.log(
+        "EMAIL CAMPAIGN ERROR:",
+        err
+      );
 
-      res.status(500).json({
+      return res.status(500).json({
 
-        success:false
+        success:false,
+
+        message:
+        "Campaign failed"
 
       });
 
@@ -88,5 +106,9 @@ router.post(
 
   }
 );
+
+// ======================================
+// EXPORT
+// ======================================
 
 module.exports = router;
