@@ -1,10 +1,34 @@
 // ======================================
 // middleware/rateLimiter.js
 // Layboka AI Rate Limiter
+// Production Ready
+// updated 2 Jun, 2026
 // ======================================
 
 const rateLimit =
   require("express-rate-limit");
+
+// ======================================
+// COMMON HANDLER
+// ======================================
+
+const rateLimitHandler =
+  (message) => (
+
+    req,
+    res
+
+  ) => {
+
+    return res.status(429).json({
+
+      success:false,
+
+      message
+
+    });
+
+  };
 
 // ======================================
 // GLOBAL LIMITER
@@ -22,14 +46,12 @@ const globalLimiter =
 
     legacyHeaders:false,
 
-    message:{
+    trustProxy:true,
 
-      success:false,
-
-      message:
+    handler:
+      rateLimitHandler(
         "Too many requests"
-
-    }
+      )
 
   });
 
@@ -49,14 +71,12 @@ const chatLimiter =
 
     legacyHeaders:false,
 
-    message:{
+    trustProxy:true,
 
-      success:false,
-
-      message:
+    handler:
+      rateLimitHandler(
         "Chat limit exceeded"
-
-    }
+      )
 
   });
 
@@ -76,21 +96,27 @@ const authLimiter =
 
     legacyHeaders:false,
 
-    message:{
+    trustProxy:true,
 
-      success:false,
+    skipSuccessfulRequests:true,
 
-      message:
+    handler:
+      rateLimitHandler(
         "Too many login attempts"
-
-    }
+      )
 
   });
+
+// ======================================
+// EXPORTS
+// ======================================
 
 module.exports = {
 
   globalLimiter,
+
   chatLimiter,
+
   authLimiter
 
 };
