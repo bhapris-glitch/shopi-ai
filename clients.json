@@ -1,1 +1,15 @@
-{}
+{
+  "clientId": "client_001",
+  "store": "demo-store.myshopify.com",
+  "storeDisplayName": "Demo Store",
+  "plan": "starter",
+  "status": "active",
+  "paid": true,
+  "messages": 0,
+  "revenue": 0,
+  "orders": 0,
+  "agentName": "Emma",
+  "agentAvatar": "/uploads/default-avatar.png",
+  "referralCode": "DEMO123",
+  "createdAt": "2026-05-08T12:00:00Z"
+}
