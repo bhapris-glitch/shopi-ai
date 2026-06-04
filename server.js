@@ -91,6 +91,10 @@ const Product = require("./models/Product");
 const Analytics = require("./models/Analytics");
 const Referral = require("./models/Referral");
 
+const { verifySMTP } =
+require("./services/email");
+
+verifySMTP();
 // ======================================
 // ROUTES
 // ======================================
