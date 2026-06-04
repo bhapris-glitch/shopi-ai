@@ -2,6 +2,7 @@
 // models/Notification.js
 // Layboka AI Notification Logs
 // Production Ready
+// Updated 04 Jin 2026
 // ======================================
 
 const mongoose = require("mongoose");
