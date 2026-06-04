@@ -1,24 +1,65 @@
 // ======================================
 // models/Ticket.js
+// Layboka AI Support Ticket Model
+// Updated 04 Jun 2026
+// ======================================
+const mongoose =
+require("mongoose");
+
+// ======================================
+// MESSAGE SCHEMA
 // ======================================
 
-const mongoose = require("mongoose");
+const MessageSchema =
+new mongoose.Schema({
 
-const TicketSchema = new mongoose.Schema({
+  sender:{
+    type:String,
+    enum:[
+      "customer",
+      "ai",
+      "agent",
+      "admin"
+    ],
+    default:"customer"
+  },
 
-  // =========================
-  // CLIENT (STORE OWNER)
-  // =========================
+  message:{
+    type:String,
+    required:true
+  },
+
+  createdAt:{
+    type:Date,
+    default:Date.now
+  }
+
+},
+{
+  _id:false
+});
+
+// ======================================
+// TICKET SCHEMA
+// ======================================
+
+const TicketSchema =
+new mongoose.Schema({
+
+  // ====================================
+  // CLIENT
+  // ====================================
 
   clientId:{
     type:mongoose.Schema.Types.ObjectId,
     ref:"Client",
+    required:true,
     index:true
   },
 
-  // =========================
+  // ====================================
   // CUSTOMER
-  // =========================
+  // ====================================
 
   customerName:{
     type:String,
@@ -28,6 +69,7 @@ const TicketSchema = new mongoose.Schema({
   customerEmail:{
     type:String,
     default:"",
+    lowercase:true,
     index:true
   },
 
@@ -36,9 +78,9 @@ const TicketSchema = new mongoose.Schema({
     default:""
   },
 
-  // =========================
-  // SUBJECT
-  // =========================
+  // ====================================
+  // TICKET
+  // ====================================
 
   subject:{
     type:String,
@@ -50,23 +92,15 @@ const TicketSchema = new mongoose.Schema({
     default:""
   },
 
-  // =========================
-  // ORDER LINK
-  // =========================
-
-  orderId:{
-    type:mongoose.Schema.Types.ObjectId,
-    ref:"Order"
-  },
-
   orderNumber:{
     type:String,
-    default:""
+    default:"",
+    index:true
   },
 
-  // =========================
+  // ====================================
   // STATUS
-  // =========================
+  // ====================================
 
   status:{
     type:String,
@@ -80,10 +114,6 @@ const TicketSchema = new mongoose.Schema({
     index:true
   },
 
-  // =========================
-  // PRIORITY
-  // =========================
-
   priority:{
     type:String,
     enum:[
@@ -95,9 +125,9 @@ const TicketSchema = new mongoose.Schema({
     default:"medium"
   },
 
-  // =========================
-  // AI SUPPORT
-  // =========================
+  // ====================================
+  // AI
+  // ====================================
 
   aiHandled:{
     type:Boolean,
@@ -114,70 +144,63 @@ const TicketSchema = new mongoose.Schema({
     default:false
   },
 
-  // =========================
-  // CUSTOMER VALUE
-  // =========================
+  // ====================================
+  // CONVERSATION
+  // ====================================
 
-  isVIP:{
-    type:Boolean,
-    default:false
+  messages:{
+    type:[MessageSchema],
+    default:[]
   },
 
-  totalCustomerSpend:{
-    type:Number,
-    default:0
+  // ====================================
+  // ASSIGNMENT
+  // ====================================
+
+  assignedTo:{
+    type:String,
+    default:""
   },
 
-  totalOrders:{
-    type:Number,
-    default:0
-  },
-
-  // =========================
-  // CONVERSATION THREAD
-  // =========================
-
-  messages:[
-
-    {
-      sender:{
-        type:String,
-        enum:[
-          "customer",
-          "ai",
-          "admin"
-        ],
-        default:"customer"
-      },
-
-      message:{
-        type:String,
-        default:""
-      },
-
-      createdAt:{
-        type:Date,
-        default:Date.now
-      }
-    }
-
-  ],
-
-  // =========================
-  // RESOLUTION
-  // =========================
-
-  resolvedAt:{
-    type:Date
-  },
+  // ====================================
+  // DATES
+  // ====================================
 
   closedAt:{
-    type:Date
+    type:Date,
+    default:null
   }
 
-},{
-  timestamps:true
+},
+{
+  timestamps:true,
+  versionKey:false
 });
+
+// ======================================
+// INDEXES
+// ======================================
+
+TicketSchema.index({
+  clientId:1,
+  status:1
+});
+
+TicketSchema.index({
+  customerEmail:1
+});
+
+TicketSchema.index({
+  orderNumber:1
+});
+
+TicketSchema.index({
+  createdAt:-1
+});
+
+// ======================================
+// EXPORT
+// ======================================
 
 module.exports =
 mongoose.model(
