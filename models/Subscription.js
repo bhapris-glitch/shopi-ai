@@ -1,60 +1,197 @@
 // ======================================
 // models/Subscription.js
-// Layboka AI Stripe Subscription
+// Layboka AI Subscription Model
+// billing, Stripe, Razorpay, renewals, 
+// cancel-anytime, and lock/unlock system.
+// Updated 04 Jun 2026
+// ======================================
+const mongoose = require("mongoose");
+
+// ======================================
+// SUBSCRIPTION SCHEMA
 // ======================================
 
-const mongoose =
-require("mongoose");
-
-const subscriptionSchema =
+const SubscriptionSchema =
 new mongoose.Schema({
+
+  // ====================================
+  // CLIENT
+  // ====================================
 
   clientId:{
     type:mongoose.Schema.Types.ObjectId,
-    ref:"Client"
+    ref:"Client",
+    required:true,
+    index:true
   },
 
-  store:String,
-
-  customerId:String,
-
-  subscriptionId:String,
+  // ====================================
+  // PLAN
+  // ====================================
 
   plan:{
     type:String,
-    default:"starter"
+    enum:[
+      "free",
+      "starter",
+      "growth",
+      "premium"
+    ],
+    required:true
   },
+
+  // ====================================
+  // PROVIDER
+  // ====================================
+
+  provider:{
+    type:String,
+    enum:[
+      "stripe",
+      "razorpay",
+      "manual"
+    ],
+    default:"manual"
+  },
+
+  // ====================================
+  // STRIPE
+  // ====================================
+
+  customerId:{
+    type:String,
+    default:"",
+    index:true
+  },
+
+  subscriptionId:{
+    type:String,
+    default:"",
+    unique:true,
+    sparse:true,
+    index:true
+  },
+
+  paymentId:{
+    type:String,
+    default:""
+  },
+
+  // ====================================
+  // STATUS
+  // ====================================
 
   status:{
     type:String,
-    default:"inactive"
+    enum:[
+      "trial",
+      "active",
+      "past_due",
+      "paused",
+      "cancelled",
+      "expired"
+    ],
+    default:"trial",
+    index:true
   },
 
-  amount:Number,
+  paid:{
+    type:Boolean,
+    default:false
+  },
+
+  autoRenew:{
+    type:Boolean,
+    default:true
+  },
+
+  locked:{
+    type:Boolean,
+    default:false
+  },
+
+  // ====================================
+  // BILLING
+  // ====================================
+
+  amount:{
+    type:Number,
+    default:0
+  },
 
   currency:{
     type:String,
     default:"USD"
   },
 
-  interval:{
+  billingCycle:{
     type:String,
-    default:"month"
+    enum:[
+      "monthly",
+      "yearly"
+    ],
+    default:"monthly"
   },
 
-  renewDate:Date,
+  // ====================================
+  // DATES
+  // ====================================
 
-  cancelAtPeriodEnd:{
-    type:Boolean,
-    default:false
+  startedAt:{
+    type:Date,
+    default:Date.now
+  },
+
+  renewalDate:{
+    type:Date,
+    default:null,
+    index:true
+  },
+
+  cancelledAt:{
+    type:Date,
+    default:null
+  },
+
+  expiresAt:{
+    type:Date,
+    default:null
+  },
+
+  // ====================================
+  // METADATA
+  // ====================================
+
+  notes:{
+    type:String,
+    default:""
   }
 
-},{
-  timestamps:true
+},
+{
+  timestamps:true,
+  versionKey:false
 });
+
+// ======================================
+// INDEXES
+// ======================================
+
+SubscriptionSchema.index({
+  clientId:1,
+  status:1
+});
+
+SubscriptionSchema.index({
+  renewalDate:1
+});
+
+// ======================================
+// EXPORT
+// ======================================
 
 module.exports =
 mongoose.model(
   "Subscription",
-  subscriptionSchema
+  SubscriptionSchema
 );
