@@ -1,343 +1,174 @@
-// ==========================================
+// ======================================
 // models/Referral.js
-// Layboka AI Referral System
-// Production Ready
-// ==========================================
+// Layboka AI Referral Model
+// Updated 04 Jun 2026
+// ======================================
+const mongoose =
+require("mongoose");
 
-const mongoose = require("mongoose");
+// ======================================
+// REFERRAL SCHEMA
+// ======================================
 
-const ReferralSchema = new mongoose.Schema({
+const ReferralSchema =
+new mongoose.Schema({
 
-  // ==========================================
+  // ====================================
   // REFERRER
-  // ==========================================
+  // ====================================
 
-  referrerClientId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Client",
-    required: true,
-    index: true
+  referrerClientId:{
+    type:mongoose.Schema.Types.ObjectId,
+    ref:"Client",
+    required:true,
+    index:true
   },
 
-  referrerStore: {
-    type: String,
-    default: ""
+  // ====================================
+  // REFERRED CLIENT
+  // ====================================
+
+  referredClientId:{
+    type:mongoose.Schema.Types.ObjectId,
+    ref:"Client",
+    default:null,
+    unique:true,
+    sparse:true,
+    index:true
   },
 
-  referrerPlan: {
-    type: String,
-    enum: [
-      "free",
-      "starter",
-      "growth",
-      "premium"
-    ],
-    default: "free"
+  referredStore:{
+    type:String,
+    default:"",
+    index:true
   },
 
-  // ==========================================
-  // REFERRED USER
-  // ==========================================
-
-  referredClientId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Client",
-    default: null
+  referredPlan:{
+    type:String,
+    default:"starter"
   },
 
-  referredStore: {
-    type: String,
-    default: ""
-  },
-
-  referredEmail: {
-    type: String,
-    default: ""
-  },
-
-  referredPlan: {
-    type: String,
-    enum: [
-      "free",
-      "starter",
-      "growth",
-      "premium"
-    ],
-    default: "free"
-  },
-
-  // ==========================================
+  // ====================================
   // REFERRAL CODE
-  // ==========================================
+  // ====================================
 
-  referralCode: {
-    type: String,
-    required: true,
-    index: true,
-    uppercase: true,
-    trim: true
+  referralCode:{
+    type:String,
+    required:true,
+    index:true
   },
 
-  campaignCode: {
-    type: String,
-    default: ""
+  // ====================================
+  // REWARD
+  // ====================================
+
+  amount:{
+    type:Number,
+    default:0
   },
 
-  /*
-    Examples:
+  rewardType:{
+    type:String,
+    enum:[
+      "cash",
+      "credit",
+      "free_month",
+      "upgrade"
+    ],
+    default:"credit"
+  },
 
-    LAY2R40
-    LAY2R30
-    LAY2R40P
+  rewarded:{
+    type:Boolean,
+    default:false
+  },
 
-  */
+  rewardClaimed:{
+    type:Boolean,
+    default:false
+  },
 
-  // ==========================================
+  rewardClaimedAt:{
+    type:Date,
+    default:null
+  },
+
+  // ====================================
+  // PAYMENT
+  // ====================================
+
+  paid:{
+    type:Boolean,
+    default:false
+  },
+
+  paidAt:{
+    type:Date,
+    default:null
+  },
+
+  // ====================================
   // STATUS
-  // ==========================================
+  // ====================================
 
-  status: {
-    type: String,
-    enum: [
+  status:{
+    type:String,
+    enum:[
       "pending",
-      "registered",
-      "paid",
       "qualified",
       "rewarded",
-      "rejected",
-      "expired"
+      "rejected"
     ],
-    default: "pending"
+    default:"pending",
+    index:true
   },
 
-  // ==========================================
-  // PAYMENT
-  // ==========================================
+  // ====================================
+  // FRAUD PROTECTION
+  // ====================================
 
-  paid: {
-    type: Boolean,
-    default: false
+  selfReferralBlocked:{
+    type:Boolean,
+    default:false
   },
 
-  paidAt: {
-    type: Date,
-    default: null
-  },
-
-  paymentProvider: {
-    type: String,
-    default: ""
-  },
-
-  paymentAmount: {
-    type: Number,
-    default: 0
-  },
-
-  paymentCurrency: {
-    type: String,
-    default: "USD"
-  },
-
-  // ==========================================
-  // REWARD
-  // ==========================================
-
-  rewarded: {
-    type: Boolean,
-    default: false
-  },
-
-  rewardType: {
-    type: String,
-    default: ""
-  },
-
-  rewardValue: {
-    type: Number,
-    default: 0
-  },
-
-  rewardUnlocked: {
-    type: Boolean,
-    default: false
-  },
-
-  rewardUnlockedAt: {
-    type: Date,
-    default: null
-  },
-
-  rewardAppliedAt: {
-    type: Date,
-    default: null
-  },
-
-  rewardDescription: {
-    type: String,
-    default: ""
-  },
-
-  /*
-      Examples:
-
-      Starter:
-      2 Months Free
-
-      Growth:
-      1 Month Premium
-
-      Premium:
-      Next Month Free
-
-  */
-
-  // ==========================================
-  // VALIDATION
-  // ==========================================
-
-  qualified: {
-    type: Boolean,
-    default: false
-  },
-
-  qualifiedAt: {
-    type: Date,
-    default: null
-  },
-
-  fraudChecked: {
-    type: Boolean,
-    default: false
-  },
-
-  fraudFlagged: {
-    type: Boolean,
-    default: false
-  },
-
-  fraudReason: {
-    type: String,
-    default: ""
-  },
-
-  // ==========================================
-  // REFERRAL WINDOW
-  // ==========================================
-
-  referralWindowDays: {
-    type: Number,
-    default: 40
-  },
-
-  expiresAt: {
-    type: Date,
-    default: null
-  },
-
-  // ==========================================
-  // TRACKING
-  // ==========================================
-
-  ipAddress: {
-    type: String,
-    default: ""
-  },
-
-  country: {
-    type: String,
-    default: ""
-  },
-
-  device: {
-    type: String,
-    default: ""
-  },
-
-  source: {
-    type: String,
-    default: "direct"
-  },
-
-  utmSource: {
-    type: String,
-    default: ""
-  },
-
-  utmCampaign: {
-    type: String,
-    default: ""
-  },
-
-  // ==========================================
-  // NOTES
-  // ==========================================
-
-  notes: {
-    type: String,
-    default: ""
-  },
-
-  adminNotes: {
-    type: String,
-    default: ""
-  },
-
-  // ==========================================
-  // TIMESTAMPS
-  // ==========================================
-
-  createdAt: {
-    type: Date,
-    default: Date.now,
-    index: true
-  },
-
-  updatedAt: {
-    type: Date,
-    default: Date.now
+  duplicateBlocked:{
+    type:Boolean,
+    default:false
   }
 
+},
+{
+  timestamps:true,
+  versionKey:false
 });
 
-// ==========================================
-// AUTO UPDATE TIMESTAMP
-// ==========================================
-
-ReferralSchema.pre("save", function(next){
-
-  this.updatedAt = new Date();
-
-  next();
-
-});
-
-// ==========================================
+// ======================================
 // INDEXES
-// ==========================================
+// ======================================
 
 ReferralSchema.index({
-  referrerClientId: 1,
-  createdAt: -1
+  referrerClientId:1
 });
 
 ReferralSchema.index({
-  referralCode: 1
+  referralCode:1
 });
 
 ReferralSchema.index({
-  status: 1
+  referredStore:1
 });
 
 ReferralSchema.index({
-  rewarded: 1
+  status:1
 });
 
-// ==========================================
+// ======================================
 // EXPORT
-// ==========================================
+// ======================================
 
-module.exports = mongoose.model(
+module.exports =
+mongoose.model(
   "Referral",
   ReferralSchema
 );
