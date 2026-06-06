@@ -106,16 +106,19 @@ ${customerName}
 
     if(cart){
 
-      systemPrompt += `
+  const cartSummary = {
+    items: cart.items,
+    total: cart.total
+  };
 
-const cartSummary = {
-  items: cart.items,
-  total: cart.total
-};
+  systemPrompt += `
 
-';
+Customer Cart:
+${JSON.stringify(cartSummary)}
 
-    }
+`;
+
+}
 
     // ==================================
     // PRODUCT DATA
@@ -123,14 +126,23 @@ const cartSummary = {
 
     if(products){
 
-      systemPrompt += `
+  const relevantProducts =
+    products
+      .slice(0,10)
+      .map(p => ({
+        title: p.title,
+        price: p.price,
+        url: p.url
+      }));
+
+  systemPrompt += `
 
 Store Products:
 ${JSON.stringify(relevantProducts)}
 
 `;
 
-    }
+}
 
     // ==================================
     // OPENAI REQUEST
@@ -198,6 +210,9 @@ ${JSON.stringify(relevantProducts)}
     `OpenAI API Error: ${response.status}`
   );
 }
+
+const data =
+  await response.json();
     // ==================================
     // AI TEXT
     // ==================================
