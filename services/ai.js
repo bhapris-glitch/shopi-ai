@@ -147,7 +147,13 @@ ${JSON.stringify(relevantProducts)}
     // ==================================
     // OPENAI REQUEST
     // ==================================
+if(!process.env.OPENAI_API_KEY){
 
+  throw new Error(
+    "OPENAI_API_KEY missing"
+  );
+
+}
     const response =
       await fetch(
 
@@ -200,18 +206,16 @@ ${JSON.stringify(relevantProducts)}
         }
 
       );
-
-    // ==================================
-    // DATA
-    // ==================================
-
-    if(!process.env.OPENAI_API_KEY){
+if(!response.ok){
 
   throw new Error(
-    "OPENAI_API_KEY missing"
+    `OpenAI API Error: ${response.status}`
   );
 
 }
+    // ==================================
+    // DATA
+    // ==================================
 
 const data =
   await response.json();
