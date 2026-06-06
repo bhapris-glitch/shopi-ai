@@ -205,10 +205,12 @@ ${JSON.stringify(relevantProducts)}
     // DATA
     // ==================================
 
-    if(!response.ok){
+    if(!process.env.OPENAI_API_KEY){
+
   throw new Error(
-    `OpenAI API Error: ${response.status}`
+    "OPENAI_API_KEY missing"
   );
+
 }
 
 const data =
@@ -307,10 +309,10 @@ border:1px solid rgba(255,255,255,0.06);
 
   }catch(err){
 
-    console.log(
-      "AI SERVICE ERROR:",
-      err
-    );
+    console.error(
+  "AI SERVICE ERROR:",
+  err.message
+);
 
     return {
 
