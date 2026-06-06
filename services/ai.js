@@ -108,10 +108,12 @@ ${customerName}
 
       systemPrompt += `
 
-Customer Cart:
-${JSON.stringify(cart)}
+const cartSummary = {
+  items: cart.items,
+  total: cart.total
+};
 
-`;
+';
 
     }
 
@@ -124,7 +126,7 @@ ${JSON.stringify(cart)}
       systemPrompt += `
 
 Store Products:
-${JSON.stringify(products)}
+${JSON.stringify(relevantProducts)}
 
 `;
 
@@ -179,7 +181,7 @@ ${JSON.stringify(products)}
 
             temperature:0.7,
 
-            max_tokens:250
+            max_tokens:300
 
           })
 
@@ -191,9 +193,11 @@ ${JSON.stringify(products)}
     // DATA
     // ==================================
 
-    const data =
-      await response.json();
-
+    if(!response.ok){
+  throw new Error(
+    `OpenAI API Error: ${response.status}`
+  );
+}
     // ==================================
     // AI TEXT
     // ==================================
