@@ -128,7 +128,11 @@ app.use(compression());
 app.use(morgan("tiny"));
 
 app.use(cors({
-  origin: "*",
+  origin: [
+  "https://layboka.com",
+  "https://www.layboka.com",
+  "https://app.layboka.com"
+]
   credentials: true
 }));
 
