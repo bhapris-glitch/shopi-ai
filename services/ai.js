@@ -303,7 +303,9 @@ async function generateAIResponse(options = {}) {
     const systemPrompt = buildFullContext(contextOptions);
 
     // Get conversation history
-    const conversationHistory = conversation?.messages || [];
+    const conversationHistory =
+  (conversation?.messages || [])
+    .slice(-20);
 
     // Call OpenAI
     const aiResponse = await callOpenAI(
