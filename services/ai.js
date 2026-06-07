@@ -167,9 +167,9 @@ Checkout Closer Rules:
 function buildUpsellSuggestions(products = []) {
   if (!products.length) return '';
 
-  const upsells = products
-    .sort((a, b) => (b.upsellScore || 0) - (a.upsellScore || 0))
-    .slice(0, 5);
+  const upsells = [...products]
+  .sort((a, b) => (b.upsellScore || 0) - (a.upsellScore || 0))
+  .slice(0, 5);
 
   let text = `
 Upsell Products:
@@ -258,8 +258,10 @@ async function callOpenAI(systemPrompt, userMessage, conversationHistory = []) {
     const data = await response.json();
     return data.choices[0].message.content;
   } catch (error) {
-    console.error('OpenAI API call failed:', error);
-    throw error;
+    console.error(
+  'OpenAI API call failed:',
+  error.message
+);
   }
 }
 
