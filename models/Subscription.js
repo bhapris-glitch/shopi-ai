@@ -3,6 +3,7 @@
 // Layboka AI Subscription Model
 // Production Ready
 // USD Base Currency
+// Updated 7 Jun, 2026
 // ======================================
 
 const mongoose = require("mongoose");
