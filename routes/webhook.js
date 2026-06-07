@@ -1,3 +1,9 @@
+// ======================================
+// routes/webhook.js
+// Production Webhook System
+// Razorpay + Auto Renewal + Lock System
+// Updated 7Jun 2026
+// ======================================
 const express = require("express");
 const crypto = require("crypto");
 const Stripe = require("stripe");
