@@ -40,6 +40,10 @@
 "razorpay": "^2.9.4",
 "stripe": "^14.25.0",
 "twilio": "^5.0.4"
+"helmet": "^8.0.0",
+"compression": "^1.8.0",
+"morgan": "^1.10.0",
+"multer": "^2.0.0"
 },
 
 "devDependencies": {
