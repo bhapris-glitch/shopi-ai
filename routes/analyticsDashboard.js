@@ -83,12 +83,11 @@ let carts = 0;
       revenue,
 
       conversionRate:
-      sales > 0
-      ? (
-          sales /
-          Math.max(chats,1)
-        ) * 100
-      : 0
+chats > 0
+? (
+    sales / chats
+  ) * 100
+: 0
 
     }
 
