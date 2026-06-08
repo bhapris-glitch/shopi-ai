@@ -21,6 +21,7 @@ require("../models/Analytics");
 
 router.get(
 "/dashboard-analytics/:clientId",
+adminAuth,
 async(req,res)=>{
 
 try{
