@@ -27,23 +27,32 @@ async(req,res)=>{
 try{
 
   const {
+  clientId
+} = req.params;
+
+const client =
+  await Client.findById(
     clientId
-  } = req.params;
+  );
 
-  const client =
-    await Client.findById(
-      clientId
-    );
+if(!client){
 
-  const analytics =
-    await Analytics.find({
-      clientId
-    });
+  return res.status(404)
+  .json({
+    error:"Client not found"
+  });
 
-  let chats = 0;
-  let sales = 0;
-  let revenue = 0;
-  let carts = 0;
+}
+
+const analytics =
+  await Analytics.find({
+    clientId
+  });
+
+let chats = 0;
+let sales = 0;
+let revenue = 0;
+let carts = 0;
 
   analytics.forEach((a)=>{
 
