@@ -51,114 +51,114 @@ const PRICE_IDS = {
 // ======================================
 
 router.post(
-"/create-subscription",
-async(req,res)=>{
+  "/create-subscription",
+  async (req, res) => {
 
-try{
+    try {
 
-  const {
-    plan,
-    clientId,
-    email
-  } = req.body;
+      const {
+        plan,
+        clientId,
+        email
+      } = req.body;
 
-  const client =
-    await Client.findById(
-      clientId
-    );
+      const client =
+        await Client.findById(
+          clientId
+        );
 
-  if(!client){
+      if (!client) {
 
-    return res.status(404)
-    .json({
-      error:"Client not found"
-    });
+        return res.status(404)
+        .json({
+          error: "Client not found"
+        });
 
-  }
+      }
 
-  const session =
+      // ==========================
+      // VALIDATE PLAN
+      // ==========================
 
-    await stripe
-    .checkout.sessions.create({
+      if (!PRICE_IDS[plan]) {
 
-      payment_method_types:[
-        "card"
-      ],
+        return res.status(400)
+        .json({
+          error: "Invalid plan"
+        });
 
-      mode:"subscription",
+      }
 
-      customer_email:email,
+      // ==========================
+      // CREATE STRIPE SESSION
+      // ==========================
 
-      line_items:[{
+      const session =
 
-        if(!PRICE_IDS[plan]){
+        await stripe
+        .checkout.sessions.create({
 
-if(!PRICE_IDS[plan]){
+          payment_method_types: [
+            "card"
+          ],
 
-  return res.status(400)
-  .json({
-    error:"Invalid plan"
-  });
+          mode: "subscription",
 
-}
+          customer_email: email,
 
-const session =
+          line_items: [
 
-  await stripe
-  .checkout.sessions.create({
+            {
+              price:
+                PRICE_IDS[plan],
 
-    payment_method_types:[
-      "card"
-    ],
+              quantity: 1
+            }
 
-    mode:"subscription",
+          ],
 
-    customer_email:email,
-
-    line_items:[{
-
-      price:
-        PRICE_IDS[plan],
-
-      quantity:1
-
-    }],
-
-    success_url:
+          success_url:
 `${process.env.BASE_URL}/dashboard.html?success=true`,
 
-    cancel_url:
+          cancel_url:
 `${process.env.BASE_URL}/pricing.html`,
 
-    metadata:{
-      clientId,
-      plan
+          metadata: {
+
+            clientId,
+
+            plan
+
+          }
+
+        });
+
+      return res.json({
+
+        success: true,
+
+        url: session.url
+
+      });
+
+    } catch (err) {
+
+      console.error(
+        "STRIPE BILLING ERROR:",
+        err.message
+      );
+
+      return res.status(500)
+      .json({
+
+        error: "Stripe failed"
+
+      });
+
     }
 
-  });
-  res.json({
-
-    success:true,
-
-    url:session.url
-
-  });
-
-}catch(err){
-
-  console.error(
-  "STRIPE BILLING ERROR:",
-  err.message
+  }
 );
-  res.status(500).json({
-
-    error:"Stripe failed"
-
-  });
-
-}
-
-});
 
 // ======================================
 // WEBHOOK
