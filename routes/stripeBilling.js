@@ -90,8 +90,17 @@ try{
 
       line_items:[{
 
-        price:
-          PRICE_IDS[plan],
+        if(!PRICE_IDS[plan]){
+
+  return res.status(400)
+  .json({
+    error:"Invalid plan"
+  });
+
+}
+
+price:
+  PRICE_IDS[plan],
 
         quantity:1
 
@@ -120,8 +129,10 @@ try{
 
 }catch(err){
 
-  console.log(err);
-
+  console.error(
+  "STRIPE BILLING ERROR:",
+  err.message
+);
   res.status(500).json({
 
     error:"Stripe failed"
