@@ -149,7 +149,7 @@ app.use(express.urlencoded({
 
 app.use(express.static("public"));
 
-app.use(globalLimiter)
+app.use(globalLimiter);
 
 // ======================================
 // WEBHOOK RAW BODY
