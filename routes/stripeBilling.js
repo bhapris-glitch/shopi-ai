@@ -1,6 +1,7 @@
 // ======================================
 // routes/stripeBilling.js
 // Stripe Recurring Billing
+// Updated Jun 8, 2026
 // ======================================
 
 const express =
@@ -92,6 +93,8 @@ try{
 
         if(!PRICE_IDS[plan]){
 
+if(!PRICE_IDS[plan]){
+
   return res.status(400)
   .json({
     error:"Invalid plan"
@@ -99,26 +102,40 @@ try{
 
 }
 
-price:
-  PRICE_IDS[plan],
+const session =
 
-        quantity:1
+  await stripe
+  .checkout.sessions.create({
 
-      }],
+    payment_method_types:[
+      "card"
+    ],
 
-      success_url:
+    mode:"subscription",
+
+    customer_email:email,
+
+    line_items:[{
+
+      price:
+        PRICE_IDS[plan],
+
+      quantity:1
+
+    }],
+
+    success_url:
 `${process.env.BASE_URL}/dashboard.html?success=true`,
 
-      cancel_url:
+    cancel_url:
 `${process.env.BASE_URL}/pricing.html`,
 
-      metadata:{
-        clientId,
-        plan
-      }
+    metadata:{
+      clientId,
+      plan
+    }
 
-    });
-
+  });
   res.json({
 
     success:true,
@@ -267,7 +284,10 @@ try{
 
 }catch(err){
 
-  console.log(err);
+  console.error(
+  "STRIPE WEBHOOK ERROR:",
+  err.message
+);
 
   res.status(400).send(
     `Webhook Error: ${err.message}`
