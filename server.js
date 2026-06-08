@@ -40,14 +40,16 @@ app.set("trust proxy", 1);
 
 const auth = require("./middleware/auth");
 const adminAuth = require("./middleware/adminAuth");
-const rateLimiter = require("./middleware/rateLimiter");
+const {
+  globalLimiter
+} = require("./middleware/rateLimiter");
 const verifyWebhook = require("./middleware/verifyWebhook");
 
 // ======================================
 // UTILS
 // ======================================
 
-const { generateToken } = require("./utils/jwt");
+const { createToken } = require("./utils/jwt");
 
 const {
   detectCountry
@@ -129,10 +131,10 @@ app.use(morgan("tiny"));
 
 app.use(cors({
   origin: [
-  "https://layboka.com",
-  "https://www.layboka.com",
-  "https://app.layboka.com"
-]
+    "https://layboka.com",
+    "https://www.layboka.com",
+    "https://app.layboka.com"
+  ],
   credentials: true
 }));
 
@@ -147,7 +149,7 @@ app.use(express.urlencoded({
 
 app.use(express.static("public"));
 
-app.use(rateLimiter);
+app.use(globalLimiter)
 
 // ======================================
 // WEBHOOK RAW BODY
@@ -250,11 +252,7 @@ if (
 // ======================================
 
 mongoose.connect(
-  process.env.MONGO_URI,
-  {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-  }
+  process.env.MONGO_URI
 )
 .then(() => {
   console.log("✅ MongoDB Connected");
@@ -330,7 +328,7 @@ app.post("/login", async (req, res) => {
       });
     }
 
-    const token = generateToken({
+    const token = createToken({
       id: client._id,
       store: client.store,
       plan: client.plan
