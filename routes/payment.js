@@ -45,20 +45,37 @@ router.post("/create-order", async (req,res)=>{
       });
 
     }
-
     // =========================
-    // PLAN PRICE
-    // =========================
+// PLAN PRICE
+// =========================
 
-    let amount = 79900;
+let amount;
 
-    if(plan === "starter"){
-      amount = 39900;
-    }
+switch(plan){
 
-    if(plan === "premium"){
-      amount = 79900;
-    }
+  case "starter":
+    amount = 2500; // $25
+    break;
+
+  case "growth":
+    amount = 5900; // $59
+    break;
+
+  case "premium":
+    amount = 12900; // $129
+    break;
+
+  default:
+
+    return res.status(400).json({
+
+      success:false,
+
+      message:"Invalid plan"
+
+    });
+
+}
 
     // =========================
     // CREATE ORDER
@@ -193,7 +210,7 @@ router.post("/verify-payment", async (req,res)=>{
 
         renewalDate:
         Date.now() +
-        (28 * 24 * 60 * 60 * 1000),
+        (30 * 24 * 60 * 60 * 1000),
 
         locked:false
 
