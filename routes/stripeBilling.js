@@ -33,16 +33,13 @@ Stripe(
 const PRICE_IDS = {
 
   starter:
-    process.env
-    .STRIPE_STARTER_PRICE,
+    process.env.STRIPE_STARTER_PRICE,
 
   growth:
-    process.env
-    .STRIPE_GROWTH_PRICE,
+    process.env.STRIPE_GROWTH_PRICE,
 
-  scale:
-    process.env
-    .STRIPE_SCALE_PRICE
+  premium:
+    process.env.STRIPE_PREMIUM_PRICE
 
 };
 
