@@ -727,3 +727,300 @@ router.post(
 
   }
 );
+
+
+// ======================================
+// AUTO RENEW CHECK - Part 4.
+// Used by Cron Job
+// ======================================
+
+router.post(
+  "/auto-renew-check",
+  async (req, res) => {
+
+    try {
+
+      const subscriptions =
+        await Subscription.find({
+
+          status: {
+            $in: [
+              "active",
+              "past_due"
+            ]
+          }
+
+        });
+
+      let lockedCount = 0;
+
+      for (const sub of subscriptions) {
+
+        // ============================
+        // EXPIRED
+        // ============================
+
+        if (
+
+          sub.expiresAt &&
+
+          new Date(sub.expiresAt) <
+          new Date()
+
+        ) {
+
+          sub.locked = true;
+
+          sub.status = "expired";
+
+          await sub.save();
+
+          await Client.findByIdAndUpdate(
+
+            sub.clientId,
+
+            {
+
+              paid: false,
+
+              locked: true,
+
+              status: "expired"
+
+            }
+
+          );
+
+          lockedCount++;
+
+        }
+
+      }
+
+      return res.json({
+
+        success: true,
+
+        lockedAccounts:
+          lockedCount
+
+      });
+
+    } catch (err) {
+
+      console.error(
+        "Auto Renew Error:",
+        err
+      );
+
+      res.status(500).json({
+
+        success: false
+
+      });
+
+    }
+
+  }
+);
+
+// ======================================
+// ADMIN ACTIVATE SUBSCRIPTION
+// Enterprise / Manual Billing
+// ======================================
+
+router.post(
+  "/admin/activate",
+  async (req, res) => {
+
+    try {
+
+      const {
+
+        clientId,
+
+        plan = "premium",
+
+        months = 1
+
+      } = req.body;
+
+      const client =
+        await Client.findById(clientId);
+
+      if (!client) {
+
+        return res.status(404).json({
+
+          success: false,
+
+          message:
+            "Client not found"
+
+        });
+
+      }
+
+      let subscription =
+        await Subscription.findOne({
+
+          clientId
+
+        });
+
+      if (!subscription) {
+
+        subscription =
+          new Subscription({
+
+            clientId
+
+          });
+
+      }
+
+      const renewalDate =
+        new Date(
+          Date.now() +
+          months *
+          30 *
+          24 *
+          60 *
+          60 *
+          1000
+        );
+
+      subscription.plan =
+        plan;
+
+      subscription.provider =
+        "manual";
+
+      subscription.status =
+        "active";
+
+      subscription.paid =
+        true;
+
+      subscription.locked =
+        false;
+
+      subscription.autoRenew =
+        false;
+
+      subscription.renewalDate =
+        renewalDate;
+
+      subscription.expiresAt =
+        renewalDate;
+
+      await subscription.save();
+
+      await Client.findByIdAndUpdate(
+
+        clientId,
+
+        {
+
+          plan,
+
+          paid: true,
+
+          locked: false,
+
+          status: "active",
+
+          renewalDate
+
+        }
+
+      );
+
+      return res.json({
+
+        success: true,
+
+        message:
+          "Subscription activated"
+
+      });
+
+    } catch (err) {
+
+      console.error(err);
+
+      res.status(500).json({
+
+        success: false
+
+      });
+
+    }
+
+  }
+);
+
+// ======================================
+// SUBSCRIPTION STATS
+// Dashboard Billing Widget
+// ======================================
+
+router.get(
+  "/subscription-stats",
+  async (req, res) => {
+
+    try {
+
+      const active =
+        await Subscription.countDocuments({
+
+          status: "active"
+
+        });
+
+      const cancelled =
+        await Subscription.countDocuments({
+
+          status: "cancelled"
+
+        });
+
+      const expired =
+        await Subscription.countDocuments({
+
+          status: "expired"
+
+        });
+
+      return res.json({
+
+        success: true,
+
+        active,
+
+        cancelled,
+
+        expired
+
+      });
+
+    } catch (err) {
+
+      console.error(err);
+
+      res.status(500).json({
+
+        success: false
+
+      });
+
+    }
+
+  }
+);
+
+// ======================================
+// EXPORT
+// ======================================
+
+module.exports = router;
