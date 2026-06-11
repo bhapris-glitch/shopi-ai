@@ -1,7 +1,11 @@
 // ======================================
 // services/whatsapp.js
-// Production WhatsApp Service
-// Twilio + Shopify Recovery
+// Layboka AI WhatsApp Service
+// Part 1
+// Twilio Configuration
+// USD Market Ready
+// US • UK • Canada • Australia
+// Updated 2026
 // ======================================
 
 require("dotenv").config();
@@ -9,23 +13,43 @@ require("dotenv").config();
 const twilio = require("twilio");
 
 // ======================================
-// TWILIO CLIENT
+// TWILIO CONFIG
 // ======================================
 
-const client = twilio(
+const TWILIO_SID =
+  process.env.TWILIO_SID;
 
-  process.env.TWILIO_SID,
-  process.env.TWILIO_AUTH_TOKEN
+const TWILIO_AUTH_TOKEN =
+  process.env.TWILIO_AUTH_TOKEN;
 
-);
+const TWILIO_WHATSAPP_NUMBER =
+  process.env.TWILIO_WHATSAPP_NUMBER;
 
 // ======================================
-// SEND SIMPLE MESSAGE
+// CLIENT
 // ======================================
-// COMPATIBLE SEND WHATSAPP
-// Supports:
-// sendWhatsApp({to,message})
-// sendWhatsApp({phone,message})
+
+let client = null;
+
+if (
+
+  TWILIO_SID &&
+  TWILIO_AUTH_TOKEN
+
+){
+
+  client = twilio(
+
+    TWILIO_SID,
+    TWILIO_AUTH_TOKEN
+
+  );
+
+}
+
+// ======================================
+// SEND WHATSAPP
+// Universal Sender
 // ======================================
 
 async function sendWhatsApp({
@@ -38,7 +62,16 @@ async function sendWhatsApp({
 
   try{
 
-    const recipient = to || phone;
+    if(!client){
+
+      throw new Error(
+        "Twilio not configured"
+      );
+
+    }
+
+    const recipient =
+      to || phone;
 
     if(!recipient){
 
@@ -46,7 +79,8 @@ async function sendWhatsApp({
 
         success:false,
 
-        error:"Phone number missing"
+        error:
+        "Recipient missing"
 
       };
 
@@ -56,40 +90,49 @@ async function sendWhatsApp({
       await client.messages.create({
 
         from:
-          `whatsapp:${process.env.TWILIO_WHATSAPP_NUMBER}`,
+          `whatsapp:${TWILIO_WHATSAPP_NUMBER}`,
 
         to:
           `whatsapp:${recipient}`,
 
-        body: message
+        body:
+          message
 
       });
 
     console.log(
+
       "✅ WhatsApp Sent:",
+
       response.sid
+
     );
 
     return {
 
       success:true,
 
-      sid:response.sid
+      sid:
+        response.sid
 
     };
 
   }catch(err){
 
     console.log(
+
       "❌ WhatsApp Error:",
+
       err.message
+
     );
 
     return {
 
       success:false,
 
-      error:err.message
+      error:
+        err.message
 
     };
 
@@ -98,8 +141,132 @@ async function sendWhatsApp({
 }
 
 // ======================================
-// RECOVERY WRAPPER
-// Used by abandonedCartCron.js
+// SEND TEMPLATE
+// Reusable Message Builder
+// ======================================
+
+async function sendWhatsAppTemplate({
+
+  phone,
+  title,
+  body,
+  footer
+
+}){
+
+  try{
+
+    const message = `
+
+${title || ""}
+
+${body || ""}
+
+${footer || "— Layboka AI"}
+
+`;
+
+    return await sendWhatsApp({
+
+      phone,
+
+      message
+
+    });
+
+  }catch(err){
+
+    console.log(
+
+      "Template Error:",
+
+      err.message
+
+    );
+
+    return {
+
+      success:false
+
+    };
+
+  }
+
+}
+
+// ======================================
+// PART 2
+// ======================================
+// CART RECOVERY
+// Shopify Recovery Message
+// ======================================
+
+async function sendCartRecovery({
+
+  phone,
+  customerName,
+  checkoutUrl,
+  productTitle,
+  discountCode
+
+}){
+
+  try{
+
+    const message = `
+
+🛒 Hi ${customerName || "there"}!
+
+You left:
+
+${productTitle || "items"}
+
+in your cart.
+
+${discountCode
+? `🎁 Discount Code: ${discountCode}`
+: ""}
+
+Complete checkout before
+stock runs out.
+
+👉 ${checkoutUrl}
+
+— ${process.env.BRAND_NAME || "Layboka AI"}
+
+`;
+
+    return await sendWhatsApp({
+
+      phone,
+
+      message
+
+    });
+
+  }catch(err){
+
+    console.log(
+
+      "Cart Recovery Error:",
+
+      err.message
+
+    );
+
+    return {
+
+      success:false
+
+    };
+
+  }
+
+}
+
+// ======================================
+// ADVANCED RECOVERY
+// Used By Abandoned Cart Cron
 // ======================================
 
 async function sendWhatsAppRecovery({
@@ -118,28 +285,34 @@ async function sendWhatsAppRecovery({
 
       ?
 
-`🛒 Hi ${name || "there"}!
+`🔥 Hi ${name || "there"}!
 
 Your cart at ${store}
-is still waiting.
+is still reserved.
 
-Complete checkout:
+This may be your final reminder.
+
+Complete checkout now:
 
 ${recoveryUrl}
 
-This reminder may expire soon.`
+— Team ${store}`
 
       :
 
 `🛒 Hi ${name || "there"}!
 
-You left items in your cart at ${store}.
+You left items in your cart at:
 
-Complete your checkout:
+${store}
+
+Complete checkout here:
 
 ${recoveryUrl}
 
-We'll save your cart for a limited time.`;
+We'll keep your cart ready for a limited time.
+
+— Team ${store}`;
 
     return await sendWhatsApp({
 
@@ -152,8 +325,11 @@ We'll save your cart for a limited time.`;
   }catch(err){
 
     console.log(
-      "Recovery WhatsApp Error:",
+
+      "Recovery Error:",
+
       err.message
+
     );
 
     return {
@@ -167,8 +343,146 @@ We'll save your cart for a limited time.`;
 }
 
 // ======================================
-// PAYMENT FAILED ALERT
-// Used by renewalCron.js
+// AI PRODUCT RECOMMENDATION
+// GPT Generated Upsell
+// ======================================
+
+async function sendAIRecommendation({
+
+  phone,
+  customerName,
+  productName,
+  productUrl,
+  price,
+  discount
+
+}){
+
+  try{
+
+    const message = `
+
+⭐ Hi ${customerName || "there"}!
+
+Based on what customers love,
+we recommend:
+
+${productName}
+
+${price
+? `💵 Price: $${price}`
+: ""}
+
+${discount
+? `🎁 Save ${discount}`
+: ""}
+
+View Product:
+
+${productUrl}
+
+— Layboka AI
+
+`;
+
+    return await sendWhatsApp({
+
+      phone,
+
+      message
+
+    });
+
+  }catch(err){
+
+    console.log(
+
+      "Recommendation Error:",
+
+      err.message
+
+    );
+
+    return {
+
+      success:false
+
+    };
+
+  }
+
+}
+
+// ======================================
+// PART 3
+// PAYMENT SUCCESS
+// Subscription Activated
+// ======================================
+
+async function sendPaymentSuccess({
+
+  phone,
+  customerName,
+  amount,
+  plan
+
+}){
+
+  try{
+
+    const message = `
+
+✅ Payment Successful
+
+Hi ${customerName || "there"}!
+
+Your payment has been received.
+
+💵 Amount:
+$${amount || 0}
+
+🚀 Plan:
+${plan || "Starter"}
+
+Your Layboka AI chatbot
+is now active.
+
+Thank you for choosing
+Layboka AI.
+
+`;
+
+    return await sendWhatsApp({
+
+      phone,
+
+      message
+
+    });
+
+  }catch(err){
+
+    console.log(
+
+      "Payment Success Error:",
+
+      err.message
+
+    );
+
+    return {
+
+      success:false
+
+    };
+
+  }
+
+}
+
+// ======================================
+// PAYMENT FAILED
+// Renewal Failure Alert
 // ======================================
 
 async function sendPaymentFailedWhatsApp({
@@ -187,6 +501,9 @@ async function sendPaymentFailedWhatsApp({
 Your Layboka AI subscription
 could not be renewed.
 
+Your chatbot may be paused
+until payment is updated.
+
 Renew now:
 
 ${paymentUrl}
@@ -204,88 +521,11 @@ ${paymentUrl}
   }catch(err){
 
     console.log(
-      "Payment Failed WhatsApp Error:",
+
+      "Payment Failed Error:",
+
       err.message
-    );
 
-    return {
-
-      success:false
-
-    };
-
-  }
-
-}
-// ======================================
-// SEND CART RECOVERY
-// ======================================
-
-async function sendCartRecovery({
-
-  phone,
-  customerName,
-  checkoutUrl,
-  productTitle,
-  discountCode
-
-}){
-
-  try{
-
-    const msg = `
-
-🛒 Hi ${customerName || "there"}!
-
-You left:
-
-${productTitle || "items"}
-
-in your cart.
-
-🔥 Complete checkout now before
-stock runs out.
-
-🎁 Discount:
-${discountCode || "SAVE10"}
-
-⚡ Checkout:
-${checkoutUrl}
-
-- Team Layboka
-
-`;
-
-    const response =
-      await client.messages.create({
-
-        from:
-          `whatsapp:${process.env.TWILIO_WHATSAPP_NUMBER}`,
-
-        to:
-          `whatsapp:${phone}`,
-
-        body: msg
-
-      });
-
-    console.log(
-      "✅ Recovery WhatsApp Sent"
-    );
-
-    return {
-
-      success:true,
-
-      sid:response.sid
-
-    };
-
-  }catch(err){
-
-    console.log(
-      "❌ Recovery WhatsApp Error:",
-      err.message
     );
 
     return {
@@ -299,152 +539,11 @@ ${checkoutUrl}
 }
 
 // ======================================
-// SEND ORDER UPDATE
+// RENEWAL REMINDER
+// Before Billing Date
 // ======================================
 
-async function sendOrderUpdate({
-
-  phone,
-  customerName,
-  orderId,
-  trackingUrl
-
-}){
-
-  try{
-
-    const msg = `
-
-📦 Hi ${customerName || "Customer"}!
-
-Your order #${orderId}
-has been shipped 🚚
-
-Track here:
-${trackingUrl}
-
-Thank you for shopping with us ❤️
-
-`;
-
-    const response =
-      await client.messages.create({
-
-        from:
-          `whatsapp:${process.env.TWILIO_WHATSAPP_NUMBER}`,
-
-        to:
-          `whatsapp:${phone}`,
-
-        body: msg
-
-      });
-
-    console.log(
-      "✅ Order Update Sent"
-    );
-
-    return {
-
-      success:true,
-
-      sid:response.sid
-
-    };
-
-  }catch(err){
-
-    console.log(
-      "❌ Order Update Error:",
-      err.message
-    );
-
-    return {
-
-      success:false
-
-    };
-
-  }
-
-}
-
-// ======================================
-// SEND PAYMENT SUCCESS
-// ======================================
-
-async function sendPaymentSuccess({
-
-  phone,
-  customerName,
-  amount
-
-}){
-
-  try{
-
-    const msg = `
-
-💳 Payment Successful
-
-Hi ${customerName || "there"} 👋
-
-Your payment of ₹${amount}
-was received successfully.
-
-✅ Your AI chatbot is now active.
-
-🚀 Welcome to Layboka AI
-
-`;
-
-    const response =
-      await client.messages.create({
-
-        from:
-          `whatsapp:${process.env.TWILIO_WHATSAPP_NUMBER}`,
-
-        to:
-          `whatsapp:${phone}`,
-
-        body: msg
-
-      });
-
-    console.log(
-      "✅ Payment WhatsApp Sent"
-    );
-
-    return {
-
-      success:true,
-
-      sid:response.sid
-
-    };
-
-  }catch(err){
-
-    console.log(
-      "❌ Payment WhatsApp Error:",
-      err.message
-    );
-
-    return {
-
-      success:false
-
-    };
-
-  }
-
-}
-
-// ======================================
-// SEND SUBSCRIPTION EXPIRY ALERT
-// ======================================
-
-async function sendSubscriptionExpiry({
+async function sendRenewalReminder({
 
   phone,
   customerName,
@@ -454,6 +553,69 @@ async function sendSubscriptionExpiry({
 }){
 
   try{
+
+    const message = `
+
+⏰ Subscription Reminder
+
+Hi ${customerName || "there"}!
+
+Your Layboka AI plan
+renews on:
+
+${renewDate}
+
+To avoid interruption,
+please ensure your payment
+method is active.
+
+Manage Subscription:
+
+${paymentUrl}
+
+`;
+
+    return await sendWhatsApp({
+
+      phone,
+
+      message
+
+    });
+
+  }catch(err){
+
+    console.log(
+
+      "Renewal Reminder Error:",
+
+      err.message
+
+    );
+
+    return {
+
+      success:false
+
+    };
+
+  }
+
+}
+
+// ======================================
+// PART 4
+// SEND SUBSCRIPTION EXPIRY ALERT
+// ======================================
+
+async function sendSubscriptionExpiry({
+  phone,
+  customerName,
+  renewDate,
+  paymentUrl
+}) {
+
+  try {
 
     const msg = `
 
@@ -467,39 +629,27 @@ renews on:
 ${renewDate}
 
 To avoid chatbot interruption,
-please ensure autopay is active.
+please ensure your payment method
+is active.
 
-💳 Renew Here:
+💳 Manage Subscription:
 ${paymentUrl}
+
+Thank you for using Layboka AI.
 
 `;
 
     const response =
-      await client.messages.create({
+      await sendWhatsApp({
 
-        from:
-          `whatsapp:${process.env.TWILIO_WHATSAPP_NUMBER}`,
-
-        to:
-          `whatsapp:${phone}`,
-
-        body: msg
+        phone,
+        message: msg
 
       });
 
-    console.log(
-      "✅ Renewal Reminder Sent"
-    );
+    return response;
 
-    return {
-
-      success:true,
-
-      sid:response.sid
-
-    };
-
-  }catch(err){
+  } catch (err) {
 
     console.log(
       "❌ Renewal Reminder Error:",
@@ -521,58 +671,43 @@ ${paymentUrl}
 // ======================================
 
 async function sendSalesPush({
-
   phone,
   customerName,
   product,
   checkoutUrl
+}) {
 
-}){
-
-  try{
+  try {
 
     const msg = `
 
 🔥 ${customerName || "Hey"}!
 
-Customers are buying:
+Customers are loving:
 
 ${product}
 
-right now.
+⚡ Limited stock available.
 
-⚡ Grab yours before stock ends.
+Secure yours now:
 
-👉 ${checkoutUrl}
+${checkoutUrl}
+
+- Team Layboka
 
 `;
 
     const response =
-      await client.messages.create({
+      await sendWhatsApp({
 
-        from:
-          `whatsapp:${process.env.TWILIO_WHATSAPP_NUMBER}`,
-
-        to:
-          `whatsapp:${phone}`,
-
-        body: msg
+        phone,
+        message: msg
 
       });
 
-    console.log(
-      "✅ AI Sales Push Sent"
-    );
+    return response;
 
-    return {
-
-      success:true,
-
-      sid:response.sid
-
-    };
-
-  }catch(err){
+  } catch (err) {
 
     console.log(
       "❌ Sales Push Error:",
@@ -592,19 +727,20 @@ right now.
 // ======================================
 // EXPORTS
 // ======================================
+
 module.exports = {
 
   sendWhatsApp,
 
-  sendCartRecovery,
-
   sendWhatsAppRecovery,
+
+  sendPaymentFailedWhatsApp,
+
+  sendCartRecovery,
 
   sendOrderUpdate,
 
   sendPaymentSuccess,
-
-  sendPaymentFailedWhatsApp,
 
   sendSubscriptionExpiry,
 
