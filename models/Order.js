@@ -77,9 +77,8 @@ const OrderSchema = new mongoose.Schema(
     },
 
     shopifyOrderId: {
-      type: String,
-      unique: true,
-      index: true
+  type: String,
+  required: true
     },
 
     orderNumber: {
@@ -194,6 +193,100 @@ const OrderSchema = new mongoose.Schema(
       default: 0
     }
   },
+  OrderSchema.index(
+{
+  clientId: 1,
+  shopifyOrderId: 1
+},
+{
+  unique: true
+});
+  // ======================================
+// AI ANALYTICS
+// ======================================
+
+conversationId: {
+  type: mongoose.Schema.Types.ObjectId,
+  ref: "Conversation"
+},
+
+aiAgent: {
+  type: String,
+  default: "Emma"
+},
+
+aiRevenueAttributed: {
+  type: Number,
+  default: 0
+},
+
+upsellRevenue: {
+  type: Number,
+  default: 0
+},
+
+crossSellRevenue: {
+  type: Number,
+  default: 0
+},
+
+checkoutRecovered: {
+  type: Boolean,
+  default: false
+},
+
+abandonedCartRecovered: {
+  type: Boolean,
+  default: false
+},
+
+// ======================================
+// CUSTOMER
+// ======================================
+
+customerId: {
+  type: String,
+  default: "",
+  index: true
+},
+
+country: {
+  type: String,
+  default: ""
+},
+
+city: {
+  type: String,
+  default: ""
+},
+
+// ======================================
+// SUBSCRIPTION
+// ======================================
+
+subscriptionOrder: {
+  type: Boolean,
+  default: false
+},
+
+subscriptionId: {
+  type: String,
+  default: ""
+},
+
+// ======================================
+// ATTRIBUTION
+// ======================================
+
+source: {
+  type: String,
+  default: "shopify"
+},
+
+channel: {
+  type: String,
+  default: "website"
+}
   {
     timestamps: true,
     versionKey: false
@@ -223,6 +316,27 @@ OrderSchema.index({
 
 OrderSchema.index({
   fulfillmentStatus: 1
+});
+OrderSchema.index({
+  customerId: 1
+});
+
+OrderSchema.index({
+  aiInfluenced: 1
+});
+
+OrderSchema.index({
+  aiRecovered: 1
+});
+
+OrderSchema.index({
+  clientId: 1,
+  aiInfluenced: 1
+});
+
+OrderSchema.index({
+  clientId: 1,
+  createdAt: -1
 });
 
 // ======================================
