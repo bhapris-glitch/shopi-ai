@@ -1,84 +1,91 @@
 // ======================================
 // routes/shopifyOrders.js
 // Layboka AI
-// Shopify Order Sync Engine
+// Shopify Orders Engine
+// GPT-4o-mini Optimized - PART - 1
 // ======================================
 
 const express = require("express");
+
 const router = express.Router();
 
-const fetch = require("node-fetch");
+const auth =
+require("../middleware/auth");
 
-const Client = require("../models/Client");
-const Order = require("../models/Order");
+const Order =
+require("../models/Order");
 
-const auth = require("../middleware/auth");
+const Client =
+require("../models/Client");
+
+const {
+
+  getRecentOrders
+
+} = require("../services/shopify");
 
 // ======================================
 // SYNC ORDERS
 // ======================================
 
 router.post(
-  "/shopify/sync-orders",
-  auth,
-  async (req, res) => {
 
-    try {
+  "/sync-orders",
+
+  auth,
+
+  async (req,res)=>{
+
+    try{
 
       const client =
+
         await Client.findById(
           req.user.id
         );
 
-      if (!client) {
+      if(!client){
 
         return res.status(404).json({
-          success: false,
-          message: "Client not found"
+
+          success:false,
+
+          message:"Client not found"
+
         });
 
       }
 
-      if (!client.store || !client.token) {
+      // ==============================
+      // SHOPIFY
+      // ==============================
 
-        return res.status(400).json({
-          success: false,
-          message: "Shopify not connected"
-        });
+      const shopifyOrders =
 
-      }
-
-      const response =
-        await fetch(
-          `https://${client.store}/admin/api/2024-01/orders.json?status=any&limit=250`,
-          {
-            headers: {
-              "X-Shopify-Access-Token":
-                client.token,
-              "Content-Type":
-                "application/json"
-            }
-          }
+        await getRecentOrders(
+          client,
+          250
         );
-
-      const data =
-        await response.json();
-
-      const orders =
-        data.orders || [];
 
       let synced = 0;
 
-      for (const order of orders) {
+      for(
+
+        const order of shopifyOrders
+
+      ){
 
         await Order.findOneAndUpdate(
 
           {
+
             shopifyOrderId:
               String(order.id)
+
           },
 
           {
+
             clientId:
               client._id,
 
@@ -92,70 +99,45 @@ router.post(
               order.name,
 
             email:
-              order.email || "",
+              order.customer?.email || "",
 
             customerName:
-              `${order.customer?.first_name || ""}
-               ${order.customer?.last_name || ""}`.trim(),
-
-            phone:
-              order.phone || "",
-
-            currency:
-              order.currency,
+              `${order.customer?.firstName || ""}
+               ${order.customer?.lastName || ""}`.trim(),
 
             totalPrice:
-              Number(order.total_price || 0),
 
-            subtotalPrice:
-              Number(order.subtotal_price || 0),
+              Number(
 
-            totalTax:
-              Number(order.total_tax || 0),
+                order.totalPriceSet
+                ?.shopMoney
+                ?.amount || 0
+
+              ),
+
+            currency:
+
+              order.totalPriceSet
+              ?.shopMoney
+              ?.currencyCode || "USD",
 
             financialStatus:
-              order.financial_status || "",
+              order.displayFinancialStatus || "",
 
             fulfillmentStatus:
-              order.fulfillment_status || "unfulfilled",
-
-            orderStatusUrl:
-              order.order_status_url || "",
-
-            tags:
-              order.tags
-                ? order.tags.split(",")
-                : [],
-
-            shippingAddress:
-              order.shipping_address || {},
-
-            billingAddress:
-              order.billing_address || {},
-
-            lineItems:
-              order.line_items || [],
-
-            note:
-              order.note || "",
-
-            cancelledAt:
-              order.cancelled_at,
-
-            processedAt:
-              order.processed_at,
+              order.displayFulfillmentStatus || "",
 
             createdAt:
-              order.created_at,
-
-            updatedAt:
-              order.updated_at
+              order.createdAt
 
           },
 
           {
-            upsert: true,
-            new: true
+
+            upsert:true,
+
+            new:true
+
           }
 
         );
@@ -166,22 +148,22 @@ router.post(
 
       res.json({
 
-        success: true,
+        success:true,
 
         synced,
 
         totalOrders:
-          orders.length
+          shopifyOrders.length
 
       });
 
-    } catch (err) {
+    }catch(err){
 
       console.log(err);
 
       res.status(500).json({
 
-        success: false,
+        success:false,
 
         message:
           "Order sync failed"
@@ -191,29 +173,40 @@ router.post(
     }
 
   }
-);
 
+);
 // ======================================
-// GET ORDERS
+// GET ORDERS - PART 2-
 // ======================================
 
 router.get(
-  "/orders",
-  auth,
-  async (req, res) => {
 
-    try {
+  "/orders",
+
+  auth,
+
+  async (req,res)=>{
+
+    try{
 
       const page =
-        Number(req.query.page || 1);
+
+        Number(
+          req.query.page || 1
+        );
 
       const limit =
-        Number(req.query.limit || 25);
+
+        Number(
+          req.query.limit || 25
+        );
 
       const skip =
+
         (page - 1) * limit;
 
       const orders =
+
         await Order.find({
 
           clientId:
@@ -222,14 +215,19 @@ router.get(
         })
 
         .sort({
-          createdAt: -1
+
+          createdAt:-1
+
         })
 
         .skip(skip)
 
-        .limit(limit);
+        .limit(limit)
+
+        .lean();
 
       const total =
+
         await Order.countDocuments({
 
           clientId:
@@ -239,41 +237,59 @@ router.get(
 
       res.json({
 
-        success: true,
+        success:true,
+
+        page,
+
+        limit,
 
         total,
 
-        page,
+        pages:
+
+          Math.ceil(
+            total / limit
+          ),
 
         orders
 
       });
 
-    } catch (err) {
+    }catch(err){
 
       console.log(err);
 
       res.status(500).json({
-        success: false
+
+        success:false,
+
+        message:
+          "Failed to load orders"
+
       });
 
     }
 
   }
+
 );
 
 // ======================================
-// ORDER DETAILS
+// GET SINGLE ORDER
 // ======================================
 
 router.get(
-  "/orders/:id",
-  auth,
-  async (req, res) => {
 
-    try {
+  "/orders/:id",
+
+  auth,
+
+  async (req,res)=>{
+
+    try{
 
       const order =
+
         await Order.findOne({
 
           _id:
@@ -282,13 +298,15 @@ router.get(
           clientId:
             req.user.id
 
-        });
+        })
 
-      if (!order) {
+        .lean();
+
+      if(!order){
 
         return res.status(404).json({
 
-          success: false,
+          success:false,
 
           message:
             "Order not found"
@@ -299,50 +317,86 @@ router.get(
 
       res.json({
 
-        success: true,
+        success:true,
 
         order
 
       });
 
-    } catch (err) {
+    }catch(err){
 
       console.log(err);
 
       res.status(500).json({
-        success: false
+
+        success:false,
+
+        message:
+          "Failed to load order"
+
       });
 
     }
 
   }
-);
 
+);
 // ======================================
-// CUSTOMER ORDERS
+// CUSTOMER ORDER HISTORY
 // ======================================
 
 router.get(
-  "/customer-orders/:email",
-  async (req, res) => {
 
-    try {
+  "/customer-orders/:email",
+
+  async (req,res)=>{
+
+    try{
+
+      const email =
+
+        String(
+          req.params.email || ""
+        )
+
+        .trim()
+
+        .toLowerCase();
+
+      if(!email){
+
+        return res.status(400).json({
+
+          success:false,
+
+          message:
+            "Email required"
+
+        });
+
+      }
 
       const orders =
+
         await Order.find({
 
-          email:
-            req.params.email
+          email
 
         })
 
         .sort({
-          createdAt: -1
-        });
+
+          createdAt:-1
+
+        })
+
+        .limit(100)
+
+        .lean();
 
       res.json({
 
-        success: true,
+        success:true,
 
         count:
           orders.length,
@@ -351,94 +405,385 @@ router.get(
 
       });
 
-    } catch (err) {
+    }catch(err){
 
       console.log(err);
 
       res.status(500).json({
-        success: false
+
+        success:false,
+
+        message:
+          "Unable to fetch orders"
+
       });
 
     }
 
   }
+
 );
 
 // ======================================
 // LIVE ORDER TRACKING
+// Used By AI Agent
 // ======================================
 
 router.post(
-  "/orders/track",
-  async (req, res) => {
 
-    try {
+  "/track",
+
+  async (req,res)=>{
+
+    try{
 
       const {
+
         orderNumber,
+
         email
+
       } = req.body;
 
-      const order =
-        await Order.findOne({
+      if(
 
-          orderNumber,
+        !orderNumber ||
 
-          email
+        !email
 
-        });
+      ){
 
-      if (!order) {
+        return res.status(400).json({
 
-        return res.json({
-
-          success: false,
+          success:false,
 
           reply:
-            "Order not found"
+            "Order number and email required"
 
         });
 
       }
 
+      const order =
+
+        await Order.findOne({
+
+          orderNumber,
+
+          email:
+            email.toLowerCase()
+
+        })
+
+        .lean();
+
+      if(!order){
+
+        return res.json({
+
+          success:false,
+
+          reply:
+            "I couldn't find that order. Please check the order number and email."
+
+        });
+
+      }
+
+      let statusMessage =
+
+        `Order ${order.orderNumber}\n\n`;
+
+      statusMessage +=
+
+        `Payment: ${order.financialStatus}\n`;
+
+      statusMessage +=
+
+        `Fulfillment: ${order.fulfillmentStatus}\n`;
+
+      statusMessage +=
+
+        `Total: ${order.currency} ${order.totalPrice}\n`;
+
+      if(order.orderStatusUrl){
+
+        statusMessage +=
+
+          `\nTrack Here:\n${order.orderStatusUrl}`;
+
+      }
+
       res.json({
 
-        success: true,
+        success:true,
 
-        order: {
+        order:{
+
+          id:
+            order._id,
 
           orderNumber:
             order.orderNumber,
 
-          status:
-            order.fulfillmentStatus,
+          totalPrice:
+            order.totalPrice,
+
+          currency:
+            order.currency,
 
           financialStatus:
             order.financialStatus,
 
-          total:
-            order.totalPrice,
+          fulfillmentStatus:
+            order.fulfillmentStatus,
 
-          tracking:
-            order.orderStatusUrl
+          trackingUrl:
+            order.orderStatusUrl || ""
 
-        }
+        },
+
+        reply:
+          statusMessage
 
       });
 
-    } catch (err) {
+    }catch(err){
 
       console.log(err);
 
       res.status(500).json({
 
-        success: false
+        success:false,
+
+        reply:
+          "Tracking service unavailable"
 
       });
 
     }
 
   }
+
 );
+// ======================================
+// AI CONVERSION TRACKING
+// ======================================
+
+router.post(
+
+  "/conversion",
+
+  auth,
+
+  async (req,res)=>{
+
+    try{
+
+      const {
+
+        orderId,
+
+        revenue = 0,
+
+        aiInfluenced = true,
+
+        recovered = false
+
+      } = req.body;
+
+      const client =
+
+        await Client.findById(
+          req.user.id
+        );
+
+      if(!client){
+
+        return res.status(404).json({
+
+          success:false
+
+        });
+
+      }
+
+      // ==============================
+      // UPDATE CLIENT ANALYTICS
+      // ==============================
+
+      client.orders =
+
+        (client.orders || 0) + 1;
+
+      client.revenue =
+
+        (client.revenue || 0) +
+        Number(revenue);
+
+      client.conversions =
+
+        (client.conversions || 0) + 1;
+
+      // ==============================
+      // AI REVENUE
+      // ==============================
+
+      if(aiInfluenced){
+
+        client.aiInfluencedRevenue =
+
+          (client.aiInfluencedRevenue || 0) +
+
+          Number(revenue);
+
+      }
+
+      // ==============================
+      // RECOVERED CART
+      // ==============================
+
+      if(recovered){
+
+        client.recoveredRevenue =
+
+          (client.recoveredRevenue || 0) +
+
+          Number(revenue);
+
+        client.recoveredCarts =
+
+          (client.recoveredCarts || 0) + 1;
+
+      }
+
+      await client.save();
+
+      res.json({
+
+        success:true,
+
+        revenue,
+
+        totalRevenue:
+          client.revenue,
+
+        aiRevenue:
+          client.aiInfluencedRevenue
+
+      });
+
+    }catch(err){
+
+      console.log(err);
+
+      res.status(500).json({
+
+        success:false
+
+      });
+
+    }
+
+  }
+
+);
+
+// ======================================
+// AOV ANALYTICS
+// ======================================
+
+router.get(
+
+  "/analytics",
+
+  auth,
+
+  async (req,res)=>{
+
+    try{
+
+      const client =
+
+        await Client.findById(
+          req.user.id
+        )
+
+        .lean();
+
+      if(!client){
+
+        return res.status(404).json({
+
+          success:false
+
+        });
+
+      }
+
+      const orders =
+
+        client.orders || 0;
+
+      const revenue =
+
+        client.revenue || 0;
+
+      const aov =
+
+        orders > 0
+
+          ?
+
+          revenue / orders
+
+          :
+
+          0;
+
+      res.json({
+
+        success:true,
+
+        orders,
+
+        revenue,
+
+        conversions:
+          client.conversions || 0,
+
+        aiRevenue:
+          client.aiInfluencedRevenue || 0,
+
+        recoveredRevenue:
+          client.recoveredRevenue || 0,
+
+        recoveredCarts:
+          client.recoveredCarts || 0,
+
+        aov:
+          Number(aov.toFixed(2))
+
+      });
+
+    }catch(err){
+
+      console.log(err);
+
+      res.status(500).json({
+
+        success:false
+
+      });
+
+    }
+
+  }
+
+);
+
+// ======================================
+// EXPORT
+// ======================================
 
 module.exports = router;
