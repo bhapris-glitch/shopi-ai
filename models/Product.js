@@ -8,7 +8,6 @@ const mongoose = require("mongoose");
 // ======================================
 // VARIANT SCHEMA
 // ======================================
-
 const VariantSchema = new mongoose.Schema(
 {
   id:{
@@ -35,14 +34,6 @@ const VariantSchema = new mongoose.Schema(
     type:Number,
     default:0
   },
-
-  shopifyCreatedAt:{
-  type:Date
-},
-
-shopifyUpdatedAt:{
-  type:Date
-},
 
   inventory:{
     type:Number,
@@ -76,6 +67,14 @@ const ProductSchema = new mongoose.Schema({
     default:"",
     index:true
   },
+
+  shopifyCreatedAt:{
+  type:Date
+},
+
+shopifyUpdatedAt:{
+  type:Date
+},
 
   // ====================================
   // SHOPIFY
@@ -280,23 +279,23 @@ salesLast90Days:{
   // ====================================
 
   syncedAt:{
-    type:Date,
-    default:null
-  },
+  type:Date,
+  default:null
+},
 
-  shopifyCreatedAt:{
+shopifyCreatedAt:{
   type:Date
 },
 
 shopifyUpdatedAt:{
   type:Date
-},
+}
 
+},
 {
   timestamps:true
 }
 );
-
 // ======================================
 // INDEXES
 // ======================================
