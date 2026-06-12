@@ -230,17 +230,6 @@ c.aiMessagesSent += 1;
 c.lastReminderAt =
 new Date();
 
-await c.save();
-
-}
-
-// ==============================
-// AUTO RECOVER EXPIRED
-// 7 DAYS OLD CART
-// ==============================
-
-
-
 // ==============================
 // RESPONSE
 // ==============================
