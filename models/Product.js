@@ -275,20 +275,12 @@ salesLast90Days:{
 },
 
   // ====================================
-  // SYNC
-  // ====================================
+// SYNC
+// ====================================
 
-  syncedAt:{
+syncedAt:{
   type:Date,
   default:null
-},
-
-shopifyCreatedAt:{
-  type:Date
-},
-
-shopifyUpdatedAt:{
-  type:Date
 }
 
 },
