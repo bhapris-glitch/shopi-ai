@@ -166,7 +166,7 @@ new mongoose.Schema({
   aiRecoveryAttempted:{
     type:Boolean,
     default:false
-  }
+  },
   // ====================================
 // AI ANALYTICS
 // ====================================
