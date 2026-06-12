@@ -1,3 +1,8 @@
+//================================
+// Layboka AI
+// routes/recovery.js
+// Updated 12 Jun, 2026
+//=================================
 const express = require("express");
 const router = express.Router();
 
@@ -84,5 +89,9 @@ https://yourstore.com/cart`;
 
   res.send("Recovery run complete");
 });
+
+// =====================================
+// EXPORT
+// =====================================
 
 module.exports = router;
