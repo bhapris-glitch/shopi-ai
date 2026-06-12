@@ -42,7 +42,170 @@ _id:false
 
 const ClientSchema =
 new mongoose.Schema({
+  
+// ====================================
+// REGION
+// ====================================
 
+country: {
+  type: String,
+  default: "US"
+},
+
+primaryMarket: {
+  type: String,
+  enum: [
+    "US",
+    "UK",
+    "CA",
+    "AU"
+  ],
+  default: "US"
+},
+
+// ====================================
+// SHOPIFY
+// ====================================
+
+shopifyAccessToken: {
+  type: String,
+  default: ""
+},
+
+shopifyGraphqlEnabled: {
+  type: Boolean,
+  default: true
+},
+
+// ====================================
+// ENTERPRISE
+// ====================================
+
+whiteLabel: {
+  type: Boolean,
+  default: false
+},
+
+customDomain: {
+  type: String,
+  default: ""
+},
+
+// ====================================
+// STRIPE
+// ====================================
+
+stripeCustomerId: {
+  type: String,
+  default: ""
+},
+
+stripeSubscriptionId: {
+  type: String,
+  default: ""
+},
+
+// ====================================
+// RAZORPAY
+// ====================================
+
+razorpayCustomerId: {
+  type: String,
+  default: ""
+},
+
+razorpaySubscriptionId: {
+  type: String,
+  default: ""
+},
+
+// ====================================
+// AI USAGE
+// ====================================
+
+aiMessagesThisMonth: {
+  type: Number,
+  default: 0
+},
+
+aiTokensUsed: {
+  type: Number,
+  default: 0
+},
+
+lastResetAt: {
+  type: Date,
+  default: Date.now
+},
+
+// ====================================
+// LIMITS
+// ====================================
+
+monthlyMessageLimit: {
+  type: Number,
+  default: 1000
+},
+
+// ====================================
+// REVENUE
+// ====================================
+
+upsellRevenue: {
+  type: Number,
+  default: 0
+},
+
+crossSellRevenue: {
+  type: Number,
+  default: 0
+},
+
+checkoutRecoveredRevenue: {
+  type: Number,
+  default: 0
+},
+
+// ====================================
+// SECURITY
+// ====================================
+
+apiKey: {
+  type: String,
+  default: ""
+},
+
+webhookSecret: {
+  type: String,
+  default: ""
+},
+
+// ====================================
+// AI
+// ====================================
+
+defaultAgent: {
+  type: String,
+  default: "Emma"
+},
+
+aiModel: {
+  type: String,
+  default: "gpt-4o-mini"
+},
+
+// ====================================
+// SUBSCRIPTION
+// ====================================
+
+nextBillingDate: {
+  type: Date
+},
+
+cancelAtPeriodEnd: {
+  type: Boolean,
+  default: false
+}
 // ====================================
 // STORE
 // ====================================
@@ -123,14 +286,18 @@ default:false
 plan:{
 type:String,
 enum:[
-"free",
-"starter",
-"growth",
-"premium"
-],
-default:"free",
-index:true
-},
+plan:{
+  type:String,
+  enum:[
+    "free",
+    "starter",
+    "growth",
+    "premium",
+    "enterprise"
+  ],
+  default:"free",
+  index:true
+}
 
 // ====================================
 // BILLING
@@ -403,7 +570,29 @@ referralCode:1
 ClientSchema.index({
 subscriptionId:1
 });
+ClientSchema.index({
+  stripeCustomerId:1
+});
 
+ClientSchema.index({
+  stripeSubscriptionId:1
+});
+
+ClientSchema.index({
+  razorpaySubscriptionId:1
+});
+
+ClientSchema.index({
+  status:1
+});
+
+ClientSchema.index({
+  plan:1
+});
+
+ClientSchema.index({
+  nextBillingDate:1
+});
 // ======================================
 // EXPORT
 // ======================================
