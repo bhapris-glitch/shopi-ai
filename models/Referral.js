@@ -49,6 +49,25 @@ new mongoose.Schema({
   },
 
   // ====================================
+// TRACKING
+// ====================================
+
+signupDate:{
+  type:Date,
+  default:null
+},
+
+firstPaymentDate:{
+  type:Date,
+  default:null
+},
+
+firstPaymentAmount:{
+  type:Number,
+  default:0
+}
+
+  // ====================================
   // REFERRAL CODE
   // ====================================
 
@@ -149,6 +168,11 @@ new mongoose.Schema({
 
 ReferralSchema.index({
   referrerClientId:1
+});
+
+ReferralSchema.index({
+  referrerClientId:1,
+  status:1
 });
 
 ReferralSchema.index({
