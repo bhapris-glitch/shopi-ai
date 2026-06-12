@@ -167,6 +167,59 @@ new mongoose.Schema({
     type:Boolean,
     default:false
   }
+  // ====================================
+// AI ANALYTICS
+// ====================================
+
+conversationId:{
+  type:mongoose.Schema.Types.ObjectId,
+  ref:"Conversation"
+},
+
+recoveryAgent:{
+  type:String,
+  default:"Emma"
+},
+
+aiMessagesSent:{
+  type:Number,
+  default:0
+},
+
+recoveryScore:{
+  type:Number,
+  default:0
+},
+
+// ====================================
+// REMINDERS
+// ====================================
+
+lastReminderAt:{
+  type:Date,
+  default:null
+},
+
+nextReminderAt:{
+  type:Date,
+  default:null
+},
+
+// ====================================
+// SHOPIFY
+// ====================================
+
+shopifyCheckoutId:{
+  type:String,
+  default:"",
+  index:true
+},
+
+store:{
+  type:String,
+  default:"",
+  index:true
+}
 
 },
 {
@@ -194,7 +247,19 @@ AbandonedSchema.index({
 AbandonedSchema.index({
   createdAt:-1
 });
+AbandonedSchema.index({
+  shopifyCheckoutId:1
+});
 
+AbandonedSchema.index({
+  clientId:1,
+  createdAt:-1
+});
+
+AbandonedSchema.index({
+  recovered:1,
+  createdAt:1
+});
 // ======================================
 // EXPORT
 // ======================================
