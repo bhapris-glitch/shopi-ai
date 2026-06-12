@@ -1,7 +1,7 @@
 // ======================================
 // models/Abandoned.js
 // Layboka AI Abandoned Cart Model
-// Updated 04 Jun 2026
+// Updated 04 Jun 2026 - Approved -
 // ======================================
 const mongoose =
 require("mongoose");
