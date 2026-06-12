@@ -36,6 +36,14 @@ const VariantSchema = new mongoose.Schema(
     default:0
   },
 
+  shopifyCreatedAt:{
+  type:Date
+},
+
+shopifyUpdatedAt:{
+  type:Date
+},
+
   inventory:{
     type:Number,
     default:0
@@ -89,7 +97,7 @@ const ProductSchema = new mongoose.Schema({
   // PRODUCT DATA
   // ====================================
 
-  title:{
+    title:{
     type:String,
     default:"",
     index:true
@@ -100,10 +108,25 @@ const ProductSchema = new mongoose.Schema({
     default:""
   },
 
-  image:{
+  seoTitle:{
     type:String,
     default:""
   },
+
+  seoDescription:{
+    type:String,
+    default:""
+  },
+
+  image:{
+  type:String,
+  default:""
+},
+
+images:{
+  type:[String],
+  default:[]
+},
 
   vendor:{
     type:String,
@@ -120,6 +143,11 @@ const ProductSchema = new mongoose.Schema({
     type:[String],
     default:[]
   },
+
+  collections:{
+  type:[String],
+  default:[]
+},
 
   // ====================================
   // PRICE
@@ -189,9 +217,24 @@ const ProductSchema = new mongoose.Schema({
   },
 
   aiBoost:{
-    type:Boolean,
-    default:false
-  },
+  type:Boolean,
+  default:false
+},
+
+recommendedProducts:{
+  type:[String],
+  default:[]
+},
+
+upsellProducts:{
+  type:[String],
+  default:[]
+},
+
+crossSellProducts:{
+  type:[String],
+  default:[]
+},
 
   // ====================================
   // ANALYTICS
@@ -222,6 +265,16 @@ const ProductSchema = new mongoose.Schema({
     default:0
   },
 
+  salesLast30Days:{
+  type:Number,
+  default:0
+},
+
+salesLast90Days:{
+  type:Number,
+  default:0
+},
+
   // ====================================
   // SYNC
   // ====================================
@@ -229,9 +282,16 @@ const ProductSchema = new mongoose.Schema({
   syncedAt:{
     type:Date,
     default:null
-  }
+  },
 
+  shopifyCreatedAt:{
+  type:Date
 },
+
+shopifyUpdatedAt:{
+  type:Date
+},
+
 {
   timestamps:true
 }
