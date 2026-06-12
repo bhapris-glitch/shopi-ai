@@ -29,7 +29,8 @@ clientId,
 product,
 email,
 phone,
-store
+store,
+checkoutUrl
 } = req.body;
 
 await Abandoned.create({
@@ -43,6 +44,8 @@ email,
 phone,
 
 store,
+
+checkoutUrl,
 
 recoveryAgent:"Emma",
 
@@ -72,6 +75,7 @@ success:false
 }
 
 });
+
 // =====================================
 // RUN RECOVERY
 // =====================================
@@ -100,7 +104,7 @@ c.createdAt
 
 // ==============================
 // REMINDER #1
-// 1 HOUR
+// AFTER 1 HOUR
 // ==============================
 
 if(
@@ -112,8 +116,7 @@ diff > 3600000 &&
 ){
 
 const checkoutUrl =
-c.checkoutUrl ||
-`https://${c.store}/cart`;
+c.checkoutUrl;
 
 const msg =
 
@@ -151,7 +154,8 @@ Complete Order
 );
 
 }
-  c.reminder1Sent = true;
+
+c.reminder1Sent = true;
 
 c.aiMessagesSent += 1;
 
@@ -170,7 +174,7 @@ await c.save();
 
 // ==============================
 // REMINDER #2
-// 24 HOURS
+// AFTER 24 HOURS
 // ==============================
 
 if(
@@ -184,8 +188,7 @@ c.reminder1Sent &&
 ){
 
 const checkoutUrl =
-c.checkoutUrl ||
-`https://${c.store}/cart`;
+c.checkoutUrl;
 
 const msg =
 
@@ -223,6 +226,7 @@ Shop Now
 );
 
 }
+
 c.reminder2Sent = true;
 
 c.aiMessagesSent += 1;
@@ -230,11 +234,19 @@ c.aiMessagesSent += 1;
 c.lastReminderAt =
 new Date();
 
-// ==============================
-// RESPONSE
-// ==============================
+c.recoveryScore =
+Math.min(
+c.recoveryScore + 10,
+100
+);
 
-res.json({
+await c.save();
+
+}
+
+}
+
+return res.json({
 
 success:true,
 
@@ -245,14 +257,12 @@ processed:carts.length
 }catch(error){
 
 console.error(
-
 "Recovery Error:",
-
 error
-
 );
 
-res.status(500).json({
+return res.status(500)
+.json({
 
 success:false,
 
@@ -263,8 +273,6 @@ message:error.message
 }
 
 });
-// =====================================
-// EXPORT
-// =====================================
 
 module.exports = router;
+
