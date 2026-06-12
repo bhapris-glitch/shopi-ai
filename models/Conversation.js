@@ -1,230 +1,350 @@
 // ======================================
 // models/Conversation.js
-// Layboka AI Conversation Memory
-// Production Ready
-// updated 04 Jun 2026
+// Layboka AI Conversation Engine
+// GPT-4o-mini Optimized
+// Production Ready 2026 - Full version
 // ======================================
-const mongoose =
-require("mongoose");
+
+const mongoose = require("mongoose");
 
 // ======================================
 // MESSAGE
 // ======================================
 
-const MessageSchema =
-new mongoose.Schema({
-
-  sender:{
-    type:String,
-    enum:[
+const MessageSchema = new mongoose.Schema(
+{
+  sender: {
+    type: String,
+    enum: [
       "customer",
       "ai",
       "agent",
       "system"
     ],
-    required:true
+    required: true
   },
 
-  message:{
-    type:String,
-    required:true
+  message: {
+    type: String,
+    required: true
   },
 
-  platform:{
-    type:String,
-    enum:[
+  platform: {
+    type: String,
+    enum: [
       "website",
       "shopify",
       "whatsapp",
       "telegram",
-      "tiktok",
       "instagram",
-      "facebook"
+      "facebook",
+      "tiktok"
     ],
-    default:"website"
+    default: "website"
   },
 
-  agentName:{
-    type:String,
-    default:"Emma"
+  agentName: {
+    type: String,
+    default: "Emma"
   },
 
-  metadata:{
-    type:Object,
-    default:{}
+  intent: {
+    type: String,
+    default: ""
   },
 
-  createdAt:{
-    type:Date,
-    default:Date.now
+  sentiment: {
+    type: String,
+    default: "neutral"
+  },
+
+  metadata: {
+    type: Object,
+    default: {}
+  },
+
+  createdAt: {
+    type: Date,
+    default: Date.now
   }
-
 },
 {
-  _id:false
-});
+  _id: false
+}
+);
 
 // ======================================
 // CONVERSATION
 // ======================================
 
-const ConversationSchema =
-new mongoose.Schema({
-
+const ConversationSchema = new mongoose.Schema(
+{
   // ====================================
   // CLIENT
   // ====================================
 
-  clientId:{
-    type:mongoose.Schema.Types.ObjectId,
-    ref:"Client",
-    required:true,
-    index:true
+  clientId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Client",
+    required: true,
+    index: true
+  },
+
+  store: {
+    type: String,
+    default: ""
   },
 
   // ====================================
   // CUSTOMER
   // ====================================
 
-  customerId:{
-    type:String,
-    default:"",
-    index:true
+  customerId: {
+    type: String,
+    default: "",
+    index: true
   },
 
-  customerName:{
-    type:String,
-    default:""
+  customerName: {
+    type: String,
+    default: ""
   },
 
-  email:{
-    type:String,
-    default:"",
-    index:true
+  email: {
+    type: String,
+    default: "",
+    lowercase: true,
+    index: true
   },
 
-  phone:{
-    type:String,
-    default:"",
-    index:true
+  phone: {
+    type: String,
+    default: "",
+    index: true
+  },
+
+  country: {
+    type: String,
+    default: "US"
+  },
+
+  city: {
+    type: String,
+    default: ""
+  },
+
+  timezone: {
+    type: String,
+    default: ""
   },
 
   // ====================================
   // CHANNEL
   // ====================================
 
-  platform:{
-    type:String,
-    default:"website",
-    index:true
+  platform: {
+    type: String,
+    default: "website",
+    index: true
   },
 
   // ====================================
   // MEMORY
   // ====================================
 
-  memoryEnabled:{
-    type:Boolean,
-    default:true
+  memoryEnabled: {
+    type: Boolean,
+    default: true
   },
 
-  summary:{
-    type:String,
-    default:""
+  summary: {
+    type: String,
+    default: ""
   },
 
-  tags:{
-    type:[String],
-    default:[]
+  customerProfile: {
+    type: String,
+    default: ""
   },
 
-  sentiment:{
-    type:String,
-    enum:[
+  tags: {
+    type: [String],
+    default: []
+  },
+
+  sentiment: {
+    type: String,
+    enum: [
       "positive",
       "neutral",
       "negative"
     ],
-    default:"neutral"
+    default: "neutral"
   },
 
   // ====================================
   // CHAT
   // ====================================
 
-  messages:{
-    type:[MessageSchema],
-    default:[]
+  messages: {
+    type: [MessageSchema],
+    default: []
   },
 
-  totalMessages:{
-    type:Number,
-    default:0
+  totalMessages: {
+    type: Number,
+    default: 0
+  },
+
+  firstMessageAt: Date,
+
+  lastMessageAt: Date,
+
+  // ====================================
+  // SALES INTELLIGENCE
+  // ====================================
+
+  interestedProduct: {
+    type: String,
+    default: ""
+  },
+
+  recommendedProducts: {
+    type: [String],
+    default: []
+  },
+
+  addedToCart: {
+    type: Boolean,
+    default: false
+  },
+
+  cartValue: {
+    type: Number,
+    default: 0
+  },
+
+  checkoutStarted: {
+    type: Boolean,
+    default: false
+  },
+
+  converted: {
+    type: Boolean,
+    default: false
+  },
+
+  orderId: {
+    type: String,
+    default: ""
+  },
+
+  orderValue: {
+    type: Number,
+    default: 0
   },
 
   // ====================================
-  // SALES
+  // AI ATTRIBUTION
   // ====================================
 
-  interestedProduct:{
-    type:String,
-    default:""
+  aiHandled: {
+    type: Boolean,
+    default: true
   },
 
-  addedToCart:{
-    type:Boolean,
-    default:false
+  aiRevenueAttributed: {
+    type: Number,
+    default: 0
   },
 
-  converted:{
-    type:Boolean,
-    default:false
+  upsellRevenue: {
+    type: Number,
+    default: 0
   },
 
-  orderValue:{
-    type:Number,
-    default:0
+  crossSellRevenue: {
+    type: Number,
+    default: 0
+  },
+
+  cartRecovered: {
+    type: Boolean,
+    default: false
   },
 
   // ====================================
-  // AI
+  // HUMAN ESCALATION
   // ====================================
 
-  aiHandled:{
-    type:Boolean,
-    default:true
+  escalatedToHuman: {
+    type: Boolean,
+    default: false
   },
 
-  escalatedToHuman:{
-    type:Boolean,
-    default:false
+  escalatedAt: Date,
+
+  humanAgent: {
+    type: String,
+    default: ""
+  },
+
+  // ====================================
+  // GPT-4o-mini
+  // ====================================
+
+  lastIntent: {
+    type: String,
+    default: ""
+  },
+
+  confidenceScore: {
+    type: Number,
+    default: 0
   }
-
 },
 {
-  timestamps:true,
-  versionKey:false
-});
+  timestamps: true,
+  versionKey: false
+}
+);
 
 // ======================================
 // INDEXES
 // ======================================
 
 ConversationSchema.index({
-  clientId:1,
-  createdAt:-1
+  clientId: 1,
+  createdAt: -1
 });
 
 ConversationSchema.index({
-  email:1
+  email: 1
 });
 
 ConversationSchema.index({
-  phone:1
+  phone: 1
 });
 
 ConversationSchema.index({
-  customerId:1
+  customerId: 1
+});
+
+ConversationSchema.index({
+  converted: 1
+});
+
+ConversationSchema.index({
+  addedToCart: 1
+});
+
+ConversationSchema.index({
+  escalatedToHuman: 1
+});
+
+ConversationSchema.index({
+  clientId: 1,
+  converted: 1
 });
 
 // ======================================
