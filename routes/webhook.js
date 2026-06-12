@@ -85,7 +85,7 @@ await Subscription.updateOne(
 { subscriptionId },
 {
 paid: false,
-status: "past_due",
+status: "payment_failed",
 locked: true
 }
 );
@@ -285,6 +285,25 @@ try {
         renewalDate
       }
     );
+    const dbSub =
+  await Subscription.findOne({
+    subscriptionId: sub.id
+  });
+
+if (dbSub) {
+
+  await Client.updateOne(
+    {
+      _id: dbSub.clientId
+    },
+    {
+      paid: true,
+      status: "active",
+      renewalDate
+    }
+  );
+
+}
 
   }
 
@@ -356,6 +375,25 @@ try {
         locked: true
       }
     );
+    const dbSub =
+  await Subscription.findOne({
+    subscriptionId:
+      req.body.payload
+        .subscription.entity.id
+  });
+
+if (dbSub) {
+
+  await Client.updateOne(
+    {
+      _id: dbSub.clientId
+    },
+    {
+      status: "paused"
+    }
+  );
+
+}
 
   }
 
@@ -380,6 +418,26 @@ try {
         paid: true
       }
     );
+    const dbSub =
+  await Subscription.findOne({
+    subscriptionId:
+      req.body.payload
+        .subscription.entity.id
+  });
+
+if (dbSub) {
+
+  await Client.updateOne(
+    {
+      _id: dbSub.clientId
+    },
+    {
+      paid: true,
+      status: "active"
+    }
+  );
+
+}
 
   }
 
@@ -401,7 +459,7 @@ try {
     });
 
 }
-```
+...
 
 }
 );
