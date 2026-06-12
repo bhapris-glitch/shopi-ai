@@ -1,248 +1,346 @@
 // ======================================
 // models/Recovery.js
 // Layboka AI
-// Abandoned Cart Recovery Model
+// Production Recovery Model
+// GPT-4o-mini Optimized
+// Updated 2026 - Full PART
 // ======================================
 
-const mongoose =
-require("mongoose");
+const mongoose = require("mongoose");
 
-const RecoverySchema =
-new mongoose.Schema({
+// ======================================
+// CART ITEMS
+// ======================================
 
-  // ====================================
-  // CLIENT
-  // ====================================
+const CartItemSchema = new mongoose.Schema(
+  {
+    productId: String,
 
-  clientId:{
+    variantId: String,
 
-    type:
-      mongoose.Schema.Types.ObjectId,
+    title: String,
 
-    ref:"Client",
+    sku: String,
 
-    required:true,
+    image: String,
 
-    index:true
-
-  },
-
-  // ====================================
-  // CUSTOMER
-  // ====================================
-
-  name:{
-    type:String,
-    default:""
-  },
-
-  email:{
-    type:String,
-    default:"",
-    index:true
-  },
-
-  phone:{
-    type:String,
-    default:""
-  },
-
-  // ====================================
-  // CART
-  // ====================================
-
-  cartId:{
-
-    type:String,
-
-    required:true,
-
-    index:true
-
-  },
-
-  cart:[{
-
-    productId:String,
-
-    title:String,
-
-    image:String,
-
-    quantity:{
-      type:Number,
-      default:1
+    quantity: {
+      type: Number,
+      default: 1
     },
 
-    price:{
-      type:Number,
-      default:0
+    price: {
+      type: Number,
+      default: 0
     }
-
-  }],
-
-  cartValue:{
-
-    type:Number,
-
-    default:0
-
   },
+  {
+    _id: false
+  }
+);
 
-  // ====================================
-  // STATUS
-  // ====================================
+// ======================================
+// RECOVERY
+// ======================================
 
-  recovered:{
+const RecoverySchema = new mongoose.Schema(
+  {
+    // ====================================
+    // CLIENT
+    // ====================================
 
-    type:Boolean,
+    clientId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Client",
+      required: true,
+      index: true
+    },
 
-    default:false,
+    store: {
+      type: String,
+      default: ""
+    },
 
-    index:true
+    // ====================================
+    // CUSTOMER
+    // ====================================
 
+    customerId: {
+      type: String,
+      default: "",
+      index: true
+    },
+
+    name: {
+      type: String,
+      default: ""
+    },
+
+    email: {
+      type: String,
+      default: "",
+      lowercase: true,
+      index: true
+    },
+
+    phone: {
+      type: String,
+      default: ""
+    },
+
+    country: {
+      type: String,
+      default: "US",
+      index: true
+    },
+
+    city: {
+      type: String,
+      default: ""
+    },
+
+    currency: {
+      type: String,
+      default: "USD"
+    },
+
+    // ====================================
+    // CART
+    // ====================================
+
+    cartId: {
+      type: String,
+      required: true,
+      index: true
+    },
+
+    checkoutId: {
+      type: String,
+      default: ""
+    },
+
+    cart: {
+      type: [CartItemSchema],
+      default: []
+    },
+
+    cartValue: {
+      type: Number,
+      default: 0
+    },
+
+    itemCount: {
+      type: Number,
+      default: 0
+    },
+
+    // ====================================
+    // RECOVERY LINK
+    // ====================================
+
+    recoveryToken: {
+      type: String,
+      default: "",
+      index: true
+    },
+
+    recoveryUrl: {
+      type: String,
+      default: ""
+    },
+
+    // ====================================
+    // RECOVERY STATUS
+    // ====================================
+
+    recovered: {
+      type: Boolean,
+      default: false,
+      index: true
+    },
+
+    recoveredAt: Date,
+
+    recoveredRevenue: {
+      type: Number,
+      default: 0
+    },
+
+    recoverySource: {
+      type: String,
+      default: "",
+    },
+
+    // ====================================
+    // AI ATTRIBUTION
+    // ====================================
+
+    aiInfluenced: {
+      type: Boolean,
+      default: false
+    },
+
+    aiRevenueAttributed: {
+      type: Number,
+      default: 0
+    },
+
+    conversationId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Conversation"
+    },
+
+    // ====================================
+    // FIRST REMINDER
+    // ====================================
+
+    reminderSent: {
+      type: Boolean,
+      default: false,
+      index: true
+    },
+
+    reminderSentAt: Date,
+
+    // ====================================
+    // SECOND REMINDER
+    // ====================================
+
+    secondReminderSent: {
+      type: Boolean,
+      default: false,
+      index: true
+    },
+
+    secondReminderSentAt: Date,
+
+    // ====================================
+    // THIRD REMINDER
+    // ====================================
+
+    thirdReminderSent: {
+      type: Boolean,
+      default: false,
+      index: true
+    },
+
+    thirdReminderSentAt: Date,
+
+    // ====================================
+    // CHANNEL ANALYTICS
+    // ====================================
+
+    emailSentCount: {
+      type: Number,
+      default: 0
+    },
+
+    whatsappSentCount: {
+      type: Number,
+      default: 0
+    },
+
+    smsSentCount: {
+      type: Number,
+      default: 0
+    },
+
+    emailOpened: {
+      type: Boolean,
+      default: false
+    },
+
+    emailClicked: {
+      type: Boolean,
+      default: false
+    },
+
+    whatsappClicked: {
+      type: Boolean,
+      default: false
+    },
+
+    // ====================================
+    // RECOVERY STAGE
+    // ====================================
+
+    currentStage: {
+      type: String,
+      enum: [
+        "none",
+        "first",
+        "second",
+        "third",
+        "recovered",
+        "expired"
+      ],
+      default: "none"
+    },
+
+    // ====================================
+    // EXTRA
+    // ====================================
+
+    notes: {
+      type: String,
+      default: ""
+    }
   },
-
-  recoveredAt:Date,
-
-  // ====================================
-  // FIRST REMINDER
-  // ====================================
-
-  reminderSent:{
-
-    type:Boolean,
-
-    default:false,
-
-    index:true
-
-  },
-
-  reminderSentAt:Date,
-
-  // ====================================
-  // SECOND REMINDER
-  // ====================================
-
-  secondReminderSent:{
-
-    type:Boolean,
-
-    default:false,
-
-    index:true
-
-  },
-
-  secondReminderSentAt:Date,
-
-  // ====================================
-  // THIRD REMINDER
-  // ====================================
-
-  thirdReminderSent:{
-
-    type:Boolean,
-
-    default:false,
-
-    index:true
-
-  },
-
-  thirdReminderSentAt:Date,
-
-  // ====================================
-  // CHANNELS
-  // ====================================
-
-  emailSentCount:{
-
-    type:Number,
-
-    default:0
-
-  },
-
-  whatsappSentCount:{
-
-    type:Number,
-
-    default:0
-
-  },
-
-  // ====================================
-  // METADATA
-  // ====================================
-
-  country:{
-
-    type:String,
-
-    default:"US"
-
-  },
-
-  currency:{
-
-    type:String,
-
-    default:"USD"
-
-  },
-
-  notes:String
-
-},
-
-{
-
-  timestamps:true
-
-});
+  {
+    timestamps: true,
+    versionKey: false
+  }
+);
 
 // ======================================
 // INDEXES
 // ======================================
 
 RecoverySchema.index({
-
-  recovered:1,
-
-  reminderSent:1,
-
-  createdAt:1
-
+  clientId: 1,
+  cartId: 1
 });
 
 RecoverySchema.index({
-
-  recovered:1,
-
-  secondReminderSent:1,
-
-  reminderSentAt:1
-
+  recovered: 1,
+  reminderSent: 1,
+  createdAt: 1
 });
 
 RecoverySchema.index({
+  recovered: 1,
+  secondReminderSent: 1,
+  reminderSentAt: 1
+});
 
-  recovered:1,
+RecoverySchema.index({
+  recovered: 1,
+  thirdReminderSent: 1,
+  secondReminderSentAt: 1
+});
 
-  thirdReminderSent:1,
+RecoverySchema.index({
+  email: 1
+});
 
-  secondReminderSentAt:1
+RecoverySchema.index({
+  customerId: 1
+});
 
+RecoverySchema.index({
+  recoveryToken: 1
+});
+
+RecoverySchema.index({
+  clientId: 1,
+  recovered: 1
 });
 
 // ======================================
 // EXPORT
 // ======================================
 
-module.exports =
-mongoose.model(
+module.exports = mongoose.model(
   "Recovery",
   RecoverySchema
 );
