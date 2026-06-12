@@ -65,7 +65,7 @@ firstPaymentDate:{
 firstPaymentAmount:{
   type:Number,
   default:0
-}
+},
 
   // ====================================
   // REFERRAL CODE
