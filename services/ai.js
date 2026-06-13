@@ -24,6 +24,11 @@ const MODEL =
   process.env.OPENAI_MODEL ||
   "gpt-4o-mini";
 
+const MODEL =
+client.plan === "premium"
+? "gpt-5"
+: "gpt-4o-mini";
+
 const OPENAI_API_KEY =
   process.env.OPENAI_API_KEY;
 
@@ -505,14 +510,10 @@ async function validateSubscription(
     }
 
     if (
-
-      subscription.expiresAt &&
-
-      new Date(
-        subscription.expiresAt
-      ) < new Date()
-
-    ) {
+  subscription.expiryDate &&
+  new Date(subscription.expiryDate) < new Date()
+)
+       {
 
       return {
 
@@ -733,7 +734,7 @@ $${product.price}
 </p>
 
 <button
-onclick="window.open('${product.handle || "#"}')"
+onclick="window.open(`https://${store}/products/${product.handle}`))"
 style="
 width:100%;
 padding:12px;
@@ -922,8 +923,7 @@ async function callOpenAI(
       err
     );
 
-    return
-      "⚠️ I'm temporarily unavailable. Please try again.";
+    return "⚠️ I'm temporarily unavailable. Please try again.";
 
   }
 
