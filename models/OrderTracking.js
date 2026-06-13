@@ -1,0 +1,9 @@
+clientId
+orderId
+orderNumber
+customerEmail
+trackingNumber
+trackingCompany
+trackingUrl
+status
+lastCheckedAt
