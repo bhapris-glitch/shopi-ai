@@ -74,25 +74,49 @@ router.post(
 
       res.json({
 
-        success:true,
+  success:true,
 
-        order:{
+  order:{
 
-          name:
-            order.name,
+    name:
+      order.name,
 
-          financial_status:
-            order.financial_status,
+    orderId:
+      order.id,
 
-          fulfillment_status:
-            order.fulfillment_status,
+    financial_status:
+      order.financial_status,
 
-          total_price:
-            order.total_price
+    fulfillment_status:
+      order.fulfillment_status,
 
-        }
+    total_price:
+      order.total_price,
 
-      });
+    currency:
+      order.currency,
+
+    created_at:
+      order.created_at,
+
+    tracking_number:
+      order.fulfillments?.[0]
+        ?.tracking_number || "",
+
+    tracking_company:
+      order.fulfillments?.[0]
+        ?.tracking_company || "",
+
+    tracking_url:
+      order.fulfillments?.[0]
+        ?.tracking_urls?.[0] || "",
+
+    customer_email:
+      order.email || ""
+
+  }
+
+});
 
     }catch(err){
 
