@@ -112,6 +112,16 @@ const SubscriptionSchema = new mongoose.Schema({
     default: false
   },
 
+  trialReminderSent:{
+  type:Boolean,
+  default:false
+},
+
+  renewalReminderSent:{
+  type:Boolean,
+  default:false
+},
+
   autoRenew: {
     type: Boolean,
     default: true
