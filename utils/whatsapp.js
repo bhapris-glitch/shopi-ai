@@ -18,17 +18,29 @@ const WHATSAPP_TOKEN =
 
 const PHONE_NUMBER_ID =
   process.env.WHATSAPP_PHONE_ID;
-
 // ======================================
-// SEND MESSAGE
+// SEND WHATSAPP
+// Supports:
+// sendWhatsApp(phone, message)
+// sendWhatsApp({ phone, message })
 // ======================================
 
-async function sendWhatsApp({
+async function sendWhatsApp(...args){
 
-  phone,
-  message
+  let phone;
+  let message;
 
-}){
+  if(typeof args[0] === "object"){
+
+    phone = args[0].phone;
+    message = args[0].message;
+
+  }else{
+
+    phone = args[0];
+    message = args[1];
+
+  }
 
   try{
 
@@ -41,7 +53,7 @@ async function sendWhatsApp({
         "WhatsApp credentials missing"
       );
 
-      return {
+      return{
         success:false
       };
 
@@ -68,8 +80,7 @@ async function sendWhatsApp({
 
           body:JSON.stringify({
 
-            messaging_product:
-              "whatsapp",
+            messaging_product:"whatsapp",
 
             to:phone,
 
@@ -90,23 +101,17 @@ async function sendWhatsApp({
 
     if(data.error){
 
-      console.log(
-        "WhatsApp Error:",
-        data.error.message
-      );
-
-      return {
+      return{
 
         success:false,
 
-        error:
-          data.error.message
+        error:data.error.message
 
       };
 
     }
 
-    return {
+    return{
 
       success:true,
 
@@ -117,19 +122,14 @@ async function sendWhatsApp({
   }catch(err){
 
     console.log(
-
-      "WhatsApp Error:",
-
       err.message
-
     );
 
-    return {
+    return{
 
       success:false,
 
-      error:
-        err.message
+      error:err.message
 
     };
 
