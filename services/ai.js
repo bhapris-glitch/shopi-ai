@@ -20,30 +20,34 @@ const Subscription = require("../models/Subscription");
 const OPENAI_URL =
   "https://api.openai.com/v1/chat/completions";
 
+const OPENAI_API_KEY =
+  process.env.OPENAI_API_KEY;
+
 // ======================================
 // MODEL SELECTOR
 // ======================================
 
-function getModel(plan) {
+function getModel(client, subscription) {
 
+  // Trial users get Premium AI
   if (
-
-    plan === "premium" ||
-
-    plan === "enterprise"
-
+    subscription &&
+    subscription.status === "trial"
   ) {
-
     return "gpt-5";
-
   }
 
+  // Premium & Enterprise
+  if (
+    client.plan === "premium" ||
+    client.plan === "enterprise"
+  ) {
+    return "gpt-5";
+  }
+
+  // Default
   return "gpt-4o-mini";
-
 }
-
-const OPENAI_API_KEY =
-  process.env.OPENAI_API_KEY;
 
 // ======================================
 // HELPERS
@@ -847,12 +851,15 @@ rgba(0,255,200,.25);
 
 async function callOpenAI(
 
+  model,
+
   systemPrompt,
 
   userMessage,
 
-  history = [],
+  history = []
 
+)
   model = "gpt-4o-mini"
 
 ) {
@@ -1025,6 +1032,10 @@ async function generateAIResponse({
       await Client.findById(
         clientId
       );
+    const subscription =
+  await Subscription.findOne({
+    clientId: client._id
+  });
 
     if (!client) {
 
@@ -1169,13 +1180,13 @@ const model =
 let reply =
   await callOpenAI(
 
+    model,
+
     systemPrompt,
 
     userMessage,
 
-    history,
-
-    model
+    history
 
   );
 
