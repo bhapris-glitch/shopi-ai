@@ -1,9 +1,9 @@
 // ======================================
 // services/ai.js
-// Layboka AI Engine v3
-// GPT-4o-mini Optimized
+// Layboka AI Engine v4
+// GPT-4o-mini / GPT-5
 // Production Ready
-// Part 1/3
+// PART 1 / 5
 // ======================================
 
 const fetch = require("node-fetch");
@@ -14,7 +14,7 @@ const Conversation = require("../models/Conversation");
 const Subscription = require("../models/Subscription");
 
 // ======================================
-// CONFIG
+// OPENAI CONFIG
 // ======================================
 
 const OPENAI_URL =
@@ -27,9 +27,12 @@ const OPENAI_API_KEY =
 // MODEL SELECTOR
 // ======================================
 
-function getModel(client, subscription) {
+function getModel(
+  client,
+  subscription
+) {
 
-  // Trial users get Premium AI
+  // 7-Day Trial
   if (
     subscription &&
     subscription.status === "trial"
@@ -37,16 +40,20 @@ function getModel(client, subscription) {
     return "gpt-5";
   }
 
-  // Premium & Enterprise
+  // Premium Plans
   if (
-    client.plan === "premium" ||
-    client.plan === "enterprise"
+    client &&
+    (
+      client.plan === "premium" ||
+      client.plan === "enterprise"
+    )
   ) {
     return "gpt-5";
   }
 
   // Default
   return "gpt-4o-mini";
+
 }
 
 // ======================================
@@ -63,13 +70,24 @@ function safeText(value) {
 
 }
 
-function truncate(text, max = 1000) {
+function truncate(
+  text,
+  max = 1200
+) {
 
   if (!text) return "";
 
-  return text.length > max
-    ? text.substring(0, max)
-    : text;
+  if (text.length <= max)
+    return text;
+
+  return text.substring(0, max);
+
+}
+
+function money(value) {
+
+  return Number(value || 0)
+    .toFixed(2);
 
 }
 
@@ -77,7 +95,9 @@ function truncate(text, max = 1000) {
 // SYSTEM PROMPT
 // ======================================
 
-function buildSystemPrompt(client) {
+function buildSystemPrompt(
+  client
+) {
 
   let prompt = `
 
@@ -85,43 +105,34 @@ You are Layboka AI.
 
 You are an elite ecommerce sales assistant.
 
-Goals:
+Primary Goals
 
-1. Increase conversions
-2. Increase average order value
-3. Recover abandoned carts
-4. Improve checkout rate
-5. Recommend products naturally
+• Increase conversions
+• Recover abandoned carts
+• Increase AOV
+• Recommend products naturally
+• Close sales
 
-Communication style:
+Rules
 
-- Friendly
-- Professional
-- Premium
-- Helpful
-- Persuasive
-
-Rules:
-
-- Keep replies concise
-- Never overwhelm customers
-- Guide toward purchase
-- Recommend products naturally
-- Encourage checkout
-- Mention offers when relevant
-- Focus on customer needs
+• Friendly
+• Professional
+• Premium tone
+• Never spam
+• Never invent products
+• Never invent prices
+• Keep replies short
+• Guide customer toward purchase
+• Recommend products only when relevant
 
 `;
-
-  // ==========================
-  // STORE INFO
-  // ==========================
 
   if (client?.storeDisplayName) {
 
     prompt += `
 
-Store:
+Store Name
+
 ${client.storeDisplayName}
 
 `;
@@ -132,36 +143,29 @@ ${client.storeDisplayName}
 
     prompt += `
 
-Assistant Name:
+Assistant Name
+
 ${client.agentName}
 
 `;
 
   }
 
-  // ==========================
-  // PREMIUM MODE
-  // ==========================
-
   if (
-
     client?.plan === "premium" ||
-
     client?.plan === "enterprise"
-
   ) {
 
     prompt += `
 
-Premium Features Enabled:
+Premium Features Enabled
 
-- Checkout closer
-- Revenue optimization
-- Smart upsells
-- Cross-sells
-- Scarcity marketing
-- Social proof
-- Cart recovery psychology
+• Checkout Closer
+• Smart Upsells
+• Cross Sell
+• Sales Psychology
+• Revenue Optimization
+• Cart Recovery
 
 `;
 
@@ -175,17 +179,16 @@ Premium Features Enabled:
 // CUSTOMER MEMORY
 // ======================================
 
-function buildCustomerMemory(conversation) {
+function buildCustomerMemory(
+  conversation
+) {
 
-  if (!conversation) {
-
+  if (!conversation)
     return "";
-
-  }
 
   let memory = `
 
-Customer Profile
+Customer
 
 Name:
 ${conversation.customerName || ""}
@@ -208,11 +211,11 @@ ${conversation.converted ? "YES" : "NO"}
 
     memory += `
 
-Conversation Summary:
+Conversation Summary
 
 ${truncate(
   conversation.summary,
-  1200
+  1500
 )}
 
 `;
@@ -220,18 +223,15 @@ ${truncate(
   }
 
   if (
-
     Array.isArray(
       conversation.tags
     ) &&
-
     conversation.tags.length
-
   ) {
 
     memory += `
 
-Customer Tags:
+Tags
 
 ${conversation.tags.join(", ")}
 
@@ -251,35 +251,32 @@ function buildProductRecommendations(
   products = []
 ) {
 
-  if (!products.length) {
-
+  if (!products.length)
     return "";
-
-  }
 
   let text = `
 
-Available Products:
+Available Products
 
 `;
 
   products
     .slice(0, 10)
-    .forEach((p) => {
+    .forEach(product => {
 
       text += `
 
 Title:
-${p.title}
+${safeText(product.title)}
 
 Price:
-$${p.price}
+$${money(product.price)}
 
 Category:
-${p.productType || ""}
+${safeText(product.productType)}
 
 Vendor:
-${p.vendor || ""}
+${safeText(product.vendor)}
 
 `;
 
@@ -297,15 +294,12 @@ function buildCartRecovery(
   cart = []
 ) {
 
-  if (!cart.length) {
-
+  if (!cart.length)
     return "";
-
-  }
 
   return `
 
-Customer Cart:
+Customer Cart
 
 ${JSON.stringify(
   cart,
@@ -313,12 +307,11 @@ ${JSON.stringify(
   2
 )}
 
-Recovery Goal:
+Recovery Goal
 
-- Encourage checkout
-- Reduce hesitation
-- Increase urgency
-- Recover abandoned order
+Recover this order.
+Reduce hesitation.
+Encourage checkout.
 
 `;
 
@@ -332,53 +325,54 @@ function buildCheckoutCloser() {
 
   return `
 
-Checkout Closer Rules:
+Checkout Closer
 
-- Reduce hesitation
-- Build confidence
-- Highlight benefits
-- Encourage checkout
-- Avoid aggressive pressure
+Handle objections.
+
+Build trust.
+
+Reduce hesitation.
+
+Increase urgency naturally.
 
 `;
 
 }
 
 // ======================================
-// UPSELL BLOCK
+// UPSELL PRODUCTS
 // ======================================
 
 function buildUpsellSuggestions(
   products = []
 ) {
 
-  if (!products.length) {
-
+  if (!products.length)
     return "";
-
-  }
 
   const upsells =
     [...products]
       .sort(
-        (a, b) =>
-          (b.upsellScore || 0) -
-          (a.upsellScore || 0)
+        (a,b)=>
+          (b.upsellScore||0)-
+          (a.upsellScore||0)
       )
-      .slice(0, 5);
+      .slice(0,5);
 
   let text = `
 
-Upsell Products:
+Upsell Products
 
 `;
 
-  upsells.forEach((p) => {
+  upsells.forEach(product=>{
 
     text += `
 
-${p.title}
-Price: $${p.price}
+${safeText(product.title)}
+
+Price:
+$${money(product.price)}
 
 `;
 
@@ -389,20 +383,26 @@ Price: $${p.price}
 }
 
 // ======================================
-// BUILD FULL CONTEXT
+// BUILD FULL AI CONTEXT
 // ======================================
 
 function buildFullContext({
 
   client,
-  conversation,
-  products,
-  cart,
-  enableUpsell,
-  enableCheckoutCloser,
-  enableCartRecovery
 
-}) {
+  conversation,
+
+  products = [],
+
+  cart = [],
+
+  enableUpsell = true,
+
+  enableCheckoutCloser = true,
+
+  enableCartRecovery = true
+
+}){
 
   let context = "";
 
@@ -419,21 +419,21 @@ function buildFullContext({
       products
     );
 
-  if (enableCartRecovery) {
+  if(enableCartRecovery){
 
     context +=
       buildCartRecovery(cart);
 
   }
 
-  if (enableCheckoutCloser) {
+  if(enableCheckoutCloser){
 
     context +=
       buildCheckoutCloser();
 
   }
 
-  if (enableUpsell) {
+  if(enableUpsell){
 
     context +=
       buildUpsellSuggestions(
@@ -445,12 +445,10 @@ function buildFullContext({
   return context;
 
 }
-
 // ======================================
-// PART 2/3
-// Subscription Protection
+// PART 2 / 5
+// Subscription
 // Product Engine
-// OpenAI Engine
 // ======================================
 
 // ======================================
@@ -459,105 +457,123 @@ function buildFullContext({
 
 async function validateSubscription(
   clientId
-) {
+){
 
-  try {
+  try{
 
     const subscription =
       await Subscription.findOne({
-
         clientId
-
       });
 
-    if (!subscription) {
+    // No subscription yet
+    if(!subscription){
 
-      return {
-
-        active: true
-
+      return{
+        active:true,
+        subscription:null
       };
 
     }
 
-    if (subscription.locked) {
+    // Locked
+    if(subscription.locked){
 
-      return {
-
-        active: false,
-
-        reason: "locked"
-
+      return{
+        active:false,
+        reason:"locked",
+        subscription
       };
 
     }
 
-    if (
-
+    // Cancelled
+    if(
       subscription.status ===
       "cancelled"
+    ){
 
-    ) {
-
-      return {
-
-        active: false,
-
-        reason: "cancelled"
-
+      return{
+        active:false,
+        reason:"cancelled",
+        subscription
       };
 
     }
 
-    if (
-
+    // Expired
+    if(
       subscription.status ===
       "expired"
+    ){
 
-    ) {
+      return{
+        active:false,
+        reason:"expired",
+        subscription
+      };
 
-      return {
+    }
 
-        active: false,
+    // Payment Failed
+    if(
+      subscription.status ===
+      "payment_failed"
+    ){
 
-        reason: "expired"
+      return{
+        active:false,
+        reason:"payment_failed",
+        subscription
+      };
+
+    }
+
+    // Expiry Date
+    if(
+
+      subscription.expiryDate &&
+
+      new Date(
+        subscription.expiryDate
+      ) < new Date()
+
+    ){
+
+      return{
+
+        active:false,
+
+        reason:"expired",
+
+        subscription
 
       };
 
     }
 
-    if (
-  subscription.expiryDate &&
-  new Date(subscription.expiryDate) < new Date()
-)
-       {
+    return{
 
-      return {
+      active:true,
 
-        active: false,
-
-        reason: "expired"
-
-      };
-
-    }
-
-    return {
-
-      active: true
+      subscription
 
     };
 
-  } catch (err) {
+  }
+
+  catch(err){
 
     console.log(
-      "SUBSCRIPTION ERROR:",
+      "Subscription Validation Error",
       err
     );
 
-    return {
+    return{
 
-      active: true
+      active:true,
+
+      subscription:null
 
     };
 
@@ -573,42 +589,49 @@ async function getRecommendedProducts(
 
   clientId,
 
-  limit = 5
+  limit = 6
 
-) {
+){
 
-  try {
+  try{
 
     return await Product.find({
 
       clientId,
 
-      active: true
+      active:true
 
     })
 
-      .sort({
+    .sort({
 
-        recommended: -1,
+      recommended:-1,
 
-        popularityScore: -1,
+      popularityScore:-1,
 
-        conversionScore: -1
+      conversionScore:-1,
 
-      })
+      sales:-1
 
-      .limit(limit)
+    })
 
-      .lean();
+    .limit(limit)
 
-  } catch (err) {
+    .lean();
+
+  }
+
+  catch(err){
 
     console.log(
-      "RECOMMEND ERROR:",
+
+      "Recommendation Error",
+
       err
+
     );
 
-    return [];
+    return[];
 
   }
 
@@ -624,36 +647,43 @@ async function getUpsellProducts(
 
   limit = 5
 
-) {
+){
 
-  try {
+  try{
 
     return await Product.find({
 
       clientId,
 
-      active: true
+      active:true
 
     })
 
-      .sort({
+    .sort({
 
-        upsellScore: -1
+      upsellScore:-1,
 
-      })
+      sales:-1
 
-      .limit(limit)
+    })
 
-      .lean();
+    .limit(limit)
 
-  } catch (err) {
+    .lean();
+
+  }
+
+  catch(err){
 
     console.log(
-      "UPSELL ERROR:",
+
+      "Upsell Error",
+
       err
+
     );
 
-    return [];
+    return[];
 
   }
 
@@ -669,58 +699,221 @@ async function getCrossSellProducts(
 
   limit = 5
 
-) {
+){
 
-  try {
+  try{
 
     return await Product.find({
 
       clientId,
 
-      active: true
+      active:true
 
     })
 
-      .sort({
+    .sort({
 
-        crossSellScore: -1
+      crossSellScore:-1
 
-      })
+    })
 
-      .limit(limit)
+    .limit(limit)
 
-      .lean();
+    .lean();
 
-  } catch (err) {
+  }
+
+  catch(err){
 
     console.log(
-      "CROSSSELL ERROR:",
+
+      "Cross Sell Error",
+
       err
+
     );
 
-    return [];
+    return[];
 
   }
 
 }
 
 // ======================================
+// SEARCH PRODUCTS
+// ======================================
+
+async function searchProducts(
+
+  clientId,
+
+  keyword,
+
+  limit = 5
+
+){
+
+  try{
+
+    if(!keyword){
+
+      return[];
+
+    }
+
+    return await Product.find({
+
+      clientId,
+
+      active:true,
+
+      $or:[
+
+        {
+
+          title:{
+
+            $regex:keyword,
+
+            $options:"i"
+
+          }
+
+        },
+
+        {
+
+          productType:{
+
+            $regex:keyword,
+
+            $options:"i"
+
+          }
+
+        },
+
+        {
+
+          vendor:{
+
+            $regex:keyword,
+
+            $options:"i"
+
+          }
+
+        }
+
+      ]
+
+    })
+
+    .limit(limit)
+
+    .lean();
+
+  }
+
+  catch(err){
+
+    console.log(
+
+      "Product Search Error",
+
+      err
+
+    );
+
+    return[];
+
+  }
+
+}
+
+// ======================================
+// UPDATE PRODUCT ANALYTICS
+// ======================================
+
+async function updateProductAnalytics(
+
+  products=[]
+
+){
+
+  try{
+
+    for(
+
+      const product of products
+
+    ){
+
+      await Product.updateOne(
+
+        {
+
+          _id:product._id
+
+        },
+
+        {
+
+          $inc:{
+
+            views:1
+
+          }
+
+        }
+
+      );
+
+    }
+
+  }
+
+  catch(err){
+
+    console.log(
+
+      "Analytics Error",
+
+      err
+
+    );
+
+  }
+
+}
+// ======================================
+// PART 3 / 5
+// OpenAI Engine
+// UI Components
+// ======================================
+
+// ======================================
 // PRODUCT CARD
 // ======================================
 
 function generateProductCard(
-  product
-) {
+  product,
+  store = ""
+){
 
-  if (!product) return "";
+  if(!product) return "";
+
+  const url =
+    product.url ||
+    `https://${store}/products/${product.handle}`;
 
   return `
 
 <div style="
 background:#111827;
-padding:14px;
+padding:16px;
 border-radius:18px;
-margin-top:12px;
+margin-top:14px;
 border:1px solid rgba(255,255,255,.08);
 ">
 
@@ -729,12 +922,12 @@ src="${product.image || ""}"
 style="
 width:100%;
 border-radius:14px;
-margin-bottom:10px;
+margin-bottom:12px;
 "
 />
 
 <h3 style="
-color:#fff;
+color:#ffffff;
 font-size:16px;
 margin-bottom:8px;
 ">
@@ -747,60 +940,33 @@ font-size:18px;
 font-weight:bold;
 margin-bottom:12px;
 ">
-$${product.price}
+$${money(product.price)}
 </p>
 
 <a
-href="/products/${product.handle}"
+href="${url}"
 target="_blank"
 style="
 display:block;
 text-align:center;
-width:100%;
 padding:12px;
 border-radius:12px;
-background:
-linear-gradient(
+background:linear-gradient(
 135deg,
 #00ffc3,
 #00aaff
 );
+text-decoration:none;
 color:#000;
 font-weight:bold;
-text-decoration:none;
-box-shadow:
-0 10px 30px
-rgba(0,255,200,.25);
 "
 >
+
 🛒 View Product
+
 </a>
 
 </div>
-
-`;
-
-}
-
-// ======================================
-// CART RECOVERY MESSAGE
-// ======================================
-
-function generateRecoveryMessage(
-
-  customerName = ""
-
-) {
-
-  return `
-
-Hey ${customerName || "there"} 👋
-
-You still have items waiting in your cart.
-
-🔥 Popular products may sell out.
-
-Complete checkout now while they're available.
 
 `;
 
@@ -810,18 +976,19 @@ Complete checkout now while they're available.
 // CHECKOUT BUTTON
 // ======================================
 
-function generateCheckoutButton() {
+function generateCheckoutButton(
+  checkoutUrl="/checkout"
+){
 
   return `
 
-<div style="
-margin-top:14px;
-">
+<div style="margin-top:18px;">
 
-<a href="/checkout"
+<a
+href="${checkoutUrl}"
 style="
 display:inline-block;
-padding:12px 18px;
+padding:12px 20px;
 border-radius:12px;
 background:
 linear-gradient(
@@ -829,14 +996,13 @@ linear-gradient(
 #00ffc3,
 #00aaff
 );
-color:#000;
-font-weight:bold;
 text-decoration:none;
-box-shadow:
-0 10px 30px
-rgba(0,255,200,.25);
+font-weight:bold;
+color:#000;
 ">
+
 ⚡ Complete Checkout
+
 </a>
 
 </div>
@@ -846,10 +1012,30 @@ rgba(0,255,200,.25);
 }
 
 // ======================================
+// RECOVERY MESSAGE
+// ======================================
+
+function generateRecoveryMessage(
+  customerName=""
+){
+
+  return `
+
+${customerName || "Hi"} 👋
+
+You still have items waiting in your cart.
+
+Complete your order before they sell out.
+
+`;
+
+}
+
+// ======================================
 // OPENAI REQUEST
 // ======================================
 
-async function callOpenAI(
+async function callOpenAI({
 
   model,
 
@@ -857,33 +1043,24 @@ async function callOpenAI(
 
   userMessage,
 
-  history = []
+  history=[]
 
-)
-  model = "gpt-4o-mini"
+}){
 
-) {
+  try{
 
-  try {
-
-    const messages = [
+    const messages=[
 
       {
-
-        role: "system",
-
-        content: systemPrompt
-
+        role:"system",
+        content:systemPrompt
       },
 
       ...history,
 
       {
-
-        role: "user",
-
-        content: userMessage
-
+        role:"user",
+        content:userMessage
       }
 
     ];
@@ -895,27 +1072,27 @@ async function callOpenAI(
 
         {
 
-          method: "POST",
+          method:"POST",
 
-          headers: {
+          headers:{
 
             Authorization:
-            `Bearer ${OPENAI_API_KEY}`,
+              `Bearer ${OPENAI_API_KEY}`,
 
             "Content-Type":
-            "application/json"
+              "application/json"
 
           },
 
-          body: JSON.stringify({
+          body:JSON.stringify({
 
-            model: model,
+            model,
 
             messages,
 
-            temperature: 0.7,
+            temperature:0.7,
 
-            max_tokens: 450
+            max_tokens:500
 
           })
 
@@ -923,59 +1100,398 @@ async function callOpenAI(
 
       );
 
-    if (!response.ok) {
+    if(!response.ok){
 
-      const err =
+      const error =
         await response.text();
 
-      throw new Error(err);
+      throw new Error(error);
 
     }
 
     const data =
       await response.json();
 
-    return (
+    return(
 
-      data?.choices?.[0]
-      ?.message?.content ||
+      data.choices?.[0]
+      ?.message
+      ?.content ||
 
-      "I'm happy to help you find the right product."
+      "I'm happy to help."
 
     );
 
-  } catch (err) {
+  }
+
+  catch(err){
 
     console.log(
-      "OPENAI ERROR:",
-      err
+      "OpenAI Error:",
+      err.message
     );
 
-    return "⚠️ I'm temporarily unavailable. Please try again.";
+    return
+      "⚠️ AI is temporarily unavailable.";
 
   }
 
 }
 
 // ======================================
-// PART 3/3
+// BUILD CHAT HISTORY
+// ======================================
+
+function buildHistory(
+  conversation
+){
+
+  if(
+    !conversation ||
+    !conversation.messages
+  ){
+
+    return[];
+
+  }
+
+  return conversation.messages
+
+    .slice(-20)
+
+    .map(message=>({
+
+      role:
+
+        message.sender === "customer"
+
+          ? "user"
+
+          : "assistant",
+
+      content:
+        message.message
+
+    }));
+
+}
+// ======================================
+// PART 4 / 5
 // Main AI Engine
-// Analytics
-// Memory
-// Exports
 // ======================================
 
-// ======================================
-// ANALYZE INTENT
+async function generateAIResponse({
+
+  clientId,
+  conversationId,
+  userMessage,
+  cartItems = [],
+  viewedProducts = []
+
+}){
+
+  try{
+
+    // ==================================
+    // CLIENT
+    // ==================================
+
+    const client =
+      await Client.findById(
+        clientId
+      );
+
+    if(!client){
+
+      return{
+
+        success:false,
+
+        reply:"Store not found."
+
+      };
+
+    }
+
+    // ==================================
+    // SUBSCRIPTION
+    // ==================================
+
+    const subscriptionResult =
+      await validateSubscription(
+        client._id
+      );
+
+    if(!subscriptionResult.active){
+
+      return{
+
+        success:false,
+
+        locked:true,
+
+        reply:
+        "Your subscription is inactive."
+
+      };
+
+    }
+
+    const subscription =
+      subscriptionResult.subscription;
+
+    // ==================================
+    // MODEL
+    // ==================================
+
+    const model =
+      getModel(
+        client,
+        subscription
+      );
+
+    // ==================================
+    // CONVERSATION
+    // ==================================
+
+    let conversation = null;
+
+    if(conversationId){
+
+      conversation =
+        await Conversation.findById(
+          conversationId
+        );
+
+    }
+
+    // ==================================
+    // PRODUCTS
+    // ==================================
+
+    const recommendedProducts =
+      await getRecommendedProducts(
+        client._id,
+        6
+      );
+
+    const upsellProducts =
+      await getUpsellProducts(
+        client._id,
+        5
+      );
+
+    const crossSellProducts =
+      await getCrossSellProducts(
+        client._id,
+        5
+      );
+
+    // ==================================
+    // CONTEXT
+    // ==================================
+
+    const systemPrompt =
+      buildFullContext({
+
+        client,
+
+        conversation,
+
+        products:
+          recommendedProducts,
+
+        cart:
+          cartItems,
+
+        enableUpsell:true,
+
+        enableCheckoutCloser:
+          client.plan === "premium" ||
+          client.plan === "enterprise" ||
+          subscription?.status === "trial",
+
+        enableCartRecovery:
+          cartItems.length > 0
+
+      });
+
+    // ==================================
+    // HISTORY
+    // ==================================
+
+    const history =
+      buildHistory(
+        conversation
+      );
+
+    // ==================================
+    // GPT
+    // ==================================
+
+    let reply =
+      await callOpenAI({
+
+        model,
+
+        systemPrompt,
+
+        userMessage,
+
+        history
+
+      });
+
+    // ==================================
+    // CUSTOMER INTENT
+    // ==================================
+
+    const intent =
+      await analyzeCustomerIntent(
+        userMessage
+      );
+
+    // ==================================
+    // PRODUCT SEARCH
+    // ==================================
+
+    let products = [];
+
+    const searchedProducts =
+      await searchProducts(
+
+        client._id,
+
+        userMessage,
+
+        4
+
+      );
+
+    if(
+      searchedProducts.length
+    ){
+
+      products =
+        searchedProducts;
+
+    }else{
+
+      products =
+        recommendedProducts.slice(0,3);
+
+    }
+
+    // ==================================
+    // CHECKOUT PUSH
+    // ==================================
+
+    if(
+
+      intent === "purchase" ||
+
+      intent === "checkout" ||
+
+      intent === "pricing"
+
+    ){
+
+      reply +=
+        generateCheckoutButton(
+          cartItems[0]?.checkoutUrl ||
+          "/checkout"
+        );
+
+    }
+
+    // ==================================
+    // CART RECOVERY
+    // ==================================
+
+    if(cartItems.length){
+
+      reply +=
+        generateRecoveryMessage(
+
+          conversation?.customerName
+
+        );
+
+    }
+
+    // ==================================
+    // PREMIUM UPSELL
+    // ==================================
+
+    if(
+
+      intent === "purchase" &&
+
+      upsellProducts.length
+
+    ){
+
+      reply +=
+      "\n\nRecommended for you:\n";
+
+      reply +=
+        generateProductCard(
+
+          upsellProducts[0],
+
+          client.store
+
+        );
+
+    }
+
+    // ==================================
+    // CROSS SELL
+    // ==================================
+
+    if(
+
+      intent === "general" &&
+
+      crossSellProducts.length
+
+    ){
+
+      reply +=
+        generateProductCard(
+
+          crossSellProducts[0],
+
+          client.store
+
+        );
+
+    }
+
+    // ==================================
+    // ANALYTICS
+    // ==================================
+
+    client.messages =
+      (client.messages || 0) + 1;
+
+    client.lastLoginAt =
+      new Date();
+
+    await client.save();
+
+    await updateProductAnalytics(
+      products
+    );
+    // ======================================
+// ANALYZE INTENT - PART -5/5
 // ======================================
 
-async function analyzeCustomerIntent(
-  userMessage
-) {
+async function analyzeCustomerIntent(userMessage) {
 
   const message =
     (userMessage || "")
-    .toLowerCase();
+      .toLowerCase();
 
   if (
     message.includes("buy") ||
@@ -1009,7 +1525,7 @@ async function analyzeCustomerIntent(
 }
 
 // ======================================
-// GENERATE AI RESPONSE
+// MAIN AI ENGINE
 // ======================================
 
 async function generateAIResponse({
@@ -1017,55 +1533,56 @@ async function generateAIResponse({
   clientId,
   conversationId,
   userMessage,
-  cartItems = [],
-  viewedProducts = []
+  cartItems = []
 
 }) {
 
   try {
 
-    // =========================
+    // =====================
     // CLIENT
-    // =========================
+    // =====================
 
     const client =
       await Client.findById(
         clientId
       );
-    const subscription =
-  await Subscription.findOne({
-    clientId: client._id
-  });
 
     if (!client) {
 
       return {
 
-        success: false,
+        success:false,
 
-        reply:
-        "Store not found."
+        reply:"Store not found."
 
       };
 
     }
 
-    // =========================
+    // =====================
     // SUBSCRIPTION
-    // =========================
+    // =====================
 
-    const sub =
+    const subscription =
+      await Subscription.findOne({
+
+        clientId:client._id
+
+      });
+
+    const validation =
       await validateSubscription(
         client._id
       );
 
-    if (!sub.active) {
+    if(!validation.active){
 
-      return {
+      return{
 
-        success: false,
+        success:false,
 
-        locked: true,
+        locked:true,
 
         reply:
         "Your subscription is inactive."
@@ -1074,14 +1591,24 @@ async function generateAIResponse({
 
     }
 
-    // =========================
+    // =====================
+    // MODEL
+    // =====================
+
+    const model =
+      getModel(
+        client,
+        subscription
+      );
+
+    // =====================
     // CONVERSATION
-    // =========================
+    // =====================
 
     let conversation =
       null;
 
-    if (conversationId) {
+    if(conversationId){
 
       conversation =
         await Conversation.findById(
@@ -1090,9 +1617,9 @@ async function generateAIResponse({
 
     }
 
-    // =========================
+    // =====================
     // PRODUCTS
-    // =========================
+    // =====================
 
     const recommendedProducts =
       await getRecommendedProducts(
@@ -1100,15 +1627,9 @@ async function generateAIResponse({
         5
       );
 
-    const upsellProducts =
-      await getUpsellProducts(
-        client._id,
-        5
-      );
-
-    // =========================
-    // BUILD CONTEXT
-    // =========================
+    // =====================
+    // CONTEXT
+    // =====================
 
     const systemPrompt =
       buildFullContext({
@@ -1123,210 +1644,119 @@ async function generateAIResponse({
         cart:
           cartItems,
 
-        enableUpsell:
-          true,
+        enableUpsell:true,
 
         enableCheckoutCloser:
-          client.plan ===
-            "premium" ||
-
-          client.plan ===
-            "enterprise",
+          client.plan==="premium" ||
+          client.plan==="enterprise" ||
+          subscription?.status==="trial",
 
         enableCartRecovery:
-          cartItems.length > 0
+          cartItems.length>0
 
       });
 
-    // =========================
+    // =====================
     // HISTORY
-    // =========================
+    // =====================
 
-    let history = [];
+    let history=[];
 
-    if (
+    if(
       conversation &&
       conversation.messages
-    ) {
+    ){
 
       history =
         conversation.messages
-          .slice(-20)
-          .map((m) => ({
+        .slice(-20)
+        .map(m=>({
 
-            role:
-              m.sender ===
-              "customer"
+          role:
+            m.sender==="customer"
+            ?"user"
+            :"assistant",
 
-                ? "user"
+          content:
+            m.message
 
-                : "assistant",
-
-            content:
-              m.message
-
-          }));
+        }));
 
     }
-    // =========================
+
+    // =====================
     // GPT
-    // =========================
+    // =====================
 
-const model =
-  getModel(
-    client.plan
-  );
+    let reply =
+      await callOpenAI(
 
-let reply =
-  await callOpenAI(
+        model,
 
-    model,
+        systemPrompt,
 
-    systemPrompt,
+        userMessage,
 
-    userMessage,
+        history
 
-    history
+      );
 
-  );
-
-    // =========================
+    // =====================
     // INTENT
-    // =========================
+    // =====================
 
     const intent =
       await analyzeCustomerIntent(
         userMessage
       );
 
-    // =========================
-    // CHECKOUT PUSH
-    // =========================
+    if(
 
-    if (
+      intent==="purchase" ||
 
-      intent === "purchase" ||
+      intent==="checkout" ||
 
-      intent === "checkout" ||
+      intent==="pricing"
 
-      intent === "pricing"
-
-    ) {
+    ){
 
       reply +=
         generateCheckoutButton();
 
     }
 
-    // =========================
-    // CART RECOVERY
-    // =========================
-
-    if (
-      cartItems.length > 0
-    ) {
+    if(cartItems.length){
 
       reply +=
         generateRecoveryMessage(
-          conversation
-            ?.customerName
+          conversation?.customerName
         );
 
     }
 
-    // =========================
-    // PRODUCT RESULTS
-    // =========================
+    // =====================
+    // SAVE CHAT
+    // =====================
 
-    let products = [];
-
-    if (
-
-      intent === "purchase" ||
-
-      intent === "general"
-
-    ) {
-
-      products =
-        recommendedProducts
-          .slice(0, 3);
-
-    }
-
-    // =========================
-    // ANALYTICS
-    // =========================
-
-    client.messages =
-      (client.messages || 0) + 1;
-
-    client.lastLoginAt =
-      new Date();
-
-    await client.save();
-
-    // =========================
-    // PRODUCT ANALYTICS
-    // =========================
-
-    for (const p of products) {
-
-      try {
-
-        await Product.updateOne(
-
-          {
-
-            _id: p._id
-
-          },
-
-          {
-
-            $inc: {
-
-              views: 1
-
-            }
-
-          }
-
-        );
-
-      } catch (err) {}
-
-    }
-
-    // =========================
-    // MEMORY SAVE
-    // =========================
-
-    if (conversation) {
+    if(conversation){
 
       conversation.messages.push({
 
-        sender:
-          "customer",
+        sender:"customer",
 
-        message:
-          userMessage,
+        message:userMessage,
 
-        platform:
-          "website"
+        platform:"website"
 
       });
 
       conversation.messages.push({
 
-        sender:
-          "ai",
+        sender:"ai",
 
-        message:
-          reply,
+        message:reply,
 
-        platform:
-          "website",
+        platform:"website",
 
         agentName:
           client.agentName ||
@@ -1344,35 +1774,44 @@ let reply =
 
     }
 
-    // =========================
-    // RETURN
-    // =========================
+    // =====================
+    // CLIENT ANALYTICS
+    // =====================
 
-    return {
+    client.messages =
+      (client.messages || 0) + 1;
 
-      success: true,
+    client.lastLoginAt =
+      new Date();
+
+    await client.save();
+
+    return{
+
+      success:true,
 
       reply,
 
-      products,
+      products:
+        recommendedProducts.slice(0,3),
 
       conversationId:
-        conversation?._id ||
-
-        null
+        conversation?._id || null
 
     };
 
-  } catch (err) {
+  }
+
+  catch(err){
 
     console.log(
       "AI ENGINE ERROR:",
       err
     );
 
-    return {
+    return{
 
-      success: false,
+      success:false,
 
       reply:
       "⚠️ AI temporarily unavailable."
@@ -1389,8 +1828,6 @@ let reply =
 
 module.exports = {
 
-  // PROMPTS
-
   buildSystemPrompt,
   buildCustomerMemory,
   buildProductRecommendations,
@@ -1399,29 +1836,22 @@ module.exports = {
   buildUpsellSuggestions,
   buildFullContext,
 
-  // PRODUCTS
+  validateSubscription,
+
+  getModel,
 
   getRecommendedProducts,
   getUpsellProducts,
   getCrossSellProducts,
 
-  // UI
-
   generateProductCard,
   generateRecoveryMessage,
   generateCheckoutButton,
 
-  // GPT
-
   callOpenAI,
 
-  // MAIN
-
-  generateAIResponse,
   analyzeCustomerIntent,
 
-  // BILLING
-
-  validateSubscription
+  generateAIResponse
 
 };
