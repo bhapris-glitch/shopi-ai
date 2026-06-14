@@ -68,17 +68,36 @@ async function verifyEmailConnection(){
 
 // ======================================
 // SEND EMAIL
+// Supports both:
+// sendEmail(to, subject, html)
+// sendEmail({to, subject, html})
 // ======================================
 
-async function sendEmail({
+async function sendEmail(...args){
 
-  to,
-  subject,
-  html,
-  text = "",
-  attachments = []
+  let options = {};
 
-}){
+  if(typeof args[0] === "object"){
+
+    options = args[0];
+
+  }else{
+
+    options = {
+
+      to: args[0],
+
+      subject: args[1],
+
+      html: args[2],
+
+      text: args[3] || "",
+
+      attachments: args[4] || []
+
+    };
+
+  }
 
   try{
 
@@ -91,15 +110,16 @@ async function sendEmail({
 
           `"Layboka AI" <${process.env.EMAIL_USER}>`,
 
-        to,
+        to: options.to,
 
-        subject,
+        subject: options.subject,
 
-        html,
+        html: options.html,
 
-        text,
+        text: options.text || "",
 
-        attachments
+        attachments:
+          options.attachments || []
 
       });
 
@@ -115,19 +135,15 @@ async function sendEmail({
   }catch(err){
 
     console.log(
-
       "EMAIL ERROR:",
-
       err.message
-
     );
 
-    return {
+    return{
 
       success:false,
 
-      error:
-        err.message
+      error:err.message
 
     };
 
