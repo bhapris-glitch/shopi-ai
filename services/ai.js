@@ -20,14 +20,27 @@ const Subscription = require("../models/Subscription");
 const OPENAI_URL =
   "https://api.openai.com/v1/chat/completions";
 
-const MODEL =
-  process.env.OPENAI_MODEL ||
-  "gpt-4o-mini";
+// ======================================
+// MODEL SELECTOR
+// ======================================
 
-const MODEL =
-client.plan === "premium"
-? "gpt-5"
-: "gpt-4o-mini";
+function getModel(plan) {
+
+  if (
+
+    plan === "premium" ||
+
+    plan === "enterprise"
+
+  ) {
+
+    return "gpt-5";
+
+  }
+
+  return "gpt-4o-mini";
+
+}
 
 const OPENAI_API_KEY =
   process.env.OPENAI_API_KEY;
@@ -733,12 +746,14 @@ margin-bottom:12px;
 $${product.price}
 </p>
 
-<button
-onclick="window.open(`https://${store}/products/${product.handle}`))"
+<a
+href="/products/${product.handle}"
+target="_blank"
 style="
+display:block;
+text-align:center;
 width:100%;
 padding:12px;
-border:none;
 border-radius:12px;
 background:
 linear-gradient(
@@ -748,10 +763,14 @@ linear-gradient(
 );
 color:#000;
 font-weight:bold;
-cursor:pointer;
-">
+text-decoration:none;
+box-shadow:
+0 10px 30px
+rgba(0,255,200,.25);
+"
+>
 🛒 View Product
-</button>
+</a>
 
 </div>
 
@@ -832,7 +851,9 @@ async function callOpenAI(
 
   userMessage,
 
-  history = []
+  history = [],
+
+  model = "gpt-4o-mini"
 
 ) {
 
@@ -881,7 +902,7 @@ async function callOpenAI(
 
           body: JSON.stringify({
 
-            model: MODEL,
+            model: model,
 
             messages,
 
@@ -1136,21 +1157,27 @@ async function generateAIResponse({
           }));
 
     }
-
     // =========================
     // GPT
     // =========================
 
-    let reply =
-      await callOpenAI(
+const model =
+  getModel(
+    client.plan
+  );
 
-        systemPrompt,
+let reply =
+  await callOpenAI(
 
-        userMessage,
+    systemPrompt,
 
-        history
+    userMessage,
 
-      );
+    history,
+
+    model
+
+  );
 
     // =========================
     // INTENT
