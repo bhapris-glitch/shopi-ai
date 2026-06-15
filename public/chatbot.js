@@ -2,7 +2,7 @@
 // shopi-ai/public/chatbot.js
 // Layboka AI Sales Agent
 // Production Ready V4
-// Part 1/10
+// Part 1/10 - 3232 Lines 
 // Foundation
 // =====================================
 
@@ -2598,3 +2598,635 @@ setInterval(()=>{
   }
 
 },900000);
+// =====================================
+// SHOPIFY PRODUCT DETECTION Part 3C-1
+// =====================================
+
+function detectProductPage(){
+
+  try{
+
+    if(
+
+      !window.Shopify ||
+
+      !window.meta
+
+    ){
+
+      return null;
+
+    }
+
+    const product =
+      window.meta.product;
+
+    if(!product){
+
+      return null;
+
+    }
+
+    return {
+
+      id:
+        product.id,
+
+      title:
+        product.title,
+
+      handle:
+        product.handle,
+
+      vendor:
+        product.vendor,
+
+      type:
+        product.type
+
+    };
+
+  }catch(err){
+
+    return null;
+
+  }
+
+}
+
+// =====================================
+// SHOPIFY CART DETECTION
+// =====================================
+
+async function loadCart(){
+
+  try{
+
+    const res =
+      await fetch("/cart.js");
+
+    const cart =
+      await res.json();
+
+    cartItems =
+      cart.items || [];
+
+    return cartItems;
+
+  }catch(err){
+
+    console.log(
+      "Cart Error:",
+      err
+    );
+
+    return [];
+
+  }
+
+}
+
+// =====================================
+// PRODUCT VIEW TRACKING
+// =====================================
+
+async function trackProductView(){
+
+  const product =
+    detectProductPage();
+
+  if(!product){
+
+    return;
+
+  }
+
+  viewedProducts.push(product);
+
+  await trackEvent(
+
+    "product_view",
+
+    {
+
+      productId:
+        product.id,
+
+      title:
+        product.title,
+
+      vendor:
+        product.vendor,
+
+      handle:
+        product.handle
+
+    }
+
+  );
+
+}
+
+// =====================================
+// CART TRACKING
+// =====================================
+
+async function trackCart(){
+
+  await loadCart();
+
+  await trackEvent(
+
+    "cart_update",
+
+    {
+
+      items:
+        cartItems.length
+
+    }
+
+  );
+
+}
+
+// =====================================
+// PAGE VIEW
+// =====================================
+
+async function trackPageView(){
+
+  await trackEvent(
+
+    "page_view",
+
+    {
+
+      url:
+        location.pathname,
+
+      title:
+        document.title
+
+    }
+
+  );
+
+}
+
+// =====================================
+// INITIAL TRACKING
+// =====================================
+
+async function initializeTracking(){
+
+  await trackPageView();
+
+  await trackProductView();
+
+  await trackCart();
+
+}
+// =====================================
+// LOAD STORE CONFIG Part 3C-2
+// =====================================
+
+async function loadStoreConfig(){
+
+  try{
+
+    const response = await fetch(
+
+      `${API_BASE}/client/widget/${clientId}`
+
+    );
+
+    if(!response.ok){
+
+      throw new Error("Config Error");
+
+    }
+
+    const data = await response.json();
+
+    // ===============================
+    // AGENT NAME
+    // ===============================
+
+    if(data.agentName){
+
+      setAgentName(
+        data.agentName
+      );
+
+    }
+
+    // ===============================
+    // STORE NAME
+    // ===============================
+
+    window.LAY_STORE_NAME =
+
+      data.storeName ||
+
+      "Our Store";
+
+    // ===============================
+    // PLAN
+    // ===============================
+
+    USER_PLAN =
+
+      data.plan ||
+
+      "starter";
+
+    // ===============================
+    // TRIAL
+    // ===============================
+
+    if(data.trial){
+
+      showTrialBanner({
+
+        trialMode:true,
+
+        trialEnds:data.trialEnds
+
+      });
+
+    }
+
+    // ===============================
+    // 24 HOURS REMINDER
+    // ===============================
+
+    if(data.showRenewReminder){
+
+      showRenewReminder();
+
+    }
+
+    // ===============================
+    // EXPIRED
+    // ===============================
+
+    if(data.trialExpired){
+
+      showTrialExpired();
+
+    }
+
+    // ===============================
+    // PREMIUM
+    // ===============================
+
+    if(USER_PLAN==="premium"){
+
+      premiumGreeting();
+
+    }
+
+    // ===============================
+    // WELCOME
+    // ===============================
+
+    showWelcomeMessage(
+
+      window.LAY_STORE_NAME
+
+    );
+
+    return data;
+
+  }
+
+  catch(err){
+
+    console.log(
+
+      "Store Config Error:",
+
+      err
+
+    );
+
+    showWelcomeMessage();
+
+    return null;
+
+  }
+
+}
+
+// =====================================
+// LOAD CONVERSATION
+// =====================================
+
+async function loadConversation(){
+
+  try{
+
+    const response = await fetch(
+
+      `${API_BASE}/chat/history/${sessionId}`
+
+    );
+
+    if(!response.ok){
+
+      return;
+
+    }
+
+    const data =
+
+      await response.json();
+
+    if(
+
+      data.messages &&
+
+      data.messages.length
+
+    ){
+
+      data.messages.forEach(
+
+        (message)=>{
+
+          if(
+
+            message.sender==="customer"
+
+          ){
+
+            addUserMessage(
+
+              message.message
+
+            );
+
+          }
+
+          else{
+
+            addAgentMessage(
+
+              message.message
+
+            );
+
+          }
+
+        }
+
+      );
+
+    }
+
+  }
+
+  catch(err){
+
+    console.log(
+
+      "History Error:",
+
+      err
+
+    );
+
+  }
+
+}
+
+// =====================================
+// INITIALIZE STORE
+// =====================================
+
+async function initializeStore(){
+
+  await initializeTracking();
+
+  await loadStoreConfig();
+
+  await loadConversation();
+
+        }
+// =====================================
+// SEND CHAT REQUEST Part 3C-3
+// =====================================
+
+async function askAI(message){
+
+  if(
+
+    CHAT_LOCKED ||
+
+    !message ||
+
+    !message.trim()
+
+  ){
+
+    return;
+
+  }
+
+  addUserMessage(message);
+
+  lastActivity = Date.now();
+
+  showTyping();
+
+  try{
+
+    const response = await fetch(
+
+      `${API_BASE}/chat`,
+
+      {
+
+        method:"POST",
+
+        headers:{
+
+          "Content-Type":
+          "application/json"
+
+        },
+
+        body:JSON.stringify({
+
+          clientId,
+
+          sessionId,
+
+          message,
+
+          cartItems,
+
+          viewedProducts
+
+        })
+
+      }
+
+    );
+
+    hideTyping();
+
+    if(!response.ok){
+
+      throw new Error(
+        "Chat API Error"
+      );
+
+    }
+
+    const data =
+      await response.json();
+
+    // ==========================
+    // LOCK
+    // ==========================
+
+    if(data.locked){
+
+      CHAT_LOCKED = true;
+
+    }
+
+    // ==========================
+    // REPLY
+    // ==========================
+
+    if(data.reply){
+
+      addAgentMessage(
+        data.reply
+      );
+
+      saveConversation(
+        data.reply
+      );
+
+    }
+
+    // ==========================
+    // PRODUCTS
+    // ==========================
+
+    if(
+
+      Array.isArray(
+        data.products
+      )
+
+    ){
+
+      addProducts(
+        data.products
+      );
+
+    }
+
+    // ==========================
+    // CHECKOUT
+    // ==========================
+
+    if(data.checkout){
+
+      addCheckoutButton();
+
+    }
+
+  }
+
+  catch(err){
+
+    hideTyping();
+
+    console.log(
+      err
+    );
+
+    addAgentMessage(
+
+      "⚠️ Connection problem. Please try again."
+
+    );
+
+  }
+
+}
+
+// =====================================
+// SEND BUTTON
+// =====================================
+
+sendBtn.onclick = ()=>{
+
+  const text =
+    input.value.trim();
+
+  if(!text) return;
+
+  input.value="";
+
+  askAI(text);
+
+};
+
+// =====================================
+// ENTER KEY
+// =====================================
+
+input.addEventListener(
+
+  "keypress",
+
+  function(e){
+
+    if(e.key==="Enter"){
+
+      sendBtn.click();
+
+    }
+
+  }
+
+);
+
+// =====================================
+// AUTO CART REFRESH
+// =====================================
+
+setInterval(
+
+  async ()=>{
+
+    await loadCart();
+
+  },
+
+  30000
+
+);
+
+// =====================================
+// STARTUP
+// =====================================
+
+(async function(){
+
+  await initializeStore();
+
+  console.log(
+
+    "✅ Layboka AI Widget Loaded"
+
+  );
+
+})();
