@@ -3230,3 +3230,192 @@ setInterval(
   );
 
 })();
+// =====================================
+// THEME + AVATAR LOADER
+// Part 3C-4
+// =====================================
+
+let STORE_SETTINGS = {};
+
+async function loadStoreSettings() {
+
+  try {
+
+    const res = await fetch(
+
+      `${API_BASE}/widget/settings/${clientId}`
+
+    );
+
+    if (!res.ok) return;
+
+    STORE_SETTINGS = await res.json();
+
+    // ==========================
+    // Theme
+    // ==========================
+
+    document.documentElement.style.setProperty(
+
+      "--lay-primary",
+
+      STORE_SETTINGS.primaryColor || "#ff8a00"
+
+    );
+
+    document.documentElement.style.setProperty(
+
+      "--lay-secondary",
+
+      STORE_SETTINGS.secondaryColor || "#ffbf47"
+
+    );
+
+    document.documentElement.style.setProperty(
+
+      "--lay-chat-bg",
+
+      STORE_SETTINGS.chatBackground || "#041126"
+
+    );
+
+    document.documentElement.style.setProperty(
+
+      "--lay-text",
+
+      STORE_SETTINGS.textColor || "#ffffff"
+
+    );
+
+    // ==========================
+    // Agent Name
+    // ==========================
+
+    const agentName =
+
+      STORE_SETTINGS.agentName ||
+
+      "Emma";
+
+    const status =
+
+      document.getElementById("lay-status");
+
+    if (status) {
+
+      status.innerHTML =
+
+`🟢 ${agentName} is online`;
+
+    }
+
+    // ==========================
+    // Avatar
+    // ==========================
+
+    const avatar =
+
+      document.getElementById("lay-avatar");
+
+    if (avatar) {
+
+      avatar.src =
+
+        STORE_SETTINGS.avatar ||
+
+        "/avatars/female.png";
+
+    }
+
+  } catch (err) {
+
+    console.log(
+
+      "Theme Load Error:",
+
+      err
+
+    );
+
+  }
+
+}
+
+// =====================================
+// WELCOME BANNER
+// =====================================
+
+function showWelcomeBanner() {
+
+  if (
+
+    sessionStorage.getItem(
+
+      "lay_welcome"
+
+    )
+
+  ) {
+
+    return;
+
+  }
+
+  sessionStorage.setItem(
+
+    "lay_welcome",
+
+    "1"
+
+  );
+
+  const banner =
+
+    document.createElement("div");
+
+  banner.style = `
+
+position:fixed;
+right:100px;
+bottom:100px;
+background:white;
+padding:14px 18px;
+border-radius:18px;
+box-shadow:0 15px 45px rgba(0,0,0,.25);
+z-index:999998;
+font-size:14px;
+font-weight:600;
+max-width:260px;
+animation:layFade .35s ease;
+
+`;
+
+  banner.innerHTML = `
+
+👋 Welcome!
+
+Need help choosing the perfect product?
+
+`;
+
+  document.body.appendChild(
+
+    banner
+
+  );
+
+  setTimeout(() => {
+
+    banner.remove();
+
+  }, 6000);
+
+}
+
+// =====================================
+// LOAD SETTINGS
+// =====================================
+
+loadStoreSettings();
+
+showWelcomeBanner();
