@@ -41,6 +41,107 @@ const API = {
         "/chat/ping"
 
 };
+    // =====================================
+// AVATAR CONFIG
+// =====================================
+
+const AVATAR = {
+
+    mode: "female", // female | male | logo | custom
+
+    female: {
+
+        welcome: "/assets/avatar/female/welcome.png",
+        idleOpen: "/assets/avatar/female/open.png",
+        idleClosed: "/assets/avatar/female/closed.png"
+
+    },
+
+    male: {
+
+        welcome: "/assets/avatar/male/welcome.png",
+        idleOpen: "/assets/avatar/male/open.png",
+        idleClosed: "/assets/avatar/male/closed.png"
+
+    },
+
+    logo: "/assets/logo.png",
+
+    custom: ""
+
+};
+// =====================================
+// CURRENT AVATAR
+// =====================================
+
+function currentAvatar(){
+
+    if(AVATAR.mode==="female"){
+
+        return AVATAR.female;
+
+    }
+
+    if(AVATAR.mode==="male"){
+
+        return AVATAR.male;
+
+    }
+
+    return AVATAR.female;
+
+}
+
+// =====================================
+// CHANGE IMAGE
+// =====================================
+
+function setFloatingFace(src){
+
+    if(!avatarFloating) return;
+
+    avatarFloating.src = src;
+
+}
+// =====================================
+// STORE SETTINGS
+// =====================================
+
+const STORE = {
+
+    name: document.title,
+
+    primary: "#ff8a00",
+
+    secondary: "#16213c",
+
+    popupDelay: 2500,
+
+    popupDuration: 6000
+
+};
+
+// =====================================
+// CHAT STATE
+// =====================================
+
+let USER_PLAN = "starter";
+
+let CHAT_LOCKED = false;
+
+let cartItems = [];
+
+let viewedProducts = [];
+
+let recommendedProducts = [];
+
+let lastActivity = Date.now();
+
+let avatarBlinkTimer = null;
+
+let avatarFloating = null;
+
+let welcomePopup = null;
 
 // =====================================
 // CLIENT
