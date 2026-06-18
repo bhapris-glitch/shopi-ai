@@ -91,7 +91,112 @@ function currentAvatar(){
     return AVATAR.female;
 
 }
+// =====================================
+// AVATAR CONTROLLER
+// =====================================
 
+const AvatarController = {
+
+    avatar: null,
+    popup: null,
+    blinking: null,
+
+    offers: [
+        "👋 Welcome!",
+        "🎁 Special discount waiting for you",
+        "🔥 Best selling products",
+        "✨ New arrivals just landed",
+        "💖 Recommended for you"
+    ],
+
+    init(){
+
+        this.avatar =
+        document.querySelector(".lb-avatar");
+
+        this.popup =
+        document.querySelector(".lb-avatar-popup");
+
+        if(!this.avatar) return;
+
+        this.startBlink();
+
+        this.showWelcome();
+
+    },
+
+    //----------------------------------
+
+    startBlink(){
+
+        clearInterval(this.blinking);
+
+        this.blinking = setInterval(()=>{
+
+            this.blink();
+
+        },4000 + Math.random()*3000);
+
+    },
+
+    //----------------------------------
+
+    blink(){
+
+        const avatar=currentAvatar();
+
+        if(!avatar.idleClosed) return;
+
+        this.avatar.src=avatar.idleClosed;
+
+        setTimeout(()=>{
+
+            this.avatar.src=avatar.idleOpen;
+
+        },180);
+
+    },
+
+    //----------------------------------
+
+    showWelcome(){
+
+        if(!this.popup) return;
+
+        const offer =
+        this.offers[
+            Math.floor(
+                Math.random()*this.offers.length
+            )
+        ];
+
+        this.popup.innerHTML=offer;
+
+        this.popup.classList.add("show");
+
+        setTimeout(()=>{
+
+            this.popup.classList.remove("show");
+
+        },4500);
+
+    },
+
+    //----------------------------------
+
+    wave(){
+
+        this.avatar.classList.add("wave");
+
+        setTimeout(()=>{
+
+            this.avatar.classList.remove("wave");
+
+        },1200);
+
+    }
+
+};
 // =====================================
 // CHANGE IMAGE
 // =====================================
