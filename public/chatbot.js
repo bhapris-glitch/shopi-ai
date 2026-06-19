@@ -4269,3 +4269,120 @@ setTimeout(()=>{
     OfferPopup.show();
 
 },3500);
+
+// =====================================
+// PART 3E-1
+// Layboka AI 
+// LIVING AI ASSISTANT
+// =====================================
+
+const LivingAssistant={
+
+    speaking:false,
+
+    breathing:null,
+
+    //----------------------------------
+
+    init(){
+
+        this.startBreathing();
+
+    },
+
+    //----------------------------------
+
+    startBreathing(){
+
+        if(!FloatingAvatar.root) return;
+
+        this.breathing=setInterval(()=>{
+
+            FloatingAvatar.root.classList.add(
+                "lb-breath"
+            );
+
+            setTimeout(()=>{
+
+                FloatingAvatar.root.classList.remove(
+                    "lb-breath"
+                );
+
+            },1200);
+
+        },2800);
+
+    },
+
+    //----------------------------------
+
+    async speak(text){
+
+        if(this.speaking) return;
+
+        this.speaking=true;
+
+        if(FloatingAvatar.image){
+
+            FloatingAvatar.image.classList.add(
+                "lb-speaking"
+            );
+
+        }
+
+        if(
+
+            "speechSynthesis"
+
+            in window
+
+        ){
+
+            try{
+
+                speechSynthesis.cancel();
+
+                const voice=
+
+                new SpeechSynthesisUtterance(
+                    text
+                );
+
+                voice.lang="en-US";
+
+                voice.rate=1;
+
+                voice.pitch=1;
+
+                speechSynthesis.speak(
+                    voice
+                );
+
+            }catch(e){}
+
+        }
+
+        setTimeout(()=>{
+
+            if(FloatingAvatar.image){
+
+                FloatingAvatar.image.classList.remove(
+                    "lb-speaking"
+                );
+
+            }
+
+            this.speaking=false;
+
+        },2500);
+
+    }
+
+};
+
+// =====================================
+// INITIALIZE
+// =====================================
+
+LivingAssistant.init();
+
