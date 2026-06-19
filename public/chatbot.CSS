@@ -37,3 +37,86 @@
   }
 
 }
+
+/* ======================================
+   PART 3D-4
+   AVATAR ANIMATION
+======================================*/
+
+.lay-avatar-enter{
+
+    animation:avatarEnter .7s ease forwards;
+
+}
+
+@keyframes avatarEnter{
+
+    from{
+
+        opacity:0;
+
+        transform:
+            translateY(30px)
+            scale(.8);
+
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:
+            translateY(0)
+            scale(1);
+
+    }
+
+}
+
+.lay-avatar-wave{
+
+    animation:avatarWave 1.6s ease;
+
+    transform-origin:bottom center;
+
+}
+
+@keyframes avatarWave{
+
+    0%{
+
+        transform:rotate(0deg);
+
+    }
+
+    20%{
+
+        transform:rotate(-6deg);
+
+    }
+
+    40%{
+
+        transform:rotate(8deg);
+
+    }
+
+    60%{
+
+        transform:rotate(-4deg);
+
+    }
+
+    80%{
+
+        transform:rotate(6deg);
+
+    }
+
+    100%{
+
+        transform:rotate(0deg);
+
+    }
+
+}
