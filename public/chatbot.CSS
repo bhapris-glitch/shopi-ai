@@ -188,3 +188,63 @@
     font-weight:500;
 
 }
+/* ======================================
+   PART 3E-1
+   LIVING AVATAR
+======================================*/
+
+.lb-breath{
+
+    animation:lbBreath 1.2s ease;
+
+}
+
+@keyframes lbBreath{
+
+    0%{
+
+        transform:scale(1);
+
+    }
+
+    50%{
+
+        transform:scale(1.03);
+
+    }
+
+    100%{
+
+        transform:scale(1);
+
+    }
+
+}
+
+.lb-speaking{
+
+    animation:lbTalk .28s infinite;
+
+}
+
+@keyframes lbTalk{
+
+    0%{
+
+        transform:translateY(0);
+
+    }
+
+    50%{
+
+        transform:translateY(2px);
+
+    }
+
+    100%{
+
+        transform:translateY(0);
+
+    }
+
+}
