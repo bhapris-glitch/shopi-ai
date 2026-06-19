@@ -2009,6 +2009,25 @@ function addAgentMessage(
 
   );
 
+  // =====================================
+  // AVATAR SPEAK
+  // =====================================
+
+  if(
+
+    typeof LivingAssistant !==
+    "undefined"
+
+  ){
+
+    LivingAssistant.speak(
+
+      text
+
+    );
+
+  }
+
 }
 
 // =====================================
