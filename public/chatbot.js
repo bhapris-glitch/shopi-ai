@@ -1355,7 +1355,43 @@ transition:.25s;
 document.body.appendChild(
   chatButton
 );
+// =====================================
+// FLOATING AVATAR
+// =====================================
 
+const floatingAvatar =
+document.createElement("div");
+
+floatingAvatar.id="lb-floating-avatar";
+
+floatingAvatar.innerHTML=`
+
+<div class="lb-avatar-wrapper">
+
+    <img
+        class="lb-avatar"
+        src="${currentAvatar().idleOpen}"
+        alt="Layboka AI">
+
+    <div class="lb-online"></div>
+
+</div>
+
+<div class="lb-avatar-popup">
+
+    👋 Welcome
+
+</div>
+
+`;
+
+document.body.appendChild(
+    floatingAvatar
+);
+
+// ======================================
+// END FLOATING AVATAR Script 
+// ======================================
 // =====================================
 // CHAT WINDOW
 // =====================================
