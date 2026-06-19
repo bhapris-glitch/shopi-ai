@@ -4102,3 +4102,170 @@ setTimeout(()=>{
     AvatarGreeting.start();
 
 },1200);
+
+// =====================================
+// PART 3D-5
+// Dynamic OFFER POPUP ENGINE
+// public/chatbot.js - LAYBOKA AI
+// =====================================
+
+const OfferPopup={
+
+    showing:false,
+
+    timer:null,
+
+    //----------------------------------
+
+    async show(){
+
+        if(this.showing) return;
+
+        this.showing=true;
+
+        try{
+
+            const res=
+            await fetch(
+
+                `${API.BASE}/products/highlights?clientId=${clientId}`
+
+            );
+
+            const data=
+            await res.json();
+
+            if(
+
+                !data ||
+
+                !Array.isArray(data.products)
+
+            ){
+
+                this.showDefault();
+
+                return;
+
+            }
+
+            this.render(
+                data.products
+            );
+
+        }catch(e){
+
+            this.showDefault();
+
+        }
+
+    },
+
+    //----------------------------------
+
+    showDefault(){
+
+        this.render([
+
+            {
+                title:"🔥 Best Sellers"
+            },
+
+            {
+                title:"🎁 Today's Offer"
+            },
+
+            {
+                title:"✨ New Arrival"
+            }
+
+        ]);
+
+    },
+
+    //----------------------------------
+
+    render(products){
+
+        if(!FloatingAvatar.popup) return;
+
+        let html=
+        `<div class="lb-offer-title">
+
+Today's Picks
+
+</div>`;
+
+        products
+        .slice(0,3)
+        .forEach(p=>{
+
+            html+=`
+
+<div class="lb-offer-item">
+
+${p.image ?
+
+`<img src="${p.image}">`
+
+:
+
+`<div class="lb-offer-placeholder">
+
+🛍
+
+</div>`
+
+}
+
+<div class="lb-offer-name">
+
+${p.title}
+
+</div>
+
+</div>
+
+`;
+
+        });
+
+        FloatingAvatar.popup.innerHTML=html;
+
+        FloatingAvatar.popup.classList.add(
+            "show"
+        );
+
+        clearTimeout(this.timer);
+
+        this.timer=setTimeout(()=>{
+
+            this.hide();
+
+        },6500);
+
+    },
+
+    //----------------------------------
+
+    hide(){
+
+        FloatingAvatar.popup.classList.remove(
+            "show"
+        );
+
+        this.showing=false;
+
+    }
+
+};
+
+// =====================================
+// START POPUP
+// =====================================
+
+setTimeout(()=>{
+
+    OfferPopup.show();
+
+},3500);
