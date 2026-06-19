@@ -3661,3 +3661,444 @@ Need help choosing the perfect product?
 loadStoreSettings();
 
 showWelcomeBanner();
+
+// =====================================
+//***************************
+// PART 3D-1.               "
+// FLOATING AVATAR ENGINE.  *
+// =====================================
+
+const FloatingAvatar = {
+
+    root:null,
+
+    image:null,
+
+    popup:null,
+
+    online:null,
+
+    opened:false,
+
+    //----------------------------------
+
+    init(){
+
+        this.create();
+
+    },
+
+    //----------------------------------
+
+    create(){
+
+        this.root=document.createElement("div");
+
+        this.root.id="lay-avatar";
+
+        this.root.innerHTML=`
+
+<div class="lay-avatar-wrapper">
+
+    <img
+        class="lay-avatar-image"
+        src="${currentAvatar().idleOpen}"
+        draggable="false">
+
+    <div class="lay-avatar-online"></div>
+
+</div>
+
+<div class="lay-avatar-popup">
+
+    👋 Welcome
+
+</div>
+
+`;
+
+        document.body.appendChild(
+            this.root
+        );
+
+        this.image=
+        this.root.querySelector(
+            ".lay-avatar-image"
+        );
+
+        this.popup=
+        this.root.querySelector(
+            ".lay-avatar-popup"
+        );
+
+        this.online=
+        this.root.querySelector(
+            ".lay-avatar-online"
+        );
+
+    },
+
+    //----------------------------------
+
+    set(src){
+
+        if(!this.image) return;
+
+        this.image.src=src;
+
+    },
+
+    //----------------------------------
+
+    hide(){
+
+        if(this.root){
+
+            this.root.style.display="none";
+
+        }
+
+    },
+
+    //----------------------------------
+
+    show(){
+
+        if(this.root){
+
+            this.root.style.display="block";
+
+        }
+
+    }
+
+};
+
+// =====================================
+// INITIALIZE
+// =====================================
+
+FloatingAvatar.init();
+
+
+// =====================================
+// PART 3D-2
+// BLINK ENGINE
+// =====================================
+
+const BlinkEngine={
+
+    timer:null,
+
+    running:false,
+
+    //----------------------------------
+
+    start(){
+
+        if(this.running) return;
+
+        this.running=true;
+
+        this.schedule();
+
+    },
+
+    //----------------------------------
+
+    stop(){
+
+        clearTimeout(this.timer);
+
+        this.running=false;
+
+    },
+
+    //----------------------------------
+
+    schedule(){
+
+        const delay=
+            2500+
+            Math.random()*3500;
+
+        this.timer=setTimeout(()=>{
+
+            this.blink();
+
+        },delay);
+
+    },
+
+    //----------------------------------
+
+    blink(){
+
+        if(!FloatingAvatar.image){
+
+            this.schedule();
+
+            return;
+
+        }
+
+        FloatingAvatar.set(
+            currentAvatar().idleClosed
+        );
+
+        setTimeout(()=>{
+
+            FloatingAvatar.set(
+                currentAvatar().idleOpen
+            );
+
+            this.schedule();
+
+        },180);
+
+    }
+
+};
+
+// =====================================
+// START BLINKING
+// =====================================
+
+BlinkEngine.start();
+
+// =====================================
+// PART 3D-3
+// SMART WELCOME POPUP
+// =====================================
+
+const WelcomePopup={
+
+    showing:false,
+
+    timer:null,
+
+    messages:[
+
+        {
+            icon:"👋",
+            title:"Welcome",
+            text:"I'm your AI shopping assistant."
+        },
+
+        {
+            icon:"🎁",
+            title:"Today's Offer",
+            text:"Ask me for today's best deals."
+        },
+
+        {
+            icon:"🔥",
+            title:"Best Sellers",
+            text:"See what customers love most."
+        },
+
+        {
+            icon:"✨",
+            title:"New Arrivals",
+            text:"Discover the latest products."
+        },
+
+        {
+            icon:"💎",
+            title:"Recommended",
+            text:"I'll help you find the perfect products."
+        }
+
+    ],
+
+    //----------------------------------
+
+    show(){
+
+        if(this.showing) return;
+
+        if(!FloatingAvatar.popup) return;
+
+        this.showing=true;
+
+        const data=
+
+            this.messages[
+                Math.floor(
+                    Math.random()*
+                    this.messages.length
+                )
+            ];
+
+        FloatingAvatar.popup.innerHTML=`
+
+<div class="lay-popup-card">
+
+<div class="lay-popup-icon">
+${data.icon}
+</div>
+
+<div class="lay-popup-content">
+
+<div class="lay-popup-title">
+${data.title}
+</div>
+
+<div class="lay-popup-text">
+${data.text}
+</div>
+
+</div>
+
+</div>
+
+`;
+
+        FloatingAvatar.popup.classList.add(
+            "show"
+        );
+
+        clearTimeout(this.timer);
+
+        this.timer=setTimeout(()=>{
+
+            this.hide();
+
+        },5500);
+
+    },
+
+    //----------------------------------
+
+    hide(){
+
+        FloatingAvatar.popup.classList.remove(
+            "show"
+        );
+
+        this.showing=false;
+
+    }
+
+};
+
+// =====================================
+// SHOW AFTER STORE LOAD
+// =====================================
+
+setTimeout(()=>{
+
+    WelcomePopup.show();
+
+},2500);
+
+// =====================================
+// PART 3D-4
+// AVATAR GREETING ENGINE
+// =====================================
+
+const AvatarGreeting={
+
+    started:false,
+
+    //----------------------------------
+
+    start(){
+
+        if(this.started) return;
+
+        this.started=true;
+
+        this.enter();
+
+    },
+
+    //----------------------------------
+
+    enter(){
+
+        if(!FloatingAvatar.root) return;
+
+        FloatingAvatar.root.classList.add(
+            "lay-avatar-enter"
+        );
+
+        setTimeout(()=>{
+
+            this.wave();
+
+        },700);
+
+    },
+
+    //----------------------------------
+
+    wave(){
+
+        if(!FloatingAvatar.image) return;
+
+        FloatingAvatar.image.classList.add(
+            "lay-avatar-wave"
+        );
+
+        setTimeout(()=>{
+
+            FloatingAvatar.image.classList.remove(
+                "lay-avatar-wave"
+            );
+
+            this.blink();
+
+        },1800);
+
+    },
+
+    //----------------------------------
+
+    blink(){
+
+        FloatingAvatar.set(
+            currentAvatar().idleClosed
+        );
+
+        setTimeout(()=>{
+
+            FloatingAvatar.set(
+                currentAvatar().idleOpen
+            );
+
+        },180);
+
+    },
+
+    //----------------------------------
+
+    greet(){
+
+        if(!FloatingAvatar.popup) return;
+
+        FloatingAvatar.popup.classList.add(
+            "show"
+        );
+
+        setTimeout(()=>{
+
+            FloatingAvatar.popup.classList.remove(
+                "show"
+            );
+
+        },4500);
+
+    }
+
+};
+
+// =====================================
+// START GREETING
+// =====================================
+
+setTimeout(()=>{
+
+    AvatarGreeting.start();
+
+},1200);
