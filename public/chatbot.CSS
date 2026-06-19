@@ -120,3 +120,71 @@
     }
 
 }
+
+/* ======================================
+   PART 3D-5 OFFER POPUP
+======================================*/
+
+.lb-offer-title{
+
+    font-weight:700;
+
+    margin-bottom:12px;
+
+    color:#ffffff;
+
+    font-size:15px;
+
+}
+
+.lb-offer-item{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
+    margin-bottom:10px;
+
+}
+
+.lb-offer-item img{
+
+    width:48px;
+
+    height:48px;
+
+    border-radius:12px;
+
+    object-fit:cover;
+
+}
+
+.lb-offer-placeholder{
+
+    width:48px;
+
+    height:48px;
+
+    border-radius:12px;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    background:#202c47;
+
+}
+
+.lb-offer-name{
+
+    color:#fff;
+
+    font-size:13px;
+
+    font-weight:500;
+
+}
