@@ -4405,3 +4405,93 @@ const LivingAssistant={
 
 LivingAssistant.init();
 
+// =====================================
+// PART 3E-2
+// SMART IDLE ENGINE
+// =====================================
+
+const IdleAssistant={
+
+    timer:null,
+
+    messages:[
+
+        "👋 Need help finding something?",
+
+        "🔥 Ask me about today's best sellers.",
+
+        "🎁 I can show today's special offers.",
+
+        "✨ Looking for something specific?",
+
+        "💬 I'm here whenever you need me."
+
+    ],
+
+    //----------------------------------
+
+    reset(){
+
+        clearTimeout(this.timer);
+
+        this.start();
+
+    },
+
+    //----------------------------------
+
+    start(){
+
+        this.timer=setTimeout(()=>{
+
+            this.showMessage();
+
+        },180000); // 3 minutes
+
+    },
+
+    //----------------------------------
+
+    showMessage(){
+
+        if(
+
+            !opened ||
+
+            CHAT_LOCKED
+
+        ){
+
+            this.start();
+
+            return;
+
+        }
+
+        const msg=
+
+            this.messages[
+
+                Math.floor(
+
+                    Math.random()*
+
+                    this.messages.length
+
+                )
+
+            ];
+
+        addAgentMessage(msg);
+
+        this.start();
+
+    }
+
+};
+
+// =====================================
+// START IDLE
+// =====================================
+
+IdleAssistant.start();
