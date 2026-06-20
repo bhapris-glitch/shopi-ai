@@ -248,3 +248,52 @@
     }
 
 }
+
+/* =====================================
+GREETING WAVE
+===================================== */
+
+@keyframes layWave {
+
+0%{
+transform:rotate(0deg);
+}
+
+15%{
+transform:rotate(-8deg);
+}
+
+30%{
+transform:rotate(8deg);
+}
+
+45%{
+transform:rotate(-8deg);
+}
+
+60%{
+transform:rotate(8deg);
+}
+
+75%{
+transform:rotate(-5deg);
+}
+
+100%{
+transform:rotate(0deg);
+}
+
+}
+
+.lay-wave{
+
+animation:
+layWave
+1.2s
+ease-in-out
+3;
+
+transform-origin:
+left bottom;
+
+}
