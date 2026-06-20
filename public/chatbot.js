@@ -3705,6 +3705,9 @@ loadStoreSettings();
 
 showWelcomeBanner();
 
+AvatarGreeting.play();
+floatingAvatar.classList.add("lay-wave");
+
 AvatarEmotion.init();
 
 AvatarTracking.init();
