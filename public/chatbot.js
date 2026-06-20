@@ -3705,6 +3705,10 @@ loadStoreSettings();
 
 showWelcomeBanner();
 
+AvatarEmotion.init();
+
+AvatarTracking.init();
+
 // =====================================
 //***************************
 // PART 3D-1.               "
@@ -4572,6 +4576,119 @@ const AvatarEmotion = {
     idle(){
 
         this.state = "idle";
+
+    }
+
+};
+// =====================================
+// PART 3E-4
+// EYE TRACKING + HEAD MOVEMENT
+// =====================================
+
+const AvatarTracking = {
+
+    enabled:true,
+
+    eyeX:0,
+    eyeY:0,
+
+    headX:0,
+    headY:0,
+
+    init(){
+
+        if(
+            /Android|iPhone|iPad|Mobile/i.test(
+                navigator.userAgent
+            )
+        ){
+            return;
+        }
+
+        document.addEventListener(
+            "mousemove",
+            this.move.bind(this)
+        );
+
+    },
+
+    move(e){
+
+        if(!floatingAvatar){
+            return;
+        }
+
+        const rect =
+            floatingAvatar.getBoundingClientRect();
+
+        const cx =
+            rect.left + rect.width/2;
+
+        const cy =
+            rect.top + rect.height/2;
+
+        const dx =
+            (e.clientX-cx)/rect.width;
+
+        const dy =
+            (e.clientY-cy)/rect.height;
+
+        this.headX =
+            Math.max(
+                -4,
+                Math.min(
+                    4,
+                    dx*6
+                )
+            );
+
+        this.headY =
+            Math.max(
+                -4,
+                Math.min(
+                    4,
+                    dy*6
+                )
+            );
+
+        floatingAvatar.style.transform =
+            `translate(${this.headX}px,${this.headY}px)`;
+
+    }
+
+};
+// =====================================
+// PART 3E-5
+// GREETING WAVE ANIMATION
+// =====================================
+
+const AvatarGreeting={
+
+    played:false,
+
+    play(){
+
+        if(this.played){
+            return;
+        }
+
+        if(!floatingAvatar){
+            return;
+        }
+
+        this.played=true;
+
+        floatingAvatar.classList.add(
+            "lay-wave"
+        );
+
+        setTimeout(()=>{
+
+            floatingAvatar.classList.remove(
+                "lay-wave"
+            );
+
+        },3500);
 
     }
 
