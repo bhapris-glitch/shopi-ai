@@ -983,8 +983,19 @@ async function apiRequest(
 
 function updateActivity(){
 
-  lastActivity =
-    Date.now();
+    lastActivity =
+        Date.now();
+
+    if(
+
+        typeof IdleAssistant !==
+        "undefined"
+
+    ){
+
+        IdleAssistant.reset();
+
+    }
 
 }
 
@@ -1003,6 +1014,15 @@ document.addEventListener(
   updateActivity
 );
 
+document.addEventListener(
+    "touchstart",
+    updateActivity
+);
+
+document.addEventListener(
+    "scroll",
+    updateActivity
+);
 // =====================================
 // INITIAL ANALYTICS
 // =====================================
@@ -3299,8 +3319,10 @@ async function askAI(message){
 
   lastActivity = Date.now();
 
-  showTyping();
+    AvatarEmotion.thinking();
 
+  showTyping();
+    
   try{
 
     const response = await fetch(
@@ -3337,6 +3359,8 @@ async function askAI(message){
     );
 
     hideTyping();
+
+      AvatarEmotion.smile();
 
     if(!response.ok){
 
@@ -4495,3 +4519,60 @@ const IdleAssistant={
 // =====================================
 
 IdleAssistant.start();
+
+// =====================================
+// AVATAR EMOTION ENGINE
+// Part 3E-3
+// =====================================
+
+const AvatarEmotion = {
+
+    state : "idle",
+
+    thinking(){
+
+        this.state = "thinking";
+
+        const avatar =
+            document.getElementById(
+                "lay-floating-avatar"
+            );
+
+        if(!avatar) return;
+
+        avatar.style.transform =
+            "scale(1.04)";
+    },
+
+    smile(){
+
+        this.state = "happy";
+
+        const avatar =
+            document.getElementById(
+                "lay-floating-avatar"
+            );
+
+        if(!avatar) return;
+
+        avatar.style.transform =
+            "scale(1.08)";
+
+        setTimeout(()=>{
+
+            avatar.style.transform =
+                "scale(1)";
+
+            this.idle();
+
+        },1200);
+
+    },
+
+    idle(){
+
+        this.state = "idle";
+
+    }
+
+};
