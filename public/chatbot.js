@@ -3705,13 +3705,18 @@ loadStoreSettings();
 
 showWelcomeBanner();
 
-AvatarGreeting.play();
-floatingAvatar.classList.add("lay-wave");
+// wait a little after banner appears
+setTimeout(() => {
+
+    AvatarGreeting.play();
+
+    floatingAvatar.classList.add("lay-wave");
+
+}, 500);
 
 AvatarEmotion.init();
 
 AvatarTracking.init();
-
 // =====================================
 //***************************
 // PART 3D-1.               "
