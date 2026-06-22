@@ -110,6 +110,14 @@ const stripeRoutes = require("./routes/stripeBilling");
 const webhookRoutes = require("./routes/webhooks");
 const adminRoutes = require("./routes/admin");
 const referralRoutes = require("./routes/referral");
+// ======================================
+// AI ENGINE ROUTES
+// ======================================
+
+const chatRoutes = require("./routes/chat.routes");
+const dashboardRoutes = require("./routes/dashboard.routes");
+const knowledgeRoutes = require("./routes/knowledge.routes");
+const recommendationRoutes = require("./routes/recommendation.routes");
 
 // ======================================
 // CRONS
