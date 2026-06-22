@@ -97,6 +97,130 @@ const { verifySMTP } =
 require("./services/email");
 
 verifySMTP();
+
+// ======================================
+// AI ENGINE SERVICES
+// ======================================
+
+const OpenAIService =
+require("./src/services/openai.service");
+
+const VectorService =
+require("./src/services/vector.service");
+
+const SyncService =
+require("./src/services/sync.service");
+
+// ======================================
+// AI CONTROLLERS
+// ======================================
+
+const ChatController =
+require("./src/controllers/chat.controller");
+
+// ======================================
+// INITIALIZE AI ENGINE
+// ======================================
+
+(async()=>{
+
+    try{
+
+        console.log(
+
+            "🧠 Initializing AI Engine..."
+
+        );
+
+        // ==============================
+        // OPENAI
+        // ==============================
+
+        if(
+
+            process.env.OPENAI_API_KEY
+
+        ){
+
+            console.log(
+
+                "✅ OpenAI Ready"
+
+            );
+
+        }
+
+        else{
+
+            console.warn(
+
+                "⚠️ OPENAI_API_KEY Missing"
+
+            );
+
+        }
+
+        // ==============================
+        // VECTOR DATABASE
+        // ==============================
+
+        if(
+
+            typeof VectorService.initialize === "function"
+
+        ){
+
+            await VectorService.initialize();
+
+            console.log(
+
+                "✅ Vector Service Ready"
+
+            );
+
+        }
+
+        // ==============================
+        // PRODUCT SYNC
+        // ==============================
+
+        if(
+
+            typeof SyncService.initialize === "function"
+
+        ){
+
+            await SyncService.initialize();
+
+            console.log(
+
+                "✅ Sync Service Ready"
+
+            );
+
+        }
+
+        console.log(
+
+            "🚀 AI Engine Loaded"
+
+        );
+
+    }
+
+    catch(error){
+
+        console.error(
+
+            "❌ AI Initialization Failed",
+
+            error.message
+
+        );
+
+    }
+
+})();
 // ======================================
 // ROUTES
 // ======================================
@@ -271,17 +395,62 @@ mongoose.connect(
 
 // ======================================
 // ROUTES
+// EXISTING ROUTES
 // ======================================
 
 app.use(cartRoutes);
+
 app.use(pushRoutes);
+
 app.use(pricingRoutes);
+
 app.use(analyticsRoutes);
+
 app.use(productRoutes);
+
 app.use(adminRoutes);
+
 app.use(referralRoutes);
-app.use("/stripe", stripeRoutes);
-app.use("/webhooks", webhookRoutes);
+
+app.use("/stripe",stripeRoutes);
+
+app.use("/webhooks",webhookRoutes);
+
+// ======================================
+// AI ENGINE ROUTES
+// ======================================
+
+app.use(
+
+    "/api/chat",
+
+    chatRoutes
+
+);
+
+app.use(
+
+    "/api/dashboard",
+
+    dashboardRoutes
+
+);
+
+app.use(
+
+    "/api/knowledge",
+
+    knowledgeRoutes
+
+);
+
+app.use(
+
+    "/api/recommendations",
+
+    recommendationRoutes
+
+);
 
 // ======================================
 // HOME
@@ -293,21 +462,96 @@ app.get("/", (req, res) => {
 
 // ======================================
 // HEALTH
+// Production Health Monitor
 // ======================================
 
-app.get("/health", (req, res) => {
+app.get(
 
-  res.json({
-    success: true,
-    mongodb: mongoose.connection.readyState === 1,
-    openai: !!process.env.OPENAI_API_KEY,
-    stripe: !!process.env.STRIPE_SECRET,
-    razorpay: !!process.env.RAZORPAY_KEY,
-    jwt: !!process.env.JWT_SECRET,
-    uptime: process.uptime()
-  });
-});
+    "/health",
 
+    async(req,res)=>{
+
+        try{
+
+            res.json({
+
+                success:true,
+
+                service:"Layboka AI",
+
+                version:"3.0",
+
+                environment:
+
+                    process.env.NODE_ENV ||
+
+                    "development",
+
+                mongodb:
+
+                    mongoose.connection.readyState===1,
+
+                openai:
+
+                    !!process.env.OPENAI_API_KEY,
+
+                stripe:
+
+                    !!process.env.STRIPE_SECRET,
+
+                razorpay:
+
+                    !!process.env.RAZORPAY_KEY,
+
+                jwt:
+
+                    !!process.env.JWT_SECRET,
+
+                smtp:
+
+                    !!process.env.SMTP_HOST,
+
+                vectorService:
+
+                    typeof VectorService==="object",
+
+                syncService:
+
+                    typeof SyncService==="object",
+
+                aiEngine:true,
+
+                uptime:
+
+                    process.uptime(),
+
+                memory:
+
+                    process.memoryUsage(),
+
+                timestamp:
+
+                    new Date()
+
+            });
+
+        }
+
+        catch(error){
+
+            res.status(500).json({
+
+                success:false,
+
+                error:error.message
+
+            });
+
+        }
+
+    }
+
+);
 // ======================================
 // LOGIN
 // ======================================
@@ -500,9 +744,39 @@ app.post(
 // CHAT API
 // ======================================
 
-app.post("/chat", async (req, res) => {
+app.post(
 
-  try {
+    "/chat",
+
+    async(req,res,next)=>{
+
+        try{
+
+            // ======================================
+            // USE NEW AI ENGINE
+            // ======================================
+
+            if(
+
+                process.env.USE_NEW_AI==="true"
+
+            ){
+
+                return ChatController.chat(
+
+                    req,
+
+                    res,
+
+                    next
+
+                );
+
+            }
+
+            // ======================================
+            // LEGACY CHAT
+            // ====================================== 
 
     const {
       message,
