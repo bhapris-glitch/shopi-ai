@@ -151,3 +151,180 @@ async(req,res)=>{
             })
 
         ]);
+        // ==============================
+        // TODAY STATS
+        // PART 2
+        // Dashboard Statistics + Response
+        // ==============================
+
+        let todayChats = 0;
+
+        let totalResponseTime = 0;
+
+        let totalTokens = 0;
+
+        let totalConversions = 0;
+
+        let totalSatisfied = 0;
+
+        analytics.forEach(item=>{
+
+            todayChats +=
+
+                item.totalChats || 0;
+
+            totalResponseTime +=
+
+                item.aiResponseTime || 0;
+
+            totalTokens +=
+
+                item.tokens || 0;
+
+            totalConversions +=
+
+                item.conversions || 0;
+
+            totalSatisfied +=
+
+                item.satisfied || 0;
+
+        });
+
+        // ==============================
+        // AVERAGES
+        // ==============================
+
+        const avgResponseTime =
+
+            analytics.length
+
+            ?
+
+            Math.round(
+
+                totalResponseTime /
+
+                analytics.length
+
+            )
+
+            :
+
+            0;
+
+        const satisfaction =
+
+            analytics.length
+
+            ?
+
+            Math.round(
+
+                (
+
+                    totalSatisfied /
+
+                    analytics.length
+
+                ) * 100
+
+            )
+
+            :
+
+            100;
+
+        // ==============================
+        // DASHBOARD
+        // ==============================
+
+        return res.json({
+
+            success:true,
+
+            dashboard:{
+
+                store:{
+
+                    name:
+
+                        store.storeName ||
+
+                        "",
+
+                    plan:
+
+                        store.plan ||
+
+                        "starter",
+
+                    shop,
+
+                    currency:
+
+                        store.currency ||
+
+                        "USD"
+
+                },
+
+                overview:{
+
+                    totalCustomers,
+
+                    totalChats,
+
+                    activeChats,
+
+                    todayChats,
+
+                    recommendations
+
+                },
+
+                ai:{
+
+                    avgResponseTime,
+
+                    satisfaction,
+
+                    totalTokens,
+
+                    totalConversions
+
+                }
+
+            }
+
+        });
+
+    }
+
+    catch(error){
+
+        console.error(
+
+            "Dashboard Error",
+
+            error
+
+        );
+
+        return res.status(500).json({
+
+            success:false,
+
+            message:
+
+                "Dashboard error."
+
+        });
+
+    }
+
+};
+
+// ======================================
+// END
+// ======================================
