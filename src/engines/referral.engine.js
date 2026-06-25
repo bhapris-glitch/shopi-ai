@@ -1134,25 +1134,32 @@ async function applyGrowthReward(referral){
 }
 
 // ======================================
-// BILLING BEFORE RENEWAL
+// BILLING SUMMARY
 // ======================================
 
-async function processRenewalReward(subscription){
+function buildBillingSummary(subscription){
 
-    if(!subscription)
-        return subscription;
+    return{
 
-    if(!subscription.rewardApplied)
-        return subscription;
+        currentPlan:
+            subscription.plan,
 
-    if(subscription.nextInvoiceAmount !== 0)
-        return subscription;
+        amount:
+            subscription.amount,
 
-    subscription.amount = 0;
+        nextInvoiceAmount:
+            subscription.nextInvoiceAmount,
 
-    subscription.rewardConsumed = false;
+        rewardApplied:
+            subscription.rewardApplied,
 
-    return subscription;
+        autoRenew:
+            subscription.autoRenew,
+
+        renewalDate:
+            subscription.renewalDate
+
+    };
 
 }
 
