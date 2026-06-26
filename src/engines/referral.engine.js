@@ -385,7 +385,6 @@ String(referred)
 // PART 2
 // Referral Registration Engine
 // ======================================
-
 // ======================================
 // GENERATE UNIQUE REFERRAL CODE
 // ======================================
@@ -735,90 +734,267 @@ async function getClientReferrals(
 
 // ======================================
 // NEXT PART
-// ======================================
-//
-// Part 3
-//
-// • Growth qualification
-// • 15-day verification
-// • First payment validation
-// • Free month reward
-// • Reward scheduler
-// • Qualification engine
+// ==============================
 // ======================================
 // PART 3
-// Growth Qualification Engine
+// Growth & Starter Qualification Engine
 // Production Ready
 // ======================================
 
 // ======================================
-// QUALIFICATION CHECK
+// LOAD REFERRAL + SUBSCRIPTION
 // ======================================
 
-async function qualifyGrowthReferral(clientId){
+async function loadReferralQualification(clientId){
 
     const referral =
         await Referral.findOne({
             referredClientId: clientId
         });
 
-    if(!referral)
+    if(!referral){
         return null;
-
-    if(referral.status === STATUS.REWARDED)
-        return referral;
-
-    if(referral.status === STATUS.REJECTED)
-        return referral;
+    }
 
     const subscription =
         await Subscription.findOne({
             clientId: clientId
         });
 
+    return {
+        referral,
+        subscription
+    };
+
+}
+
+// ======================================
+// CAN QUALIFY
+// ======================================
+
+function canQualifyReferral(subscription){
+
+    if(!subscription)
+        return false;
+
+    if(!isSubscriptionEligible(subscription))
+        return false;
+
+    if(!subscription.paid)
+        return false;
+
+    if(!hasCompletedMinimumDays(subscription))
+        return false;
+
+    return true;
+
+}
+
+// ======================================
+// QUALIFY STARTER / GROWTH
+// ======================================
+
+async function qualifyGrowthReferral(clientId){
+
+    const data =
+        await loadReferralQualification(clientId);
+
+    if(!data)
+        return null;
+
+    const {
+        referral,
+        subscription
+    } = data;
+
+    if(
+        referral.status === STATUS.REWARDED ||
+        referral.status === STATUS.REJECTED
+    ){
+        return referral;
+    }
+
     if(!subscription){
 
         referral.status = STATUS.REJECTED;
-        referral.rejectReason = "Subscription not found";
+        referral.rejectReason =
+            "Subscription not found";
+
         await referral.save();
 
         return referral;
 
     }
 
-    // Must be Growth plan
-    if(!isGrowth(subscription))
+    // Only Starter & Growth use free renewal rewards
+
+    if(
+        !(
+            subscription.plan === "starter" ||
+            subscription.plan === "growth"
+        )
+    ){
         return referral;
+    }
 
-    // Active subscription required
-    if(!isSubscriptionEligible(subscription))
+    if(!canQualifyReferral(subscription)){
         return referral;
-
-    // Wait 15 days
-    if(!hasCompletedMinimumDays(subscription))
-        return referral;
-
-    // Payment required
-    if(!subscription.paid){
-
-        referral.status = STATUS.REJECTED;
-        referral.rejectReason = "Payment not completed";
-        await referral.save();
-
-        return referral;
-
     }
 
     // Cancelled before qualification
+
+    if(subscription.cancelledAt){
+
+        const activeDays =
+            diffDays(
+                new Date(subscription.startDate),
+                new Date(subscription.cancelledAt)
+            );
+
+        if(activeDays < REFERRAL_ACTIVE_DAYS){
+
+            referral.status =
+                STATUS.REJECTED;
+
+            referral.rejectReason =
+                "Cancelled before qualification";
+
+            await referral.save();
+
+            return referral;
+
+        }
+
+    }
+
+    // Refund protection
+
+    if(subscription.refunded){
+
+        referral.status =
+            STATUS.REJECTED;
+
+        referral.rejectReason =
+            "Payment refunded";
+
+        await referral.save();
+
+        return referral;
+
+    }
+
+    referral.status =
+        STATUS.QUALIFIED;
+
+    referral.qualifiedAt =
+        now();
+
+    await referral.save();
+
+    return referral;
+
+}
+
+// ======================================
+// APPLY FREE RENEWAL
+// ======================================
+
+async function rewardGrowthReferral(clientId){
+
+    const data =
+        await loadReferralQualification(clientId);
+
+    if(!data)
+        return null;
+
+    const {
+        referral
+    } = data;
+
+    if(!referral)
+        return null;
+
     if(
-        subscription.cancelledAt &&
-        diffDays(
-            new Date(subscription.startDate),
-            new Date(subscription.cancelledAt)
-        ) < REFERRAL_ACTIVE_D
+        referral.status !== STATUS.QUALIFIED
+    ){
+        return referral;
+    }
+
+    return await applyGrowthReward(referral);
+
+}
+
+// ======================================
+// QUALIFICATION STATUS
+// ======================================
+
+async function getQualificationStatus(clientId){
+
+    const data =
+        await loadReferralQualification(clientId);
+
+    if(!data){
+
+        return{
+            qualified:false
+        };
+
+    }
+
+    const {
+        referral,
+        subscription
+    } = data;
+
+    return{
+
+        qualified:
+            referral.status === STATUS.QUALIFIED,
+
+        rewarded:
+            referral.status === STATUS.REWARDED,
+
+        rejected:
+            referral.status === STATUS.REJECTED,
+
+        rewardType:
+            referral.rewardType,
+
+        rewardStatus:
+            referral.rewardStatus,
+
+        rewardValue:
+            referral.rewardValue,
+
+        plan:
+            subscription?.plan || null,
+
+        activeDays:
+            subscription?.startDate
+                ? diffDays(
+                    new Date(subscription.startDate),
+                    now()
+                  )
+                : 0
+
+    };
+
+}
+
+// ======================================
+// NEXT PART
+// ======================================
+//
+// Part 4
+//
+// • Premium VIP Qualification
+// • VIP milestone rewards
+// • Enterprise reward flow
+// • VIP badge system
+// • Reward processing
 // ======================================
 // PART 4
-// Premium / VIP Referral Engine
+// Premium VIP Reward Engine
 // Production Ready
 // ======================================
 
@@ -828,24 +1004,23 @@ async function qualifyGrowthReferral(clientId){
 
 async function qualifyPremiumReferral(clientId){
 
-    const referral =
-        await Referral.findOne({
-            referredClientId: clientId
-        });
+    const data =
+        await loadReferralQualification(clientId);
 
-    if(!referral)
+    if(!data)
         return null;
 
-    if(referral.status === STATUS.REWARDED)
-        return referral;
+    const {
+        referral,
+        subscription
+    } = data;
 
-    if(referral.status === STATUS.REJECTED)
+    if(
+        referral.status === STATUS.REWARDED ||
+        referral.status === STATUS.REJECTED
+    ){
         return referral;
-
-    const subscription =
-        await Subscription.findOne({
-            clientId: clientId
-        });
+    }
 
     if(!subscription)
         return referral;
@@ -853,13 +1028,7 @@ async function qualifyPremiumReferral(clientId){
     if(!isPremium(subscription))
         return referral;
 
-    if(!isSubscriptionEligible(subscription))
-        return referral;
-
-    if(!subscription.paid)
-        return referral;
-
-    if(!hasCompletedMinimumDays(subscription))
+    if(!canQualifyReferral(subscription))
         return referral;
 
     referral.status =
@@ -875,49 +1044,156 @@ async function qualifyPremiumReferral(clientId){
 }
 
 // ======================================
-// TOTAL PREMIUM REFERRALS
+// ENTERPRISE QUALIFICATION
 // ======================================
 
-async function getPremiumReferralCount(referrerId){
+async function qualifyEnterpriseReferral(clientId){
+
+    const data =
+        await loadReferralQualification(clientId);
+
+    if(!data)
+        return null;
+
+    const {
+        referral,
+        subscription
+    } = data;
+
+    if(!subscription)
+        return referral;
+
+    if(!isEnterprise(subscription))
+        return referral;
+
+    if(!canQualifyReferral(subscription))
+        return referral;
+
+    referral.status =
+        STATUS.QUALIFIED;
+
+    referral.qualifiedAt =
+        now();
+
+    await referral.save();
+
+    return referral;
+
+}
+
+// ======================================
+// PREMIUM REFERRAL COUNT
+// ======================================
+
+async function getPremiumReferralCount(referrerClientId){
 
     return await Referral.countDocuments({
 
-        referrerClientId:
-            referrerId,
+        referrerClientId,
 
-        referredPlan:
-            PREMIUM_PLAN,
+        status:STATUS.REWARDED,
 
-        status:
-            STATUS.QUALIFIED
+        referredPlan:PREMIUM_PLAN
 
     });
 
 }
 
 // ======================================
-// VIP REWARD
+// VIP LEVEL
+// ======================================
+
+function getVIPLevel(total){
+
+    if(total >= 100)
+        return "Titanium";
+
+    if(total >= 50)
+        return "Diamond";
+
+    if(total >= 25)
+        return "Platinum";
+
+    if(total >= 10)
+        return "Gold";
+
+    if(total >= 5)
+        return "Silver";
+
+    if(total >= 1)
+        return "Bronze";
+
+    return null;
+
+}
+
+// ======================================
+// UPDATE VIP BADGE
+// ======================================
+
+async function updateVIPBadge(clientId){
+
+    const total =
+        await getPremiumReferralCount(clientId);
+
+    const badge =
+        getVIPLevel(total);
+
+    await Client.updateOne(
+
+        {
+            _id:clientId
+        },
+
+        {
+
+            $set:{
+
+                vipBadge:badge,
+
+                vipReferralCount:total
+
+            }
+
+        }
+
+    );
+
+}
+
+// ======================================
+// PREMIUM VIP REWARD
 // ======================================
 
 async function processPremiumVIPReward(referral){
 
-    const count =
-        await getPremiumReferralCount(
-            referral.referrerClientId
-        );
-
-    const reward =
-        PREMIUM_REWARD_TABLE[count];
-
-    if(!reward)
+    if(!referral)
         return null;
 
     const referrer =
+
         await Client.findById(
+
             referral.referrerClientId
+
         );
 
     if(!referrer)
+        return null;
+
+    const total =
+
+        await getPremiumReferralCount(
+
+            referrer._id
+
+        ) + 1;
+
+    const reward =
+
+        PREMIUM_REWARD_TABLE[total];
+
+    if(!reward)
         return null;
 
     referral.rewardType =
@@ -930,11 +1206,11 @@ async function processPremiumVIPReward(referral){
         now();
 
     referral.vipLevel =
-        count;
+        total;
 
     switch(reward.rewardType){
 
-        case "credit":
+        case REWARD_TYPES.CREDIT:
 
             referrer.walletCredit =
                 (referrer.walletCredit || 0)
@@ -946,7 +1222,7 @@ async function processPremiumVIPReward(referral){
 
         break;
 
-        case "cash":
+        case REWARD_TYPES.CASH:
 
             referrer.cashReward =
                 (referrer.cashReward || 0)
@@ -958,7 +1234,7 @@ async function processPremiumVIPReward(referral){
 
         break;
 
-        case "upgrade":
+        case REWARD_TYPES.UPGRADE:
 
             referrer.vipMonths =
                 (referrer.vipMonths || 0)
@@ -976,6 +1252,8 @@ async function processPremiumVIPReward(referral){
 
     await referral.save();
 
+    await updateVIPBadge(referrer._id);
+
     return referral;
 
 }
@@ -986,32 +1264,20 @@ async function processPremiumVIPReward(referral){
 
 async function processEnterpriseReward(referral){
 
-    const referrer =
-        await Client.findById(
-            referral.referrerClientId
-        );
-
-    if(!referrer)
+    if(!referral)
         return null;
 
-    referrer.cashReward =
-        (referrer.cashReward || 0)
-        +
-        ENTERPRISE_REWARD.amount;
+    referral.rewardStatus =
+        STATUS.QUALIFIED;
 
     referral.rewardType =
-        ENTERPRISE_REWARD.rewardType;
-
-    referral.rewardAmount =
-        ENTERPRISE_REWARD.amount;
-
-    referral.rewardStatus =
-        STATUS.REWARDED;
+        "manual";
 
     referral.rewardedAt =
-        now();
+        null;
 
-    await referrer.save();
+    referral.manualReview =
+        true;
 
     await referral.save();
 
@@ -1020,38 +1286,36 @@ async function processEnterpriseReward(referral){
 }
 
 // ======================================
-// VIP BADGE
+// VIP SUMMARY
 // ======================================
 
-async function updateVIPBadge(clientId){
+async function getVIPSummary(clientId){
 
     const client =
+
         await Client.findById(clientId);
 
     if(!client)
-        return;
+        return null;
 
-    const referrals =
-        await getPremiumReferralCount(
-            clientId
-        );
+    return{
 
-    if(referrals >= 10)
-        client.vipBadge = "Diamond";
+        badge:
+            client.vipBadge || null,
 
-    else if(referrals >= 5)
-        client.vipBadge = "Gold";
+        referrals:
+            client.vipReferralCount || 0,
 
-    else if(referrals >= 3)
-        client.vipBadge = "Silver";
+        walletCredit:
+            client.walletCredit || 0,
 
-    else if(referrals >= 1)
-        client.vipBadge = "Bronze";
+        cashReward:
+            client.cashReward || 0,
 
-    else
-        client.vipBadge = null;
+        vipMonths:
+            client.vipMonths || 0
 
-    await client.save();
+    };
 
 }
 
@@ -1061,29 +1325,26 @@ async function updateVIPBadge(clientId){
 //
 // Part 5
 //
-// • Next billing cycle FREE
-// • Billing engine
-// • Renewal integration
-// • Stripe integration
-// • Auto renewal adjustment
-// • Free invoice generation
+// • Billing Integration
+// • Starter FREE renewal
+// • Growth FREE renewal
+// • Premium reward processing
+// • Enterprise manual workflow
+// • Reward queue
+// • Billing summary
 // ======================================
 // PART 5
-// Billing Integration Engine
+// Billing & Reward Processing Engine
 // Production Ready
 // ======================================
-
 // ======================================
-// APPLY NEXT BILL FREE
+// APPLY STARTER REWARD
 // ======================================
 
-async function applyGrowthReward(referral){
+async function applyStarterReward(referral){
 
     if(!referral)
         return null;
-
-    if(referral.rewardStatus === STATUS.REWARDED)
-        return referral;
 
     const subscription =
         await Subscription.findOne({
@@ -1096,34 +1357,26 @@ async function applyGrowthReward(referral){
     if(!subscription)
         return null;
 
-    // Must be active
-    if(!isSubscriptionEligible(subscription))
+    if(subscription.plan !== "starter")
         return null;
-
-    subscription.nextInvoiceAmount = 0;
-
-    subscription.rewardReason =
-        "Growth Referral Reward";
-
-    subscription.rewardReferral =
-        referral._id;
-
-    subscription.rewardAppliedAt =
-        now();
 
     subscription.rewardApplied = true;
 
-    referral.rewardType =
-        REWARD_TYPES.FREE_MONTH;
+    subscription.rewardType = "starter_free_month";
 
-    referral.rewardValue =
-        GROWTH_REWARD.rewardValue;
+    subscription.rewardReferral = referral._id;
 
-    referral.rewardStatus =
-        STATUS.REWARDED;
+    subscription.rewardAppliedAt = now();
 
-    referral.rewardedAt =
-        now();
+    subscription.nextInvoiceAmount = 0;
+
+    referral.rewardStatus = STATUS.REWARDED;
+
+    referral.rewardType = REWARD_TYPES.FREE_MONTH;
+
+    referral.rewardValue = 25;
+
+    referral.rewardedAt = now();
 
     await subscription.save();
 
@@ -1134,7 +1387,102 @@ async function applyGrowthReward(referral){
 }
 
 // ======================================
-// BILLING SUMMARY
+// APPLY GROWTH REWARD
+// ======================================
+
+async function applyGrowthReward(referral){
+
+    if(!referral)
+        return null;
+
+    const subscription =
+        await Subscription.findOne({
+
+            clientId:
+                referral.referrerClientId
+
+        });
+
+    if(!subscription)
+        return null;
+
+    if(subscription.plan !== "growth")
+        return null;
+
+    subscription.rewardApplied = true;
+
+    subscription.rewardType = "growth_free_month";
+
+    subscription.rewardReferral = referral._id;
+
+    subscription.rewardAppliedAt = now();
+
+    subscription.nextInvoiceAmount = 0;
+
+    referral.rewardStatus = STATUS.REWARDED;
+
+    referral.rewardType = REWARD_TYPES.FREE_MONTH;
+
+    referral.rewardValue = 59;
+
+    referral.rewardedAt = now();
+
+    await subscription.save();
+
+    await referral.save();
+
+    return referral;
+
+}
+
+// ======================================
+// APPLY QUALIFIED REWARD
+// ======================================
+
+async function applyQualifiedReward(referral){
+
+    if(!referral)
+        return null;
+
+    const subscription =
+        await Subscription.findOne({
+
+            clientId:
+                referral.referrerClientId
+
+        });
+
+    if(!subscription)
+        return null;
+
+    switch(subscription.plan){
+
+        case "starter":
+
+            return await applyStarterReward(referral);
+
+        case "growth":
+
+            return await applyGrowthReward(referral);
+
+        case "premium":
+
+            return await processPremiumVIPReward(referral);
+
+        case "enterprise":
+
+            return await processEnterpriseReward(referral);
+
+        default:
+
+            return referral;
+
+    }
+
+}
+
+// ======================================
+// BUILD BILLING SUMMARY
 // ======================================
 
 function buildBillingSummary(subscription){
@@ -1144,6 +1492,9 @@ function buildBillingSummary(subscription){
         currentPlan:
             subscription.plan,
 
+        currency:
+            subscription.currency,
+
         amount:
             subscription.amount,
 
@@ -1152,6 +1503,12 @@ function buildBillingSummary(subscription){
 
         rewardApplied:
             subscription.rewardApplied,
+
+        rewardType:
+            subscription.rewardType,
+
+        rewardConsumed:
+            subscription.rewardConsumed,
 
         autoRenew:
             subscription.autoRenew,
@@ -1164,7 +1521,7 @@ function buildBillingSummary(subscription){
 }
 
 // ======================================
-// AFTER SUCCESSFUL RENEWAL
+// FINALIZE FREE MONTH
 // ======================================
 
 async function finalizeReward(subscription){
@@ -1179,12 +1536,29 @@ async function finalizeReward(subscription){
 
     subscription.rewardConsumed = true;
 
-    subscription.nextInvoiceAmount =
-        subscription.planPrice ||
-        subscription.amount;
+    subscription.rewardConsumedAt = now();
 
-    subscription.rewardConsumedAt =
-        now();
+    switch(subscription.plan){
+
+        case "starter":
+
+            subscription.nextInvoiceAmount = 25;
+
+        break;
+
+        case "growth":
+
+            subscription.nextInvoiceAmount = 59;
+
+        break;
+
+        case "premium":
+
+            subscription.nextInvoiceAmount = 149;
+
+        break;
+
+    }
 
     await subscription.save();
 
@@ -1199,124 +1573,828 @@ async function restoreBilling(subscription){
     if(!subscription)
         return;
 
-    subscription.amount =
-        subscription.planPrice ||
-        subscription.amount;
+    subscription.rewardApplied = false;
 
-    subscription.nextInvoiceAmount =
-        subscription.planPrice ||
-        subscription.amount;
+    subscription.rewardConsumed = false;
+
+    switch(subscription.plan){
+
+        case "starter":
+
+            subscription.amount = 25;
+            subscription.nextInvoiceAmount = 25;
+
+        break;
+
+        case "growth":
+
+            subscription.amount = 59;
+            subscription.nextInvoiceAmount = 59;
+
+        break;
+
+        case "premium":
+
+            subscription.amount = 149;
+            subscription.nextInvoiceAmount = 149;
+
+        break;
+
+    }
 
     await subscription.save();
 
 }
 
 // ======================================
-// CANCEL REWARD
+// FIRST UPGRADE DISCOUNT
 // ======================================
 
-async function revokeReward(referral){
+async function applyReferralUpgradeDiscount(client){
 
-    if(!referral)
-        return;
+    if(!client)
+        return{
 
-    const subscription =
-        await Subscription.findOne({
+            eligible:false
 
-            clientId:
-                referral.referrerClientId
+        };
 
-        });
+    if(!client.isReferralCustomer){
 
-    if(subscription){
+        return{
 
-        subscription.rewardApplied = false;
+            eligible:false
 
-        subscription.rewardConsumed = false;
-
-        subscription.nextInvoiceAmount =
-            subscription.planPrice ||
-            subscription.amount;
-
-        await subscription.save();
+        };
 
     }
 
-    referral.rewardStatus =
-        STATUS.REJECTED;
+    if(client.firstUpgradeDiscountUsed){
 
-    referral.rejectReason =
-        "Reward Revoked";
+        return{
 
-    await referral.save();
+            eligible:false
 
-}
-
-// ======================================
-// STRIPE CHECKOUT
-// ======================================
-
-function getStripeCheckoutAmount(subscription){
-
-    if(
-        subscription.rewardApplied &&
-        subscription.nextInvoiceAmount === 0
-    ){
-
-        return 0;
+        };
 
     }
-
-    return subscription.planPrice ||
-           subscription.amount;
-
-}
-
-// ======================================
-// RAZORPAY CHECKOUT
-// ======================================
-
-function getRazorpayCheckoutAmount(subscription){
-
-    if(
-        subscription.rewardApplied &&
-        subscription.nextInvoiceAmount === 0
-    ){
-
-        return 0;
-
-    }
-
-    return subscription.planPrice ||
-           subscription.amount;
-
-}
-
-// ======================================
-// BILLING SUMMARY
-// ======================================
-
-function buildBillingSummary(subscription){
 
     return{
 
-        currentPlan:
-            subscription.plan,
+        eligible:true,
 
-        amount:
-            subscription.amount,
+        discountPercent:30
 
-        nextInvoiceAmount:
-            subscription.nextInvoiceAmount,
+    };
 
-        rewardApplied:
-            subscription.rewardApplied,
+}
 
-        autoRenew:
-            subscription.autoRenew,
+// ======================================
+// CONSUME UPGRADE DISCOUNT
+// ======================================
 
-        renewalDate:
-            subscription.renewalDate
+async function consumeUpgradeDiscount(clientId){
+
+    await Client.updateOne(
+
+        {
+
+            _id:clientId
+
+        },
+
+        {
+
+            $set:{
+
+                firstUpgradeDiscountUsed:true
+
+            }
+
+        }
+
+    );
+
+}
+
+// ======================================
+// NEXT PART
+// ======================================
+//
+// Part 6
+//
+// • Referral analytics
+// • Dashboard
+// • Monthly statistics
+// • Leaderboard
+// • Reward history
+// • Admin reporting
+// • Referral exports
+// ======================================
+// PART 6
+// Referral Analytics Engine
+// Production Ready
+// ======================================
+// ======================================
+// TOTAL REFERRALS
+// ======================================
+
+async function getTotalReferrals(clientId){
+
+    return await Referral.countDocuments({
+
+        referrerClientId:clientId
+
+    });
+
+}
+
+// ======================================
+// QUALIFIED REFERRALS
+// ======================================
+
+async function getQualifiedReferrals(clientId){
+
+    return await Referral.countDocuments({
+
+        referrerClientId:clientId,
+
+        status:STATUS.QUALIFIED
+
+    });
+
+}
+
+// ======================================
+// REWARDED REFERRALS
+// ======================================
+
+async function getRewardedReferrals(clientId){
+
+    return await Referral.countDocuments({
+
+        referrerClientId:clientId,
+
+        status:STATUS.REWARDED
+
+    });
+
+}
+
+// ======================================
+// PENDING REFERRALS
+// ======================================
+
+async function getPendingReferrals(clientId){
+
+    return await Referral.countDocuments({
+
+        referrerClientId:clientId,
+
+        status:STATUS.PENDING
+
+    });
+
+}
+
+// ======================================
+// REJECTED REFERRALS
+// ======================================
+
+async function getRejectedReferrals(clientId){
+
+    return await Referral.countDocuments({
+
+        referrerClientId:clientId,
+
+        status:STATUS.REJECTED
+
+    });
+
+}
+
+// ======================================
+// TOTAL REWARD VALUE
+// ======================================
+
+async function getTotalRewardValue(clientId){
+
+    const rewards =
+
+        await Referral.find({
+
+            referrerClientId:clientId,
+
+            rewardStatus:STATUS.REWARDED
+
+        });
+
+    let total = 0;
+
+    for(const reward of rewards){
+
+        total += reward.rewardValue || 0;
+
+        total += reward.rewardAmount || 0;
+
+    }
+
+    return total;
+
+}
+
+// ======================================
+// MONTHLY REFERRALS
+// ======================================
+
+async function getMonthlyReferrals(clientId){
+
+    const start = new Date();
+
+    start.setDate(1);
+
+    start.setHours(0,0,0,0);
+
+    return await Referral.countDocuments({
+
+        referrerClientId:clientId,
+
+        createdAt:{
+
+            $gte:start
+
+        }
+
+    });
+
+}
+
+// ======================================
+// MONTHLY REWARD VALUE
+// ======================================
+
+async function getMonthlyRewardValue(clientId){
+
+    const start = new Date();
+
+    start.setDate(1);
+
+    start.setHours(0,0,0,0);
+
+    const rewards =
+
+        await Referral.find({
+
+            referrerClientId:clientId,
+
+            rewardedAt:{
+
+                $gte:start
+
+            }
+
+        });
+
+    let total = 0;
+
+    for(const item of rewards){
+
+        total += item.rewardValue || 0;
+
+        total += item.rewardAmount || 0;
+
+    }
+
+    return total;
+
+}
+
+// ======================================
+// REFERRAL HISTORY
+// ======================================
+
+async function getReferralHistory(clientId){
+
+    return await Referral.find({
+
+        referrerClientId:clientId
+
+    })
+
+    .populate(
+
+        "referredClientId",
+
+        "store email"
+
+    )
+
+    .sort({
+
+        createdAt:-1
+
+    });
+
+}
+
+// ======================================
+// LEADERBOARD
+// ======================================
+
+async function getReferralLeaderboard(limit=20){
+
+    return await Referral.aggregate([
+
+        {
+
+            $match:{
+
+                rewardStatus:STATUS.REWARDED
+
+            }
+
+        },
+
+        {
+
+            $group:{
+
+                _id:"$referrerClientId",
+
+                referrals:{
+
+                    $sum:1
+
+                },
+
+                rewards:{
+
+                    $sum:"$rewardValue"
+
+                }
+
+            }
+
+        },
+
+        {
+
+            $sort:{
+
+                referrals:-1
+
+            }
+
+        },
+
+        {
+
+            $limit:limit
+
+        }
+
+    ]);
+
+}
+
+// ======================================
+// DASHBOARD SUMMARY
+// ======================================
+
+async function buildReferralDashboard(clientId){
+
+    return{
+
+        total:
+
+            await getTotalReferrals(clientId),
+
+        pending:
+
+            await getPendingReferrals(clientId),
+
+        qualified:
+
+            await getQualifiedReferrals(clientId),
+
+        rewarded:
+
+            await getRewardedReferrals(clientId),
+
+        rejected:
+
+            await getRejectedReferrals(clientId),
+
+        monthly:
+
+            await getMonthlyReferrals(clientId),
+
+        totalRewards:
+
+            await getTotalRewardValue(clientId),
+
+        monthlyRewards:
+
+            await getMonthlyRewardValue(clientId)
+
+    };
+
+}
+
+// ======================================
+// EXPORT REFERRALS
+// ======================================
+
+async function exportReferralData(clientId){
+
+    const rows =
+
+        await Referral.find({
+
+            referrerClientId:clientId
+
+        })
+
+        .populate(
+
+            "referredClientId",
+
+            "store email"
+
+        );
+
+    return rows.map(item=>({
+
+        referralCode:item.referralCode,
+
+        referredStore:item.referredStore,
+
+        plan:item.referredPlan,
+
+        status:item.status,
+
+        reward:item.rewardType,
+
+        rewardValue:item.rewardValue,
+
+        rewardAmount:item.rewardAmount,
+
+        qualifiedAt:item.qualifiedAt,
+
+        rewardedAt:item.rewardedAt,
+
+        createdAt:item.createdAt
+
+    }));
+
+}
+
+// ======================================
+// NEXT PART
+// ======================================
+//
+// Part 7
+//
+// • Scheduled automation
+// • Daily qualification cron
+// • Reward processing cron
+// • Reminder emails
+// • Fraud cleanup
+// • Auto reject expired referrals
+// ======================================
+// PART 7
+// Referral Automation Engine
+// Production Ready
+// ======================================
+// ======================================
+// DAILY QUALIFICATION JOB
+// ======================================
+
+async function runDailyQualificationJob(){
+
+    const pendingReferrals =
+        await Referral.find({
+
+            status:STATUS.PENDING,
+
+            referredClientId:{
+                $ne:null
+            }
+
+        });
+
+    let qualified = 0;
+
+    for(const referral of pendingReferrals){
+
+        const subscription =
+            await Subscription.findOne({
+
+                clientId:
+                    referral.referredClientId
+
+            });
+
+        if(!subscription)
+            continue;
+
+        switch(subscription.plan){
+
+            case "starter":
+
+            case "growth":
+
+                await qualifyGrowthReferral(
+
+                    referral.referredClientId
+
+                );
+
+            break;
+
+            case "premium":
+
+                await qualifyPremiumReferral(
+
+                    referral.referredClientId
+
+                );
+
+            break;
+
+            case "enterprise":
+
+                await qualifyEnterpriseReferral(
+
+                    referral.referredClientId
+
+                );
+
+            break;
+
+        }
+
+        qualified++;
+
+    }
+
+    return qualified;
+
+}
+
+// ======================================
+// REWARD DISTRIBUTION JOB
+// ======================================
+
+async function runRewardDistributionJob(){
+
+    const referrals =
+
+        await Referral.find({
+
+            status:STATUS.QUALIFIED,
+
+            rewardStatus:{
+                $ne:STATUS.REWARDED
+            }
+
+        });
+
+    let processed = 0;
+
+    for(const referral of referrals){
+
+        await applyQualifiedReward(referral);
+
+        processed++;
+
+    }
+
+    return processed;
+
+}
+
+// ======================================
+// AUTO EXPIRE REFERRALS
+// ======================================
+
+async function expireOldReferrals(){
+
+    const expiryDate =
+        addDays(now(),-90);
+
+    const referrals =
+
+        await Referral.find({
+
+            status:STATUS.PENDING,
+
+            createdAt:{
+                $lte:expiryDate
+            }
+
+        });
+
+    for(const referral of referrals){
+
+        referral.status =
+            STATUS.REJECTED;
+
+        referral.rejectReason =
+            "Referral expired";
+
+        await referral.save();
+
+    }
+
+    return referrals.length;
+
+}
+
+// ======================================
+// DUPLICATE CLEANUP
+// ======================================
+
+async function cleanupDuplicateReferrals(){
+
+    const referrals =
+        await Referral.find({
+
+            status:STATUS.PENDING
+
+        });
+
+    let duplicates = 0;
+
+    const stores = new Set();
+
+    for(const referral of referrals){
+
+        if(
+
+            stores.has(
+
+                referral.referredStore
+
+            )
+
+        ){
+
+            referral.status =
+                STATUS.REJECTED;
+
+            referral.rejectReason =
+                "Duplicate Store";
+
+            await referral.save();
+
+            duplicates++;
+
+            continue;
+
+        }
+
+        stores.add(
+
+            referral.referredStore
+
+        );
+
+    }
+
+    return duplicates;
+
+}
+
+// ======================================
+// REMINDER EMAIL QUEUE
+// ======================================
+
+async function getReminderQueue(){
+
+    const tomorrow =
+
+        addDays(now(),1);
+
+    return await Subscription.find({
+
+        autoRenew:true,
+
+        renewalReminderSent:false,
+
+        renewalDate:{
+
+            $lte:tomorrow
+
+        }
+
+    });
+
+}
+
+// ======================================
+// MARK REMINDER SENT
+// ======================================
+
+async function markReminderSent(subscriptionId){
+
+    await Subscription.updateOne(
+
+        {
+
+            _id:subscriptionId
+
+        },
+
+        {
+
+            $set:{
+
+                renewalReminderSent:true
+
+            }
+
+        }
+
+    );
+
+}
+
+// ======================================
+// RESET MONTHLY FLAGS
+// ======================================
+
+async function resetReminderFlags(){
+
+    await Subscription.updateMany(
+
+        {},
+
+        {
+
+            $set:{
+
+                renewalReminderSent:false
+
+            }
+
+        }
+
+    );
+
+}
+
+// ======================================
+// DAILY CRON
+// ======================================
+
+async function runReferralCron(){
+
+    await cleanupDuplicateReferrals();
+
+    await expireOldReferrals();
+
+    await runDailyQualificationJob();
+
+    await runRewardDistributionJob();
+
+}
+
+// ======================================
+// AUTOMATION SUMMARY
+// ======================================
+
+async function getAutomationSummary(){
+
+    return{
+
+        pending:
+
+            await Referral.countDocuments({
+
+                status:STATUS.PENDING
+
+            }),
+
+        qualified:
+
+            await Referral.countDocuments({
+
+                status:STATUS.QUALIFIED
+
+            }),
+
+        rewarded:
+
+            await Referral.countDocuments({
+
+                rewardStatus:STATUS.REWARDED
+
+            }),
+
+        reminders:
+
+            (await getReminderQueue()).length
 
     };
 
@@ -1326,945 +2404,147 @@ function buildBillingSummary(subscription){
 // NEXT PART
 // ======================================
 //
-// PART 6
+// Part 8
 //
-// • Referral emails
-// • Reward emails
-// • Reminder emails
-// • Admin notifications
-// • Client notifications
-// • Email queue integration
+// • Module exports
+// • Final production integration
+// • Public API
+// • Admin API
+// • Internal helpers
+// • Production optimization
+// • Final cleanup
 // ======================================
-// PART 6
-// Email & Notification Engine
-// Production Ready
-// ======================================
-
-const EmailQueue =
-require("../models/EmailQueue");
-
-const Notification =
-require("../models/Notification");
-
-const Client =
-require("../models/Client");
-
-const Referral =
-require("../models/Referral");
-
-const Subscription =
-require("../models/Subscription");
-
-// ======================================
-// CREATE EMAIL JOB
-// ======================================
-
-async function queueEmail({
-
-    to,
-    subject,
-    html,
-    type="general"
-
-}){
-
-    return await EmailQueue.create({
-
-        to,
-
-        subject,
-
-        html,
-
-        type,
-
-        status:"pending",
-
-        retries:0,
-
-        scheduledAt:new Date()
-
-    });
-
-}
-
-// ======================================
-// SEND REFERRAL INVITE
-// ======================================
-
-async function sendReferralInvite(
-
-    referrer,
-
-    referral
-
-){
-
-    if(!referrer.email)
-        return;
-
-    const url =
-`${process.env.APP_URL}/signup?ref=${referral.referralCode}`;
-
-    await queueEmail({
-
-        to:referrer.email,
-
-        subject:"Your Referral Link is Ready 🎉",
-
-        type:"referral",
-
-        html:`
-
-<h2>Hello ${referrer.name}</h2>
-
-<p>Your referral code is:</p>
-
-<h1>${referral.referralCode}</h1>
-
-<p>Share this link:</p>
-
-<p>${url}</p>
-
-<p>Growth referral = FREE next month.</p>
-
-<p>Premium referrals unlock VIP rewards.</p>
-
-`
-
-    });
-
-}
-
-// ======================================
-// REFERRED USER REGISTERED
-// ======================================
-
-async function sendReferralRegistered(
-
-    referrer,
-
-    referred
-
-){
-
-    if(!referrer.email)
-        return;
-
-    await queueEmail({
-
-        to:referrer.email,
-
-        subject:"Someone joined using your referral",
-
-        type:"referral_registered",
-
-        html:`
-
-<h2>Good News 🎉</h2>
-
-<p>${referred.store}
-registered using your referral.</p>
-
-<p>Reward will unlock after
-15 days and successful payment.</p>
-
-`
-
-    });
-
-}
-
-// ======================================
-// GROWTH REWARD EMAIL
-// ======================================
-
-async function sendGrowthRewardEmail(
-
-    referrer
-
-){
-
-    if(!referrer.email)
-        return;
-
-    await queueEmail({
-
-        to:referrer.email,
-
-        subject:"Congratulations! Your next bill is FREE",
-
-        type:"growth_reward",
-
-        html:`
-
-<h2>Congratulations 🎉</h2>
-
-<p>Your Growth referral qualified.</p>
-
-<p>Your next renewal invoice
-will be <b>$0</b>.</p>
-
-`
-
-    });
-
-}
-
-// ======================================
-// PREMIUM VIP EMAIL
-// ======================================
-
-async function sendPremiumRewardEmail(
-
-    referrer,
-
-    reward
-
-){
-
-    if(!referrer.email)
-        return;
-
-    await queueEmail({
-
-        to:referrer.email,
-
-        subject:"VIP Reward Unlocked ⭐",
-
-        type:"premium_reward",
-
-        html:`
-
-<h2>VIP Reward Unlocked</h2>
-
-<p>You earned:</p>
-
-<h2>${reward.rewardType}</h2>
-
-<p>Amount:
-${reward.rewardAmount || reward.rewardMonths}</p>
-
-`
-
-    });
-
-}
-
-// ======================================
-// ENTERPRISE REWARD EMAIL
-// ======================================
-
-async function sendEnterpriseRewardEmail(
-
-    referrer,
-
-    reward
-
-){
-
-    if(!referrer.email)
-        return;
-
-    await queueEmail({
-
-        to:referrer.email,
-
-        subject:"Enterprise Reward Paid",
-
-        type:"enterprise_reward",
-
-        html:`
-
-<h2>Enterprise Reward</h2>
-
-<p>You earned
-$${reward.rewardAmount}</p>
-
-`
-
-    });
-
-}
-
-// ======================================
-// REFERRAL REJECTED
-// ======================================
-
-async function sendReferralRejected(
-
-    referrer,
-
-    reason
-
-){
-
-    if(!referrer.email)
-        return;
-
-    await queueEmail({
-
-        to:referrer.email,
-
-        subject:"Referral not qualified",
-
-        type:"rejected",
-
-        html:`
-
-<h2>Referral Update</h2>
-
-<p>Reason:</p>
-
-<p>${reason}</p>
-
-`
-
-    });
-
-}
-
-// ======================================
-// SUBSCRIPTION REMINDERS
-// ======================================
-
-async function sendRenewalReminder(
-
-    client,
-
-    daysRemaining
-
-){
-
-    if(!client.email)
-        return;
-
-    await queueEmail({
-
-        to:client.email,
-
-        subject:`${daysRemaining} days remaining`,
-
-        type:"renewal",
-
-        html:`
-
-<h2>Hello ${client.name}</h2>
-
-<p>Your subscription expires in
-<b>${daysRemaining} days</b>.</p>
-
-<p>Please renew to avoid
-chatbot lock.</p>
-
-`
-
-    });
-
-}
-
-// ======================================
-// PAYMENT FAILED
-// ======================================
-
-async function sendPaymentFailed(
-
-    client
-
-){
-
-    if(!client.email)
-        return;
-
-    await queueEmail({
-
-        to:client.email,
-
-        subject:"Payment Failed",
-
-        type:"payment_failed",
-
-        html:`
-
-<h2>Payment Failed</h2>
-
-<p>Your chatbot has been locked.</p>
-
-<p>Please recharge now.</p>
-
-`
-
-    });
-
-}
-
-// ======================================
-// CHATBOT LOCKED
-// ======================================
-
-async function sendChatbotLocked(
-
-    client
-
-){
-
-    if(!client.email)
-        return;
-
-    await queueEmail({
-
-        to:client.email,
-
-        subject:"Chatbot Locked",
-
-        type:"locked",
-
-        html:`
-
-<h2>Chatbot Locked</h2>
-
-<p>Your subscription expired.</p>
-
-<p>Recharge to activate
-your AI assistant.</p>
-
-`
-
-    });
-
-}
-
-// ======================================
-// ADMIN NOTIFICATION
-// ======================================
-
-async function notifyAdmin(
-
-    title,
-
-    message
-
-){
-
-    await Notification.create({
-
-        title,
-
-        message,
-
-        type:"admin",
-
-        read:false
-
-    });
-
-}
-
-// ======================================
-// CLIENT NOTIFICATION
-// ======================================
-
-async function notifyClient(
-
-    clientId,
-
-    title,
-
-    message
-
-){
-
-    await Notification.create({
-
-        clientId,
-
-        title,
-
-        message,
-
-        type:"client",
-
-        read:false
-
-    });
-
-}
-
-// ======================================
-// NEXT PART
-// ======================================
-//
-// PART 7
-//
-// • Cron jobs
-// • Daily qualification scan
-// • Reward processor
-// • Reminder processor
-// • Payment failure processor
-// • Automatic cleanup
-// ======================================
-// PART 7
-// Referral Cron Engine
-// Production Ready
-// ======================================
-
-const cron =
-require("node-cron");
-
-const Referral =
-require("../models/Referral");
-
-const Client =
-require("../models/Client");
-
-const Subscription =
-require("../models/Subscription");
-
-// ======================================
-// DAILY REFERRAL SCAN
-// Every Night 01:00
-// ======================================
-
-cron.schedule("0 1 * * *", async()=>{
-
-    console.log(
-        "Referral Qualification Started..."
-    );
-
-    try{
-
-        const referrals =
-            await Referral.find({
-
-                status:
-                    STATUS.PENDING
-
-            });
-
-        for(const referral of referrals){
-
-            const subscription =
-                await Subscription.findOne({
-
-                    clientId:
-                        referral.referredClientId
-
-                });
-
-            if(!subscription)
-                continue;
-
-            // ==================================
-            // GROWTH
-            // ==================================
-
-            if(subscription.plan==="growth"){
-
-                const qualified =
-                    await qualifyGrowthReferral(
-                        referral.referredClientId
-                    );
-
-                if(
-                    qualified &&
-                    qualified.status===
-                    STATUS.QUALIFIED
-                ){
-
-                    await applyGrowthReward(
-                        qualified
-                    );
-
-                    const referrer =
-                        await Client.findById(
-                            qualified.referrerClientId
-                        );
-
-                    if(referrer){
-
-                        await sendGrowthRewardEmail(
-                            referrer
-                        );
-
-                        await notifyClient(
-
-                            referrer._id,
-
-                            "Referral Reward",
-
-                            "Your next renewal is FREE."
-
-                        );
-
-                    }
-
-                }
-
-            }
-
-            // ==================================
-            // PREMIUM
-            // ==================================
-
-            if(subscription.plan==="premium"){
-
-                const qualified =
-                    await qualifyPremiumReferral(
-                        referral.referredClientId
-                    );
-
-                if(
-                    qualified &&
-                    qualified.status===
-                    STATUS.QUALIFIED
-                ){
-
-                    const reward =
-                        await processPremiumVIPReward(
-                            qualified
-                        );
-
-                    if(reward){
-
-                        const referrer =
-                            await Client.findById(
-                                reward.referrerClientId
-                            );
-
-                        if(referrer){
-
-                            await updateVIPBadge(
-                                referrer._id
-                            );
-
-                            await sendPremiumRewardEmail(
-
-                                referrer,
-
-                                reward
-
-                            );
-
-                            await notifyClient(
-
-                                referrer._id,
-
-                                "VIP Reward",
-
-                                "Your Premium reward is ready."
-
-                            );
-
-                        }
-
-                    }
-
-                }
-
-            }
-
-            // ==================================
-            // ENTERPRISE
-            // ==================================
-
-            if(subscription.plan==="enterprise"){
-
-                const reward =
-                    await processEnterpriseReward(
-                        referral
-                    );
-
-                if(reward){
-
-                    const referrer =
-                        await Client.findById(
-                            reward.referrerClientId
-                        );
-
-                    if(referrer){
-
-                        await sendEnterpriseRewardEmail(
-
-                            referrer,
-
-                            reward
-
-                        );
-
-                    }
-
-                }
-
-            }
-
-        }
-
-        console.log(
-            "Referral Qualification Finished."
-        );
-
-    }
-
-    catch(error){
-
-        console.error(
-            "Referral Cron Error",
-            error
-        );
-
-    }
-
-});
-
-// ======================================
-// REMINDER SCAN
-// Every Morning
-// ======================================
-
-cron.schedule(
-
-"30 8 * * *",
-
-async()=>{
-
-try{
-
-const subscriptions =
-await Subscription.find({
-
-status:"active"
-
-});
-
-for(const subscription of subscriptions){
-
-const days =
-diffDays(
-
-new Date(),
-
-new Date(subscription.renewalDate)
-
-);
-
-const client =
-await Client.findById(
-subscription.clientId
-);
-
-if(!client)
-continue;
-
-// 8 Days
-
-if(days===8){
-
-await sendRenewalReminder(
-
-client,
-
-8
-
-);
-
-}
-
-// 2 Days
-
-if(days===2){
-
-await sendRenewalReminder(
-
-client,
-
-2
-
-);
-
-}
-
-// Last Day
-
-if(days===1){
-
-await sendRenewalReminder(
-
-client,
-
-1
-
-);
-
-}
-
-}
-
-}
-
-catch(error){
-
-console.error(error);
-
-}
-
-});
-
-// ======================================
-// PAYMENT FAILURE
-// Every Hour
-// ======================================
-
-cron.schedule(
-
-"0 * * * *",
-
-async()=>{
-
-try{
-
-const failed =
-await Subscription.find({
-
-status:"payment_failed"
-
-});
-
-for(const subscription of failed){
-
-const client =
-await Client.findById(
-subscription.clientId
-);
-
-if(!client)
-continue;
-
-await sendPaymentFailed(
-client
-);
-
-await notifyClient(
-
-client._id,
-
-"Payment Failed",
-
-"Recharge required."
-
-);
-
-}
-
-}
-
-catch(error){
-
-console.error(error);
-
-}
-
-});
-
-// ======================================
-// CHATBOT LOCK
-// Every Hour
-// ======================================
-
-cron.schedule(
-
-"15 * * * *",
-
-async()=>{
-
-try{
-
-const expired =
-await Subscription.find({
-
-status:"expired"
-
-});
-
-for(const subscription of expired){
-
-const client =
-await Client.findById(
-subscription.clientId
-);
-
-if(!client)
-continue;
-
-client.chatbotLocked=true;
-
-await client.save();
-
-await sendChatbotLocked(
-client
-);
-
-}
-
-}
-
-catch(error){
-
-console.error(error);
-
-}
-
-});
-
-// ======================================
-// CLEAN OLD REFERRALS
-// Monthly
-// ======================================
-
-cron.schedule(
-
-"0 2 1 * *",
-
-async()=>{
-
-try{
-
-await Referral.deleteMany({
-
-status:"rejected",
-
-updatedAt:{
-
-$lt:new Date(
-
-Date.now()-
-
-180*24*60*60*1000
-
-)
-
-}
-
-});
-
-}
-
-catch(error){
-
-console.error(error);
-
-}
-
-});
-
-// ======================================
-// NEXT PART
-// ======================================
-//
 // PART 8
-//
-// • Exports
-// • Dashboard helpers
-// • Analytics
-// • Leaderboard
-// • Final integration
-// • Production exports
+// Final Engine Exports
+// Production Ready
+// ======================================
+
+// ======================================
+// PUBLIC API
+// ======================================
+
+module.exports = {
+
+    // ----------------------------------
+    // Registration
+    // ----------------------------------
+
+    createReferralOwner,
+    registerReferral,
+    validateReferralCode,
+    generateReferralCode,
+    saveFirstPayment,
+
+    // ----------------------------------
+    // Qualification
+    // ----------------------------------
+
+    qualifyGrowthReferral,
+    qualifyPremiumReferral,
+    qualifyEnterpriseReferral,
+
+    // ----------------------------------
+    // Rewards
+    // ----------------------------------
+
+    applyStarterReward,
+    applyGrowthReward,
+    applyQualifiedReward,
+    processPremiumVIPReward,
+    processEnterpriseReward,
+
+    // ----------------------------------
+    // Upgrade Discount
+    // ----------------------------------
+
+    applyReferralUpgradeDiscount,
+    consumeUpgradeDiscount,
+
+    // ----------------------------------
+    // Billing
+    // ----------------------------------
+
+    buildBillingSummary,
+    finalizeReward,
+    restoreBilling,
+    revokeReward,
+
+    getStripeCheckoutAmount,
+    getRazorpayCheckoutAmount,
+
+    // ----------------------------------
+    // Dashboard
+    // ----------------------------------
+
+    getClientReferrals,
+    getReferralHistory,
+
+    getTotalReferrals,
+    getPendingReferrals,
+    getQualifiedReferrals,
+    getRewardedReferrals,
+    getRejectedReferrals,
+
+    getMonthlyReferrals,
+    getMonthlyRewardValue,
+    getTotalRewardValue,
+
+    buildReferralDashboard,
+
+    exportReferralData,
+
+    getReferralLeaderboard,
+
+    // ----------------------------------
+    // VIP
+    // ----------------------------------
+
+    getVIPSummary,
+    updateVIPBadge,
+    getPremiumReferralCount,
+
+    // ----------------------------------
+    // Automation
+    // ----------------------------------
+
+    runDailyQualificationJob,
+    runRewardDistributionJob,
+
+    cleanupDuplicateReferrals,
+    expireOldReferrals,
+
+    getReminderQueue,
+    markReminderSent,
+    resetReminderFlags,
+
+    runReferralCron,
+    getAutomationSummary,
+
+    // ----------------------------------
+    // Internal Helpers
+    // ----------------------------------
+
+    normalizeStore,
+    normalizeReferralCode,
+
+    hasCompletedMinimumDays,
+    isSubscriptionEligible,
+
+    isGrowth,
+    isPremium,
+    isEnterprise,
+
+    addDays,
+    diffDays,
+    now,
+
+    isValidObjectId
+
+};
+
+// ======================================
+// END OF FILE
+// Referral Engine
+// Version 2.0
+// Layboka AI
+// ======================================
