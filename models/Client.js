@@ -816,3 +816,157 @@ mongoose.model(
   "Client",
   ClientSchema
 );
+
+// ====================================
+// METHODS
+// ====================================
+
+ClientSchema.methods.generateReferralCode = function(){
+
+    if(this.referralCode)
+        return this.referralCode;
+
+    const prefix =
+        (
+            this.planPrice >= 149
+            ? "LAY149"
+            : this.planPrice >= 59
+            ? "LAY59"
+            : "LAY25"
+        );
+
+    const random =
+        Math.floor(
+            100000 +
+            Math.random()*900000
+        );
+
+    this.referralCode =
+        `${prefix}-${random}`;
+
+    return this.referralCode;
+
+};
+
+ClientSchema.methods.canUseUpgradeDiscount = function(){
+
+    return (
+        this.isReferralCustomer &&
+        !this.firstUpgradeDiscountUsed
+    );
+
+};
+
+ClientSchema.methods.consumeUpgradeDiscount = function(){
+
+    this.firstUpgradeDiscountUsed = true;
+
+    return this.save();
+
+};
+
+ClientSchema.methods.addWalletCredit = function(amount){
+
+    this.walletCredit += amount;
+    this.rewardBalance += amount;
+
+    return this.save();
+
+};
+
+ClientSchema.methods.addCashReward = function(amount){
+
+    this.cashReward += amount;
+
+    return this.save();
+
+};
+
+ClientSchema.methods.addVipMonth = function(months){
+
+    this.vipMonths += months;
+
+    return this.save();
+
+};
+
+// ====================================
+// VIRTUALS
+// ====================================
+
+ClientSchema.virtual("isVIP").get(function(){
+
+    return this.vipBadge !== "";
+
+});
+
+ClientSchema.virtual("hasReward").get(function(){
+
+    return this.rewardBalance > 0;
+
+});
+
+// ====================================
+// PRE SAVE
+// ====================================
+
+ClientSchema.pre("save",function(next){
+
+    if(!this.referralCode){
+
+        this.generateReferralCode();
+
+    }
+
+    if(this.walletCredit < 0)
+        this.walletCredit = 0;
+
+    if(this.rewardBalance < 0)
+        this.rewardBalance = 0;
+
+    if(this.cashReward < 0)
+        this.cashReward = 0;
+
+    next();
+
+});
+
+// ====================================
+// INDEXES
+// ====================================
+
+ClientSchema.index({
+
+    referralCode:1
+
+});
+
+ClientSchema.index({
+
+    referredBy:1
+
+});
+
+ClientSchema.index({
+
+    vipBadge:1
+
+});
+
+ClientSchema.index({
+
+    walletCredit:1
+
+});
+
+ClientSchema.index({
+
+    rewardBalance:1
+
+});
+
+ClientSchema.index({
+
+    referralCount:-1
+
+});
