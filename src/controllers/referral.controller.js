@@ -172,3 +172,278 @@ const referralController = {};
 // • getDashboard()
 //
 // ======================================
+// ======================================
+// PART 2
+// Generate Referral
+// Referral Profile
+// Dashboard
+// ======================================
+
+// ======================================
+// GENERATE REFERRAL
+// ======================================
+
+referralController.generateReferral =
+async(req,res)=>{
+
+try{
+
+    const client =
+
+        await Client.findById(
+
+            req.user.id
+
+        );
+
+    if(!client){
+
+        return notFound(
+
+            res,
+
+            "Client not found"
+
+        );
+
+    }
+
+    const referral =
+
+        await referralEngine
+
+        .createReferralOwner(
+
+            client
+
+        );
+
+    return ok(
+
+        res,
+
+        {
+
+            referralCode:
+
+                referral.referralCode,
+
+            referralId:
+
+                referral._id
+
+        },
+
+        "Referral code generated"
+
+    );
+
+}catch(error){
+
+    return serverError(
+
+        res,
+
+        error
+
+    );
+
+}
+
+};
+
+// ======================================
+// REFERRAL PROFILE
+// ======================================
+
+referralController.getReferralProfile =
+async(req,res)=>{
+
+try{
+
+    const client =
+
+        await Client.findById(
+
+            req.user.id
+
+        );
+
+    if(!client){
+
+        return notFound(
+
+            res,
+
+            "Client not found"
+
+        );
+
+    }
+
+    const referral =
+
+        await Referral.findOne({
+
+            referrerClientId:
+
+                client._id
+
+        });
+
+    return ok(
+
+        res,
+
+        {
+
+            profile:{
+
+                clientId:
+
+                    client._id,
+
+                store:
+
+                    client.store,
+
+                company:
+
+                    client.company,
+
+                referralCode:
+
+                    referral
+
+                    ? referral.referralCode
+
+                    : "",
+
+                walletCredit:
+
+                    client.walletCredit || 0,
+
+                cashReward:
+
+                    client.cashReward || 0,
+
+                vipBadge:
+
+                    client.vipBadge || null
+
+            }
+
+        }
+
+    );
+
+}catch(error){
+
+    return serverError(
+
+        res,
+
+        error
+
+    );
+
+}
+
+};
+
+// ======================================
+// REFERRAL DASHBOARD
+// ======================================
+
+referralController.getDashboard =
+async(req,res)=>{
+
+try{
+
+    const referrals =
+
+        await referralEngine
+
+        .getClientReferrals(
+
+            req.user.id
+
+        );
+
+    const summary={
+
+        total:
+
+            referrals.length,
+
+        pending:
+
+            referrals.filter(
+
+                r=>r.status==="pending"
+
+            ).length,
+
+        qualified:
+
+            referrals.filter(
+
+                r=>r.status==="qualified"
+
+            ).length,
+
+        rewarded:
+
+            referrals.filter(
+
+                r=>r.status==="rewarded"
+
+            ).length,
+
+        rejected:
+
+            referrals.filter(
+
+                r=>r.status==="rejected"
+
+            ).length
+
+    };
+
+    return ok(
+
+        res,
+
+        {
+
+            summary,
+
+            referrals
+
+        }
+
+    );
+
+}catch(error){
+
+    return serverError(
+
+        res,
+
+        error
+
+    );
+
+}
+
+};
+
+// ======================================
+// NEXT
+// ======================================
+//
+// Part 3
+//
+// • validateReferral()
+// • registerReferral()
+// • saveFirstPayment()
