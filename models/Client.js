@@ -417,9 +417,124 @@ new mongoose.Schema({
     type:String,
     default:""
   },
-    // ====================================
-  // ANALYTICS
-  // ====================================
+  
+// ====================================
+// REFERRAL REWARDS
+// ====================================
+
+walletCredit:{
+    type:Number,
+    default:0
+},
+
+cashReward:{
+    type:Number,
+    default:0
+},
+
+rewardBalance:{
+    type:Number,
+    default:0
+},
+
+rewardHistory:{
+    type:Number,
+    default:0
+},
+
+// ====================================
+// VIP PROGRAM
+// ====================================
+
+vipBadge:{
+    type:String,
+    enum:[
+        "",
+        "Bronze",
+        "Silver",
+        "Gold",
+        "Diamond"
+    ],
+    default:""
+},
+
+vipMonths:{
+    type:Number,
+    default:0
+},
+
+vipReferralCount:{
+    type:Number,
+    default:0
+},
+
+vipRewardEarned:{
+    type:Number,
+    default:0
+},
+
+// ====================================
+// REFERRAL CUSTOMER
+// ====================================
+
+isReferralCustomer:{
+    type:Boolean,
+    default:false
+},
+
+firstUpgradeDiscountUsed:{
+    type:Boolean,
+    default:false
+},
+
+firstUpgradeDiscountPercent:{
+    type:Number,
+    default:30
+},
+
+// ====================================
+// BILLING REWARD
+// ====================================
+
+rewardApplied:{
+    type:Boolean,
+    default:false
+},
+
+rewardConsumed:{
+    type:Boolean,
+    default:false
+},
+
+rewardType:{
+    type:String,
+    default:""
+},
+
+rewardReferral:{
+    type:mongoose.Schema.Types.ObjectId,
+    ref:"Referral",
+    default:null
+},
+
+rewardAppliedAt:{
+    type:Date,
+    default:null
+},
+
+rewardConsumedAt:{
+    type:Date,
+    default:null
+},
+
+nextInvoiceAmount:{
+    type:Number,
+    default:0
+}
+
+ // ====================================
+ // ANALYTICS
+ // ====================================
 
   messages:{
     type:Number,
