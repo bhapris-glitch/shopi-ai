@@ -956,3 +956,725 @@ app.get(
 // • Referral Jobs
 // • Background Workers
 // • Scheduler Startup
+// ======================================
+// PART 7
+// Background Jobs
+// Cron Scheduler
+// Production Ready
+// ======================================
+
+// ======================================
+// RENEWAL CRON
+// ======================================
+
+const renewalCron =
+require("./cron/renewalCron");
+
+// ======================================
+// REFERRAL JOBS
+// ======================================
+
+const referralRewardJob =
+require("./src/jobs/referralReward.job");
+
+const referralReminderJob =
+require("./src/jobs/referralReminder.job");
+
+// ======================================
+// START ALL BACKGROUND SERVICES
+// ======================================
+
+async function startBackgroundServices(){
+
+    try{
+
+        console.log(
+            "====================================="
+        );
+
+        console.log(
+            "Starting Background Services..."
+        );
+
+        // ------------------------------
+        // Renewal Cron
+        // ------------------------------
+
+        if(
+
+            renewalCron &&
+            renewalCron.start
+
+        ){
+
+            renewalCron.start();
+
+            console.log(
+                "✓ Renewal Cron Started"
+            );
+
+        }
+
+        // ------------------------------
+        // Referral Reward Job
+        // ------------------------------
+
+        if(
+
+            referralRewardJob &&
+            referralRewardJob.start
+
+        ){
+
+            referralRewardJob.start();
+
+            console.log(
+                "✓ Referral Reward Job Started"
+            );
+
+        }
+
+        // ------------------------------
+        // Referral Reminder Job
+        // ------------------------------
+
+        if(
+
+            referralReminderJob &&
+            referralReminderJob.start
+
+        ){
+
+            referralReminderJob.start();
+
+            console.log(
+                "✓ Referral Reminder Job Started"
+            );
+
+        }
+
+        console.log(
+            "✓ Background Services Ready"
+        );
+
+        console.log(
+            "====================================="
+        );
+
+    }catch(error){
+
+        console.error(
+
+            "Background Service Error",
+
+            error
+
+        );
+
+    }
+
+}
+
+// ======================================
+// STOP ALL BACKGROUND SERVICES
+// ======================================
+
+async function stopBackgroundServices(){
+
+    try{
+
+        if(
+
+            renewalCron &&
+            renewalCron.stop
+
+        ){
+
+            await renewalCron.stop();
+
+        }
+
+        if(
+
+            referralRewardJob &&
+            referralRewardJob.stop
+
+        ){
+
+            await referralRewardJob.stop();
+
+        }
+
+        if(
+
+            referralReminderJob &&
+            referralReminderJob.stop
+
+        ){
+
+            await referralReminderJob.stop();
+
+        }
+
+        console.log(
+
+            "Background Services Stopped"
+
+        );
+
+    }catch(error){
+
+        console.error(error);
+
+    }
+
+}
+
+// ======================================
+// NEXT
+// ======================================
+//
+// Part 8
+//
+// • MongoDB Connection
+// • Database Events
+// • Server Startup
+// ======================================
+// PART 8
+// MongoDB
+// Server Startup
+// Production Ready
+// ======================================
+
+// ======================================
+// DATABASE CONNECTION
+// ======================================
+
+async function connectDatabase(){
+
+    try{
+
+        await mongoose.connect(
+
+            process.env.MONGODB_URI,
+
+            {
+
+                autoIndex:true,
+
+                maxPoolSize:20,
+
+                minPoolSize:5,
+
+                serverSelectionTimeoutMS:10000,
+
+                socketTimeoutMS:45000
+
+            }
+
+        );
+
+        console.log(
+
+            "✓ MongoDB Connected"
+
+        );
+
+    }catch(error){
+
+        console.error(
+
+            "MongoDB Connection Failed",
+
+            error
+
+        );
+
+        process.exit(1);
+
+    }
+
+}
+
+// ======================================
+// DATABASE EVENTS
+// ======================================
+
+mongoose.connection.on(
+
+    "connected",
+
+    ()=>{
+
+        console.log(
+
+            "MongoDB Ready"
+
+        );
+
+    }
+
+);
+
+mongoose.connection.on(
+
+    "error",
+
+    (error)=>{
+
+        console.error(
+
+            "MongoDB Error",
+
+            error
+
+        );
+
+    }
+
+);
+
+mongoose.connection.on(
+
+    "disconnected",
+
+    ()=>{
+
+        console.log(
+
+            "MongoDB Disconnected"
+
+        );
+
+    }
+
+);
+
+// ======================================
+// SERVER START
+// ======================================
+
+async function startServer(){
+
+    try{
+
+        // ------------------------------
+        // Database
+        // ------------------------------
+
+        await connectDatabase();
+
+        // ------------------------------
+        // Background Jobs
+        // ------------------------------
+
+        await startBackgroundServices();
+
+        // ------------------------------
+        // HTTP Server
+        // ------------------------------
+
+        server.listen(
+
+            PORT,
+
+            ()=>{
+
+                console.log(
+
+"======================================"
+
+                );
+
+                console.log(
+
+" Layboka AI Started Successfully"
+
+                );
+
+                console.log(
+
+` Environment : ${NODE_ENV}`
+
+                );
+
+                console.log(
+
+` Port : ${PORT}`
+
+                );
+
+                console.log(
+
+` Time : ${new Date()}`
+
+                );
+
+                console.log(
+
+"======================================"
+
+                );
+
+            }
+
+        );
+
+    }catch(error){
+
+        console.error(
+
+            error
+
+        );
+
+        process.exit(1);
+
+    }
+
+}
+
+// ======================================
+// START APPLICATION
+// ======================================
+
+startServer();
+
+// ======================================
+// NEXT
+// ======================================
+//
+// Part 9
+//
+// • 404 Handler
+// • Global Error Handler
+// • Express Error Middleware
+// ======================================
+// PART 9
+// 404 Handler
+// Global Error Handler
+// Production Ready
+// ======================================
+
+// ======================================
+// 404 NOT FOUND
+// ======================================
+
+app.use(
+
+(req,res,next)=>{
+
+    return res.status(404)
+
+    .json({
+
+        success:false,
+
+        error:"NOT_FOUND",
+
+        message:
+
+        "Requested resource not found.",
+
+        path:req.originalUrl,
+
+        method:req.method,
+
+        timestamp:new Date()
+
+    });
+
+});
+
+// ======================================
+// GLOBAL ERROR HANDLER
+// ======================================
+
+app.use(
+
+(err,req,res,next)=>{
+
+    console.error(
+
+        "====================================="
+
+    );
+
+    console.error(
+
+        "GLOBAL ERROR"
+
+    );
+
+    console.error(
+
+        err.stack || err
+
+    );
+
+    console.error(
+
+        "====================================="
+
+    );
+
+    const status =
+
+        err.status ||
+
+        err.statusCode ||
+
+        500;
+
+    return res.status(status)
+
+    .json({
+
+        success:false,
+
+        error:
+
+        err.name ||
+
+        "SERVER_ERROR",
+
+        message:
+
+        NODE_ENV==="production"
+
+        ?
+
+        "Internal Server Error"
+
+        :
+
+        err.message,
+
+        timestamp:
+
+        new Date(),
+
+        ...(NODE_ENV!=="production"
+
+        &&{
+
+            stack:
+
+            err.stack
+
+        })
+
+    });
+
+});
+
+// ======================================
+// UNCAUGHT EXCEPTION
+// ======================================
+
+process.on(
+
+"uncaughtException",
+
+(error)=>{
+
+    console.error(
+
+        "UNCAUGHT EXCEPTION"
+
+    );
+
+    console.error(error);
+
+});
+
+// ======================================
+// UNHANDLED PROMISE
+// ======================================
+
+process.on(
+
+"unhandledRejection",
+
+(error)=>{
+
+    console.error(
+
+        "UNHANDLED PROMISE"
+
+    );
+
+    console.error(error);
+
+});
+
+// ======================================
+// NEXT
+// ======================================
+// Part 10
+// • Graceful shutdown
+// • SIGINT
+// • SIGTERM
+// • Close MongoDB
+// • Close HTTP server
+// • Production Finish
+// ======================================
+// PART 10
+// Graceful Shutdown
+// Production Finish
+// ======================================
+
+// ======================================
+// GRACEFUL SHUTDOWN
+// ======================================
+
+async function gracefulShutdown(signal){
+
+    console.log(
+
+        "====================================="
+
+    );
+
+    console.log(
+
+        `Received ${signal}`
+
+    );
+
+    console.log(
+
+        "Shutting down server..."
+
+    );
+
+    try{
+
+        // ------------------------------
+        // Stop Background Jobs
+        // ------------------------------
+
+        await stopBackgroundServices();
+
+        // ------------------------------
+        // Close HTTP Server
+        // ------------------------------
+
+        await new Promise(
+
+            (resolve)=>{
+
+                server.close(
+
+                    ()=>{
+
+                        console.log(
+
+                            "HTTP Server Closed"
+
+                        );
+
+                        resolve();
+
+                    }
+
+                );
+
+            }
+
+        );
+
+        // ------------------------------
+        // Close MongoDB
+        // ------------------------------
+
+        await mongoose.connection.close();
+
+        console.log(
+
+            "MongoDB Closed"
+
+        );
+
+        console.log(
+
+            "Graceful Shutdown Complete"
+
+        );
+
+        console.log(
+
+        "====================================="
+
+        );
+
+        process.exit(0);
+
+    }catch(error){
+
+        console.error(
+
+            "Shutdown Error",
+
+            error
+
+        );
+
+        process.exit(1);
+
+    }
+
+}
+
+// ======================================
+// SIGNALS
+// ======================================
+
+process.on(
+
+    "SIGINT",
+
+    ()=>{
+
+        gracefulShutdown(
+
+            "SIGINT"
+
+        );
+
+    }
+
+);
+
+process.on(
+
+    "SIGTERM",
+
+    ()=>{
+
+        gracefulShutdown(
+
+            "SIGTERM"
+
+        );
+
+    }
+
+);
+
+// ======================================
+// EXPORT
+// ======================================
+
+module.exports = {
+
+    app,
+
+    server
+
+};
+
+// ======================================
+// server.js
+// PRODUCTION COMPLETE
+// ======================================
