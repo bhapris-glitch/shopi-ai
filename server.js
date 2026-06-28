@@ -1,283 +1,69 @@
 // ======================================
-// server.js
+// shopi-ai/server.js
 // Layboka AI
-// Production Server Bootstrap
+// Production Ready Server
 // Part 1
 // ======================================
 
 "use strict";
 
-require("dotenv").config();
-
 // ======================================
 // CORE
 // ======================================
 
-const express = require("express");
-const mongoose = require("mongoose");
-const helmet = require("helmet");
-const cors = require("cors");
-const compression = require("compression");
-const morgan = require("morgan");
+require("dotenv").config();
 
-// ======================================
-// APP
-// ======================================
+const express =
+require("express");
 
-const app = express();
+const path =
+require("path");
+
+const http =
+require("http");
 
 // ======================================
 // DATABASE
 // ======================================
 
-async function connectDB(){
-
-    try{
-
-        await mongoose.connect(
-
-            process.env.MONGO_URI
-
-        );
-
-        console.log("✅ MongoDB Connected");
-
-    }catch(err){
-
-        console.error(
-
-            "MongoDB Error:",
-
-            err.message
-
-        );
-
-        process.exit(1);
-
-    }
-
-}
+const mongoose =
+require("mongoose");
 
 // ======================================
 // SECURITY
 // ======================================
 
-app.use(
+const helmet =
+require("helmet");
 
-    helmet({
+const cors =
+require("cors");
 
-        crossOriginResourcePolicy:false
+const compression =
+require("compression");
 
-    })
-
-);
-
-app.use(
-
-    cors({
-
-        origin:true,
-
-        credentials:true
-
-    })
-
-);
-
-app.use(compression());
-
-app.use(morgan("dev"));
-
-app.use(
-
-    express.json({
-
-        limit:"20mb"
-
-    })
-
-);
-
-app.use(
-
-    express.urlencoded({
-
-        extended:true,
-
-        limit:"20mb"
-
-    })
-
-);
+const morgan =
+require("morgan");
 
 // ======================================
-// HEALTH
+// LIMITER
 // ======================================
 
-app.get("/health",(req,res)=>{
-
-    res.json({
-
-        success:true,
-
-        status:"OK",
-
-        service:"Layboka AI",
-
-        version:"2.0.0",
-
-        uptime:process.uptime(),
-
-        timestamp:new Date()
-
-    });
-
-});
+const rateLimiter =
+require("./middleware/rateLimiter");
 
 // ======================================
-// ROOT
+// APP
 // ======================================
 
-app.get("/",(req,res)=>{
+const app =
+express();
 
-    res.json({
-
-        success:true,
-
-        message:"Layboka AI API Running"
-
-    });
-
-});
+const server =
+http.createServer(app);
 
 // ======================================
-// PART 2
-// Route imports
-// Middleware imports
-// API registration
-// Error handling
-// Server startup
-// ======================================
-// ======================================
-// ROUTES
-// ======================================
-
-const authRoutes =
-require("./src/routes/auth.routes");
-
-const chatRoutes =
-require("./src/routes/chat.routes");
-
-const billingRoutes =
-require("./src/routes/billing.routes");
-
-const referralRoutes =
-require("./src/routes/referral.routes");
-
-const shopifyRoutes =
-require("./src/routes/shopify.routes");
-
-// ======================================
-// MIDDLEWARE
-// ======================================
-
-const planGuard =
-require("./src/middleware/planGuard");
-
-// ======================================
-// API
-// ======================================
-
-app.use(
-
-    "/api/auth",
-
-    authRoutes
-
-);
-
-app.use(
-
-    "/api/chat",
-
-    planGuard,
-
-    chatRoutes
-
-);
-
-app.use(
-
-    "/api/billing",
-
-    billingRoutes
-
-);
-
-app.use(
-
-    "/api/referral",
-
-    referralRoutes
-
-);
-
-app.use(
-
-    "/api/shopify",
-
-    shopifyRoutes
-
-);
-
-// ======================================
-// 404
-// ======================================
-
-app.use((req,res)=>{
-
-    return res.status(404).json({
-
-        success:false,
-
-        message:"API Route Not Found"
-
-    });
-
-});
-
-// ======================================
-// ERROR HANDLER
-// ======================================
-
-app.use(
-
-(err,req,res,next)=>{
-
-    console.error(err);
-
-    return res.status(
-
-        err.status || 500
-
-    ).json({
-
-        success:false,
-
-        message:
-
-            err.message ||
-
-            "Internal Server Error"
-
-    });
-
-}
-
-);
-
-// ======================================
-// SERVER
+// PORT
 // ======================================
 
 const PORT =
@@ -286,28 +72,69 @@ process.env.PORT ||
 
 5000;
 
-async function startServer(){
+// ======================================
+// ENVIRONMENT
+// ======================================
 
-    await connectDB();
+const NODE_ENV =
 
-    app.listen(
+process.env.NODE_ENV ||
 
-        PORT,
+"development";
 
-        ()=>{
+// ======================================
+// GLOBALS
+// ======================================
 
-            console.log(
+global.APP_NAME =
+"Layboka AI";
 
-                `🚀 Layboka AI running on ${PORT}`
+global.SERVER_STARTED =
+new Date();
 
-            );
+// ======================================
+// HEALTH CHECK
+// ======================================
 
-        }
+app.get(
 
-    );
+"/",
 
-}
+(req,res)=>{
 
-startServer();
+    res.json({
 
-module.exports = app;
+        success:true,
+
+        application:"Layboka AI",
+
+        environment:NODE_ENV,
+
+        version:"1.0.0",
+
+        status:"Running",
+
+        uptime:
+
+        process.uptime(),
+
+        startedAt:
+
+        global.SERVER_STARTED
+
+    });
+
+});
+
+// ======================================
+// NEXT
+// ======================================
+//
+// Part 2
+//
+// • Helmet
+// • CORS
+// • Morgan
+// • Compression
+// • Rate Limiter
+// • Static files
