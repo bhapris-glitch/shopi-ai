@@ -833,3 +833,287 @@ function showReturningGreeting(){
 // • Headset Avatar
 // • Floating Button
 // • Greeting Bubble
+// =====================================
+// PART 5
+// Bottom Right Sales Executive
+// Floating Executive
+// =====================================
+
+// =====================================
+// CREATE EXECUTIVE
+// =====================================
+
+function createExecutiveAvatar(message=""){
+
+    if(
+
+        executiveAvatar
+
+    ){
+
+        return;
+
+    }
+
+    executiveAvatar=
+
+    document.createElement("div");
+
+    executiveAvatar.id=
+
+    "layboka-sales-executive";
+
+    executiveAvatar.innerHTML=
+
+    `
+
+<div class="lb-executive-wrapper">
+
+    <!-- Greeting Bubble -->
+
+    <div
+
+    id="lbGreetingBubble"
+
+    class="lb-greeting-bubble">
+
+        ${message}
+
+    </div>
+
+    <!-- Online Status -->
+
+    <div class="lb-online-status">
+
+        <span></span>
+
+    </div>
+
+    <!-- Executive -->
+
+    <div
+
+    id="lbExecutiveFace"
+
+    class="lb-executive-face">
+
+        <img
+
+        id="lbChatAvatar"
+
+        src="${EXECUTIVE.chatAvatar}"
+
+        alt="${EXECUTIVE.name}"
+
+        />
+
+    </div>
+
+</div>
+
+`;
+
+    document.body.appendChild(
+
+        executiveAvatar
+
+    );
+
+    // Floating animation
+
+    requestAnimationFrame(
+
+        ()=>{
+
+            executiveAvatar
+
+            .classList
+
+            .add(
+
+                "lb-executive-show"
+
+            );
+
+        }
+
+    );
+
+    // Hide greeting bubble
+
+    if(
+
+        message
+
+    ){
+
+        setTimeout(
+
+            ()=>{
+
+                hideGreetingBubble();
+
+            },
+
+            5000
+
+        );
+
+    }
+
+    // Events
+
+    bindExecutiveEvents();
+
+}
+
+// =====================================
+// GREETING
+// =====================================
+
+function hideGreetingBubble(){
+
+    const bubble=
+
+    document.getElementById(
+
+        "lbGreetingBubble"
+
+    );
+
+    if(
+
+        bubble
+
+    ){
+
+        bubble.classList.add(
+
+            "lb-hide"
+
+        );
+
+    }
+
+}
+
+// =====================================
+// EVENTS
+// =====================================
+
+function bindExecutiveEvents(){
+
+    const avatar=
+
+    document.getElementById(
+
+        "lbExecutiveFace"
+
+    );
+
+    if(
+
+        !avatar
+
+    ) return;
+
+    avatar.addEventListener(
+
+        "click",
+
+        ()=>{
+
+            openChatWindow();
+
+        }
+
+    );
+
+    avatar.addEventListener(
+
+        "mouseenter",
+
+        ()=>{
+
+            avatar.classList.add(
+
+                "lb-hover"
+
+            );
+
+        }
+
+    );
+
+    avatar.addEventListener(
+
+        "mouseleave",
+
+        ()=>{
+
+            avatar.classList.remove(
+
+                "lb-hover"
+
+            );
+
+        }
+
+    );
+
+}
+
+// =====================================
+// ONLINE
+// =====================================
+
+function setExecutiveOnline(
+
+status=true
+
+){
+
+    const online=
+
+    document.querySelector(
+
+        ".lb-online-status"
+
+    );
+
+    if(
+
+        !online
+
+    ) return;
+
+    if(status){
+
+        online.classList.add(
+
+            "online"
+
+        );
+
+    }else{
+
+        online.classList.remove(
+
+            "online"
+
+        );
+
+    }
+
+}
+
+// =====================================
+// NEXT
+// =====================================
+//
+// PART 6
+//
+// • Natural Blinking
+// • Random Blink Timing
+// • Eye Animation
+// • Idle Behaviour
