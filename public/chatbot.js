@@ -8966,4 +8966,333 @@ function loyaltyGreeting(){
 // • Birthday Rewards
 // • Anniversary Rewards
 // • Repeat Purchase AI
+// =====================================
+// PART 18.2
+// Loyalty Rewards Engine
+// VIP Benefits
+// Birthday Rewards
+// Anniversary Rewards
+// =====================================
+
+// =====================================
+// VIP BENEFITS
+// =====================================
+
+const VIP_BENEFITS={
+
+    new:[
+
+        "Welcome Discount"
+
+    ],
+
+    silver:[
+
+        "5% VIP Discount",
+
+        "Priority Support"
+
+    ],
+
+    gold:[
+
+        "10% VIP Discount",
+
+        "Priority Support",
+
+        "Early Product Access"
+
+    ],
+
+    platinum:[
+
+        "15% VIP Discount",
+
+        "Free Shipping",
+
+        "VIP Support",
+
+        "Exclusive Products",
+
+        "Personal Sales Executive"
+
+    ]
+
+};
+
+// =====================================
+// SHOW BENEFITS
+// =====================================
+
+function showVipBenefits(){
+
+    const benefits=
+
+    VIP_BENEFITS[
+
+        LOYALTY.level
+
+    ]||
+
+    [];
+
+    if(
+
+        !benefits.length
+
+    ) return;
+
+    addExecutiveMessage(
+
+`⭐ Your ${LOYALTY.level.toUpperCase()} Member Benefits:`
+
+    );
+
+    let html=
+
+`<div class="lb-vip-benefits">`;
+
+    benefits.forEach(
+
+        benefit=>{
+
+            html+=`
+
+<div class="lb-benefit">
+
+✔ ${benefit}
+
+</div>
+
+`;
+
+        }
+
+    );
+
+    html+=`
+
+</div>`;
+
+    document
+
+    .getElementById(
+
+        "lbMessages"
+
+    )
+
+    .insertAdjacentHTML(
+
+        "beforeend",
+
+        html
+
+    );
+
+    scrollMessages();
+
+}
+
+// =====================================
+// BIRTHDAY REWARD
+// =====================================
+
+function checkBirthdayReward(){
+
+    if(
+
+        !LOYALTY.birthday
+
+    ) return;
+
+    const today=
+
+    new Date();
+
+    const birthday=
+
+    new Date(
+
+        LOYALTY.birthday
+
+    );
+
+    if(
+
+        birthday.getDate()===
+
+        today.getDate() &&
+
+        birthday.getMonth()===
+
+        today.getMonth()
+
+    ){
+
+        executiveSpeak(
+
+`🎉 Happy Birthday ${getVisitorName()}! We've added a special birthday gift for you.`
+
+        );
+
+        showCoupon({
+
+            code:"BIRTHDAY20",
+
+            discount:"20% OFF"
+
+        });
+
+    }
+
+}
+
+// =====================================
+// ANNIVERSARY REWARD
+// =====================================
+
+function checkAnniversaryReward(){
+
+    if(
+
+        !LOYALTY.anniversary
+
+    ) return;
+
+    const today=
+
+    new Date();
+
+    const anniversary=
+
+    new Date(
+
+        LOYALTY.anniversary
+
+    );
+
+    if(
+
+        anniversary.getDate()===
+
+        today.getDate() &&
+
+        anniversary.getMonth()===
+
+        today.getMonth()
+
+    ){
+
+        executiveSpeak(
+
+`🎊 Happy Anniversary! Here's a special reward from all of us.`
+
+        );
+
+        showCoupon({
+
+            code:"THANKYOU15",
+
+            discount:"15% OFF"
+
+        });
+
+    }
+
+}
+
+// =====================================
+// REPEAT PURCHASE AI
+// =====================================
+
+function recommendRepeatPurchase(){
+
+    if(
+
+        !LOYALTY.repeatCustomer
+
+    ) return;
+
+    addExecutiveMessage(
+
+"Based on your purchase history, I found products you'll probably love."
+
+    );
+
+    if(
+
+        VISITOR_PROFILE.recentProducts &&
+
+        VISITOR_PROFILE.recentProducts.length
+
+    ){
+
+        renderProducts(
+
+            VISITOR_PROFILE.recentProducts
+
+        );
+
+    }
+
+}
+
+// =====================================
+// LOYALTY REWARD
+// =====================================
+
+function rewardLoyalCustomer(orderValue){
+
+    const earned=
+
+    Math.floor(
+
+        orderValue/10
+
+    );
+
+    LOYALTY.points+=
+
+    earned;
+
+    determineLoyaltyTier();
+
+    executiveSpeak(
+
+`🎁 You've earned ${earned} loyalty points!`
+
+    );
+
+}
+
+// =====================================
+// INITIALIZE
+// =====================================
+
+function initializeLoyaltyRewards(){
+
+    loyaltyGreeting();
+
+    showVipBenefits();
+
+    checkBirthdayReward();
+
+    checkAnniversaryReward();
+
+    recommendRepeatPurchase();
+
+}
+
+// =====================================
+// NEXT
+// =====================================
+//
+// PART 18.3
+//
+// • Smart Membership Upgrade
+// • VIP Upsell Engine
+// • Loyalty Analytics
+// • Customer Retention AI
+// • Lifetime Value Prediction
 
