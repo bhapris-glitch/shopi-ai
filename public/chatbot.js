@@ -14818,4 +14818,1717 @@ setInterval(
 // • Newsletter AI
 // • Lead Qualification
 // • CRM Lead Sync
+// =====================================
+// PART 31
+// AI Lead Capture Engine
+// Smart Lead Qualification
+// Production Ready
+// =====================================
+
+// =====================================
+// LEAD ENGINE
+// =====================================
+
+const LEAD_ENGINE={
+
+    captured:false,
+
+    qualified:false,
+
+    score:0,
+
+    popupShown:false,
+
+    exitTriggered:false,
+
+    email:"",
+
+    phone:"",
+
+    name:"",
+
+    source:"chatbot",
+
+    interests:[]
+
+};
+
+// =====================================
+// QUALIFICATION
+// =====================================
+
+const LEAD_SCORE={
+
+    email:30,
+
+    phone:30,
+
+    repeatVisitor:20,
+
+    cartItems:30,
+
+    checkoutIntent:40,
+
+    conversation:15
+
+};
+
+// =====================================
+// SCORE
+// =====================================
+
+function calculateLeadScore(){
+
+    let score=0;
+
+    if(
+
+        LEAD_ENGINE.email
+
+    ){
+
+        score+=LEAD_SCORE.email;
+
+    }
+
+    if(
+
+        LEAD_ENGINE.phone
+
+    ){
+
+        score+=LEAD_SCORE.phone;
+
+    }
+
+    if(
+
+        VISITOR_PROFILE.totalVisits>1
+
+    ){
+
+        score+=LEAD_SCORE.repeatVisitor;
+
+    }
+
+    if(
+
+        CART_STATE.itemCount>0
+
+    ){
+
+        score+=LEAD_SCORE.cartItems;
+
+    }
+
+    if(
+
+        PURCHASE_STATE.ready
+
+    ){
+
+        score+=LEAD_SCORE.checkoutIntent;
+
+    }
+
+    if(
+
+        EXECUTIVE_ANALYTICS.conversations>3
+
+    ){
+
+        score+=LEAD_SCORE.conversation;
+
+    }
+
+    LEAD_ENGINE.score=
+
+    Math.min(
+
+        score,
+
+        100
+
+    );
+
+    LEAD_ENGINE.qualified=
+
+    score>=60;
+
+}
+
+// =====================================
+// CAPTURE
+// =====================================
+
+function captureLead(
+
+data={}
+
+){
+
+    LEAD_ENGINE.name=
+
+    data.name||
+
+    LEAD_ENGINE.name;
+
+    LEAD_ENGINE.email=
+
+    data.email||
+
+    LEAD_ENGINE.email;
+
+    LEAD_ENGINE.phone=
+
+    data.phone||
+
+    LEAD_ENGINE.phone;
+
+    LEAD_ENGINE.interests=
+
+    data.interests||
+
+    [];
+
+    LEAD_ENGINE.captured=true;
+
+    calculateLeadScore();
+
+    syncLeadCRM();
+
+}
+
+// =====================================
+// POPUP
+// =====================================
+
+function showLeadPopup(){
+
+    if(
+
+        LEAD_ENGINE.popupShown ||
+
+        LEAD_ENGINE.captured
+
+    ){
+
+        return;
+
+    }
+
+    LEAD_ENGINE.popupShown=true;
+
+    addExecutiveMessage(
+
+"🎁 Get exclusive offers! Enter your email to receive special discounts and product updates."
+
+    );
+
+    document
+
+    .getElementById(
+
+        "lbMessages"
+
+    )
+
+    .insertAdjacentHTML(
+
+        "beforeend",
+
+`
+
+<div class="lbLeadCapture">
+
+<input
+
+id="lbLeadEmail"
+
+type="email"
+
+placeholder="Email address">
+
+<button
+
+onclick="submitLeadCapture()">
+
+Unlock Offer
+
+</button>
+
+</div>
+
+`
+
+    );
+
+    scrollMessages();
+
+}
+
+// =====================================
+// SUBMIT
+// =====================================
+
+function submitLeadCapture(){
+
+    const email=
+
+    document
+
+    .getElementById(
+
+        "lbLeadEmail"
+
+    )
+
+    .value
+
+    .trim();
+
+    if(
+
+        !email
+
+    ) return;
+
+    captureLead({
+
+        email
+
+    });
+
+    executiveSpeak(
+
+"Thank you! Your exclusive offer has been activated."
+
+    );
+
+    showCoupon({
+
+        code:"WELCOME15",
+
+        discount:"15% OFF"
+
+    });
+
+}
+
+// =====================================
+// EXIT
+// =====================================
+
+document.addEventListener(
+
+    "mouseout",
+
+    event=>{
+
+        if(
+
+            event.clientY<=0 &&
+
+            !LEAD_ENGINE.exitTriggered
+
+        ){
+
+            LEAD_ENGINE.exitTriggered=true;
+
+            showLeadPopup();
+
+        }
+
+    }
+
+);
+
+// =====================================
+// CRM
+// =====================================
+
+async function syncLeadCRM(){
+
+    try{
+
+        await fetch(
+
+`${CONFIG.API_BASE}/api/leads/create`,
+
+        {
+
+            method:"POST",
+
+            headers:{
+
+                "Content-Type":
+
+                "application/json"
+
+            },
+
+            body:JSON.stringify({
+
+                visitorId:
+
+                VISITOR.id,
+
+                lead:
+
+                LEAD_ENGINE
+
+            })
+
+        });
+
+    }
+
+    catch(error){
+
+        console.error(error);
+
+    }
+
+}
+
+// =====================================
+// NEWSLETTER
+// =====================================
+
+async function subscribeNewsletter(){
+
+    if(
+
+        !LEAD_ENGINE.email
+
+    ){
+
+        return;
+
+    }
+
+    try{
+
+        await fetch(
+
+`${CONFIG.API_BASE}/api/newsletter/subscribe`,
+
+        {
+
+            method:"POST",
+
+            headers:{
+
+                "Content-Type":
+
+                "application/json"
+
+            },
+
+            body:JSON.stringify({
+
+                email:
+
+                LEAD_ENGINE.email
+
+            })
+
+        });
+
+    }
+
+    catch(error){
+
+        console.error(error);
+
+    }
+
+}
+
+// =====================================
+// AUTO TRIGGER
+// =====================================
+
+setTimeout(
+
+    ()=>{
+
+        if(
+
+            !LEAD_ENGINE.captured
+
+        ){
+
+            showLeadPopup();
+
+        }
+
+    },
+
+    180000
+
+);
+
+// =====================================
+// NEXT
+// =====================================
+//
+// PART 32
+//
+// AI Appointment Booking Engine
+//
+// • Book Sales Call
+// • Demo Scheduling
+// • Calendar Integration
+// • Time Zone Detection
+// • Sales Representative Assignment
+// • Google Calendar / Outlook Sync
+// =====================================
+// PART 32
+// AI Appointment Booking Engine
+// Sales Call & Demo Scheduler
+// Production Ready
+// =====================================
+
+// =====================================
+// APPOINTMENT ENGINE
+// =====================================
+
+const APPOINTMENT={
+
+    booked:false,
+
+    meetingType:"sales",
+
+    date:null,
+
+    time:null,
+
+    timezone:null,
+
+    executive:null,
+
+    meetingId:null,
+
+    calendarLink:null
+
+};
+
+// =====================================
+// MEETING TYPES
+// =====================================
+
+const MEETING_TYPES={
+
+    sales:"Sales Consultation",
+
+    demo:"Product Demo",
+
+    onboarding:"Onboarding Session",
+
+    enterprise:"Enterprise Meeting",
+
+    support:"Priority Support"
+
+};
+
+// =====================================
+// TIMEZONE
+// =====================================
+
+function detectTimezone(){
+
+    APPOINTMENT.timezone=
+
+    Intl.DateTimeFormat()
+
+    .resolvedOptions()
+
+    .timeZone;
+
+}
+
+// =====================================
+// EXECUTIVE
+// =====================================
+
+function assignExecutive(){
+
+    if(
+
+        VISITOR.country==="US"
+
+    ){
+
+        APPOINTMENT.executive=
+
+        "Emily Johnson";
+
+    }
+
+    else if(
+
+        VISITOR.country==="UK"
+
+    ){
+
+        APPOINTMENT.executive=
+
+        "Oliver Smith";
+
+    }
+
+    else if(
+
+        VISITOR.country==="CA"
+
+    ){
+
+        APPOINTMENT.executive=
+
+        "Sophia Brown";
+
+    }
+
+    else if(
+
+        VISITOR.country==="AE"
+
+    ){
+
+        APPOINTMENT.executive=
+
+        "Ahmed Hassan";
+
+    }
+
+    else{
+
+        APPOINTMENT.executive=
+
+        EXECUTIVE.name||
+
+        "Sales Executive";
+
+    }
+
+}
+
+// =====================================
+// BOOK
+// =====================================
+
+async function bookAppointment(
+
+data
+
+){
+
+    detectTimezone();
+
+    assignExecutive();
+
+    Object.assign(
+
+        APPOINTMENT,
+
+        data
+
+    );
+
+    try{
+
+        const response=
+
+        await fetch(
+
+`${CONFIG.API_BASE}/api/appointments/book`,
+
+        {
+
+            method:"POST",
+
+            headers:{
+
+                "Content-Type":
+
+                "application/json"
+
+            },
+
+            body:JSON.stringify({
+
+                visitorId:
+
+                VISITOR.id,
+
+                appointment:
+
+                APPOINTMENT,
+
+                customer:
+
+                buildCustomerProfile()
+
+            })
+
+        });
+
+        const result=
+
+        await response.json();
+
+        if(
+
+            result.success
+
+        ){
+
+            APPOINTMENT.booked=true;
+
+            APPOINTMENT.meetingId=
+
+            result.meetingId;
+
+            APPOINTMENT.calendarLink=
+
+            result.calendarLink;
+
+            executiveSpeak(
+
+`Your meeting has been booked successfully with ${APPOINTMENT.executive}.`
+
+            );
+
+        }
+
+    }
+
+    catch(error){
+
+        console.error(error);
+
+    }
+
+}
+
+// =====================================
+// DEMO
+// =====================================
+
+function requestDemo(){
+
+    executiveSpeak(
+
+"I'd love to arrange a live demonstration for you."
+
+    );
+
+    openAppointmentPopup(
+
+        "demo"
+
+    );
+
+}
+
+// =====================================
+// SALES CALL
+// =====================================
+
+function requestSalesCall(){
+
+    executiveSpeak(
+
+"Let's schedule a personal sales consultation."
+
+    );
+
+    openAppointmentPopup(
+
+        "sales"
+
+    );
+
+}
+
+// =====================================
+// POPUP
+// =====================================
+
+function openAppointmentPopup(type){
+
+    const popup=
+
+`
+
+<div class="lbAppointmentBox">
+
+<h3>
+
+${MEETING_TYPES[type]}
+
+</h3>
+
+<input
+id="lbMeetingDate"
+type="date">
+
+<input
+id="lbMeetingTime"
+type="time">
+
+<button
+onclick="submitAppointment('${type}')">
+
+Book Appointment
+
+</button>
+
+</div>
+
+`;
+
+    document
+
+    .getElementById(
+
+        "lbMessages"
+
+    )
+
+    .insertAdjacentHTML(
+
+        "beforeend",
+
+        popup
+
+    );
+
+    scrollMessages();
+
+}
+
+// =====================================
+// SUBMIT
+// =====================================
+
+function submitAppointment(type){
+
+    const date=
+
+    document
+
+    .getElementById(
+
+        "lbMeetingDate"
+
+    ).value;
+
+    const time=
+
+    document
+
+    .getElementById(
+
+        "lbMeetingTime"
+
+    ).value;
+
+    if(
+
+        !date ||
+
+        !time
+
+    ){
+
+        executiveSpeak(
+
+"Please select both date and time."
+
+        );
+
+        return;
+
+    }
+
+    bookAppointment({
+
+        meetingType:type,
+
+        date,
+
+        time
+
+    });
+
+}
+
+// =====================================
+// GOOGLE CALENDAR
+// =====================================
+
+function openGoogleCalendar(){
+
+    if(
+
+        APPOINTMENT.calendarLink
+
+    ){
+
+        window.open(
+
+            APPOINTMENT.calendarLink,
+
+            "_blank"
+
+        );
+
+    }
+
+}
+
+// =====================================
+// OUTLOOK
+// =====================================
+
+function openOutlookCalendar(){
+
+    if(
+
+        APPOINTMENT.meetingId
+
+    ){
+
+        window.open(
+
+`${CONFIG.API_BASE}/calendar/outlook/${APPOINTMENT.meetingId}`,
+
+        "_blank"
+
+        );
+
+    }
+
+}
+
+// =====================================
+// AUTO INVITE
+// =====================================
+
+async function sendMeetingInvite(){
+
+    if(
+
+        !APPOINTMENT.booked
+
+    ) return;
+
+    try{
+
+        await fetch(
+
+`${CONFIG.API_BASE}/api/appointments/invite`,
+
+        {
+
+            method:"POST",
+
+            headers:{
+
+                "Content-Type":
+
+                "application/json"
+
+            },
+
+            body:JSON.stringify({
+
+                visitorId:
+
+                VISITOR.id,
+
+                appointment:
+
+                APPOINTMENT
+
+            })
+
+        });
+
+    }
+
+    catch(error){
+
+        console.error(error);
+
+    }
+
+}
+
+// =====================================
+// NEXT
+// =====================================
+//
+// PART 33
+//
+// AI Sales Training Engine
+//
+// • Learn From Every Conversation
+// • Winning Replies
+// • Failed Replies
+// • Self Improvement
+// • Response Ranking
+// • AI Continuous Learning
+// =====================================
+// PART 33
+// AI Sales Training Engine
+// Continuous Learning System
+// Production Ready
+// =====================================
+
+// =====================================
+// TRAINING ENGINE
+// =====================================
+
+const SALES_TRAINING={
+
+    totalConversations:0,
+
+    successfulSales:0,
+
+    failedSales:0,
+
+    winningReplies:[],
+
+    failedReplies:[],
+
+    objectionLibrary:{},
+
+    customerPatterns:{},
+
+    aiConfidence:95,
+
+    lastTraining:new Date()
+
+};
+
+// =====================================
+// SAVE REPLY
+// =====================================
+
+function recordAIReply(
+
+visitorMessage,
+
+aiReply,
+
+success
+
+){
+
+    const record={
+
+        visitor:visitorMessage,
+
+        reply:aiReply,
+
+        success,
+
+        createdAt:new Date()
+
+    };
+
+    if(success){
+
+        SALES_TRAINING
+
+        .winningReplies
+
+        .push(record);
+
+        SALES_TRAINING
+
+        .successfulSales++;
+
+    }
+
+    else{
+
+        SALES_TRAINING
+
+        .failedReplies
+
+        .push(record);
+
+        SALES_TRAINING
+
+        .failedSales++;
+
+    }
+
+    SALES_TRAINING
+
+    .totalConversations++;
+
+}
+
+// =====================================
+// LEARN OBJECTIONS
+// =====================================
+
+function learnObjection(
+
+type,
+
+resolved
+
+){
+
+    if(
+
+        !SALES_TRAINING
+
+        .objectionLibrary[type]
+
+    ){
+
+        SALES_TRAINING
+
+        .objectionLibrary[type]={
+
+            total:0,
+
+            resolved:0
+
+        };
+
+    }
+
+    SALES_TRAINING
+
+    .objectionLibrary[type]
+
+    .total++;
+
+    if(resolved){
+
+        SALES_TRAINING
+
+        .objectionLibrary[type]
+
+        .resolved++;
+
+    }
+
+}
+
+// =====================================
+// CUSTOMER PATTERN
+// =====================================
+
+function learnCustomerPattern(
+
+country,
+
+category
+
+){
+
+    const key=
+
+`${country}_${category}`;
+
+    if(
+
+        !SALES_TRAINING
+
+        .customerPatterns[key]
+
+    ){
+
+        SALES_TRAINING
+
+        .customerPatterns[key]=0;
+
+    }
+
+    SALES_TRAINING
+
+    .customerPatterns[key]++;
+
+}
+
+// =====================================
+// SUCCESS RATE
+// =====================================
+
+function salesSuccessRate(){
+
+    if(
+
+        SALES_TRAINING
+
+        .totalConversations===0
+
+    ){
+
+        return 0;
+
+    }
+
+    return Math.round(
+
+        (
+
+            SALES_TRAINING
+
+            .successfulSales/
+
+            SALES_TRAINING
+
+            .totalConversations
+
+        )*100
+
+    );
+
+}
+
+// =====================================
+// AI CONFIDENCE
+// =====================================
+
+function updateConfidence(){
+
+    SALES_TRAINING
+
+    .aiConfidence=
+
+    Math.min(
+
+        99,
+
+        70+
+
+        salesSuccessRate()/3
+
+    );
+
+}
+
+// =====================================
+// BEST RESPONSE
+// =====================================
+
+function getBestReply(){
+
+    if(
+
+        SALES_TRAINING
+
+        .winningReplies.length===0
+
+    ){
+
+        return null;
+
+    }
+
+    return SALES_TRAINING
+
+    .winningReplies[
+
+        SALES_TRAINING
+
+        .winningReplies.length-1
+
+    ];
+
+}
+
+// =====================================
+// RETRAIN
+// =====================================
+
+async function retrainAI(){
+
+    updateConfidence();
+
+    SALES_TRAINING
+
+    .lastTraining=
+
+    new Date();
+
+    try{
+
+        await fetch(
+
+`${CONFIG.API_BASE}/api/ai/retrain`,
+
+        {
+
+            method:"POST",
+
+            headers:{
+
+                "Content-Type":
+
+                "application/json"
+
+            },
+
+            body:JSON.stringify({
+
+                training:
+
+                SALES_TRAINING
+
+            })
+
+        });
+
+    }
+
+    catch(error){
+
+        console.error(error);
+
+    }
+
+}
+
+// =====================================
+// DAILY TRAINING
+// =====================================
+
+setInterval(
+
+    ()=>{
+
+        retrainAI();
+
+    },
+
+    86400000
+
+);
+
+// =====================================
+// DASHBOARD
+// =====================================
+
+function trainingDashboard(){
+
+    return{
+
+        confidence:
+
+        SALES_TRAINING.aiConfidence,
+
+        successRate:
+
+        salesSuccessRate(),
+
+        conversations:
+
+        SALES_TRAINING.totalConversations,
+
+        successfulSales:
+
+        SALES_TRAINING.successfulSales,
+
+        failedSales:
+
+        SALES_TRAINING.failedSales,
+
+        bestReply:
+
+        getBestReply(),
+
+        lastTraining:
+
+        SALES_TRAINING.lastTraining
+
+    };
+
+}
+
+// =====================================
+// NEXT
+// =====================================
+//
+// PART 34
+//
+// AI Store Health Monitor
+//
+// • Real-Time Health Score
+// • Sales Alerts
+// • AI Recommendations
+// • Inventory Alerts
+// • Revenue Alerts
+// • Customer Satisfaction Monitor
+// =====================================
+// PART 34
+// AI Store Health Monitor
+// Real-Time Store Intelligence
+// Production Ready
+// =====================================
+
+// =====================================
+// STORE HEALTH
+// =====================================
+
+const STORE_HEALTH={
+
+    score:100,
+
+    status:"Excellent",
+
+    alerts:[],
+
+    recommendations:[],
+
+    inventoryRisk:false,
+
+    revenueRisk:false,
+
+    customerSatisfaction:100,
+
+    aiPerformance:99,
+
+    updatedAt:new Date()
+
+};
+
+// =====================================
+// HEALTH SCORE
+// =====================================
+
+function calculateStoreHealthScore(){
+
+    let score=100;
+
+    STORE_HEALTH.alerts=[];
+
+    STORE_HEALTH.recommendations=[];
+
+    // Conversion
+
+    if(
+
+        SALES_ANALYTICS.conversionRate<2
+
+    ){
+
+        score-=15;
+
+        STORE_HEALTH.alerts.push(
+
+            "Low conversion rate"
+
+        );
+
+        STORE_HEALTH.recommendations.push(
+
+            "Increase product recommendations and urgency."
+
+        );
+
+    }
+
+    // Abandoned Cart
+
+    if(
+
+        SALES_ANALYTICS.abandonedCarts>
+
+        SALES_ANALYTICS.recoveredCarts
+
+    ){
+
+        score-=15;
+
+        STORE_HEALTH.alerts.push(
+
+            "High abandoned cart rate"
+
+        );
+
+        STORE_HEALTH.recommendations.push(
+
+            "Increase recovery messages and exit offers."
+
+        );
+
+    }
+
+    // Revenue
+
+    if(
+
+        SALES_ANALYTICS.revenue===0
+
+    ){
+
+        score-=25;
+
+        STORE_HEALTH.revenueRisk=true;
+
+        STORE_HEALTH.alerts.push(
+
+            "Revenue not generated"
+
+        );
+
+    }
+
+    // Inventory
+
+    if(
+
+        INVENTORY_ALERTS.lowStock>
+
+        10
+
+    ){
+
+        score-=10;
+
+        STORE_HEALTH.inventoryRisk=true;
+
+        STORE_HEALTH.alerts.push(
+
+            "Multiple products low in stock"
+
+        );
+
+    }
+
+    // AI Confidence
+
+    if(
+
+        SALES_TRAINING.aiConfidence<85
+
+    ){
+
+        score-=10;
+
+        STORE_HEALTH.alerts.push(
+
+            "AI confidence reduced"
+
+        );
+
+    }
+
+    STORE_HEALTH.score=
+
+    Math.max(
+
+        score,
+
+        0
+
+    );
+
+    updateStoreStatus();
+
+}
+
+// =====================================
+// STATUS
+// =====================================
+
+function updateStoreStatus(){
+
+    if(
+
+        STORE_HEALTH.score>=90
+
+    ){
+
+        STORE_HEALTH.status=
+
+        "Excellent";
+
+    }
+
+    else if(
+
+        STORE_HEALTH.score>=75
+
+    ){
+
+        STORE_HEALTH.status=
+
+        "Good";
+
+    }
+
+    else if(
+
+        STORE_HEALTH.score>=60
+
+    ){
+
+        STORE_HEALTH.status=
+
+        "Needs Attention";
+
+    }
+
+    else{
+
+        STORE_HEALTH.status=
+
+        "Critical";
+
+    }
+
+}
+
+// =====================================
+// CUSTOMER SATISFACTION
+// =====================================
+
+function updateCustomerSatisfaction(){
+
+    STORE_HEALTH.customerSatisfaction=
+
+    Math.round(
+
+        (
+
+            SALES_ANALYTICS.conversionRate+
+
+            SALES_TRAINING.aiConfidence
+
+        )/2
+
+    );
+
+}
+
+// =====================================
+// AI PERFORMANCE
+// =====================================
+
+function updateAIPerformance(){
+
+    STORE_HEALTH.aiPerformance=
+
+    SALES_TRAINING.aiConfidence;
+
+}
+
+// =====================================
+// SEND ALERT
+// =====================================
+
+async function notifyStoreOwner(){
+
+    try{
+
+        await fetch(
+
+`${CONFIG.API_BASE}/api/dashboard/store-health`,
+
+        {
+
+            method:"POST",
+
+            headers:{
+
+                "Content-Type":
+
+                "application/json"
+
+            },
+
+            body:JSON.stringify({
+
+                health:
+
+                STORE_HEALTH
+
+            })
+
+        });
+
+    }
+
+    catch(error){
+
+        console.error(error);
+
+    }
+
+}
+
+// =====================================
+// LIVE MONITOR
+// =====================================
+
+function monitorStore(){
+
+    calculateStoreHealthScore();
+
+    updateCustomerSatisfaction();
+
+    updateAIPerformance();
+
+    STORE_HEALTH.updatedAt=
+
+    new Date();
+
+    notifyStoreOwner();
+
+}
+
+// =====================================
+// AUTO CHECK
+// =====================================
+
+setInterval(
+
+    ()=>{
+
+        monitorStore();
+
+    },
+
+    300000
+
+);
+
+// =====================================
+// DASHBOARD
+// =====================================
+
+function getStoreHealth(){
+
+    return STORE_HEALTH;
+
+}
+
+// =====================================
+// NEXT
+// =====================================
+//
+// PART 35
+//
+// Final Master Controller
+//
+// • Initialize Every AI Module
+// • Load Store Configuration
+// • Connect Backend
+// • Event Registration
+// • Performance Optimization
+// • Global Error Recovery
+// • Production Bootstrap
+// • Chatbot.js Complete
 
