@@ -9295,4 +9295,5527 @@ function initializeLoyaltyRewards(){
 // • Loyalty Analytics
 // • Customer Retention AI
 // • Lifetime Value Prediction
+// =====================================
+// PART 18.3
+// Smart Membership Upgrade Engine
+// Customer Retention AI
+// Lifetime Value Prediction
+// Production Ready
+// =====================================
+
+// =====================================
+// MEMBERSHIP AI
+// =====================================
+
+const MEMBERSHIP_AI={
+
+    upgradeProbability:0,
+
+    retentionScore:0,
+
+    lifetimePrediction:0,
+
+    nextTier:null,
+
+    vipOfferShown:false
+
+};
+
+// =====================================
+// UPGRADE SCORE
+// =====================================
+
+function calculateUpgradeProbability(){
+
+    let score=0;
+
+    score+=
+
+    LOYALTY.totalOrders*8;
+
+    score+=
+
+    Math.floor(
+
+        LOYALTY.lifetimeValue/
+
+        100
+
+    );
+
+    score+=
+
+    LOYALTY.points/
+
+    50;
+
+    if(
+
+        PURCHASE_STATE.ready
+
+    ){
+
+        score+=20;
+
+    }
+
+    MEMBERSHIP_AI.upgradeProbability=
+
+    Math.min(
+
+        100,
+
+        Math.round(score)
+
+    );
+
+    return MEMBERSHIP_AI.upgradeProbability;
+
+}
+
+// =====================================
+// NEXT TIER
+// =====================================
+
+function determineNextTier(){
+
+    switch(
+
+        LOYALTY.level
+
+    ){
+
+        case "new":
+
+            MEMBERSHIP_AI.nextTier=
+
+            "silver";
+
+            break;
+
+        case "silver":
+
+            MEMBERSHIP_AI.nextTier=
+
+            "gold";
+
+            break;
+
+        case "gold":
+
+            MEMBERSHIP_AI.nextTier=
+
+            "platinum";
+
+            break;
+
+        default:
+
+            MEMBERSHIP_AI.nextTier=
+
+            null;
+
+    }
+
+}
+
+// =====================================
+// RETENTION SCORE
+// =====================================
+
+function calculateRetentionScore(){
+
+    let score=50;
+
+    if(
+
+        LOYALTY.repeatCustomer
+
+    ){
+
+        score+=25;
+
+    }
+
+    if(
+
+        LOYALTY.totalOrders>
+
+        5
+
+    ){
+
+        score+=15;
+
+    }
+
+    if(
+
+        VISITOR_PROFILE.totalVisits>
+
+        10
+
+    ){
+
+        score+=10;
+
+    }
+
+    MEMBERSHIP_AI.retentionScore=
+
+    Math.min(
+
+        100,
+
+        score
+
+    );
+
+}
+
+// =====================================
+// LIFETIME VALUE
+// =====================================
+
+function predictLifetimeValue(){
+
+    MEMBERSHIP_AI.lifetimePrediction=
+
+    Math.round(
+
+        LOYALTY.averageOrderValue*
+
+        Math.max(
+
+            5,
+
+            LOYALTY.totalOrders
+
+        )
+
+    );
+
+    return MEMBERSHIP_AI
+
+    .lifetimePrediction;
+
+}
+
+// =====================================
+// VIP UPGRADE
+// =====================================
+
+function showMembershipUpgrade(){
+
+    if(
+
+        MEMBERSHIP_AI.vipOfferShown ||
+
+        !MEMBERSHIP_AI.nextTier
+
+    ) return;
+
+    if(
+
+        MEMBERSHIP_AI.upgradeProbability
+
+        <70
+
+    ) return;
+
+    MEMBERSHIP_AI.vipOfferShown=true;
+
+    addExecutiveMessage(
+
+`🌟 You're very close to becoming a ${MEMBERSHIP_AI.nextTier.toUpperCase()} Member!`
+
+    );
+
+    document
+
+    .getElementById(
+
+        "lbMessages"
+
+    )
+
+    .insertAdjacentHTML(
+
+        "beforeend",
+
+`
+
+<div class="lb-membership-upgrade">
+
+    <h3>
+
+        Upgrade to
+
+        ${MEMBERSHIP_AI.nextTier.toUpperCase()}
+
+    </h3>
+
+    <p>
+
+        Unlock more rewards,
+
+        exclusive discounts,
+
+        priority support
+
+        and VIP shopping.
+
+    </p>
+
+    <button
+
+    onclick="openMembershipPage()">
+
+        View Benefits
+
+    </button>
+
+</div>
+
+`
+
+    );
+
+    scrollMessages();
+
+}
+
+// =====================================
+// MEMBERSHIP PAGE
+// =====================================
+
+function openMembershipPage(){
+
+    window.location.href=
+
+    "/pages/rewards";
+
+}
+
+// =====================================
+// INITIALIZE
+// =====================================
+
+function initializeMembershipAI(){
+
+    calculateUpgradeProbability();
+
+    calculateRetentionScore();
+
+    predictLifetimeValue();
+
+    determineNextTier();
+
+    showMembershipUpgrade();
+
+}
+
+// =====================================
+// NEXT
+// =====================================
+//
+// PART 19
+//
+// • Customer Emotion Detection AI
+// • Sentiment Analysis
+// • Frustration Detection
+// • Happiness Detection
+// • Adaptive Sales Behaviour
+// =====================================
+// PART 19
+// Customer Emotion Detection AI
+// Adaptive Sales Behaviour
+// Production Ready
+// =====================================
+
+// =====================================
+// EMOTION ENGINE
+// =====================================
+
+const EMOTION={
+
+    mood:"neutral",
+
+    confidence:0,
+
+    frustration:0,
+
+    excitement:0,
+
+    happiness:0,
+
+    urgency:0,
+
+    lastDetected:null
+
+};
+
+// =====================================
+// EMOTION KEYWORDS
+// =====================================
+
+const EMOTION_KEYWORDS={
+
+    happy:[
+
+        "great",
+
+        "awesome",
+
+        "love",
+
+        "excellent",
+
+        "perfect",
+
+        "thank you",
+
+        "amazing"
+
+    ],
+
+    frustrated:[
+
+        "bad",
+
+        "hate",
+
+        "problem",
+
+        "issue",
+
+        "error",
+
+        "slow",
+
+        "broken",
+
+        "not working",
+
+        "angry"
+
+    ],
+
+    buying:[
+
+        "buy",
+
+        "checkout",
+
+        "order",
+
+        "payment",
+
+        "purchase"
+
+    ],
+
+    unsure:[
+
+        "maybe",
+
+        "thinking",
+
+        "not sure",
+
+        "later",
+
+        "compare",
+
+        "confused"
+
+    ]
+
+};
+
+// =====================================
+// DETECT EMOTION
+// =====================================
+
+function detectEmotion(message){
+
+    const text=
+
+    message.toLowerCase();
+
+    resetEmotion();
+
+    EMOTION_KEYWORDS.happy.forEach(
+
+        word=>{
+
+            if(
+
+                text.includes(word)
+
+            ){
+
+                EMOTION.happiness+=20;
+
+            }
+
+        }
+
+    );
+
+    EMOTION_KEYWORDS.frustrated.forEach(
+
+        word=>{
+
+            if(
+
+                text.includes(word)
+
+            ){
+
+                EMOTION.frustration+=20;
+
+            }
+
+        }
+
+    );
+
+    EMOTION_KEYWORDS.buying.forEach(
+
+        word=>{
+
+            if(
+
+                text.includes(word)
+
+            ){
+
+                EMOTION.urgency+=20;
+
+            }
+
+        }
+
+    );
+
+    EMOTION_KEYWORDS.unsure.forEach(
+
+        word=>{
+
+            if(
+
+                text.includes(word)
+
+            ){
+
+                EMOTION.confidence-=15;
+
+            }
+
+        }
+
+    );
+
+    determineMood();
+
+}
+
+// =====================================
+// DETERMINE MOOD
+// =====================================
+
+function determineMood(){
+
+    if(
+
+        EMOTION.frustration>=40
+
+    ){
+
+        EMOTION.mood="frustrated";
+
+    }
+
+    else if(
+
+        EMOTION.happiness>=40
+
+    ){
+
+        EMOTION.mood="happy";
+
+    }
+
+    else if(
+
+        EMOTION.urgency>=40
+
+    ){
+
+        EMOTION.mood="buying";
+
+    }
+
+    else{
+
+        EMOTION.mood="neutral";
+
+    }
+
+    EMOTION.lastDetected=
+
+    new Date();
+
+}
+
+// =====================================
+// RESET
+// =====================================
+
+function resetEmotion(){
+
+    EMOTION.frustration=0;
+
+    EMOTION.happiness=0;
+
+    EMOTION.urgency=0;
+
+    EMOTION.confidence=50;
+
+}
+
+// =====================================
+// AI RESPONSE
+// =====================================
+
+function adaptToEmotion(){
+
+    switch(
+
+        EMOTION.mood
+
+    ){
+
+        case "happy":
+
+            executiveSpeak(
+
+"I'm really happy you're enjoying this! Let me show you the best offer available."
+
+            );
+
+            break;
+
+        case "frustrated":
+
+            executiveSpeak(
+
+"I'm sorry you're experiencing this. I'll personally help you solve it."
+
+            );
+
+            break;
+
+        case "buying":
+
+            executiveSpeak(
+
+"Excellent! You're only one step away from completing your order."
+
+            );
+
+            showCheckoutCTA();
+
+            break;
+
+        default:
+
+            executiveSpeak(
+
+"I'm here to help you choose the perfect product."
+
+            );
+
+    }
+
+}
+
+// =====================================
+// SATISFACTION SCORE
+// =====================================
+
+function customerSatisfaction(){
+
+    return(
+
+        EMOTION.happiness-
+
+        EMOTION.frustration+
+
+        50
+
+    );
+
+}
+
+// =====================================
+// AI ENTRY
+// =====================================
+
+function emotionAI(message){
+
+    detectEmotion(
+
+        message
+
+    );
+
+    adaptToEmotion();
+
+}
+
+// =====================================
+// NEXT
+// =====================================
+//
+// PART 20
+//
+// • Human Handoff AI
+// • Live Agent Transfer
+// • Ticket Creation
+// • Call Booking
+// • Enterprise Support Routing
+// =====================================
+// PART 20
+// Human Handoff AI
+// Live Agent Transfer
+// Enterprise Support Routing
+// Production Ready
+// =====================================
+
+// =====================================
+// HANDOFF
+// =====================================
+
+const HANDOFF={
+
+    requested:false,
+
+    connected:false,
+
+    department:"sales",
+
+    priority:"normal",
+
+    ticketId:null,
+
+    reason:"",
+
+    transcript:[]
+
+};
+
+// =====================================
+// DEPARTMENTS
+// =====================================
+
+const SUPPORT_DEPARTMENTS={
+
+    sales:"Sales Team",
+
+    billing:"Billing Team",
+
+    technical:"Technical Support",
+
+    shipping:"Shipping Team",
+
+    enterprise:"Enterprise Manager"
+
+};
+
+// =====================================
+// DETECT HANDOFF
+// =====================================
+
+function detectHumanRequest(message){
+
+    const text=
+
+    message.toLowerCase();
+
+    const keywords=[
+
+        "human",
+
+        "agent",
+
+        "manager",
+
+        "support",
+
+        "representative",
+
+        "call me",
+
+        "phone",
+
+        "live person"
+
+    ];
+
+    return keywords.some(
+
+        word=>text.includes(word)
+
+    );
+
+}
+
+// =====================================
+// PRIORITY
+// =====================================
+
+function determinePriority(){
+
+    if(
+
+        EMOTION.mood==="frustrated"
+
+    ){
+
+        HANDOFF.priority="high";
+
+    }
+
+    else if(
+
+        PURCHASE_STATE.ready
+
+    ){
+
+        HANDOFF.priority="high";
+
+    }
+
+    else{
+
+        HANDOFF.priority="normal";
+
+    }
+
+}
+
+// =====================================
+// DEPARTMENT
+// =====================================
+
+function determineDepartment(message){
+
+    const text=
+
+    message.toLowerCase();
+
+    if(
+
+        text.includes("payment")||
+
+        text.includes("billing")
+
+    ){
+
+        HANDOFF.department="billing";
+
+    }
+
+    else if(
+
+        text.includes("error")||
+
+        text.includes("bug")
+
+    ){
+
+        HANDOFF.department="technical";
+
+    }
+
+    else if(
+
+        text.includes("enterprise")
+
+    ){
+
+        HANDOFF.department="enterprise";
+
+    }
+
+    else{
+
+        HANDOFF.department="sales";
+
+    }
+
+}
+
+// =====================================
+// CREATE TICKET
+// =====================================
+
+async function createSupportTicket(){
+
+    try{
+
+        const response=
+
+        await fetch(
+
+`${CONFIG.API_BASE}/api/support/ticket`,
+
+        {
+
+            method:"POST",
+
+            headers:{
+
+                "Content-Type":"application/json"
+
+            },
+
+            body:JSON.stringify({
+
+                visitorId:
+
+                VISITOR.id,
+
+                priority:
+
+                HANDOFF.priority,
+
+                department:
+
+                HANDOFF.department,
+
+                transcript:
+
+                HANDOFF.transcript,
+
+                visitor:
+
+                buildCustomerProfile()
+
+            })
+
+        });
+
+        if(
+
+            !response.ok
+
+        ) return;
+
+        const data=
+
+        await response.json();
+
+        if(
+
+            data.success
+
+        ){
+
+            HANDOFF.ticketId=
+
+            data.ticketId;
+
+        }
+
+    }
+
+    catch(error){
+
+        console.error(error);
+
+    }
+
+}
+
+// =====================================
+// BOOK CALL
+// =====================================
+
+function scheduleCall(){
+
+    executiveSpeak(
+
+"I'll arrange a call with one of our specialists."
+
+    );
+
+    window.open(
+
+"/pages/book-call",
+
+"_self"
+
+    );
+
+}
+
+// =====================================
+// LIVE CHAT
+// =====================================
+
+function connectLiveAgent(){
+
+    executiveSpeak(
+
+`Connecting you with our ${SUPPORT_DEPARTMENTS[HANDOFF.department]}...`
+
+    );
+
+    HANDOFF.connected=true;
+
+}
+
+// =====================================
+// HANDOFF
+// =====================================
+
+async function handoffToHuman(message){
+
+    HANDOFF.requested=true;
+
+    HANDOFF.reason=message;
+
+    determinePriority();
+
+    determineDepartment(message);
+
+    await createSupportTicket();
+
+    connectLiveAgent();
+
+}
+
+// =====================================
+// TRANSCRIPT
+// =====================================
+
+function saveTranscript(role,message){
+
+    HANDOFF.transcript.push({
+
+        role,
+
+        message,
+
+        time:new Date()
+
+    });
+
+}
+
+// =====================================
+// AI CHECK
+// =====================================
+
+async function supportAI(message){
+
+    saveTranscript(
+
+        "visitor",
+
+        message
+
+    );
+
+    if(
+
+        detectHumanRequest(
+
+            message
+
+        )
+
+    ){
+
+        await handoffToHuman(
+
+            message
+
+        );
+
+    }
+
+}
+
+// =====================================
+// NEXT
+// =====================================
+//
+// PART 21
+//
+// • Enterprise Sales Dashboard Sync
+// • CRM Sync
+// • HubSpot
+// • Zoho
+// • Salesforce
+// • Klaviyo
+// • Mailchimp
+// • Meta Events
+// • Google Analytics
+// • Full Enterprise Integration
+// =====================================
+// PART 21
+// Enterprise Integration Engine
+// CRM + Analytics + Marketing
+// Production Ready
+// =====================================
+
+// =====================================
+// ENTERPRISE
+// =====================================
+
+const ENTERPRISE={
+
+    enabled:false,
+
+    crm:null,
+
+    analytics:true,
+
+    marketing:true,
+
+    automation:true
+
+};
+
+// =====================================
+// CRM CONFIG
+// =====================================
+
+const CRM={
+
+    hubspot:false,
+
+    salesforce:false,
+
+    zoho:false,
+
+    pipedrive:false
+
+};
+
+// =====================================
+// MARKETING
+// =====================================
+
+const MARKETING={
+
+    klaviyo:false,
+
+    mailchimp:false,
+
+    omnisend:false,
+
+    activeCampaign:false
+
+};
+
+// =====================================
+// ANALYTICS
+// =====================================
+
+const ANALYTICS={
+
+    googleAnalytics:true,
+
+    metaPixel:true,
+
+    googleAds:true,
+
+    tiktokPixel:false,
+
+    pinterest:false
+
+};
+
+// =====================================
+// CUSTOMER PAYLOAD
+// =====================================
+
+function buildEnterprisePayload(){
+
+    return{
+
+        visitor:
+
+        VISITOR,
+
+        profile:
+
+        buildCustomerProfile(),
+
+        loyalty:
+
+        LOYALTY,
+
+        recommendation:
+
+        RECOMMENDATION,
+
+        recovery:
+
+        RECOVERY_ANALYTICS,
+
+        purchase:
+
+        PURCHASE_STATE,
+
+        emotion:
+
+        EMOTION
+
+    };
+
+}
+
+// =====================================
+// HUBSPOT
+// =====================================
+
+async function syncHubSpot(){
+
+    if(
+
+        !CRM.hubspot
+
+    ) return;
+
+    try{
+
+        await fetch(
+
+`${CONFIG.API_BASE}/api/integrations/hubspot`,
+
+        {
+
+            method:"POST",
+
+            headers:{
+
+                "Content-Type":"application/json"
+
+            },
+
+            body:JSON.stringify(
+
+                buildEnterprisePayload()
+
+            )
+
+        });
+
+    }
+
+    catch(err){
+
+        console.error(err);
+
+    }
+
+}
+
+// =====================================
+// SALESFORCE
+// =====================================
+
+async function syncSalesforce(){
+
+    if(
+
+        !CRM.salesforce
+
+    ) return;
+
+    try{
+
+        await fetch(
+
+`${CONFIG.API_BASE}/api/integrations/salesforce`,
+
+        {
+
+            method:"POST",
+
+            headers:{
+
+                "Content-Type":"application/json"
+
+            },
+
+            body:JSON.stringify(
+
+                buildEnterprisePayload()
+
+            )
+
+        });
+
+    }
+
+    catch(err){
+
+        console.error(err);
+
+    }
+
+}
+
+// =====================================
+// ZOHO CRM
+// =====================================
+
+async function syncZoho(){
+
+    if(
+
+        !CRM.zoho
+
+    ) return;
+
+    try{
+
+        await fetch(
+
+`${CONFIG.API_BASE}/api/integrations/zoho`,
+
+        {
+
+            method:"POST",
+
+            headers:{
+
+                "Content-Type":"application/json"
+
+            },
+
+            body:JSON.stringify(
+
+                buildEnterprisePayload()
+
+            )
+
+        });
+
+    }
+
+    catch(err){
+
+        console.error(err);
+
+    }
+
+}
+
+// =====================================
+// KLAVIYO
+// =====================================
+
+async function syncKlaviyo(){
+
+    if(
+
+        !MARKETING.klaviyo
+
+    ) return;
+
+    try{
+
+        await fetch(
+
+`${CONFIG.API_BASE}/api/integrations/klaviyo`,
+
+        {
+
+            method:"POST",
+
+            headers:{
+
+                "Content-Type":"application/json"
+
+            },
+
+            body:JSON.stringify(
+
+                buildEnterprisePayload()
+
+            )
+
+        });
+
+    }
+
+    catch(err){
+
+        console.error(err);
+
+    }
+
+}
+
+// =====================================
+// MAILCHIMP
+// =====================================
+
+async function syncMailchimp(){
+
+    if(
+
+        !MARKETING.mailchimp
+
+    ) return;
+
+    try{
+
+        await fetch(
+
+`${CONFIG.API_BASE}/api/integrations/mailchimp`,
+
+        {
+
+            method:"POST",
+
+            headers:{
+
+                "Content-Type":"application/json"
+
+            },
+
+            body:JSON.stringify(
+
+                buildEnterprisePayload()
+
+            )
+
+        });
+
+    }
+
+    catch(err){
+
+        console.error(err);
+
+    }
+
+}
+
+// =====================================
+// GOOGLE ANALYTICS
+// =====================================
+
+function fireGoogleAnalytics(event,data={}){
+
+    if(
+
+        typeof gtag==="undefined"
+
+    ) return;
+
+    gtag(
+
+        "event",
+
+        event,
+
+        data
+
+    );
+
+}
+
+// =====================================
+// META PIXEL
+// =====================================
+
+function fireMetaPixel(event,data={}){
+
+    if(
+
+        typeof fbq==="undefined"
+
+    ) return;
+
+    fbq(
+
+        "track",
+
+        event,
+
+        data
+
+    );
+
+}
+
+// =====================================
+// ENTERPRISE SYNC
+// =====================================
+
+async function enterpriseSync(){
+
+    if(
+
+        !ENTERPRISE.enabled
+
+    ) return;
+
+    await syncHubSpot();
+
+    await syncSalesforce();
+
+    await syncZoho();
+
+    await syncKlaviyo();
+
+    await syncMailchimp();
+
+}
+
+// =====================================
+// SALES EVENTS
+// =====================================
+
+function enterprisePurchase(order){
+
+    fireGoogleAnalytics(
+
+        "purchase",
+
+        order
+
+    );
+
+    fireMetaPixel(
+
+        "Purchase",
+
+        order
+
+    );
+
+    enterpriseSync();
+
+}
+
+function enterpriseLead(){
+
+    fireGoogleAnalytics(
+
+        "generate_lead"
+
+    );
+
+    fireMetaPixel(
+
+        "Lead"
+
+    );
+
+}
+
+function enterpriseCheckout(cart){
+
+    fireGoogleAnalytics(
+
+        "begin_checkout",
+
+        cart
+
+    );
+
+    fireMetaPixel(
+
+        "InitiateCheckout",
+
+        cart
+
+    );
+
+}
+
+function enterpriseAddToCart(product){
+
+    fireGoogleAnalytics(
+
+        "add_to_cart",
+
+        product
+
+    );
+
+    fireMetaPixel(
+
+        "AddToCart",
+
+        product
+
+    );
+
+}
+
+// =====================================
+// AUTO SYNC
+// =====================================
+
+setInterval(
+
+    ()=>{
+
+        enterpriseSync();
+
+    },
+
+    300000
+
+);
+
+// =====================================
+// NEXT
+// =====================================
+//
+// PART 22
+//
+// Omnichannel Sales AI
+//
+// • Shopify
+// • WhatsApp Commerce
+// • Instagram DM
+// • Facebook Messenger
+// • Email AI
+// • SMS AI
+// • Unified Customer Timeline
+// • Unified Sales Brain
+// =====================================
+// PART 22
+// Omnichannel Sales AI
+// Unified Customer Timeline
+// Production Ready
+// =====================================
+
+// =====================================
+// OMNICHANNEL
+// =====================================
+
+const OMNICHANNEL={
+
+    shopify:true,
+
+    whatsapp:false,
+
+    instagram:false,
+
+    messenger:false,
+
+    email:false,
+
+    sms:false,
+
+    telegram:false
+
+};
+
+// =====================================
+// CUSTOMER TIMELINE
+// =====================================
+
+const CUSTOMER_TIMELINE={
+
+    visitorId:null,
+
+    sessions:[],
+
+    channels:[],
+
+    purchases:[],
+
+    conversations:[],
+
+    lastChannel:"shopify"
+
+};
+
+// =====================================
+// CHANNEL TYPES
+// =====================================
+
+const CHANNEL={
+
+    SHOPIFY:"shopify",
+
+    WHATSAPP:"whatsapp",
+
+    INSTAGRAM:"instagram",
+
+    MESSENGER:"messenger",
+
+    EMAIL:"email",
+
+    SMS:"sms",
+
+    TELEGRAM:"telegram"
+
+};
+
+// =====================================
+// TIMELINE EVENT
+// =====================================
+
+function addTimelineEvent(
+
+type,
+
+payload={}
+
+){
+
+    CUSTOMER_TIMELINE
+
+    .sessions.push({
+
+        type,
+
+        payload,
+
+        createdAt:
+
+        new Date()
+
+    });
+
+}
+
+// =====================================
+// SAVE CHAT
+// =====================================
+
+function saveConversationEvent(
+
+role,
+
+message
+
+){
+
+    CUSTOMER_TIMELINE
+
+    .conversations.push({
+
+        role,
+
+        message,
+
+        channel:
+
+        CUSTOMER_TIMELINE.lastChannel,
+
+        createdAt:
+
+        new Date()
+
+    });
+
+}
+
+// =====================================
+// SAVE PURCHASE
+// =====================================
+
+function savePurchaseEvent(
+
+order
+
+){
+
+    CUSTOMER_TIMELINE
+
+    .purchases.push({
+
+        ...order,
+
+        channel:
+
+        CUSTOMER_TIMELINE.lastChannel,
+
+        createdAt:
+
+        new Date()
+
+    });
+
+}
+
+// =====================================
+// CHANGE CHANNEL
+// =====================================
+
+function switchChannel(
+
+channel
+
+){
+
+    CUSTOMER_TIMELINE
+
+    .lastChannel=
+
+    channel;
+
+}
+
+// =====================================
+// WHATSAPP
+// =====================================
+
+async function sendWhatsAppMessage(
+
+message
+
+){
+
+    if(
+
+        !OMNICHANNEL.whatsapp
+
+    ) return;
+
+    try{
+
+        await fetch(
+
+`${CONFIG.API_BASE}/api/channels/whatsapp`,
+
+        {
+
+            method:"POST",
+
+            headers:{
+
+                "Content-Type":
+
+                "application/json"
+
+            },
+
+            body:JSON.stringify({
+
+                visitorId:
+
+                VISITOR.id,
+
+                message
+
+            })
+
+        });
+
+    }
+
+    catch(error){
+
+        console.error(error);
+
+    }
+
+}
+
+// =====================================
+// INSTAGRAM
+// =====================================
+
+async function sendInstagramMessage(
+
+message
+
+){
+
+    if(
+
+        !OMNICHANNEL.instagram
+
+    ) return;
+
+    try{
+
+        await fetch(
+
+`${CONFIG.API_BASE}/api/channels/instagram`,
+
+        {
+
+            method:"POST",
+
+            headers:{
+
+                "Content-Type":
+
+                "application/json"
+
+            },
+
+            body:JSON.stringify({
+
+                visitorId:
+
+                VISITOR.id,
+
+                message
+
+            })
+
+        });
+
+    }
+
+    catch(error){
+
+        console.error(error);
+
+    }
+
+}
+
+// =====================================
+// FACEBOOK
+// =====================================
+
+async function sendMessengerMessage(
+
+message
+
+){
+
+    if(
+
+        !OMNICHANNEL.messenger
+
+    ) return;
+
+    try{
+
+        await fetch(
+
+`${CONFIG.API_BASE}/api/channels/messenger`,
+
+        {
+
+            method:"POST",
+
+            headers:{
+
+                "Content-Type":
+
+                "application/json"
+
+            },
+
+            body:JSON.stringify({
+
+                visitorId:
+
+                VISITOR.id,
+
+                message
+
+            })
+
+        });
+
+    }
+
+    catch(error){
+
+        console.error(error);
+
+    }
+
+}
+
+// =====================================
+// EMAIL
+// =====================================
+
+async function sendEmailAI(
+
+subject,
+
+message
+
+){
+
+    if(
+
+        !OMNICHANNEL.email
+
+    ) return;
+
+    try{
+
+        await fetch(
+
+`${CONFIG.API_BASE}/api/channels/email`,
+
+        {
+
+            method:"POST",
+
+            headers:{
+
+                "Content-Type":
+
+                "application/json"
+
+            },
+
+            body:JSON.stringify({
+
+                visitorId:
+
+                VISITOR.id,
+
+                subject,
+
+                message
+
+            })
+
+        });
+
+    }
+
+    catch(error){
+
+        console.error(error);
+
+    }
+
+}
+
+// =====================================
+// SMS
+// =====================================
+
+async function sendSMSAI(
+
+message
+
+){
+
+    if(
+
+        !OMNICHANNEL.sms
+
+    ) return;
+
+    try{
+
+        await fetch(
+
+`${CONFIG.API_BASE}/api/channels/sms`,
+
+        {
+
+            method:"POST",
+
+            headers:{
+
+                "Content-Type":
+
+                "application/json"
+
+            },
+
+            body:JSON.stringify({
+
+                visitorId:
+
+                VISITOR.id,
+
+                message
+
+            })
+
+        });
+
+    }
+
+    catch(error){
+
+        console.error(error);
+
+    }
+
+}
+
+// =====================================
+// UNIFIED AI
+// =====================================
+
+async function omniSalesAI(
+
+message
+
+){
+
+    saveConversationEvent(
+
+        "assistant",
+
+        message
+
+    );
+
+    if(
+
+        PURCHASE_STATE.ready
+
+    ){
+
+        sendWhatsAppMessage(message);
+
+        sendEmailAI(
+
+            "Your Shopping Assistant",
+
+            message
+
+        );
+
+    }
+
+}
+
+// =====================================
+// DASHBOARD SYNC
+// =====================================
+
+async function syncCustomerTimeline(){
+
+    try{
+
+        await fetch(
+
+`${CONFIG.API_BASE}/api/customer/timeline`,
+
+        {
+
+            method:"POST",
+
+            headers:{
+
+                "Content-Type":
+
+                "application/json"
+
+            },
+
+            body:JSON.stringify(
+
+                CUSTOMER_TIMELINE
+
+            )
+
+        });
+
+    }
+
+    catch(error){
+
+        console.error(error);
+
+    }
+
+}
+
+// =====================================
+// AUTO SYNC
+// =====================================
+
+setInterval(
+
+    ()=>{
+
+        syncCustomerTimeline();
+
+    },
+
+    300000
+
+);
+
+// =====================================
+// NEXT
+// =====================================
+//
+// PART 23
+//
+// AI Sales Analytics Dashboard
+//
+// • Live Visitors
+// • Sales Funnel
+// • AI Performance
+// • Avatar Performance
+// • Executive Leaderboard
+// • Conversion Heatmap
+// • Revenue Dashboard
+// =====================================
+// PART 23
+// AI Sales Analytics Dashboard
+// Real-Time Analytics Engine
+// Production Ready
+// =====================================
+
+// =====================================
+// LIVE ANALYTICS
+// =====================================
+
+const SALES_ANALYTICS={
+
+    liveVisitors:0,
+
+    activeChats:0,
+
+    activeCarts:0,
+
+    conversions:0,
+
+    revenue:0,
+
+    averageOrderValue:0,
+
+    abandonedCarts:0,
+
+    recoveredCarts:0,
+
+    conversionRate:0,
+
+    recoveryRate:0
+
+};
+
+// =====================================
+// SALES FUNNEL
+// =====================================
+
+const SALES_FUNNEL={
+
+    visitors:0,
+
+    engaged:0,
+
+    qualified:0,
+
+    productViewed:0,
+
+    addToCart:0,
+
+    checkout:0,
+
+    purchase:0
+
+};
+
+// =====================================
+// EXECUTIVE ANALYTICS
+// =====================================
+
+const EXECUTIVE_ANALYTICS={
+
+    conversations:0,
+
+    productsRecommended:0,
+
+    upsells:0,
+
+    crossSells:0,
+
+    bundles:0,
+
+    couponsGiven:0,
+
+    purchasesClosed:0,
+
+    revenueGenerated:0,
+
+    averageConversationTime:0
+
+};
+
+// =====================================
+// AVATAR PERFORMANCE
+// =====================================
+
+const AVATAR_PERFORMANCE={
+
+    female:{
+
+        conversations:0,
+
+        sales:0,
+
+        revenue:0
+
+    },
+
+    male:{
+
+        conversations:0,
+
+        sales:0,
+
+        revenue:0
+
+    },
+
+    custom:{
+
+        conversations:0,
+
+        sales:0,
+
+        revenue:0
+
+    }
+
+};
+
+// =====================================
+// UPDATE LIVE
+// =====================================
+
+function analyticsVisitor(){
+
+    SALES_ANALYTICS.liveVisitors++;
+
+    SALES_FUNNEL.visitors++;
+
+}
+
+function analyticsChat(){
+
+    SALES_ANALYTICS.activeChats++;
+
+    SALES_FUNNEL.engaged++;
+
+    EXECUTIVE_ANALYTICS.conversations++;
+
+}
+
+function analyticsQualified(){
+
+    SALES_FUNNEL.qualified++;
+
+}
+
+function analyticsProduct(){
+
+    SALES_FUNNEL.productViewed++;
+
+    EXECUTIVE_ANALYTICS.productsRecommended++;
+
+}
+
+function analyticsCart(){
+
+    SALES_ANALYTICS.activeCarts++;
+
+    SALES_FUNNEL.addToCart++;
+
+}
+
+function analyticsCheckout(){
+
+    SALES_FUNNEL.checkout++;
+
+}
+
+function analyticsPurchase(order){
+
+    SALES_FUNNEL.purchase++;
+
+    SALES_ANALYTICS.conversions++;
+
+    SALES_ANALYTICS.revenue+=
+
+    order.total;
+
+    SALES_ANALYTICS.averageOrderValue=
+
+    Math.round(
+
+        SALES_ANALYTICS.revenue/
+
+        SALES_ANALYTICS.conversions
+
+    );
+
+    EXECUTIVE_ANALYTICS
+
+    .purchasesClosed++;
+
+    EXECUTIVE_ANALYTICS
+
+    .revenueGenerated+=
+
+    order.total;
+
+}
+
+// =====================================
+// CONVERSION
+// =====================================
+
+function calculateConversionRate(){
+
+    if(
+
+        SALES_FUNNEL.visitors===0
+
+    ) return;
+
+    SALES_ANALYTICS.conversionRate=
+
+    Math.round(
+
+        (
+
+            SALES_FUNNEL.purchase/
+
+            SALES_FUNNEL.visitors
+
+        )*100
+
+    );
+
+}
+
+// =====================================
+// RECOVERY RATE
+// =====================================
+
+function calculateRecoveryRate(){
+
+    if(
+
+        SALES_ANALYTICS.abandonedCarts===0
+
+    ) return;
+
+    SALES_ANALYTICS.recoveryRate=
+
+    Math.round(
+
+        (
+
+            SALES_ANALYTICS.recoveredCarts/
+
+            SALES_ANALYTICS.abandonedCarts
+
+        )*100
+
+    );
+
+}
+
+// =====================================
+// AVATAR
+// =====================================
+
+function avatarSale(order){
+
+    const avatar=
+
+    EXECUTIVE.avatarType||
+
+    "female";
+
+    AVATAR_PERFORMANCE
+
+    [avatar]
+
+    .sales++;
+
+    AVATAR_PERFORMANCE
+
+    [avatar]
+
+    .revenue+=
+
+    order.total;
+
+}
+
+// =====================================
+// LEADERBOARD
+// =====================================
+
+function executiveLeaderboard(){
+
+    return{
+
+        executive:
+
+        EXECUTIVE.name,
+
+        sales:
+
+        EXECUTIVE_ANALYTICS
+
+        .purchasesClosed,
+
+        revenue:
+
+        EXECUTIVE_ANALYTICS
+
+        .revenueGenerated,
+
+        conversion:
+
+        SALES_ANALYTICS
+
+        .conversionRate
+
+    };
+
+}
+
+// =====================================
+// HEATMAP
+// =====================================
+
+function recordHeatmap(
+
+element
+
+){
+
+    fetch(
+
+`${CONFIG.API_BASE}/api/analytics/heatmap`,
+
+    {
+
+        method:"POST",
+
+        headers:{
+
+            "Content-Type":
+
+            "application/json"
+
+        },
+
+        body:JSON.stringify({
+
+            visitorId:
+
+            VISITOR.id,
+
+            element,
+
+            page:
+
+            location.pathname
+
+        })
+
+    });
+
+}
+
+// =====================================
+// DASHBOARD
+// =====================================
+
+async function syncAnalytics(){
+
+    calculateConversionRate();
+
+    calculateRecoveryRate();
+
+    try{
+
+        await fetch(
+
+`${CONFIG.API_BASE}/api/dashboard/live`,
+
+        {
+
+            method:"POST",
+
+            headers:{
+
+                "Content-Type":
+
+                "application/json"
+
+            },
+
+            body:JSON.stringify({
+
+                live:
+
+                SALES_ANALYTICS,
+
+                funnel:
+
+                SALES_FUNNEL,
+
+                executive:
+
+                EXECUTIVE_ANALYTICS,
+
+                avatar:
+
+                AVATAR_PERFORMANCE
+
+            })
+
+        });
+
+    }
+
+    catch(error){
+
+        console.error(error);
+
+    }
+
+}
+
+// =====================================
+// LIVE UPDATE
+// =====================================
+
+setInterval(
+
+    ()=>{
+
+        syncAnalytics();
+
+    },
+
+    60000
+
+);
+
+// =====================================
+// NEXT
+// =====================================
+//
+// PART 24
+//
+// AI Store Owner Dashboard
+//
+// • Daily AI Report
+// • Weekly Report
+// • Monthly Report
+// • Executive Report
+// • Revenue Forecast
+// • AI Suggestions
+// • Business Growth Insights
+// =====================================
+// PART 24
+// AI Store Owner Dashboard
+// Business Intelligence Engine
+// Production Ready
+// =====================================
+
+// =====================================
+// BUSINESS REPORT
+// =====================================
+
+const BUSINESS_REPORT={
+
+    today:{},
+
+    week:{},
+
+    month:{},
+
+    ai:{},
+
+    forecast:{}
+
+};
+
+// =====================================
+// TODAY REPORT
+// =====================================
+
+function buildTodayReport(){
+
+    BUSINESS_REPORT.today={
+
+        visitors:
+
+        SALES_FUNNEL.visitors,
+
+        chats:
+
+        EXECUTIVE_ANALYTICS.conversations,
+
+        conversions:
+
+        SALES_ANALYTICS.conversions,
+
+        revenue:
+
+        SALES_ANALYTICS.revenue,
+
+        abandoned:
+
+        SALES_ANALYTICS.abandonedCarts,
+
+        recovered:
+
+        SALES_ANALYTICS.recoveredCarts,
+
+        conversionRate:
+
+        SALES_ANALYTICS.conversionRate
+
+    };
+
+}
+
+// =====================================
+// WEEK REPORT
+// =====================================
+
+function buildWeeklyReport(data){
+
+    BUSINESS_REPORT.week=data;
+
+}
+
+// =====================================
+// MONTH REPORT
+// =====================================
+
+function buildMonthlyReport(data){
+
+    BUSINESS_REPORT.month=data;
+
+}
+
+// =====================================
+// AI INSIGHTS
+// =====================================
+
+function generateAIInsights(){
+
+    const insights=[];
+
+    if(
+
+        SALES_ANALYTICS.conversionRate<3
+
+    ){
+
+        insights.push(
+
+"Conversion rate is low. Increase welcome engagement."
+
+        );
+
+    }
+
+    if(
+
+        SALES_ANALYTICS.abandonedCarts>
+
+        SALES_ANALYTICS.recoveredCarts
+
+    ){
+
+        insights.push(
+
+"Enable stronger abandoned cart campaigns."
+
+        );
+
+    }
+
+    if(
+
+        EXECUTIVE_ANALYTICS.upsells<
+
+        EXECUTIVE_ANALYTICS.purchasesClosed
+
+    ){
+
+        insights.push(
+
+"Upsell opportunities are being missed."
+
+        );
+
+    }
+
+    if(
+
+        LOYALTY.repeatCustomer===false
+
+    ){
+
+        insights.push(
+
+"Launch loyalty rewards to increase repeat purchases."
+
+        );
+
+    }
+
+    BUSINESS_REPORT.ai.insights=
+
+    insights;
+
+}
+
+// =====================================
+// FORECAST
+// =====================================
+
+function revenueForecast(){
+
+    const daily=
+
+    SALES_ANALYTICS.revenue;
+
+    BUSINESS_REPORT.forecast={
+
+        tomorrow:
+
+        Math.round(
+
+            daily*1.05
+
+        ),
+
+        nextWeek:
+
+        Math.round(
+
+            daily*7
+
+        ),
+
+        nextMonth:
+
+        Math.round(
+
+            daily*30
+
+        )
+
+    };
+
+}
+
+// =====================================
+// BEST EXECUTIVE
+// =====================================
+
+function bestExecutive(){
+
+    return{
+
+        name:
+
+        EXECUTIVE.name,
+
+        revenue:
+
+        EXECUTIVE_ANALYTICS
+
+        .revenueGenerated,
+
+        conversions:
+
+        EXECUTIVE_ANALYTICS
+
+        .purchasesClosed
+
+    };
+
+}
+
+// =====================================
+// STORE HEALTH
+// =====================================
+
+function calculateStoreHealth(){
+
+    let score=100;
+
+    if(
+
+        SALES_ANALYTICS
+
+        .conversionRate<2
+
+    ){
+
+        score-=20;
+
+    }
+
+    if(
+
+        SALES_ANALYTICS
+
+        .abandonedCarts>
+
+        SALES_ANALYTICS
+
+        .recoveredCarts
+
+    ){
+
+        score-=20;
+
+    }
+
+    if(
+
+        SALES_ANALYTICS
+
+        .revenue===0
+
+    ){
+
+        score-=30;
+
+    }
+
+    return Math.max(
+
+        score,
+
+        0
+
+    );
+
+}
+
+// =====================================
+// REPORT
+// =====================================
+
+async function uploadBusinessReport(){
+
+    buildTodayReport();
+
+    generateAIInsights();
+
+    revenueForecast();
+
+    try{
+
+        await fetch(
+
+`${CONFIG.API_BASE}/api/dashboard/business-report`,
+
+        {
+
+            method:"POST",
+
+            headers:{
+
+                "Content-Type":
+
+                "application/json"
+
+            },
+
+            body:JSON.stringify({
+
+                report:
+
+                BUSINESS_REPORT,
+
+                executive:
+
+                bestExecutive(),
+
+                health:
+
+                calculateStoreHealth()
+
+            })
+
+        });
+
+    }
+
+    catch(error){
+
+        console.error(error);
+
+    }
+
+}
+
+// =====================================
+// DAILY REPORT
+// =====================================
+
+function dailyOwnerReport(){
+
+    executiveSpeak(
+
+"Today's AI sales report has been generated successfully."
+
+    );
+
+    uploadBusinessReport();
+
+}
+
+// =====================================
+// AUTO REPORT
+// =====================================
+
+setInterval(
+
+    ()=>{
+
+        uploadBusinessReport();
+
+    },
+
+    3600000
+
+);
+
+// =====================================
+// NEXT
+// =====================================
+//
+// PART 25
+//
+// Voice Sales Executive
+//
+// • Speech Recognition
+// • Natural Voice
+// • ElevenLabs Support
+// • OpenAI Voice
+// • Voice Interruptions
+// • Voice Conversation
+// =====================================
+// PART 25
+// Voice Sales Executive
+// AI Voice Conversation Engine
+// Production Ready
+// =====================================
+
+// =====================================
+// VOICE CONFIG
+// =====================================
+
+const VOICE_AI={
+
+    enabled:true,
+
+    listening:false,
+
+    speaking:false,
+
+    language:"en-US",
+
+    voiceGender:"female",
+
+    provider:"browser", // browser | elevenlabs | openai
+
+    autoListen:true,
+
+    interrupt:true,
+
+    wakeWords:[
+
+        "hello",
+
+        "hi",
+
+        "sales",
+
+        "assistant"
+
+    ]
+
+};
+
+// =====================================
+// SPEECH RECOGNITION
+// =====================================
+
+const SpeechRecognition=
+
+window.SpeechRecognition||
+
+window.webkitSpeechRecognition;
+
+let recognition=null;
+
+if(
+
+    SpeechRecognition
+
+){
+
+    recognition=
+
+    new SpeechRecognition();
+
+    recognition.lang=
+
+    VOICE_AI.language;
+
+    recognition.continuous=false;
+
+    recognition.interimResults=false;
+
+}
+
+// =====================================
+// START LISTENING
+// =====================================
+
+function startVoiceListening(){
+
+    if(
+
+        !recognition ||
+
+        VOICE_AI.listening
+
+    ) return;
+
+    VOICE_AI.listening=true;
+
+    recognition.start();
+
+}
+
+// =====================================
+// STOP LISTENING
+// =====================================
+
+function stopVoiceListening(){
+
+    if(
+
+        !recognition
+
+    ) return;
+
+    VOICE_AI.listening=false;
+
+    recognition.stop();
+
+}
+
+// =====================================
+// RESULT
+// =====================================
+
+if(recognition){
+
+recognition.onresult=
+
+async(event)=>{
+
+    const transcript=
+
+    event.results[0][0]
+
+    .transcript;
+
+    stopVoiceListening();
+
+    addVisitorMessage(
+
+        transcript
+
+    );
+
+    await processConversation(
+
+        transcript
+
+    );
+
+};
+
+recognition.onend=()=>{
+
+    VOICE_AI.listening=false;
+
+};
+
+}
+
+// =====================================
+// TEXT TO SPEECH
+// =====================================
+
+function speakVoice(text){
+
+    if(
+
+        !VOICE_AI.enabled
+
+    ) return;
+
+    if(
+
+        VOICE_AI.provider!=="browser"
+
+    ){
+
+        speakExternalVoice(text);
+
+        return;
+
+    }
+
+    window.speechSynthesis.cancel();
+
+    const utterance=
+
+    new SpeechSynthesisUtterance(
+
+        text
+
+    );
+
+    utterance.lang=
+
+    VOICE_AI.language;
+
+    utterance.rate=1;
+
+    utterance.pitch=1;
+
+    const voices=
+
+    speechSynthesis.getVoices();
+
+    if(
+
+        voices.length
+
+    ){
+
+        const female=
+
+        voices.find(
+
+        v=>
+
+        v.name
+
+        .toLowerCase()
+
+        .includes("female")
+
+        );
+
+        if(
+
+            female
+
+        ){
+
+            utterance.voice=
+
+            female;
+
+        }
+
+    }
+
+    VOICE_AI.speaking=true;
+
+    utterance.onend=()=>{
+
+        VOICE_AI.speaking=false;
+
+        if(
+
+            VOICE_AI.autoListen
+
+        ){
+
+            startVoiceListening();
+
+        }
+
+    };
+
+    speechSynthesis.speak(
+
+        utterance
+
+    );
+
+}
+
+// =====================================
+// ELEVENLABS / OPENAI
+// =====================================
+
+async function speakExternalVoice(text){
+
+    try{
+
+        const response=
+
+        await fetch(
+
+`${CONFIG.API_BASE}/api/voice/speak`,
+
+        {
+
+            method:"POST",
+
+            headers:{
+
+                "Content-Type":
+
+                "application/json"
+
+            },
+
+            body:JSON.stringify({
+
+                text,
+
+                provider:
+
+                VOICE_AI.provider,
+
+                avatar:
+
+                EXECUTIVE.avatarType
+
+            })
+
+        });
+
+        const audio=
+
+        await response.blob();
+
+        const player=
+
+        new Audio(
+
+            URL.createObjectURL(audio)
+
+        );
+
+        player.play();
+
+    }
+
+    catch(error){
+
+        console.error(error);
+
+    }
+
+}
+
+// =====================================
+// EXECUTIVE SPEAK
+// =====================================
+
+const originalExecutiveSpeak=
+
+executiveSpeak;
+
+executiveSpeak=function(message){
+
+    originalExecutiveSpeak(
+
+        message
+
+    );
+
+    speakVoice(
+
+        message
+
+    );
+
+};
+
+// =====================================
+// VOICE BUTTON
+// =====================================
+
+function createVoiceButton(){
+
+    const btn=
+
+    document.createElement(
+
+        "button"
+
+    );
+
+    btn.id="lbVoiceButton";
+
+    btn.innerHTML="🎤";
+
+    btn.onclick=()=>{
+
+        if(
+
+            VOICE_AI.listening
+
+        ){
+
+            stopVoiceListening();
+
+        }
+
+        else{
+
+            startVoiceListening();
+
+        }
+
+    };
+
+    document.body.appendChild(btn);
+
+}
+
+// =====================================
+// INITIALIZE
+// =====================================
+
+window.addEventListener(
+
+    "load",
+
+    ()=>{
+
+        createVoiceButton();
+
+    }
+
+);
+
+// =====================================
+// NEXT
+// =====================================
+//
+// PART 26
+//
+// AI Negotiation Engine
+//
+// • Price Objection Handling
+// • Discount Negotiation
+// • Value Selling
+// • Scarcity Psychology
+// • Closing Psycho
+// =====================================
+// PART 26
+// AI Negotiation Engine
+// Value Selling Psychology
+// Production Ready
+// =====================================
+
+// =====================================
+// NEGOTIATION STATE
+// =====================================
+
+const NEGOTIATION={
+
+    active:false,
+
+    objection:null,
+
+    attempts:0,
+
+    discountOffered:false,
+
+    maxDiscount:20,
+
+    successful:false
+
+};
+
+// =====================================
+// PRICE OBJECTIONS
+// =====================================
+
+const PRICE_OBJECTIONS=[
+
+    "expensive",
+
+    "too much",
+
+    "costly",
+
+    "price",
+
+    "cheaper",
+
+    "discount",
+
+    "best price",
+
+    "lower price",
+
+    "offer"
+
+];
+
+// =====================================
+// DETECT OBJECTION
+// =====================================
+
+function detectObjection(message){
+
+    const text=
+
+    message.toLowerCase();
+
+    for(
+
+        const word
+
+        of PRICE_OBJECTIONS
+
+    ){
+
+        if(
+
+            text.includes(word)
+
+        ){
+
+            NEGOTIATION.active=true;
+
+            NEGOTIATION.objection=
+
+            "price";
+
+            return true;
+
+        }
+
+    }
+
+    return false;
+
+}
+
+// =====================================
+// VALUE SELLING
+// =====================================
+
+function explainValue(){
+
+    executiveSpeak(
+
+"This product isn't only about price. It offers better quality, durability and long-term value."
+
+    );
+
+}
+
+// =====================================
+// SOCIAL PROOF
+// =====================================
+
+function socialProof(){
+
+    executiveSpeak(
+
+"Thousands of customers have already purchased this product and rated it highly."
+
+    );
+
+}
+
+// =====================================
+// SCARCITY
+// =====================================
+
+function scarcitySelling(){
+
+    executiveSpeak(
+
+"Stock is limited and this promotion may end soon."
+
+    );
+
+}
+
+// =====================================
+// DISCOUNT
+// =====================================
+
+function negotiateDiscount(){
+
+    if(
+
+        NEGOTIATION.discountOffered
+
+    ) return;
+
+    NEGOTIATION.discountOffered=true;
+
+    const discount=
+
+    Math.min(
+
+        NEGOTIATION.maxDiscount,
+
+        recommendDiscount()
+
+    );
+
+    if(
+
+        discount>0
+
+    ){
+
+        showCoupon({
+
+            code:
+
+            `SAVE${discount}`,
+
+            discount:
+
+            `${discount}% OFF`
+
+        });
+
+        executiveSpeak(
+
+`I've arranged a special ${discount}% discount exclusively for you.`
+
+        );
+
+    }
+
+}
+
+// =====================================
+// FREE SHIPPING
+// =====================================
+
+function freeShippingOffer(){
+
+    executiveSpeak(
+
+"I can also include free shipping if you complete your purchase today."
+
+    );
+
+}
+
+// =====================================
+// BONUS
+// =====================================
+
+function bonusOffer(){
+
+    executiveSpeak(
+
+"I'll also include our exclusive customer support and warranty at no additional cost."
+
+    );
+
+}
+
+// =====================================
+// CLOSE
+// =====================================
+
+function negotiationClose(){
+
+    executiveSpeak(
+
+"Would you like me to reserve this offer and take you to checkout?"
+
+    );
+
+    showCheckoutCTA();
+
+}
+
+// =====================================
+// AI NEGOTIATION
+// =====================================
+
+function negotiationEngine(message){
+
+    if(
+
+        !detectObjection(
+
+            message
+
+        )
+
+    ){
+
+        return;
+
+    }
+
+    NEGOTIATION.attempts++;
+
+    explainValue();
+
+    if(
+
+        NEGOTIATION.attempts>=1
+
+    ){
+
+        socialProof();
+
+    }
+
+    if(
+
+        NEGOTIATION.attempts>=2
+
+    ){
+
+        negotiateDiscount();
+
+    }
+
+    if(
+
+        NEGOTIATION.attempts>=3
+
+    ){
+
+        freeShippingOffer();
+
+    }
+
+    if(
+
+        NEGOTIATION.attempts>=4
+
+    ){
+
+        bonusOffer();
+
+    }
+
+    scarcitySelling();
+
+    negotiationClose();
+
+}
+
+// =====================================
+// SUCCESS
+// =====================================
+
+function negotiationSuccess(){
+
+    NEGOTIATION.successful=true;
+
+    executiveSpeak(
+
+"Excellent choice! I'm happy we found the perfect solution for you."
+
+    );
+
+}
+
+// =====================================
+// NEXT
+// =====================================
+//
+// PART 27
+//
+// AI Product Comparison Engine
+//
+// • Compare Products
+// • Compare Features
+// • Compare Prices
+// • Compare Reviews
+// • AI Recommendation Winner
+// =====================================
+// PART 27
+// AI Product Comparison Engine
+// Intelligent Product Comparison
+// Production Ready
+// =====================================
+
+// =====================================
+// COMPARISON ENGINE
+// =====================================
+
+const PRODUCT_COMPARE={
+
+    enabled:true,
+
+    selected:[],
+
+    winner:null,
+
+    comparison:null
+
+};
+
+// =====================================
+// MAX PRODUCTS
+// =====================================
+
+const MAX_COMPARE=4;
+
+// =====================================
+// ADD PRODUCT
+// =====================================
+
+function addComparisonProduct(product){
+
+    if(!product) return;
+
+    const exists=
+
+    PRODUCT_COMPARE.selected.find(
+
+        p=>p.id===product.id
+
+    );
+
+    if(exists) return;
+
+    if(
+
+        PRODUCT_COMPARE.selected.length>=
+
+        MAX_COMPARE
+
+    ){
+
+        PRODUCT_COMPARE.selected.shift();
+
+    }
+
+    PRODUCT_COMPARE.selected.push(product);
+
+}
+
+// =====================================
+// REMOVE PRODUCT
+// =====================================
+
+function removeComparisonProduct(id){
+
+    PRODUCT_COMPARE.selected=
+
+    PRODUCT_COMPARE.selected.filter(
+
+        p=>p.id!==id
+
+    );
+
+}
+
+// =====================================
+// PRICE SCORE
+// =====================================
+
+function priceScore(product){
+
+    const price=
+
+    Number(product.price)||0;
+
+    if(price<=25) return 100;
+
+    if(price<=50) return 90;
+
+    if(price<=100) return 80;
+
+    if(price<=250) return 70;
+
+    return 60;
+
+}
+
+// =====================================
+// REVIEW SCORE
+// =====================================
+
+function reviewScore(product){
+
+    return(
+
+        Number(product.rating)||0
+
+    )*20;
+
+}
+
+// =====================================
+// INVENTORY SCORE
+// =====================================
+
+function stockScore(product){
+
+    if(
+
+        product.inventory>
+
+        100
+
+    ) return 100;
+
+    if(
+
+        product.inventory>
+
+        20
+
+    ) return 80;
+
+    if(
+
+        product.inventory>
+
+        5
+
+    ) return 60;
+
+    return 30;
+
+}
+
+// =====================================
+// SALES SCORE
+// =====================================
+
+function salesScore(product){
+
+    return Math.min(
+
+        100,
+
+        Number(
+
+            product.popularity||0
+
+        )
+
+    );
+
+}
+
+// =====================================
+// AI SCORE
+// =====================================
+
+function totalComparisonScore(product){
+
+    return(
+
+        reviewScore(product)*0.35+
+
+        salesScore(product)*0.25+
+
+        priceScore(product)*0.20+
+
+        stockScore(product)*0.20
+
+    );
+
+}
+
+// =====================================
+// FIND WINNER
+// =====================================
+
+function determineComparisonWinner(){
+
+    if(
+
+        PRODUCT_COMPARE.selected.length<2
+
+    ) return null;
+
+    let winner=
+
+    PRODUCT_COMPARE.selected[0];
+
+    let best=
+
+    totalComparisonScore(winner);
+
+    PRODUCT_COMPARE.selected.forEach(
+
+        product=>{
+
+            const score=
+
+            totalComparisonScore(product);
+
+            if(score>best){
+
+                best=score;
+
+                winner=product;
+
+            }
+
+        }
+
+    );
+
+    PRODUCT_COMPARE.winner=
+
+    winner;
+
+    return winner;
+
+}
+
+// =====================================
+// BUILD TABLE
+// =====================================
+
+function buildComparisonTable(){
+
+    if(
+
+        PRODUCT_COMPARE.selected.length<2
+
+    ) return;
+
+    let html=
+
+`<div class="lb-comparison">
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>Feature</th>`;
+
+    PRODUCT_COMPARE.selected.forEach(
+
+        product=>{
+
+            html+=`
+
+<th>
+
+${product.title}
+
+</th>`;
+
+        }
+
+    );
+
+    html+=`
+
+</tr>
+
+</thead>
+
+<tbody>`;
+
+    // Price
+
+    html+=`
+
+<tr>
+
+<td>Price</td>`;
+
+    PRODUCT_COMPARE.selected.forEach(
+
+        p=>{
+
+            html+=`
+
+<td>
+
+${formatMoney(p.price)}
+
+</td>`;
+
+        }
+
+    );
+
+    html+=`
+
+</tr>`;
+
+    // Rating
+
+    html+=`
+
+<tr>
+
+<td>Rating</td>`;
+
+    PRODUCT_COMPARE.selected.forEach(
+
+        p=>{
+
+            html+=`
+
+<td>
+
+⭐ ${p.rating||0}
+
+</td>`;
+
+        }
+
+    );
+
+    html+=`
+
+</tr>`;
+
+    // Stock
+
+    html+=`
+
+<tr>
+
+<td>Availability</td>`;
+
+    PRODUCT_COMPARE.selected.forEach(
+
+        p=>{
+
+            html+=`
+
+<td>
+
+${p.inventory||0}
+
+</td>`;
+
+        }
+
+    );
+
+    html+=`
+
+</tr>`;
+
+    html+=`
+
+</tbody>
+
+</table>
+
+</div>`;
+
+    PRODUCT_COMPARE.comparison=
+
+    html;
+
+}
+
+// =====================================
+// SHOW RESULT
+// =====================================
+
+function showComparison(){
+
+    buildComparisonTable();
+
+    const winner=
+
+    determineComparisonWinner();
+
+    if(
+
+        PRODUCT_COMPARE.comparison
+
+    ){
+
+        document
+
+        .getElementById(
+
+            "lbMessages"
+
+        )
+
+        .insertAdjacentHTML(
+
+            "beforeend",
+
+            PRODUCT_COMPARE.comparison
+
+        );
+
+    }
+
+    if(winner){
+
+        executiveSpeak(
+
+`After comparing everything, I recommend "${winner.title}" because it offers the best overall value for your needs.`
+
+        );
+
+    }
+
+    scrollMessages();
+
+}
+
+// =====================================
+// CLEAR
+// =====================================
+
+function clearComparison(){
+
+    PRODUCT_COMPARE.selected=[];
+
+    PRODUCT_COMPARE.winner=null;
+
+    PRODUCT_COMPARE.comparison=null;
+
+}
+
+// =====================================
+// NEXT
+// =====================================
+//
+// PART 28
+//
+// AI Bundle Builder
+//
+// • Smart Bundle Generator
+// • Frequently Bought Together
+// • Complete The Look
+// • Accessories AI
+// • Bundle Discount Engine
+// =====================================
+// PART 28
+// AI Smart Bundle Builder
+// Frequently Bought Together
+// Complete The Look
+// Production Ready
+// =====================================
+
+// =====================================
+// BUNDLE ENGINE
+// =====================================
+
+const BUNDLE_ENGINE={
+
+    currentProduct:null,
+
+    suggestedBundles:[],
+
+    completeLook:[],
+
+    accessories:[],
+
+    bundleDiscount:0,
+
+    estimatedSaving:0
+
+};
+
+// =====================================
+// LOAD PRODUCT
+// =====================================
+
+function initializeBundle(product){
+
+    if(!product) return;
+
+    BUNDLE_ENGINE.currentProduct=
+
+    product;
+
+    buildSmartBundle(product);
+
+}
+
+// =====================================
+// SMART BUNDLE
+// =====================================
+
+function buildSmartBundle(product){
+
+    const bundle=[];
+
+    // Frequently Bought Together
+
+    if(
+
+        product.bundle &&
+
+        product.bundle.length
+
+    ){
+
+        bundle.push(
+
+            ...product.bundle
+
+        );
+
+    }
+
+    // Cross Sell
+
+    if(
+
+        product.crossSell &&
+
+        product.crossSell.length
+
+    ){
+
+        bundle.push(
+
+            ...product.crossSell
+
+        );
+
+    }
+
+    BUNDLE_ENGINE
+
+    .suggestedBundles=
+
+    removeDuplicateProducts(
+
+        bundle
+
+    );
+
+    calculateBundleDiscount();
+
+}
+
+// =====================================
+// REMOVE DUPLICATES
+// =====================================
+
+function removeDuplicateProducts(products){
+
+    const ids=[];
+
+    return products.filter(
+
+        item=>{
+
+            if(
+
+                ids.includes(item.id)
+
+            ){
+
+                return false;
+
+            }
+
+            ids.push(item.id);
+
+            return true;
+
+        }
+
+    );
+
+}
+
+// =====================================
+// ACCESSORIES
+// =====================================
+
+function recommendAccessories(){
+
+    const product=
+
+    BUNDLE_ENGINE.currentProduct;
+
+    if(!product) return;
+
+    if(
+
+        product.accessories
+
+    ){
+
+        BUNDLE_ENGINE
+
+        .accessories=
+
+        product.accessories;
+
+    }
+
+}
+
+// =====================================
+// COMPLETE LOOK
+// =====================================
+
+function buildCompleteLook(){
+
+    const product=
+
+    BUNDLE_ENGINE.currentProduct;
+
+    if(!product) return;
+
+    if(
+
+        product.completeLook
+
+    ){
+
+        BUNDLE_ENGINE
+
+        .completeLook=
+
+        product.completeLook;
+
+    }
+
+}
+
+// =====================================
+// DISCOUNT
+// =====================================
+
+function calculateBundleDiscount(){
+
+    const count=
+
+    BUNDLE_ENGINE
+
+    .suggestedBundles
+
+    .length;
+
+    if(count>=5){
+
+        BUNDLE_ENGINE
+
+        .bundleDiscount=20;
+
+    }
+
+    else if(count>=3){
+
+        BUNDLE_ENGINE
+
+        .bundleDiscount=15;
+
+    }
+
+    else if(count>=2){
+
+        BUNDLE_ENGINE
+
+        .bundleDiscount=10;
+
+    }
+
+    else{
+
+        BUNDLE_ENGINE
+
+        .bundleDiscount=0;
+
+    }
+
+}
+
+// =====================================
+// SAVINGS
+// =====================================
+
+function calculateBundleSavings(){
+
+    let total=0;
+
+    BUNDLE_ENGINE
+
+    .suggestedBundles
+
+    .forEach(
+
+        item=>{
+
+            total+=
+
+            Number(item.price);
+
+        }
+
+    );
+
+    BUNDLE_ENGINE
+
+    .estimatedSaving=
+
+    Math.round(
+
+        total*
+
+        (
+
+            BUNDLE_ENGINE
+
+            .bundleDiscount/
+
+            100
+
+        )
+
+    );
+
+}
+
+// =====================================
+// RENDER
+// =====================================
+
+function renderBundleSection(){
+
+    calculateBundleSavings();
+
+    const products=[
+
+        ...BUNDLE_ENGINE
+
+        .suggestedBundles
+
+    ];
+
+    if(
+
+        !products.length
+
+    ) return;
+
+    let html=
+
+`
+
+<div class="lbBundleBox">
+
+<h3>
+
+🔥 Frequently Bought Together
+
+</h3>
+
+<div class="lbBundleProducts">
+
+`;
+
+    products.forEach(
+
+        product=>{
+
+            html+=`
+
+<div class="lbBundleItem">
+
+<img src="${product.image}">
+
+<div>
+
+<b>
+
+${product.title}
+
+</b>
+
+<br>
+
+${formatMoney(product.price)}
+
+</div>
+
+</div>
+
+`;
+
+        }
+
+    );
+
+    html+=`
+
+</div>
+
+<div class="lbBundleFooter">
+
+<div>
+
+Bundle Discount
+
+<b>
+
+${BUNDLE_ENGINE.bundleDiscount}%
+
+</b>
+
+</div>
+
+<div>
+
+You Save
+
+<b>
+
+${formatMoney(
+
+BUNDLE_ENGINE
+
+.estimatedSaving
+
+)}
+
+</b>
+
+</div>
+
+<button
+
+onclick="buyBundle()">
+
+Buy Bundle
+
+</button>
+
+</div>
+
+</div>
+
+`;
+
+    document
+
+    .getElementById(
+
+        "lbMessages"
+
+    )
+
+    .insertAdjacentHTML(
+
+        "beforeend",
+
+        html
+
+    );
+
+    scrollMessages();
+
+}
+
+// =====================================
+// BUY
+// =====================================
+
+function buyBundle(){
+
+    executiveSpeak(
+
+"I've prepared your complete bundle with the best available discount."
+
+    );
+
+    window.location.href=
+
+    "/cart";
+
+}
+
+// =====================================
+// AI
+// =====================================
+
+function bundleAI(product){
+
+    initializeBundle(product);
+
+    recommendAccessories();
+
+    buildCompleteLook();
+
+    renderBundleSection();
+
+}
+
+// =====================================
+// NEXT
+// =====================================
+//
+// PART 29
+//
+// AI Seasonal Campaign Engine
+//
+// • Christmas
+// • Black Friday
+// • Cyber Monday
+// • Valentine's
+// • Mother's Day
+// • Father's Day
+// • Halloween
+// • Ramadan
+// • Eid
+// • Diwali
+// • New Year
+// • Auto Campaign Switching
+// =====================================
+// PART 29
+// AI Seasonal Campaign Engine
+// Holiday & Event Automation
+// Production Ready
+// =====================================
+
+// =====================================
+// SEASONAL ENGINE
+// =====================================
+
+const SEASONAL_ENGINE={
+
+    currentCampaign:null,
+
+    active:false,
+
+    discount:0,
+
+    theme:null,
+
+    greeting:null,
+
+    countdown:false
+
+};
+
+// =====================================
+// CAMPAIGNS
+// =====================================
+
+const SEASONAL_CAMPAIGNS={
+
+    NEW_YEAR:{
+        month:1,
+        day:1,
+        name:"New Year",
+        discount:20,
+        theme:"newyear",
+        greeting:"🎉 Happy New Year!"
+    },
+
+    VALENTINE:{
+        month:2,
+        day:14,
+        name:"Valentine's Day",
+        discount:15,
+        theme:"valentine",
+        greeting:"❤️ Celebrate Love!"
+    },
+
+    RAMADAN:{
+        month:null,
+        day:null,
+        dynamic:true,
+        name:"Ramadan",
+        discount:20,
+        theme:"ramadan",
+        greeting:"🌙 Ramadan Mubarak"
+    },
+
+    EID:{
+        month:null,
+        day:null,
+        dynamic:true,
+        name:"Eid",
+        discount:25,
+        theme:"eid",
+        greeting:"🌙 Eid Mubarak"
+    },
+
+    MOTHERS_DAY:{
+        month:5,
+        week:2,
+        weekday:0,
+        name:"Mother's Day",
+        discount:20,
+        theme:"mother",
+        greeting:"💐 Happy Mother's Day!"
+    },
+
+    FATHERS_DAY:{
+        month:6,
+        week:3,
+        weekday:0,
+        name:"Father's Day",
+        discount:20,
+        theme:"father",
+        greeting:"👔 Happy Father's Day!"
+    },
+
+    HALLOWEEN:{
+        month:10,
+        day:31,
+        name:"Halloween",
+        discount:15,
+        theme:"halloween",
+        greeting:"🎃 Happy Halloween!"
+    },
+
+    BLACK_FRIDAY:{
+        month:11,
+        week:4,
+        weekday:5,
+        name:"Black Friday",
+        discount:50,
+        theme:"blackfriday",
+        greeting:"🖤 Black Friday Mega Sale!"
+    },
+
+    CYBER_MONDAY:{
+        month:11,
+        week:4,
+        weekday:1,
+        name:"Cyber Monday",
+        discount:40,
+        theme:"cyber",
+        greeting:"💻 Cyber Monday Deals!"
+    },
+
+    CHRISTMAS:{
+        month:12,
+        day:25,
+        name:"Christmas",
+        discount:30,
+        theme:"christmas",
+        greeting:"🎄 Merry Christmas!"
+    },
+
+    DIWALI:{
+        month:null,
+        day:null,
+        dynamic:true,
+        name:"Diwali",
+        discount:25,
+        theme:"diwali",
+        greeting:"🪔 Happy Diwali!"
+    }
+
+};
+
+// =====================================
+// FIND CAMPAIGN
+// =====================================
+
+function detectSeasonCampaign(){
+
+    const today=
+
+    new Date();
+
+    const month=
+
+    today.getMonth()+1;
+
+    const day=
+
+    today.getDate();
+
+    for(
+
+        const key
+
+        in SEASONAL_CAMPAIGNS
+
+    ){
+
+        const campaign=
+
+        SEASONAL_CAMPAIGNS[key];
+
+        if(
+
+            campaign.dynamic
+
+        ){
+
+            continue;
+
+        }
+
+        if(
+
+            campaign.day===day &&
+
+            campaign.month===month
+
+        ){
+
+            activateCampaign(
+
+                campaign
+
+            );
+
+            return;
+
+        }
+
+    }
+
+}
+
+// =====================================
+// ACTIVATE
+// =====================================
+
+function activateCampaign(campaign){
+
+    SEASONAL_ENGINE.active=true;
+
+    SEASONAL_ENGINE.currentCampaign=
+
+    campaign.name;
+
+    SEASONAL_ENGINE.discount=
+
+    campaign.discount;
+
+    SEASONAL_ENGINE.theme=
+
+    campaign.theme;
+
+    SEASONAL_ENGINE.greeting=
+
+    campaign.greeting;
+
+}
+
+// =====================================
+// SHOW CAMPAIGN
+// =====================================
+
+function showSeasonCampaign(){
+
+    if(
+
+        !SEASONAL_ENGINE.active
+
+    ) return;
+
+    executiveSpeak(
+
+        SEASONAL_ENGINE.greeting
+
+    );
+
+    showCoupon({
+
+        code:
+
+        SEASONAL_ENGINE
+
+        .currentCampaign
+
+        .replace(/\s/g,"")
+
+        .toUpperCase(),
+
+        discount:
+
+        `${SEASONAL_ENGINE.discount}% OFF`
+
+    });
+
+}
+
+// =====================================
+// COUNTDOWN
+// =====================================
+
+function startCampaignCountdown(endDate){
+
+    SEASONAL_ENGINE.countdown=true;
+
+    const timer=
+
+    setInterval(
+
+        ()=>{
+
+            const diff=
+
+            endDate-
+
+            Date.now();
+
+            if(diff<=0){
+
+                clearInterval(
+
+                    timer
+
+                );
+
+                SEASONAL_ENGINE
+
+                .countdown=false;
+
+                return;
+
+            }
+
+        },
+
+        1000
+
+    );
+
+}
+
+// =====================================
+// AUTO START
+// =====================================
+
+window.addEventListener(
+
+    "load",
+
+    ()=>{
+
+        detectSeasonCampaign();
+
+        showSeasonCampaign();
+
+    }
+
+);
+
+// =====================================
+// NEXT
+// =====================================
+//
+// PART 30
+//
+// AI Personal Shopper Memory
+//
+// • Customer Preferences
+// • Favorite Categories
+// • Favorite Brands
+// • Favorite Sizes
+// • Favorite Colors
+// • Long-Term AI Memory
+// =====================================
+// PART 30
+// AI Personal Shopper Memory
+// Long-Term Customer Memory
+// Production Ready
+// =====================================
+
+// =====================================
+// SHOPPER MEMORY
+// =====================================
+
+const SHOPPER_MEMORY={
+
+    customerId:null,
+
+    favoriteCategories:[],
+
+    favoriteBrands:[],
+
+    favoriteProducts:[],
+
+    favoriteColors:[],
+
+    favoriteSizes:[],
+
+    preferredBudget:null,
+
+    preferredCurrency:"USD",
+
+    preferredLanguage:"en",
+
+    shoppingStyle:"",
+
+    lastViewed:[],
+
+    recentlyPurchased:[],
+
+    wishlist:[],
+
+    dislikes:[],
+
+    seasonalInterests:[],
+
+    updatedAt:null
+
+};
+
+// =====================================
+// LOAD MEMORY
+// =====================================
+
+async function loadShopperMemory(){
+
+    try{
+
+        const response=
+
+        await fetch(
+
+`${CONFIG.API_BASE}/api/customer/memory`,
+
+        {
+
+            method:"POST",
+
+            headers:{
+
+                "Content-Type":"application/json"
+
+            },
+
+            body:JSON.stringify({
+
+                visitorId:VISITOR.id
+
+            })
+
+        });
+
+        if(!response.ok) return;
+
+        const result=
+
+        await response.json();
+
+        if(!result.success) return;
+
+        Object.assign(
+
+            SHOPPER_MEMORY,
+
+            result.memory
+
+        );
+
+    }
+
+    catch(error){
+
+        console.error(error);
+
+    }
+
+}
+
+// =====================================
+// SAVE MEMORY
+// =====================================
+
+async function saveShopperMemory(){
+
+    SHOPPER_MEMORY.updatedAt=
+
+    new Date();
+
+    try{
+
+        await fetch(
+
+`${CONFIG.API_BASE}/api/customer/memory/save`,
+
+        {
+
+            method:"POST",
+
+            headers:{
+
+                "Content-Type":"application/json"
+
+            },
+
+            body:JSON.stringify({
+
+                visitorId:VISITOR.id,
+
+                memory:SHOPPER_MEMORY
+
+            })
+
+        });
+
+    }
+
+    catch(error){
+
+        console.error(error);
+
+    }
+
+}
+
+// =====================================
+// FAVORITES
+// =====================================
+
+function rememberCategory(category){
+
+    if(
+
+        !SHOPPER_MEMORY
+
+        .favoriteCategories
+
+        .includes(category)
+
+    ){
+
+        SHOPPER_MEMORY
+
+        .favoriteCategories
+
+        .push(category);
+
+    }
+
+}
+
+function rememberBrand(brand){
+
+    if(
+
+        !SHOPPER_MEMORY
+
+        .favoriteBrands
+
+        .includes(brand)
+
+    ){
+
+        SHOPPER_MEMORY
+
+        .favoriteBrands
+
+        .push(brand);
+
+    }
+
+}
+
+function rememberColor(color){
+
+    if(
+
+        !SHOPPER_MEMORY
+
+        .favoriteColors
+
+        .includes(color)
+
+    ){
+
+        SHOPPER_MEMORY
+
+        .favoriteColors
+
+        .push(color);
+
+    }
+
+}
+
+function rememberSize(size){
+
+    if(
+
+        !SHOPPER_MEMORY
+
+        .favoriteSizes
+
+        .includes(size)
+
+    ){
+
+        SHOPPER_MEMORY
+
+        .favoriteSizes
+
+        .push(size);
+
+    }
+
+}
+
+// =====================================
+// VIEW HISTORY
+// =====================================
+
+function rememberViewedProduct(product){
+
+    SHOPPER_MEMORY
+
+    .lastViewed.unshift({
+
+        id:product.id,
+
+        title:product.title,
+
+        viewedAt:new Date()
+
+    });
+
+    SHOPPER_MEMORY.lastViewed=
+
+    SHOPPER_MEMORY
+
+    .lastViewed
+
+    .slice(0,20);
+
+}
+
+// =====================================
+// PURCHASE HISTORY
+// =====================================
+
+function rememberPurchase(product){
+
+    SHOPPER_MEMORY
+
+    .recentlyPurchased.unshift({
+
+        id:product.id,
+
+        title:product.title,
+
+        purchasedAt:new Date()
+
+    });
+
+    SHOPPER_MEMORY
+
+    .recentlyPurchased=
+
+    SHOPPER_MEMORY
+
+    .recentlyPurchased
+
+    .slice(0,20);
+
+}
+
+// =====================================
+// WISHLIST
+// =====================================
+
+function addWishlist(product){
+
+    const exists=
+
+    SHOPPER_MEMORY
+
+    .wishlist.find(
+
+        p=>p.id===product.id
+
+    );
+
+    if(exists) return;
+
+    SHOPPER_MEMORY
+
+    .wishlist.push(product);
+
+}
+
+// =====================================
+// BUDGET
+// =====================================
+
+function updateBudget(price){
+
+    SHOPPER_MEMORY.preferredBudget=
+
+    price;
+
+}
+
+// =====================================
+// AI PERSONALIZATION
+// =====================================
+
+function personalizeRecommendations(products){
+
+    if(
+
+        !products ||
+
+        !products.length
+
+    ){
+
+        return products;
+
+    }
+
+    return products.sort(
+
+        (a,b)=>{
+
+            let scoreA=0;
+
+            let scoreB=0;
+
+            if(
+
+                SHOPPER_MEMORY
+
+                .favoriteBrands
+
+                .includes(a.vendor)
+
+            ){
+
+                scoreA+=10;
+
+            }
+
+            if(
+
+                SHOPPER_MEMORY
+
+                .favoriteBrands
+
+                .includes(b.vendor)
+
+            ){
+
+                scoreB+=10;
+
+            }
+
+            if(
+
+                SHOPPER_MEMORY
+
+                .favoriteCategories
+
+                .includes(a.type)
+
+            ){
+
+                scoreA+=8;
+
+            }
+
+            if(
+
+                SHOPPER_MEMORY
+
+                .favoriteCategories
+
+                .includes(b.type)
+
+            ){
+
+                scoreB+=8;
+
+            }
+
+            return scoreB-scoreA;
+
+        }
+
+    );
+
+}
+
+// =====================================
+// INITIALIZE
+// =====================================
+
+window.addEventListener(
+
+    "load",
+
+    ()=>{
+
+        loadShopperMemory();
+
+    }
+
+);
+
+// =====================================
+// AUTO SAVE
+// =====================================
+
+setInterval(
+
+    ()=>{
+
+        saveShopperMemory();
+
+    },
+
+    300000
+
+);
+
+// =====================================
+// NEXT
+// =====================================
+//
+// PART 31
+//
+// AI Lead Capture Engine
+//
+// • Smart Email Capture
+// • Smart Phone Capture
+// • Exit Lead Capture
+// • Newsletter AI
+// • Lead Qualification
+// • CRM Lead Sync
 
