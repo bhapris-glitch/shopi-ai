@@ -5042,3 +5042,1705 @@ STORE HEALTH
     font-weight:700;
 
     background:
+    radial-gradient(
+        circle,
+        rgba(29,192,113,.15),
+        transparent 70%
+    );
+
+    border:8px solid rgba(255,255,255,.08);
+
+    color:#1dc071;
+
+}
+
+
+/*==========================================================
+HEALTH METRICS
+==========================================================*/
+
+.lb-health-grid{
+
+    display:grid;
+
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+
+    gap:18px;
+
+}
+
+.lb-health-card{
+
+    padding:20px;
+
+    border-radius:20px;
+
+    background:#13253d;
+
+    border:1px solid rgba(255,255,255,.08);
+
+}
+
+.lb-health-label{
+
+    font-size:13px;
+
+    color:var(--lb-text-muted);
+
+}
+
+.lb-health-value{
+
+    margin-top:10px;
+
+    font-size:28px;
+
+    font-weight:700;
+
+    color:#fff;
+
+}
+
+.lb-health-status{
+
+    margin-top:10px;
+
+    display:inline-flex;
+
+    padding:6px 12px;
+
+    border-radius:999px;
+
+    font-size:12px;
+
+    font-weight:600;
+
+}
+
+.lb-health-status.good{
+
+    background:rgba(29,192,113,.12);
+
+    color:#1dc071;
+
+}
+
+.lb-health-status.warning{
+
+    background:rgba(255,193,7,.12);
+
+    color:#ffc107;
+
+}
+
+.lb-health-status.error{
+
+    background:rgba(255,82,82,.12);
+
+    color:#ff5252;
+
+}
+
+
+/*==========================================================
+RESPONSIVE
+==========================================================*/
+
+@media(max-width:768px){
+
+    .lb-health-header{
+
+        flex-direction:column;
+
+        gap:18px;
+
+        text-align:center;
+
+    }
+
+}
+/*==========================================================
+PART 11
+AI SALES DASHBOARD
+LIVE ANALYTICS
+FUNNEL
+REALTIME ACTIVITY
+==========================================================*/
+
+
+/*==========================================================
+DASHBOARD GRID
+==========================================================*/
+
+.lb-dashboard{
+
+    margin-top:28px;
+
+    display:grid;
+
+    grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+
+    gap:22px;
+
+}
+
+
+/*==========================================================
+KPI CARD
+==========================================================*/
+
+.lb-kpi{
+
+    position:relative;
+
+    overflow:hidden;
+
+    padding:24px;
+
+    border-radius:24px;
+
+    background:rgba(255,255,255,.04);
+
+    border:1px solid rgba(255,255,255,.08);
+
+    transition:.30s;
+
+}
+
+.lb-kpi:hover{
+
+    transform:translateY(-5px);
+
+    border-color:var(--lb-primary);
+
+    box-shadow:0 20px 45px rgba(0,0,0,.30);
+
+}
+
+.lb-kpi-icon{
+
+    width:56px;
+
+    height:56px;
+
+    border-radius:18px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    background:rgba(255,122,0,.14);
+
+    font-size:24px;
+
+}
+
+.lb-kpi-title{
+
+    margin-top:18px;
+
+    color:var(--lb-text-muted);
+
+    font-size:13px;
+
+}
+
+.lb-kpi-value{
+
+    margin-top:8px;
+
+    font-size:34px;
+
+    font-weight:700;
+
+    color:#fff;
+
+}
+
+.lb-kpi-change{
+
+    margin-top:10px;
+
+    display:inline-flex;
+
+    align-items:center;
+
+    gap:8px;
+
+    padding:6px 12px;
+
+    border-radius:999px;
+
+    background:rgba(29,192,113,.14);
+
+    color:#1dc071;
+
+    font-size:12px;
+
+    font-weight:600;
+
+}
+
+
+/*==========================================================
+CONVERSATION ANALYTICS
+==========================================================*/
+
+.lb-conversation-card{
+
+    margin-top:28px;
+
+    padding:26px;
+
+    border-radius:26px;
+
+    background:#13253d;
+
+    border:1px solid rgba(255,255,255,.08);
+
+}
+
+.lb-conversation-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+}
+
+.lb-conversation-title{
+
+    font-size:18px;
+
+    font-weight:700;
+
+}
+
+.lb-conversation-list{
+
+    margin-top:22px;
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:18px;
+
+}
+
+.lb-conversation-item{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+}
+
+.lb-conversation-label{
+
+    color:var(--lb-text-light);
+
+}
+
+.lb-conversation-value{
+
+    font-weight:700;
+
+    color:#fff;
+
+}
+
+
+/*==========================================================
+PROGRESS BAR
+==========================================================*/
+
+.lb-progress-bar{
+
+    width:100%;
+
+    height:10px;
+
+    margin-top:10px;
+
+    overflow:hidden;
+
+    border-radius:999px;
+
+    background:rgba(255,255,255,.08);
+
+}
+
+.lb-progress-fill{
+
+    height:100%;
+
+    width:0;
+
+    border-radius:999px;
+
+    background:linear-gradient(
+
+        90deg,
+
+        var(--lb-primary),
+
+        var(--lb-primary-light)
+
+    );
+
+}
+
+
+/*==========================================================
+SALES FUNNEL
+==========================================================*/
+
+.lb-funnel{
+
+    margin-top:30px;
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:14px;
+
+}
+
+.lb-funnel-stage{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    padding:16px 20px;
+
+    border-radius:18px;
+
+    background:rgba(255,255,255,.04);
+
+}
+
+.lb-stage-name{
+
+    font-weight:600;
+
+}
+
+.lb-stage-value{
+
+    font-weight:700;
+
+}
+
+
+/*==========================================================
+LIVE VISITOR FEED
+==========================================================*/
+
+.lb-live-feed{
+
+    margin-top:28px;
+
+    border-radius:24px;
+
+    overflow:hidden;
+
+    border:1px solid rgba(255,255,255,.08);
+
+}
+
+.lb-live-item{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:16px;
+
+    padding:18px 22px;
+
+    border-bottom:1px solid rgba(255,255,255,.05);
+
+    background:rgba(255,255,255,.02);
+
+}
+
+.lb-live-item:last-child{
+
+    border-bottom:none;
+
+}
+
+.lb-live-avatar{
+
+    width:46px;
+
+    height:46px;
+
+    border-radius:50%;
+
+    background:#203a5a;
+
+}
+
+.lb-live-content{
+
+    flex:1;
+
+}
+
+.lb-live-event{
+
+    font-size:14px;
+
+    color:#fff;
+
+}
+
+.lb-live-time{
+
+    margin-top:4px;
+
+    font-size:12px;
+
+    color:var(--lb-text-muted);
+
+}
+
+.lb-live-status{
+
+    width:10px;
+
+    height:10px;
+
+    border-radius:50%;
+
+    background:#1dc071;
+
+    animation:lbPulseLive 1.8s infinite;
+
+}
+
+@keyframes lbPulseLive{
+
+    0%{
+
+        transform:scale(.8);
+
+        opacity:.7;
+
+    }
+
+    50%{
+
+        transform:scale(1.3);
+
+        opacity:1;
+
+    }
+
+    100%{
+
+        transform:scale(.8);
+
+        opacity:.7;
+
+    }
+
+}
+
+
+/*==========================================================
+AI PERFORMANCE SCORE
+==========================================================*/
+
+.lb-performance{
+
+    margin-top:30px;
+
+    display:grid;
+
+    grid-template-columns:repeat(2,1fr);
+
+    gap:20px;
+
+}
+
+.lb-performance-card{
+
+    padding:22px;
+
+    border-radius:22px;
+
+    background:#13253d;
+
+    border:1px solid rgba(255,255,255,.08);
+
+}
+
+.lb-performance-label{
+
+    color:var(--lb-text-muted);
+
+    font-size:13px;
+
+}
+
+.lb-performance-score{
+
+    margin-top:12px;
+
+    font-size:32px;
+
+    font-weight:700;
+
+}
+
+
+/*==========================================================
+SYSTEM STATUS
+==========================================================*/
+
+.lb-system-status{
+
+    margin-top:30px;
+
+    display:flex;
+
+    flex-wrap:wrap;
+
+    gap:14px;
+
+}
+
+.lb-status{
+
+    padding:10px 18px;
+
+    border-radius:999px;
+
+    background:rgba(255,255,255,.05);
+
+    font-size:13px;
+
+    font-weight:600;
+
+}
+
+.lb-status.online{
+
+    color:#1dc071;
+
+}
+
+.lb-status.warning{
+
+    color:#ffc107;
+
+}
+
+.lb-status.error{
+
+    color:#ff5252;
+
+}
+
+
+/*==========================================================
+RESPONSIVE
+==========================================================*/
+
+@media(max-width:768px){
+
+    .lb-dashboard{
+
+        grid-template-columns:1fr;
+
+    }
+
+    .lb-performance{
+
+        grid-template-columns:1fr;
+
+    }
+
+}
+  /*==========================================================
+PART 12
+BUSINESS INTELLIGENCE
+REVENUE DASHBOARD
+AI PERFORMANCE
+==========================================================*/
+
+
+/*==========================================================
+BUSINESS INTELLIGENCE
+==========================================================*/
+
+.lb-business{
+
+    margin-top:30px;
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:22px;
+
+}
+
+
+/*==========================================================
+SECTION HEADER
+==========================================================*/
+
+.lb-business-header{
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    gap:20px;
+
+}
+
+.lb-business-title{
+
+    font-size:22px;
+
+    font-weight:700;
+
+    color:#ffffff;
+
+}
+
+.lb-business-subtitle{
+
+    margin-top:6px;
+
+    font-size:14px;
+
+    color:var(--lb-text-muted);
+
+}
+
+
+/*==========================================================
+KPI GRID
+==========================================================*/
+
+.lb-kpi-grid{
+
+    display:grid;
+
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+
+    gap:20px;
+
+}
+
+.lb-kpi-card{
+
+    position:relative;
+
+    overflow:hidden;
+
+    padding:22px;
+
+    border-radius:22px;
+
+    background:rgba(255,255,255,.04);
+
+    border:1px solid rgba(255,255,255,.08);
+
+    transition:.30s;
+
+}
+
+.lb-kpi-card:hover{
+
+    transform:translateY(-4px);
+
+    border-color:var(--lb-primary);
+
+    box-shadow:0 20px 40px rgba(0,0,0,.28);
+
+}
+
+.lb-kpi-card::before{
+
+    content:"";
+
+    position:absolute;
+
+    top:0;
+
+    left:0;
+
+    width:5px;
+
+    height:100%;
+
+    background:linear-gradient(
+
+        180deg,
+
+        var(--lb-primary),
+
+        var(--lb-primary-light)
+
+    );
+
+}
+
+.lb-kpi-label{
+
+    font-size:13px;
+
+    color:var(--lb-text-muted);
+
+}
+
+.lb-kpi-number{
+
+    margin-top:10px;
+
+    font-size:34px;
+
+    font-weight:700;
+
+    color:#ffffff;
+
+}
+
+.lb-kpi-change{
+
+    margin-top:14px;
+
+    display:inline-flex;
+
+    align-items:center;
+
+    gap:8px;
+
+    padding:6px 12px;
+
+    border-radius:999px;
+
+    font-size:12px;
+
+    font-weight:600;
+
+}
+
+.lb-kpi-up{
+
+    color:#18d26b;
+
+    background:rgba(24,210,107,.12);
+
+}
+
+.lb-kpi-down{
+
+    color:#ff6b6b;
+
+    background:rgba(255,107,107,.12);
+
+}
+
+
+/*==========================================================
+REVENUE PANEL
+==========================================================*/
+
+.lb-revenue-panel{
+
+    padding:24px;
+
+    border-radius:24px;
+
+    background:#13253d;
+
+    border:1px solid rgba(255,255,255,.08);
+
+}
+
+.lb-revenue-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:24px;
+
+}
+
+.lb-revenue-title{
+
+    font-size:18px;
+
+    font-weight:700;
+
+}
+
+.lb-revenue-period{
+
+    padding:8px 14px;
+
+    border-radius:999px;
+
+    background:rgba(255,255,255,.06);
+
+    font-size:12px;
+
+}
+
+
+/*==========================================================
+CHART PLACEHOLDER
+==========================================================*/
+
+.lb-chart{
+
+    width:100%;
+
+    height:260px;
+
+    border-radius:18px;
+
+    background:linear-gradient(
+
+        180deg,
+
+        rgba(255,255,255,.05),
+
+        rgba(255,255,255,.02)
+
+    );
+
+    border:1px solid rgba(255,255,255,.06);
+
+    position:relative;
+
+    overflow:hidden;
+
+}
+
+.lb-chart::before{
+
+    content:"";
+
+    position:absolute;
+
+    inset:0;
+
+    background-image:
+
+        linear-gradient(rgba(255,255,255,.05) 1px, transparent 1px),
+
+        linear-gradient(90deg, rgba(255,255,255,.05) 1px, transparent 1px);
+
+    background-size:40px 40px;
+
+}
+
+
+/*==========================================================
+AI CONFIDENCE
+==========================================================*/
+
+.lb-confidence{
+
+    display:grid;
+
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+
+    gap:20px;
+
+    margin-top:24px;
+
+}
+
+.lb-confidence-card{
+
+    padding:22px;
+
+    border-radius:22px;
+
+    background:#13253d;
+
+    border:1px solid rgba(255,255,255,.08);
+
+}
+
+.lb-confidence-title{
+
+    font-size:15px;
+
+    font-weight:600;
+
+    color:#ffffff;
+
+}
+
+.lb-confidence-value{
+
+    margin-top:14px;
+
+    font-size:32px;
+
+    font-weight:700;
+
+}
+
+.lb-confidence-good{
+
+    color:#18d26b;
+
+}
+
+.lb-confidence-medium{
+
+    color:#ffc107;
+
+}
+
+.lb-confidence-low{
+
+    color:#ff6b6b;
+
+}
+
+
+/*==========================================================
+CUSTOMER SATISFACTION
+==========================================================*/
+
+.lb-csat{
+
+    margin-top:26px;
+
+    padding:24px;
+
+    border-radius:24px;
+
+    background:rgba(255,255,255,.04);
+
+    border:1px solid rgba(255,255,255,.08);
+
+}
+
+.lb-csat-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+}
+
+.lb-csat-score{
+
+    font-size:42px;
+
+    font-weight:700;
+
+    color:#18d26b;
+
+}
+
+.lb-stars-row{
+
+    display:flex;
+
+    gap:6px;
+
+    margin-top:12px;
+
+    font-size:20px;
+
+    color:#ffcc33;
+
+}
+
+
+/*==========================================================
+SALES PERFORMANCE
+==========================================================*/
+
+.lb-sales-performance{
+
+    margin-top:26px;
+
+    display:grid;
+
+    grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+
+    gap:18px;
+
+}
+
+.lb-performance-box{
+
+    padding:20px;
+
+    border-radius:20px;
+
+    background:#162a47;
+
+    border:1px solid rgba(255,255,255,.08);
+
+    text-align:center;
+
+}
+
+.lb-performance-number{
+
+    font-size:30px;
+
+    font-weight:700;
+
+}
+
+.lb-performance-label{
+
+    margin-top:8px;
+
+    font-size:13px;
+
+    color:var(--lb-text-muted);
+
+}
+
+
+/*==========================================================
+TREND INDICATOR
+==========================================================*/
+
+.lb-trend{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    gap:8px;
+
+    margin-top:12px;
+
+    padding:6px 12px;
+
+    border-radius:999px;
+
+    background:rgba(255,255,255,.06);
+
+    font-size:12px;
+
+    font-weight:600;
+
+}
+
+.lb-trend-positive{
+
+    color:#18d26b;
+
+}
+
+.lb-trend-negative{
+
+    color:#ff6b6b;
+
+}
+
+
+/*==========================================================
+RESPONSIVE
+==========================================================*/
+
+@media(max-width:768px){
+
+    .lb-business-header{
+
+        flex-direction:column;
+
+        align-items:flex-start;
+
+    }
+
+    .lb-revenue-header{
+
+        flex-direction:column;
+
+        align-items:flex-start;
+
+        gap:12px;
+
+    }
+
+    .lb-sales-performance{
+
+        grid-template-columns:1fr;
+
+    }
+
+}
+
+
+/*==========================================================
+END OF PART 12
+==========================================================*/
+/*==========================================================
+PART 13
+AI TRAINING CENTER
+KNOWLEDGE BASE
+SYNC ENGINE
+==========================================================*/
+
+
+/*==========================================================
+TRAINING CENTER
+==========================================================*/
+
+.lb-training-center{
+
+    margin-top:30px;
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:24px;
+
+}
+
+.lb-training-header{
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    gap:20px;
+
+}
+
+.lb-training-heading{
+
+    font-size:22px;
+
+    font-weight:700;
+
+    color:#ffffff;
+
+}
+
+.lb-training-description{
+
+    margin-top:6px;
+
+    color:var(--lb-text-muted);
+
+    line-height:1.7;
+
+}
+
+
+/*==========================================================
+KNOWLEDGE SEARCH
+==========================================================*/
+
+.lb-knowledge-search{
+
+    position:relative;
+
+    width:100%;
+
+}
+
+.lb-knowledge-search input{
+
+    width:100%;
+
+    height:54px;
+
+    padding:0 56px 0 18px;
+
+    border-radius:18px;
+
+    background:#13253d;
+
+    border:1px solid rgba(255,255,255,.08);
+
+    color:#ffffff;
+
+    transition:.30s;
+
+}
+
+.lb-knowledge-search input:focus{
+
+    border-color:var(--lb-primary);
+
+    box-shadow:0 0 0 4px rgba(255,122,0,.12);
+
+}
+
+.lb-search-icon{
+
+    position:absolute;
+
+    right:18px;
+
+    top:50%;
+
+    transform:translateY(-50%);
+
+    opacity:.7;
+
+}
+
+
+/*==========================================================
+KNOWLEDGE GRID
+==========================================================*/
+
+.lb-knowledge-grid{
+
+    display:grid;
+
+    grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+
+    gap:20px;
+
+}
+
+.lb-knowledge-card{
+
+    padding:22px;
+
+    border-radius:22px;
+
+    background:rgba(255,255,255,.04);
+
+    border:1px solid rgba(255,255,255,.08);
+
+    transition:.30s;
+
+}
+
+.lb-knowledge-card:hover{
+
+    transform:translateY(-4px);
+
+    border-color:var(--lb-primary);
+
+}
+
+.lb-knowledge-icon{
+
+    width:58px;
+
+    height:58px;
+
+    border-radius:18px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    background:rgba(255,122,0,.12);
+
+    font-size:24px;
+
+}
+
+.lb-knowledge-title{
+
+    margin-top:18px;
+
+    font-size:17px;
+
+    font-weight:700;
+
+}
+
+.lb-knowledge-text{
+
+    margin-top:10px;
+
+    line-height:1.8;
+
+    color:var(--lb-text-muted);
+
+}
+
+
+/*==========================================================
+DOCUMENT LIST
+==========================================================*/
+
+.lb-document-list{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:14px;
+
+}
+
+.lb-document{
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    padding:18px;
+
+    border-radius:18px;
+
+    background:#162a47;
+
+    border:1px solid rgba(255,255,255,.06);
+
+}
+
+.lb-document-name{
+
+    font-weight:600;
+
+}
+
+.lb-document-size{
+
+    font-size:12px;
+
+    color:var(--lb-text-muted);
+
+}
+
+
+/*==========================================================
+SYNC STATUS
+==========================================================*/
+
+.lb-sync{
+
+    margin-top:10px;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
+}
+
+.lb-sync-dot{
+
+    width:10px;
+
+    height:10px;
+
+    border-radius:50%;
+
+    background:#18d26b;
+
+    animation:lbSyncPulse 1.8s infinite;
+
+}
+
+@keyframes lbSyncPulse{
+
+    0%{
+
+        transform:scale(.8);
+
+        opacity:.5;
+
+    }
+
+    50%{
+
+        transform:scale(1.35);
+
+        opacity:1;
+
+    }
+
+    100%{
+
+        transform:scale(.8);
+
+        opacity:.5;
+
+    }
+
+}
+
+.lb-sync-text{
+
+    font-size:13px;
+
+    color:#18d26b;
+
+}
+
+
+/*==========================================================
+TRAINING PROGRESS
+==========================================================*/
+
+.lb-training-progress{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:18px;
+
+}
+
+.lb-training-row{
+
+    display:grid;
+
+    grid-template-columns:160px 1fr 70px;
+
+    align-items:center;
+
+    gap:18px;
+
+}
+
+.lb-training-label{
+
+    font-size:14px;
+
+    font-weight:600;
+
+}
+
+.lb-training-bar{
+
+    height:10px;
+
+    overflow:hidden;
+
+    border-radius:999px;
+
+    background:rgba(255,255,255,.08);
+
+}
+
+.lb-training-fill{
+
+    height:100%;
+
+    width:0;
+
+    border-radius:999px;
+
+    background:linear-gradient(
+        90deg,
+        var(--lb-primary),
+        var(--lb-primary-light)
+    );
+
+}
+
+.lb-training-percent{
+
+    text-align:right;
+
+    font-weight:700;
+
+}
+
+
+/*==========================================================
+TRAINING TIMELINE
+==========================================================*/
+
+.lb-training-timeline{
+
+    position:relative;
+
+    margin-top:18px;
+
+    padding-left:32px;
+
+}
+
+.lb-training-timeline::before{
+
+    content:"";
+
+    position:absolute;
+
+    left:8px;
+
+    top:0;
+
+    bottom:0;
+
+    width:2px;
+
+    background:rgba(255,255,255,.10);
+
+}
+
+.lb-training-step{
+
+    position:relative;
+
+    margin-bottom:26px;
+
+}
+
+.lb-training-step:last-child{
+
+    margin-bottom:0;
+
+}
+
+.lb-training-step::before{
+
+    content:"";
+
+    position:absolute;
+
+    left:-28px;
+
+    top:6px;
+
+    width:14px;
+
+    height:14px;
+
+    border-radius:50%;
+
+    background:var(--lb-primary);
+
+}
+
+.lb-training-time{
+
+    font-size:12px;
+
+    color:var(--lb-text-muted);
+
+}
+
+.lb-training-event{
+
+    margin-top:4px;
+
+    line-height:1.7;
+
+}
+
+
+/*==========================================================
+IMPORT EXPORT
+==========================================================*/
+
+.lb-import-export{
+
+    display:flex;
+
+    gap:14px;
+
+    flex-wrap:wrap;
+
+}
+
+.lb-import-btn,
+.lb-export-btn{
+
+    padding:14px 22px;
+
+    border-radius:16px;
+
+    font-weight:600;
+
+    transition:.30s;
+
+}
+
+.lb-import-btn{
+
+    background:var(--lb-primary);
+
+    color:#000;
+
+}
+
+.lb-export-btn{
+
+    background:#162a47;
+
+    color:#ffffff;
+
+}
+
+.lb-import-btn:hover,
+.lb-export-btn:hover{
+
+    transform:translateY(-2px);
+
+}
+
+
+/*==========================================================
+RESPONSIVE
+==========================================================*/
+
+@media(max-width:768px){
+
+    .lb-training-header{
+
+        flex-direction:column;
+
+        align-items:flex-start;
+
+    }
+
+    .lb-training-row{
+
+        grid-template-columns:1fr;
+
+    }
+
+    .lb-import-export{
+
+        flex-direction:column;
+
+    }
+
+}
+
+
+/*==========================================================
+END OF PART 13
+==========================================================*/
