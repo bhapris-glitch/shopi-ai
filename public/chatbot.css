@@ -436,3 +436,4609 @@ ANIMATIONS
     }
 
 }
+/*==========================================================
+PART 2
+FLOATING LAUNCHER
+WELCOME POPUP
+==========================================================*/
+
+
+/*==========================================================
+WIDGET CONTAINER
+==========================================================*/
+
+.lb-widget{
+
+    position:fixed;
+
+    right:24px;
+
+    bottom:24px;
+
+    z-index:var(--lb-z);
+
+    display:flex;
+
+    flex-direction:column;
+
+    align-items:flex-end;
+
+    pointer-events:none;
+
+}
+
+.lb-widget>*{
+
+    pointer-events:auto;
+
+}
+
+
+/*==========================================================
+FLOATING CHAT BUTTON
+==========================================================*/
+
+.lb-launcher{
+
+    position:relative;
+
+    width:72px;
+
+    height:72px;
+
+    border-radius:50%;
+
+    background:linear-gradient(
+        135deg,
+        var(--lb-primary),
+        var(--lb-primary-light)
+    );
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    cursor:pointer;
+
+    overflow:hidden;
+
+    box-shadow:
+        0 18px 45px rgba(0,0,0,.30),
+        0 0 0 5px rgba(255,255,255,.05);
+
+    transition:
+        transform .30s,
+        box-shadow .30s;
+
+    animation:
+        lbFloat 5s ease-in-out infinite;
+
+}
+
+.lb-launcher:hover{
+
+    transform:
+        translateY(-4px)
+        scale(1.04);
+
+    box-shadow:
+        0 24px 60px rgba(0,0,0,.38),
+        0 0 0 8px rgba(255,255,255,.06);
+
+}
+
+.lb-launcher:active{
+
+    transform:scale(.96);
+
+}
+
+.lb-launcher img{
+
+    width:100%;
+
+    height:100%;
+
+    object-fit:cover;
+
+    border-radius:50%;
+
+}
+
+
+/*==========================================================
+ONLINE RING
+==========================================================*/
+
+.lb-online-ring{
+
+    position:absolute;
+
+    inset:-3px;
+
+    border-radius:50%;
+
+    border:2px solid
+        rgba(255,255,255,.28);
+
+    animation:
+        lbPulse 2.2s infinite;
+
+}
+
+.lb-online-dot{
+
+    position:absolute;
+
+    width:16px;
+
+    height:16px;
+
+    border-radius:50%;
+
+    background:#1dc071;
+
+    right:6px;
+
+    bottom:8px;
+
+    border:3px solid #fff;
+
+    box-shadow:
+        0 0 16px #1dc071;
+
+}
+
+
+/*==========================================================
+NOTIFICATION BADGE
+==========================================================*/
+
+.lb-badge{
+
+    position:absolute;
+
+    top:-2px;
+
+    right:-2px;
+
+    min-width:24px;
+
+    height:24px;
+
+    padding:0 6px;
+
+    border-radius:999px;
+
+    background:#ff3d3d;
+
+    color:#fff;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    font-size:11px;
+
+    font-weight:700;
+
+    box-shadow:
+        0 10px 25px rgba(255,0,0,.35);
+
+}
+
+
+/*==========================================================
+PING EFFECT
+==========================================================*/
+
+.lb-launcher::before{
+
+    content:"";
+
+    position:absolute;
+
+    inset:0;
+
+    border-radius:50%;
+
+    border:2px solid
+        rgba(255,255,255,.35);
+
+    animation:
+        lbPing 2.6s infinite;
+
+}
+
+@keyframes lbPing{
+
+    from{
+
+        transform:scale(1);
+
+        opacity:.7;
+
+    }
+
+    to{
+
+        transform:scale(1.65);
+
+        opacity:0;
+
+    }
+
+}
+
+
+/*==========================================================
+WELCOME POPUP
+==========================================================*/
+
+.lb-welcome{
+
+    width:360px;
+
+    margin-bottom:18px;
+
+    overflow:hidden;
+
+    border-radius:28px;
+
+    animation:
+        lbSlideUp .45s ease;
+
+    background:
+        rgba(10,20,34,.95);
+
+    border:
+        1px solid rgba(255,255,255,.08);
+
+    backdrop-filter:
+        blur(22px);
+
+    box-shadow:
+        0 25px 70px rgba(0,0,0,.35);
+
+}
+
+
+/*==========================================================
+HEADER
+==========================================================*/
+
+.lb-welcome-top{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:16px;
+
+    padding:22px;
+
+}
+
+.lb-avatar{
+
+    width:64px;
+
+    height:64px;
+
+    border-radius:50%;
+
+    overflow:hidden;
+
+    flex-shrink:0;
+
+    background:#fff;
+
+}
+
+.lb-avatar img{
+
+    width:100%;
+
+    height:100%;
+
+    object-fit:cover;
+
+}
+
+.lb-avatar-info{
+
+    flex:1;
+
+}
+
+.lb-avatar-name{
+
+    font-size:18px;
+
+    font-weight:700;
+
+    color:#fff;
+
+}
+
+.lb-avatar-role{
+
+    margin-top:4px;
+
+    color:var(--lb-text-muted);
+
+    font-size:13px;
+
+}
+
+.lb-status{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:8px;
+
+    margin-top:8px;
+
+    font-size:12px;
+
+    color:#84ffc2;
+
+}
+
+.lb-status span{
+
+    width:8px;
+
+    height:8px;
+
+    border-radius:50%;
+
+    background:#1dc071;
+
+}
+
+
+/*==========================================================
+MESSAGE
+==========================================================*/
+
+.lb-welcome-body{
+
+    padding:
+
+        0 22px
+        22px;
+
+}
+
+.lb-welcome-title{
+
+    font-size:20px;
+
+    font-weight:700;
+
+    margin-bottom:12px;
+
+}
+
+.lb-welcome-text{
+
+    color:var(--lb-text-light);
+
+    line-height:1.75;
+
+    font-size:14px;
+
+}
+
+
+/*==========================================================
+QUICK ACTIONS
+==========================================================*/
+
+.lb-welcome-actions{
+
+    display:flex;
+
+    flex-wrap:wrap;
+
+    gap:12px;
+
+    margin-top:22px;
+
+}
+
+.lb-chip{
+
+    padding:
+
+        10px 16px;
+
+    border-radius:999px;
+
+    background:
+        rgba(255,255,255,.06);
+
+    border:
+        1px solid rgba(255,255,255,.08);
+
+    color:#fff;
+
+    cursor:pointer;
+
+    transition:.25s;
+
+    font-size:13px;
+
+    font-weight:500;
+
+}
+
+.lb-chip:hover{
+
+    background:
+
+        linear-gradient(
+            135deg,
+            var(--lb-primary),
+            var(--lb-primary-light)
+        );
+
+    color:#000;
+
+}
+
+
+/*==========================================================
+START BUTTON
+==========================================================*/
+
+.lb-start-btn{
+
+    width:100%;
+
+    margin-top:24px;
+
+    padding:16px;
+
+    border-radius:18px;
+
+    background:
+
+        linear-gradient(
+            135deg,
+            var(--lb-primary),
+            var(--lb-primary-light)
+        );
+
+    color:#000;
+
+    font-size:15px;
+
+    font-weight:700;
+
+    transition:.30s;
+
+}
+
+.lb-start-btn:hover{
+
+    transform:translateY(-2px);
+
+}
+
+
+/*==========================================================
+CLOSE BUTTON
+==========================================================*/
+
+.lb-close{
+
+    position:absolute;
+
+    top:14px;
+
+    right:14px;
+
+    width:36px;
+
+    height:36px;
+
+    border-radius:50%;
+
+    background:
+        rgba(255,255,255,.06);
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    cursor:pointer;
+
+    transition:.25s;
+
+}
+
+.lb-close:hover{
+
+    background:
+        rgba(255,255,255,.12);
+
+}
+
+
+/*==========================================================
+MORPH TO CHAT
+==========================================================*/
+
+.lb-morph{
+
+    animation:
+        lbMorph .55s ease forwards;
+
+}
+
+@keyframes lbMorph{
+
+    from{
+
+        opacity:1;
+
+        transform:
+            translateY(0)
+            scale(1);
+
+    }
+
+    to{
+
+        opacity:0;
+
+        transform:
+            translateY(30px)
+            scale(.82);
+
+    }
+
+}
+
+
+/*==========================================================
+RESPONSIVE
+==========================================================*/
+
+@media (max-width:768px){
+
+    .lb-widget{
+
+        right:16px;
+
+        bottom:16px;
+
+    }
+
+    .lb-launcher{
+
+        width:64px;
+
+        height:64px;
+
+    }
+
+    .lb-welcome{
+
+        width:calc(100vw - 32px);
+
+        max-width:360px;
+
+    }
+
+  }
+/*==========================================================
+PART 3
+MAIN CHAT WINDOW
+HEADER
+CONVERSATION LAYOUT
+==========================================================*/
+
+
+/*==========================================================
+CHAT WINDOW
+==========================================================*/
+
+.lb-chat{
+
+    position:relative;
+
+    width:var(--lb-chat-width);
+
+    height:var(--lb-chat-height);
+
+    display:flex;
+
+    flex-direction:column;
+
+    overflow:hidden;
+
+    border-radius:30px;
+
+    background:rgba(8,19,33,.97);
+
+    backdrop-filter:blur(24px);
+
+    -webkit-backdrop-filter:blur(24px);
+
+    border:1px solid rgba(255,255,255,.08);
+
+    box-shadow:
+        0 35px 80px rgba(0,0,0,.45);
+
+    animation:
+        lbScale .35s ease;
+
+}
+
+.lb-chat-hidden{
+
+    display:none;
+
+}
+
+
+/*==========================================================
+HEADER
+==========================================================*/
+
+.lb-chat-header{
+
+    position:relative;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    padding:18px 20px;
+
+    background:
+
+        linear-gradient(
+            135deg,
+            rgba(255,255,255,.05),
+            rgba(255,255,255,.02)
+        );
+
+    border-bottom:
+
+        1px solid rgba(255,255,255,.08);
+
+}
+
+
+/*==========================================================
+LEFT
+==========================================================*/
+
+.lb-header-left{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:14px;
+
+    flex:1;
+
+}
+
+.lb-header-avatar{
+
+    position:relative;
+
+    width:56px;
+
+    height:56px;
+
+    border-radius:50%;
+
+    overflow:hidden;
+
+    background:#fff;
+
+    flex-shrink:0;
+
+}
+
+.lb-header-avatar img{
+
+    width:100%;
+
+    height:100%;
+
+    object-fit:cover;
+
+}
+
+.lb-header-avatar::after{
+
+    content:"";
+
+    position:absolute;
+
+    right:3px;
+
+    bottom:3px;
+
+    width:12px;
+
+    height:12px;
+
+    border-radius:50%;
+
+    background:#1dc071;
+
+    border:2px solid #fff;
+
+}
+
+
+/*==========================================================
+PROFILE
+==========================================================*/
+
+.lb-agent{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:4px;
+
+}
+
+.lb-agent-name{
+
+    font-size:16px;
+
+    font-weight:700;
+
+    color:#fff;
+
+}
+
+.lb-agent-role{
+
+    font-size:12px;
+
+    color:var(--lb-text-muted);
+
+}
+
+.lb-agent-status{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:6px;
+
+    color:#8cffbc;
+
+    font-size:12px;
+
+}
+
+.lb-agent-status::before{
+
+    content:"";
+
+    width:8px;
+
+    height:8px;
+
+    border-radius:50%;
+
+    background:#1dc071;
+
+    box-shadow:
+        0 0 12px #1dc071;
+
+}
+
+
+/*==========================================================
+HEADER ACTIONS
+==========================================================*/
+
+.lb-header-actions{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
+}
+
+.lb-header-btn{
+
+    width:40px;
+
+    height:40px;
+
+    border-radius:14px;
+
+    background:rgba(255,255,255,.05);
+
+    color:#fff;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    transition:.25s;
+
+}
+
+.lb-header-btn:hover{
+
+    background:rgba(255,255,255,.12);
+
+    transform:translateY(-2px);
+
+}
+
+
+/*==========================================================
+SALE BADGE
+==========================================================*/
+
+.lb-sale-badge{
+
+    position:absolute;
+
+    top:16px;
+
+    left:50%;
+
+    transform:translateX(-50%);
+
+    padding:8px 16px;
+
+    border-radius:999px;
+
+    background:
+
+        linear-gradient(
+            90deg,
+            var(--lb-primary),
+            var(--lb-primary-light)
+        );
+
+    color:#000;
+
+    font-size:11px;
+
+    font-weight:700;
+
+    box-shadow:
+        0 10px 25px rgba(255,122,0,.35);
+
+}
+
+
+/*==========================================================
+CHAT BODY
+==========================================================*/
+
+.lb-chat-body{
+
+    flex:1;
+
+    overflow-y:auto;
+
+    overflow-x:hidden;
+
+    padding:22px;
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:16px;
+
+    background:
+
+        radial-gradient(
+            circle at top,
+            rgba(255,255,255,.02),
+            transparent 60%
+        );
+
+}
+
+
+/*==========================================================
+DAY DIVIDER
+==========================================================*/
+
+.lb-divider{
+
+    align-self:center;
+
+    padding:7px 16px;
+
+    border-radius:999px;
+
+    background:rgba(255,255,255,.05);
+
+    color:var(--lb-text-muted);
+
+    font-size:11px;
+
+    font-weight:600;
+
+}
+
+
+/*==========================================================
+MESSAGE ROW
+==========================================================*/
+
+.lb-row{
+
+    display:flex;
+
+    align-items:flex-end;
+
+    gap:10px;
+
+}
+
+.lb-row-user{
+
+    justify-content:flex-end;
+
+}
+
+.lb-row-agent{
+
+    justify-content:flex-start;
+
+}
+
+
+/*==========================================================
+MESSAGE AVATAR
+==========================================================*/
+
+.lb-msg-avatar{
+
+    width:36px;
+
+    height:36px;
+
+    border-radius:50%;
+
+    overflow:hidden;
+
+    flex-shrink:0;
+
+}
+
+.lb-msg-avatar img{
+
+    width:100%;
+
+    height:100%;
+
+    object-fit:cover;
+
+}
+
+
+/*==========================================================
+MESSAGE WRAPPER
+==========================================================*/
+
+.lb-message-wrap{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:5px;
+
+    max-width:78%;
+
+}
+
+
+/*==========================================================
+NAME
+==========================================================*/
+
+.lb-name{
+
+    font-size:12px;
+
+    color:var(--lb-text-muted);
+
+    padding:0 6px;
+
+}
+
+
+/*==========================================================
+MESSAGE BUBBLE
+==========================================================*/
+
+.lb-bubble{
+
+    position:relative;
+
+    padding:14px 18px;
+
+    border-radius:20px;
+
+    line-height:1.75;
+
+    font-size:14px;
+
+    word-break:break-word;
+
+    animation:lbFade .25s ease;
+
+}
+
+.lb-bubble-agent{
+
+    background:#13253e;
+
+    color:#fff;
+
+    border-top-left-radius:8px;
+
+    border:
+        1px solid rgba(255,255,255,.05);
+
+}
+
+.lb-bubble-user{
+
+    background:
+
+        linear-gradient(
+            135deg,
+            var(--lb-primary),
+            var(--lb-primary-light)
+        );
+
+    color:#000;
+
+    border-top-right-radius:8px;
+
+    font-weight:500;
+
+}
+
+
+/*==========================================================
+TIME
+==========================================================*/
+
+.lb-time{
+
+    font-size:11px;
+
+    color:#8e98a7;
+
+    padding:0 8px;
+
+}
+
+.lb-time-user{
+
+    text-align:right;
+
+}
+
+
+/*==========================================================
+READ STATUS
+==========================================================*/
+
+.lb-read{
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:flex-end;
+
+    gap:5px;
+
+    font-size:10px;
+
+    color:#7db7ff;
+
+}
+
+
+/*==========================================================
+SCROLL TO BOTTOM
+==========================================================*/
+
+.lb-scroll-bottom{
+
+    position:absolute;
+
+    right:18px;
+
+    bottom:95px;
+
+    width:46px;
+
+    height:46px;
+
+    border-radius:50%;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    background:rgba(17,31,52,.92);
+
+    color:#fff;
+
+    border:1px solid rgba(255,255,255,.08);
+
+    box-shadow:
+
+        0 12px 30px rgba(0,0,0,.25);
+
+    cursor:pointer;
+
+    transition:.25s;
+
+}
+
+.lb-scroll-bottom:hover{
+
+    transform:translateY(-2px);
+
+}
+
+
+/*==========================================================
+RESPONSIVE
+==========================================================*/
+
+@media(max-width:768px){
+
+    .lb-chat{
+
+        width:100vw;
+
+        height:100dvh;
+
+        max-height:100dvh;
+
+        border-radius:0;
+
+        right:0;
+
+        bottom:0;
+
+    }
+
+    .lb-message-wrap{
+
+        max-width:90%;
+
+    }
+
+  }
+/*==========================================================
+PART 4
+MESSAGE COMPOSER
+VOICE
+UPLOAD
+SUGGESTION CHIPS
+==========================================================*/
+
+
+/*==========================================================
+FOOTER
+==========================================================*/
+
+.lb-chat-footer{
+
+    position:relative;
+
+    padding:18px;
+
+    background:
+        rgba(9,18,31,.96);
+
+    border-top:
+        1px solid rgba(255,255,255,.08);
+
+}
+
+
+/*==========================================================
+SUGGESTION CHIPS
+==========================================================*/
+
+.lb-suggestions{
+
+    display:flex;
+
+    gap:10px;
+
+    overflow-x:auto;
+
+    overflow-y:hidden;
+
+    padding-bottom:14px;
+
+    scrollbar-width:none;
+
+}
+
+.lb-suggestions::-webkit-scrollbar{
+
+    display:none;
+
+}
+
+.lb-suggestion{
+
+    flex:none;
+
+    padding:10px 18px;
+
+    border-radius:999px;
+
+    background:
+        rgba(255,255,255,.05);
+
+    border:
+        1px solid rgba(255,255,255,.08);
+
+    color:#fff;
+
+    font-size:13px;
+
+    font-weight:500;
+
+    white-space:nowrap;
+
+    cursor:pointer;
+
+    transition:.28s;
+
+}
+
+.lb-suggestion:hover{
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--lb-primary),
+            var(--lb-primary-light)
+        );
+
+    color:#000;
+
+    transform:translateY(-2px);
+
+}
+
+
+/*==========================================================
+INPUT CONTAINER
+==========================================================*/
+
+.lb-composer{
+
+    display:flex;
+
+    align-items:flex-end;
+
+    gap:12px;
+
+    background:
+        rgba(255,255,255,.04);
+
+    border:
+        1px solid rgba(255,255,255,.08);
+
+    border-radius:24px;
+
+    padding:12px;
+
+    transition:.25s;
+
+}
+
+.lb-composer:focus-within{
+
+    border-color:
+        var(--lb-primary);
+
+    box-shadow:
+        0 0 0 4px rgba(255,122,0,.10);
+
+}
+
+
+/*==========================================================
+LEFT ACTIONS
+==========================================================*/
+
+.lb-tools{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:8px;
+
+}
+
+.lb-tool{
+
+    width:42px;
+
+    height:42px;
+
+    border-radius:14px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    background:
+        rgba(255,255,255,.05);
+
+    color:#fff;
+
+    cursor:pointer;
+
+    transition:.25s;
+
+    flex-shrink:0;
+
+}
+
+.lb-tool:hover{
+
+    background:
+        rgba(255,255,255,.10);
+
+    transform:translateY(-2px);
+
+}
+
+.lb-tool svg{
+
+    width:20px;
+
+    height:20px;
+
+}
+
+
+/*==========================================================
+TEXTAREA
+==========================================================*/
+
+.lb-input{
+
+    flex:1;
+
+    min-height:46px;
+
+    max-height:140px;
+
+    resize:none;
+
+    overflow-y:auto;
+
+    background:transparent;
+
+    color:#fff;
+
+    font-size:14px;
+
+    line-height:1.7;
+
+    padding:12px 6px;
+
+    border:none;
+
+    outline:none;
+
+    font-family:inherit;
+
+}
+
+.lb-input::placeholder{
+
+    color:#96a1b4;
+
+}
+
+
+/*==========================================================
+SEND BUTTON
+==========================================================*/
+
+.lb-send{
+
+    width:52px;
+
+    height:52px;
+
+    border-radius:18px;
+
+    flex-shrink:0;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--lb-primary),
+            var(--lb-primary-light)
+        );
+
+    color:#000;
+
+    transition:.25s;
+
+    box-shadow:
+        0 10px 24px rgba(255,122,0,.30);
+
+}
+
+.lb-send:hover{
+
+    transform:
+        translateY(-2px)
+        scale(1.03);
+
+}
+
+.lb-send:active{
+
+    transform:
+        scale(.96);
+
+}
+
+
+/*==========================================================
+VOICE MODE
+==========================================================*/
+
+.lb-voice-active{
+
+    border-color:
+        var(--lb-danger);
+
+}
+
+.lb-voice-active .lb-send{
+
+    background:
+        linear-gradient(
+            135deg,
+            #ff5252,
+            #ff8a80
+        );
+
+}
+
+
+/*==========================================================
+VOICE WAVE
+==========================================================*/
+
+.lb-wave{
+
+    display:flex;
+
+    align-items:flex-end;
+
+    gap:4px;
+
+    height:22px;
+
+}
+
+.lb-wave span{
+
+    width:4px;
+
+    border-radius:20px;
+
+    background:var(--lb-primary);
+
+    animation:
+        lbVoiceWave 1s infinite;
+
+}
+
+.lb-wave span:nth-child(1){
+
+    height:8px;
+
+}
+
+.lb-wave span:nth-child(2){
+
+    height:18px;
+
+    animation-delay:.1s;
+
+}
+
+.lb-wave span:nth-child(3){
+
+    height:12px;
+
+    animation-delay:.2s;
+
+}
+
+.lb-wave span:nth-child(4){
+
+    height:20px;
+
+    animation-delay:.3s;
+
+}
+
+.lb-wave span:nth-child(5){
+
+    height:14px;
+
+    animation-delay:.4s;
+
+}
+
+@keyframes lbVoiceWave{
+
+    0%{
+
+        transform:scaleY(.4);
+
+    }
+
+    50%{
+
+        transform:scaleY(1);
+
+    }
+
+    100%{
+
+        transform:scaleY(.4);
+
+    }
+
+}
+
+
+/*==========================================================
+IMAGE PREVIEW
+==========================================================*/
+
+.lb-preview{
+
+    display:flex;
+
+    gap:12px;
+
+    overflow-x:auto;
+
+    margin-bottom:14px;
+
+}
+
+.lb-preview-item{
+
+    position:relative;
+
+    width:72px;
+
+    height:72px;
+
+    flex:none;
+
+    border-radius:18px;
+
+    overflow:hidden;
+
+    border:
+        1px solid rgba(255,255,255,.08);
+
+}
+
+.lb-preview-item img{
+
+    width:100%;
+
+    height:100%;
+
+    object-fit:cover;
+
+}
+
+.lb-preview-remove{
+
+    position:absolute;
+
+    top:6px;
+
+    right:6px;
+
+    width:22px;
+
+    height:22px;
+
+    border-radius:50%;
+
+    background:
+        rgba(0,0,0,.65);
+
+    color:#fff;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    cursor:pointer;
+
+    font-size:12px;
+
+}
+
+
+/*==========================================================
+UPLOAD PROGRESS
+==========================================================*/
+
+.lb-upload-progress{
+
+    width:100%;
+
+    height:6px;
+
+    border-radius:999px;
+
+    background:
+        rgba(255,255,255,.08);
+
+    overflow:hidden;
+
+    margin-top:12px;
+
+}
+
+.lb-upload-progress span{
+
+    display:block;
+
+    height:100%;
+
+    width:0;
+
+    background:
+        linear-gradient(
+            90deg,
+            var(--lb-primary),
+            var(--lb-primary-light)
+        );
+
+    transition:.30s;
+
+}
+
+
+/*==========================================================
+TYPING INDICATOR
+==========================================================*/
+
+.lb-typing{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:5px;
+
+    padding:14px 18px;
+
+    width:max-content;
+
+    border-radius:20px;
+
+    background:#152742;
+
+    border:
+        1px solid rgba(255,255,255,.05);
+
+}
+
+.lb-typing span{
+
+    width:8px;
+
+    height:8px;
+
+    border-radius:50%;
+
+    background:
+        var(--lb-primary);
+
+    animation:
+        lbTyping 1.2s infinite;
+
+}
+
+.lb-typing span:nth-child(2){
+
+    animation-delay:.2s;
+
+}
+
+.lb-typing span:nth-child(3){
+
+    animation-delay:.4s;
+
+}
+
+@keyframes lbTyping{
+
+    0%,80%,100%{
+
+        transform:scale(.6);
+
+        opacity:.4;
+
+    }
+
+    40%{
+
+        transform:scale(1);
+
+        opacity:1;
+
+    }
+
+}
+
+
+/*==========================================================
+RECORD TIMER
+==========================================================*/
+
+.lb-record-time{
+
+    margin-top:10px;
+
+    text-align:center;
+
+    color:var(--lb-danger);
+
+    font-size:13px;
+
+    font-weight:600;
+
+    letter-spacing:1px;
+
+}
+
+
+/*==========================================================
+MOBILE
+==========================================================*/
+
+@media(max-width:768px){
+
+    .lb-chat-footer{
+
+        padding:
+            14px;
+
+    }
+
+    .lb-tool{
+
+        width:40px;
+
+        height:40px;
+
+    }
+
+    .lb-send{
+
+        width:48px;
+
+        height:48px;
+
+    }
+
+    .lb-input{
+
+        min-height:42px;
+
+    }
+
+  }
+/*==========================================================
+PART 5
+PRODUCT RECOMMENDATIONS
+SHOPPING CARDS
+UPSELL
+CROSS SELL
+BUNDLE UI
+==========================================================*/
+
+
+/*==========================================================
+SHOPPING SECTION
+==========================================================*/
+
+.lb-shopping{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:18px;
+
+    margin:12px 0;
+
+}
+
+
+/*==========================================================
+SECTION TITLE
+==========================================================*/
+
+.lb-shopping-title{
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+}
+
+.lb-shopping-title h4{
+
+    font-size:15px;
+
+    font-weight:700;
+
+    color:#fff;
+
+}
+
+.lb-shopping-title span{
+
+    font-size:12px;
+
+    color:var(--lb-primary-light);
+
+}
+
+
+/*==========================================================
+HORIZONTAL PRODUCT CAROUSEL
+==========================================================*/
+
+.lb-product-carousel{
+
+    display:flex;
+
+    gap:16px;
+
+    overflow-x:auto;
+
+    overflow-y:hidden;
+
+    scroll-behavior:smooth;
+
+    padding-bottom:8px;
+
+    scrollbar-width:none;
+
+}
+
+.lb-product-carousel::-webkit-scrollbar{
+
+    display:none;
+
+}
+
+
+/*==========================================================
+PRODUCT CARD
+==========================================================*/
+
+.lb-product-card{
+
+    flex:none;
+
+    width:260px;
+
+    background:var(--lb-bg-card);
+
+    border:1px solid var(--lb-border);
+
+    border-radius:24px;
+
+    overflow:hidden;
+
+    transition:.28s;
+
+    position:relative;
+
+}
+
+.lb-product-card:hover{
+
+    transform:translateY(-6px);
+
+    border-color:var(--lb-primary);
+
+    box-shadow:0 20px 45px rgba(0,0,0,.35);
+
+}
+
+
+/*==========================================================
+PRODUCT IMAGE
+==========================================================*/
+
+.lb-product-image{
+
+    width:100%;
+
+    height:210px;
+
+    background:#111;
+
+    position:relative;
+
+    overflow:hidden;
+
+}
+
+.lb-product-image img{
+
+    width:100%;
+
+    height:100%;
+
+    object-fit:cover;
+
+    transition:.4s;
+
+}
+
+.lb-product-card:hover
+.lb-product-image img{
+
+    transform:scale(1.05);
+
+}
+
+
+/*==========================================================
+PRODUCT BADGES
+==========================================================*/
+
+.lb-badge-sale,
+.lb-badge-new,
+.lb-badge-best{
+
+    position:absolute;
+
+    top:14px;
+
+    left:14px;
+
+    padding:6px 12px;
+
+    border-radius:999px;
+
+    font-size:11px;
+
+    font-weight:700;
+
+    color:#000;
+
+}
+
+.lb-badge-sale{
+
+    background:#ffb347;
+
+}
+
+.lb-badge-best{
+
+    background:#42ff93;
+
+}
+
+.lb-badge-new{
+
+    background:#6cb8ff;
+
+}
+
+
+/*==========================================================
+AI RECOMMENDED
+==========================================================*/
+
+.lb-ai-pick{
+
+    position:absolute;
+
+    top:14px;
+
+    right:14px;
+
+    background:
+
+        rgba(0,0,0,.65);
+
+    backdrop-filter:blur(10px);
+
+    color:#fff;
+
+    font-size:11px;
+
+    padding:7px 10px;
+
+    border-radius:999px;
+
+}
+
+
+/*==========================================================
+PRODUCT CONTENT
+==========================================================*/
+
+.lb-product-body{
+
+    padding:18px;
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:10px;
+
+}
+
+.lb-product-title{
+
+    font-size:15px;
+
+    font-weight:600;
+
+    color:#fff;
+
+    line-height:1.5;
+
+}
+
+.lb-product-vendor{
+
+    font-size:12px;
+
+    color:var(--lb-text-muted);
+
+}
+
+
+/*==========================================================
+RATING
+==========================================================*/
+
+.lb-rating{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:6px;
+
+}
+
+.lb-stars{
+
+    color:#ffc107;
+
+    font-size:14px;
+
+}
+
+.lb-rating small{
+
+    color:var(--lb-text-muted);
+
+}
+
+
+/*==========================================================
+PRICE
+==========================================================*/
+
+.lb-price-row{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
+}
+
+.lb-price{
+
+    font-size:22px;
+
+    font-weight:700;
+
+    color:#fff;
+
+}
+
+.lb-old-price{
+
+    color:#8d98a8;
+
+    text-decoration:line-through;
+
+    font-size:14px;
+
+}
+
+
+/*==========================================================
+STOCK
+==========================================================*/
+
+.lb-stock{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:8px;
+
+    font-size:12px;
+
+    color:#62e598;
+
+}
+
+.lb-stock::before{
+
+    content:"";
+
+    width:8px;
+
+    height:8px;
+
+    border-radius:50%;
+
+    background:#1dc071;
+
+}
+
+
+/*==========================================================
+VARIANT SELECTOR
+==========================================================*/
+
+.lb-variants{
+
+    display:flex;
+
+    flex-wrap:wrap;
+
+    gap:8px;
+
+}
+
+.lb-variant{
+
+    padding:8px 14px;
+
+    border-radius:12px;
+
+    background:rgba(255,255,255,.05);
+
+    border:1px solid rgba(255,255,255,.08);
+
+    font-size:12px;
+
+    cursor:pointer;
+
+    transition:.25s;
+
+}
+
+.lb-variant:hover,
+.lb-variant.active{
+
+    background:var(--lb-primary);
+
+    color:#000;
+
+}
+
+
+/*==========================================================
+PRODUCT ACTIONS
+==========================================================*/
+
+.lb-product-actions{
+
+    display:flex;
+
+    gap:10px;
+
+    margin-top:8px;
+
+}
+
+.lb-cart-btn{
+
+    flex:1;
+
+    padding:14px;
+
+    border-radius:16px;
+
+    background:var(--lb-bg-hover);
+
+    color:#fff;
+
+    font-weight:600;
+
+    transition:.25s;
+
+}
+
+.lb-cart-btn:hover{
+
+    background:#223a5b;
+
+}
+
+.lb-buy-btn{
+
+    flex:1;
+
+    padding:14px;
+
+    border-radius:16px;
+
+    background:
+
+        linear-gradient(
+            135deg,
+            var(--lb-primary),
+            var(--lb-primary-light)
+        );
+
+    color:#000;
+
+    font-weight:700;
+
+    transition:.25s;
+
+}
+
+.lb-buy-btn:hover{
+
+    transform:translateY(-2px);
+
+}
+
+
+/*==========================================================
+WISHLIST
+==========================================================*/
+
+.lb-wishlist{
+
+    position:absolute;
+
+    right:16px;
+
+    bottom:118px;
+
+    width:42px;
+
+    height:42px;
+
+    border-radius:50%;
+
+    background:rgba(255,255,255,.08);
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    cursor:pointer;
+
+    backdrop-filter:blur(10px);
+
+}
+
+
+/*==========================================================
+UPSELL CARD
+==========================================================*/
+
+.lb-upsell{
+
+    background:
+
+        linear-gradient(
+            135deg,
+            rgba(255,122,0,.12),
+            rgba(255,179,71,.05)
+        );
+
+    border:1px solid rgba(255,122,0,.25);
+
+    border-radius:22px;
+
+    padding:20px;
+
+}
+
+.lb-upsell-title{
+
+    font-size:16px;
+
+    font-weight:700;
+
+    margin-bottom:8px;
+
+}
+
+.lb-upsell p{
+
+    color:var(--lb-text-light);
+
+    line-height:1.7;
+
+    margin-bottom:16px;
+
+}
+
+.lb-upsell-btn{
+
+    width:100%;
+
+    padding:15px;
+
+    border-radius:16px;
+
+    background:
+
+        linear-gradient(
+            135deg,
+            var(--lb-primary),
+            var(--lb-primary-light)
+        );
+
+    color:#000;
+
+    font-weight:700;
+
+}
+
+
+/*==========================================================
+CROSS SELL
+==========================================================*/
+
+.lb-cross-grid{
+
+    display:grid;
+
+    grid-template-columns:repeat(2,1fr);
+
+    gap:14px;
+
+}
+
+.lb-cross-item{
+
+    padding:16px;
+
+    border-radius:18px;
+
+    background:rgba(255,255,255,.04);
+
+    border:1px solid rgba(255,255,255,.06);
+
+    transition:.25s;
+
+}
+
+.lb-cross-item:hover{
+
+    transform:translateY(-3px);
+
+    border-color:var(--lb-primary);
+
+}
+
+
+/*==========================================================
+BUNDLE BUILDER
+==========================================================*/
+
+.lb-bundle{
+
+    margin-top:18px;
+
+    border-radius:26px;
+
+    background:rgba(255,255,255,.04);
+
+    border:1px solid rgba(255,255,255,.08);
+
+    overflow:hidden;
+
+}
+
+.lb-bundle-header{
+
+    padding:18px 22px;
+
+    border-bottom:1px solid rgba(255,255,255,.06);
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+}
+
+.lb-bundle-items{
+
+    padding:20px;
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:14px;
+
+}
+
+.lb-bundle-item{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:14px;
+
+}
+
+.lb-bundle-thumb{
+
+    width:58px;
+
+    height:58px;
+
+    border-radius:16px;
+
+    overflow:hidden;
+
+}
+
+.lb-bundle-thumb img{
+
+    width:100%;
+
+    height:100%;
+
+    object-fit:cover;
+
+}
+
+.lb-bundle-info{
+
+    flex:1;
+
+}
+
+.lb-bundle-name{
+
+    font-size:14px;
+
+    font-weight:600;
+
+}
+
+.lb-bundle-price{
+
+    color:var(--lb-text-muted);
+
+    font-size:13px;
+
+}
+
+.lb-bundle-total{
+
+    padding:18px 22px;
+
+    border-top:1px solid rgba(255,255,255,.06);
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    font-size:17px;
+
+    font-weight:700;
+
+}
+
+.lb-bundle-checkout{
+
+    width:100%;
+
+    margin-top:18px;
+
+    padding:16px;
+
+    border-radius:18px;
+
+    background:linear-gradient(
+        135deg,
+        var(--lb-primary),
+        var(--lb-primary-light)
+    );
+
+    color:#000;
+
+    font-weight:700;
+
+}
+
+
+/*==========================================================
+RESPONSIVE
+==========================================================*/
+
+@media(max-width:768px){
+
+    .lb-product-card{
+
+        width:220px;
+
+    }
+
+    .lb-product-image{
+
+        height:180px;
+
+    }
+
+    .lb-cross-grid{
+
+        grid-template-columns:1fr;
+
+    }
+
+}
+/*==========================================================
+PART 7
+LEAD CAPTURE
+CRM
+APPOINTMENT BOOKING
+ANALYTICS
+==========================================================*/
+
+
+/*==========================================================
+LEAD CARD
+==========================================================*/
+
+.lb-lead-card{
+
+    margin:20px 0;
+
+    padding:24px;
+
+    border-radius:26px;
+
+    background:linear-gradient(
+        180deg,
+        rgba(255,255,255,.05),
+        rgba(255,255,255,.02)
+    );
+
+    border:1px solid rgba(255,255,255,.08);
+
+}
+
+.lb-lead-title{
+
+    font-size:20px;
+
+    font-weight:700;
+
+    color:#fff;
+
+}
+
+.lb-lead-desc{
+
+    margin-top:8px;
+
+    line-height:1.8;
+
+    color:var(--lb-text-light);
+
+}
+
+
+/*==========================================================
+FORM
+==========================================================*/
+
+.lb-form{
+
+    margin-top:22px;
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:18px;
+
+}
+
+.lb-field{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:8px;
+
+}
+
+.lb-label{
+
+    font-size:13px;
+
+    font-weight:600;
+
+    color:#d6d9df;
+
+}
+
+.lb-input-box{
+
+    width:100%;
+
+    height:52px;
+
+    padding:0 18px;
+
+    border-radius:16px;
+
+    background:#13253d;
+
+    border:1px solid rgba(255,255,255,.08);
+
+    color:#fff;
+
+    transition:.25s;
+
+}
+
+.lb-textarea{
+
+    min-height:120px;
+
+    resize:vertical;
+
+    padding:16px 18px;
+
+}
+
+.lb-input-box:focus{
+
+    border-color:var(--lb-primary);
+
+    box-shadow:
+
+        0 0 0 4px rgba(255,122,0,.12);
+
+}
+
+
+/*==========================================================
+SELECT
+==========================================================*/
+
+.lb-select{
+
+    appearance:none;
+
+    cursor:pointer;
+
+}
+
+
+/*==========================================================
+CHECKBOX
+==========================================================*/
+
+.lb-check{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
+    color:var(--lb-text-light);
+
+    font-size:13px;
+
+}
+
+.lb-check input{
+
+    width:18px;
+
+    height:18px;
+
+}
+
+
+/*==========================================================
+SUBMIT BUTTON
+==========================================================*/
+
+.lb-submit{
+
+    width:100%;
+
+    height:56px;
+
+    border-radius:18px;
+
+    font-size:15px;
+
+    font-weight:700;
+
+    color:#000;
+
+    background:
+
+        linear-gradient(
+            135deg,
+            var(--lb-primary),
+            var(--lb-primary-light)
+        );
+
+    transition:.30s;
+
+}
+
+.lb-submit:hover{
+
+    transform:translateY(-2px);
+
+}
+
+
+/*==========================================================
+APPOINTMENT CARD
+==========================================================*/
+
+.lb-booking{
+
+    margin-top:24px;
+
+    padding:24px;
+
+    border-radius:24px;
+
+    background:#102039;
+
+    border:1px solid rgba(255,255,255,.08);
+
+}
+
+.lb-booking-title{
+
+    font-size:18px;
+
+    font-weight:700;
+
+}
+
+.lb-booking-grid{
+
+    margin-top:20px;
+
+    display:grid;
+
+    grid-template-columns:repeat(2,1fr);
+
+    gap:16px;
+
+}
+
+
+/*==========================================================
+TIME SLOT
+==========================================================*/
+
+.lb-slot{
+
+    padding:14px;
+
+    border-radius:16px;
+
+    text-align:center;
+
+    background:rgba(255,255,255,.05);
+
+    border:1px solid rgba(255,255,255,.08);
+
+    cursor:pointer;
+
+    transition:.25s;
+
+}
+
+.lb-slot:hover{
+
+    border-color:var(--lb-primary);
+
+}
+
+.lb-slot.active{
+
+    background:var(--lb-primary);
+
+    color:#000;
+
+    font-weight:700;
+
+}
+
+
+/*==========================================================
+CALENDAR
+==========================================================*/
+
+.lb-calendar{
+
+    margin-top:20px;
+
+    border-radius:22px;
+
+    overflow:hidden;
+
+    border:1px solid rgba(255,255,255,.08);
+
+}
+
+.lb-calendar-header{
+
+    padding:18px;
+
+    background:#162a47;
+
+    font-weight:700;
+
+    text-align:center;
+
+}
+
+.lb-calendar-grid{
+
+    display:grid;
+
+    grid-template-columns:repeat(7,1fr);
+
+}
+
+.lb-day{
+
+    padding:16px;
+
+    text-align:center;
+
+    border:1px solid rgba(255,255,255,.03);
+
+    cursor:pointer;
+
+    transition:.25s;
+
+}
+
+.lb-day:hover{
+
+    background:rgba(255,255,255,.05);
+
+}
+
+.lb-day.active{
+
+    background:var(--lb-primary);
+
+    color:#000;
+
+    font-weight:700;
+
+}
+
+
+/*==========================================================
+CRM SUMMARY
+==========================================================*/
+
+.lb-crm{
+
+    margin-top:22px;
+
+    display:grid;
+
+    grid-template-columns:repeat(2,1fr);
+
+    gap:16px;
+
+}
+
+.lb-crm-card{
+
+    padding:18px;
+
+    border-radius:18px;
+
+    background:#13253d;
+
+    border:1px solid rgba(255,255,255,.06);
+
+}
+
+.lb-crm-number{
+
+    font-size:28px;
+
+    font-weight:700;
+
+}
+
+.lb-crm-label{
+
+    margin-top:6px;
+
+    color:var(--lb-text-muted);
+
+}
+
+
+/*==========================================================
+ANALYTICS
+==========================================================*/
+
+.lb-analytics{
+
+    margin-top:24px;
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:18px;
+
+}
+
+.lb-analytics-card{
+
+    padding:22px;
+
+    border-radius:22px;
+
+    background:#13253d;
+
+    border:1px solid rgba(255,255,255,.08);
+
+}
+
+.lb-analytics-title{
+
+    font-size:15px;
+
+    font-weight:600;
+
+}
+
+.lb-progress{
+
+    margin-top:16px;
+
+    width:100%;
+
+    height:8px;
+
+    border-radius:999px;
+
+    overflow:hidden;
+
+    background:rgba(255,255,255,.08);
+
+}
+
+.lb-progress span{
+
+    display:block;
+
+    height:100%;
+
+    width:0;
+
+    border-radius:999px;
+
+    background:linear-gradient(
+        90deg,
+        var(--lb-primary),
+        var(--lb-primary-light)
+    );
+
+}
+
+
+/*==========================================================
+AI SCORE
+==========================================================*/
+
+.lb-score{
+
+    width:140px;
+
+    height:140px;
+
+    margin:auto;
+
+    border-radius:50%;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    font-size:32px;
+
+    font-weight:700;
+
+    color:#fff;
+
+    border:10px solid rgba(255,255,255,.08);
+
+    background:
+
+        radial-gradient(
+            circle,
+            rgba(255,122,0,.18),
+            transparent
+        );
+
+}
+
+
+/*==========================================================
+NOTIFICATION
+==========================================================*/
+
+.lb-toast{
+
+    position:fixed;
+
+    right:30px;
+
+    top:30px;
+
+    min-width:320px;
+
+    padding:18px 22px;
+
+    border-radius:18px;
+
+    background:#13253d;
+
+    border-left:5px solid var(--lb-success);
+
+    box-shadow:var(--lb-shadow);
+
+    animation:
+
+        lbSlideRight .35s ease;
+
+}
+
+@keyframes lbSlideRight{
+
+    from{
+
+        opacity:0;
+
+        transform:
+
+            translateX(40px);
+
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:
+
+            translateX(0);
+
+    }
+
+}
+
+
+/*==========================================================
+SUCCESS
+==========================================================*/
+
+.lb-success{
+
+    border-left-color:var(--lb-success);
+
+}
+
+.lb-warning{
+
+    border-left-color:var(--lb-warning);
+
+}
+
+.lb-error{
+
+    border-left-color:var(--lb-danger);
+
+}
+
+.lb-info{
+
+    border-left-color:var(--lb-info);
+
+}
+
+
+/*==========================================================
+RESPONSIVE
+==========================================================*/
+
+@media(max-width:768px){
+
+    .lb-booking-grid{
+
+        grid-template-columns:1fr;
+
+    }
+
+    .lb-crm{
+
+        grid-template-columns:1fr;
+
+    }
+
+    .lb-calendar-grid{
+
+        font-size:12px;
+
+    }
+
+    .lb-toast{
+
+        right:16px;
+
+        left:16px;
+
+        min-width:auto;
+
+    }
+
+      }
+/*==========================================================
+PART 8
+VOICE AI
+AVATAR ANIMATIONS
+STORE THEME ENGINE
+ACCESSIBILITY
+==========================================================*/
+
+
+/*==========================================================
+VOICE CALL CONTAINER
+==========================================================*/
+
+.lb-voice-container{
+
+    display:flex;
+
+    flex-direction:column;
+
+    align-items:center;
+
+    justify-content:center;
+
+    padding:30px 20px;
+
+}
+
+.lb-voice-avatar{
+
+    position:relative;
+
+    width:120px;
+
+    height:120px;
+
+    border-radius:50%;
+
+    overflow:hidden;
+
+    border:4px solid rgba(255,255,255,.08);
+
+    box-shadow:
+        0 25px 60px rgba(0,0,0,.35);
+
+}
+
+.lb-voice-avatar img{
+
+    width:100%;
+
+    height:100%;
+
+    object-fit:cover;
+
+}
+
+
+/*==========================================================
+SPEAKING RINGS
+==========================================================*/
+
+.lb-speaking-ring{
+
+    position:absolute;
+
+    inset:-10px;
+
+    border-radius:50%;
+
+    border:2px solid rgba(255,122,0,.35);
+
+    animation:lbSpeakingRing 2.2s infinite;
+
+}
+
+.lb-speaking-ring:nth-child(2){
+
+    animation-delay:.4s;
+
+}
+
+.lb-speaking-ring:nth-child(3){
+
+    animation-delay:.8s;
+
+}
+
+@keyframes lbSpeakingRing{
+
+    from{
+
+        transform:scale(.85);
+
+        opacity:1;
+
+    }
+
+    to{
+
+        transform:scale(1.45);
+
+        opacity:0;
+
+    }
+
+}
+
+
+/*==========================================================
+VOICE STATUS
+==========================================================*/
+
+.lb-voice-status{
+
+    margin-top:22px;
+
+    font-size:18px;
+
+    font-weight:600;
+
+    color:#fff;
+
+}
+
+.lb-voice-subtitle{
+
+    margin-top:8px;
+
+    color:var(--lb-text-muted);
+
+    text-align:center;
+
+}
+
+
+/*==========================================================
+VOICE CONTROLS
+==========================================================*/
+
+.lb-voice-actions{
+
+    display:flex;
+
+    gap:18px;
+
+    margin-top:28px;
+
+}
+
+.lb-voice-btn{
+
+    width:62px;
+
+    height:62px;
+
+    border-radius:50%;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    background:#162a47;
+
+    color:#fff;
+
+    transition:.30s;
+
+}
+
+.lb-voice-btn:hover{
+
+    transform:translateY(-3px);
+
+}
+
+.lb-voice-end{
+
+    background:#ff4d4f;
+
+}
+
+.lb-voice-end:hover{
+
+    background:#ff3030;
+
+}
+
+
+/*==========================================================
+AVATAR IDLE
+==========================================================*/
+
+.lb-avatar-idle{
+
+    animation:lbIdleMove 5s ease-in-out infinite;
+
+}
+
+@keyframes lbIdleMove{
+
+    0%{
+
+        transform:rotate(0deg);
+
+    }
+
+    25%{
+
+        transform:rotate(1deg);
+
+    }
+
+    50%{
+
+        transform:rotate(0deg);
+
+    }
+
+    75%{
+
+        transform:rotate(-1deg);
+
+    }
+
+    100%{
+
+        transform:rotate(0deg);
+
+    }
+
+}
+
+
+/*==========================================================
+HEAD MOVEMENT
+==========================================================*/
+
+.lb-head-track{
+
+    transition:
+
+        transform .18s linear;
+
+}
+
+
+/*==========================================================
+BLINK
+==========================================================*/
+
+.lb-blink{
+
+    animation:lbBlink 6s infinite;
+
+}
+
+@keyframes lbBlink{
+
+    0%,45%,48%,100%{
+
+        transform:scaleY(1);
+
+    }
+
+    46%,47%{
+
+        transform:scaleY(.08);
+
+    }
+
+}
+
+
+/*==========================================================
+WAVE HAND
+==========================================================*/
+
+.lb-wave-hand{
+
+    transform-origin:top center;
+
+    animation:lbWaveHand 2.5s infinite;
+
+}
+
+@keyframes lbWaveHand{
+
+    0%{
+
+        transform:rotate(0deg);
+
+    }
+
+    20%{
+
+        transform:rotate(15deg);
+
+    }
+
+    40%{
+
+        transform:rotate(-10deg);
+
+    }
+
+    60%{
+
+        transform:rotate(12deg);
+
+    }
+
+    100%{
+
+        transform:rotate(0deg);
+
+    }
+
+}
+
+
+/*==========================================================
+THINKING
+==========================================================*/
+
+.lb-thinking{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
+    margin-top:18px;
+
+}
+
+.lb-thinking-dot{
+
+    width:10px;
+
+    height:10px;
+
+    border-radius:50%;
+
+    background:var(--lb-primary);
+
+    animation:lbThinking .9s infinite;
+
+}
+
+.lb-thinking-dot:nth-child(2){
+
+    animation-delay:.15s;
+
+}
+
+.lb-thinking-dot:nth-child(3){
+
+    animation-delay:.30s;
+
+}
+
+@keyframes lbThinking{
+
+    0%,100%{
+
+        transform:translateY(0);
+
+    }
+
+    50%{
+
+        transform:translateY(-8px);
+
+    }
+
+}
+
+
+/*==========================================================
+LOADING SKELETON
+==========================================================*/
+
+.lb-skeleton{
+
+    position:relative;
+
+    overflow:hidden;
+
+    background:#152742;
+
+}
+
+.lb-skeleton::after{
+
+    content:"";
+
+    position:absolute;
+
+    inset:0;
+
+    background:
+
+        linear-gradient(
+
+            90deg,
+
+            transparent,
+
+            rgba(255,255,255,.10),
+
+            transparent
+
+        );
+
+    transform:translateX(-100%);
+
+    animation:lbSkeleton 1.3s infinite;
+
+}
+
+@keyframes lbSkeleton{
+
+    to{
+
+        transform:translateX(100%);
+
+    }
+
+}
+
+
+/*==========================================================
+STORE THEME
+==========================================================*/
+
+.lb-theme-blue{
+
+    --lb-primary:#2563eb;
+    --lb-primary-hover:#1d4ed8;
+    --lb-primary-light:#60a5fa;
+
+}
+
+.lb-theme-green{
+
+    --lb-primary:#16a34a;
+    --lb-primary-hover:#15803d;
+    --lb-primary-light:#4ade80;
+
+}
+
+.lb-theme-purple{
+
+    --lb-primary:#7c3aed;
+    --lb-primary-hover:#6d28d9;
+    --lb-primary-light:#a78bfa;
+
+}
+
+.lb-theme-red{
+
+    --lb-primary:#dc2626;
+    --lb-primary-hover:#b91c1c;
+    --lb-primary-light:#f87171;
+
+}
+
+.lb-theme-pink{
+
+    --lb-primary:#ec4899;
+    --lb-primary-hover:#db2777;
+    --lb-primary-light:#f9a8d4;
+
+}
+
+.lb-theme-shopify{
+
+    --lb-primary:#95bf47;
+    --lb-primary-hover:#7fa53a;
+    --lb-primary-light:#b8dd7a;
+
+}
+
+
+/*==========================================================
+ACCESSIBILITY
+==========================================================*/
+
+.lb-widget *:focus-visible{
+
+    outline:3px solid var(--lb-primary);
+
+    outline-offset:3px;
+
+}
+
+.lb-widget button:disabled{
+
+    opacity:.45;
+
+    cursor:not-allowed;
+
+}
+
+.lb-widget [aria-hidden="true"]{
+
+    pointer-events:none;
+
+}
+
+
+/*==========================================================
+REDUCED MOTION
+==========================================================*/
+
+@media(prefers-reduced-motion:reduce){
+
+    *{
+
+        animation:none !important;
+
+        transition:none !important;
+
+        scroll-behavior:auto !important;
+
+    }
+
+}
+
+
+/*==========================================================
+HIGH CONTRAST
+==========================================================*/
+
+@media(prefers-contrast:more){
+
+    .lb-chat{
+
+        border:2px solid #ffffff;
+
+    }
+
+    .lb-bubble-agent{
+
+        border:1px solid #ffffff;
+
+    }
+
+}
+
+
+/*==========================================================
+MOBILE OPTIMIZATION
+==========================================================*/
+
+@media(max-width:768px){
+
+    .lb-voice-avatar{
+
+        width:90px;
+
+        height:90px;
+
+    }
+
+    .lb-voice-btn{
+
+        width:56px;
+
+        height:56px;
+
+    }
+
+    .lb-voice-status{
+
+        font-size:16px;
+
+    }
+
+      }
+/*==========================================================
+PART 9
+OMNICHANNEL
+LOYALTY
+PERSONAL SHOPPER
+PRODUCT COMPARISON
+SEASONAL CAMPAIGNS
+==========================================================*/
+
+
+/*==========================================================
+OMNICHANNEL PANEL
+==========================================================*/
+
+.lb-omnichannel{
+
+    margin-top:24px;
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:18px;
+
+}
+
+.lb-channel-grid{
+
+    display:grid;
+
+    grid-template-columns:repeat(2,1fr);
+
+    gap:16px;
+
+}
+
+.lb-channel{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:16px;
+
+    padding:18px;
+
+    border-radius:22px;
+
+    background:rgba(255,255,255,.04);
+
+    border:1px solid rgba(255,255,255,.08);
+
+    transition:.30s;
+
+}
+
+.lb-channel:hover{
+
+    transform:translateY(-3px);
+
+    border-color:var(--lb-primary);
+
+}
+
+.lb-channel-icon{
+
+    width:54px;
+
+    height:54px;
+
+    border-radius:18px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    background:#182b46;
+
+    font-size:24px;
+
+}
+
+.lb-channel-info{
+
+    flex:1;
+
+}
+
+.lb-channel-name{
+
+    font-weight:700;
+
+    font-size:15px;
+
+}
+
+.lb-channel-status{
+
+    margin-top:4px;
+
+    font-size:12px;
+
+    color:var(--lb-text-muted);
+
+}
+
+
+/*==========================================================
+LOYALTY PROGRAM
+==========================================================*/
+
+.lb-loyalty{
+
+    margin-top:24px;
+
+    padding:24px;
+
+    border-radius:26px;
+
+    background:linear-gradient(
+        135deg,
+        rgba(255,215,0,.10),
+        rgba(255,255,255,.03)
+    );
+
+    border:1px solid rgba(255,215,0,.20);
+
+}
+
+.lb-loyalty-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+}
+
+.lb-loyalty-title{
+
+    font-size:18px;
+
+    font-weight:700;
+
+}
+
+.lb-points{
+
+    font-size:26px;
+
+    font-weight:700;
+
+    color:#ffd54f;
+
+}
+
+.lb-tier{
+
+    margin-top:14px;
+
+    display:inline-flex;
+
+    align-items:center;
+
+    padding:8px 18px;
+
+    border-radius:999px;
+
+    background:rgba(255,255,255,.06);
+
+}
+
+.lb-tier.gold{
+
+    color:#ffd54f;
+
+}
+
+.lb-tier.silver{
+
+    color:#d6d6d6;
+
+}
+
+.lb-tier.platinum{
+
+    color:#6fd6ff;
+
+}
+
+
+/*==========================================================
+REWARD PROGRESS
+==========================================================*/
+
+.lb-reward-progress{
+
+    margin-top:18px;
+
+    height:10px;
+
+    border-radius:999px;
+
+    overflow:hidden;
+
+    background:rgba(255,255,255,.08);
+
+}
+
+.lb-reward-progress span{
+
+    display:block;
+
+    width:0;
+
+    height:100%;
+
+    background:linear-gradient(
+        90deg,
+        #ffd54f,
+        #ffb300
+    );
+
+}
+
+
+/*==========================================================
+PERSONAL SHOPPER MEMORY
+==========================================================*/
+
+.lb-memory{
+
+    margin-top:26px;
+
+    padding:24px;
+
+    border-radius:24px;
+
+    background:#13253d;
+
+    border:1px solid rgba(255,255,255,.08);
+
+}
+
+.lb-memory-title{
+
+    font-size:18px;
+
+    font-weight:700;
+
+}
+
+.lb-memory-list{
+
+    margin-top:20px;
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:14px;
+
+}
+
+.lb-memory-item{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:14px;
+
+    padding:14px 18px;
+
+    border-radius:18px;
+
+    background:rgba(255,255,255,.04);
+
+}
+
+.lb-memory-icon{
+
+    width:42px;
+
+    height:42px;
+
+    border-radius:14px;
+
+    background:rgba(255,122,0,.18);
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+}
+
+
+/*==========================================================
+PRODUCT COMPARISON
+==========================================================*/
+
+.lb-comparison{
+
+    margin-top:26px;
+
+    border-radius:24px;
+
+    overflow:hidden;
+
+    border:1px solid rgba(255,255,255,.08);
+
+}
+
+.lb-comparison table{
+
+    width:100%;
+
+    border-collapse:collapse;
+
+}
+
+.lb-comparison th{
+
+    background:#182b46;
+
+    color:#fff;
+
+    padding:18px;
+
+    font-size:14px;
+
+}
+
+.lb-comparison td{
+
+    padding:16px;
+
+    text-align:center;
+
+    border-top:1px solid rgba(255,255,255,.06);
+
+}
+
+.lb-comparison tr:hover{
+
+    background:rgba(255,255,255,.03);
+
+}
+
+.lb-check{
+
+    color:#1dc071;
+
+    font-size:18px;
+
+}
+
+.lb-cross{
+
+    color:#ff5252;
+
+    font-size:18px;
+
+}
+
+
+/*==========================================================
+SEASONAL CAMPAIGN
+==========================================================*/
+
+.lb-season{
+
+    margin-top:28px;
+
+    position:relative;
+
+    overflow:hidden;
+
+    border-radius:28px;
+
+    padding:28px;
+
+    background:linear-gradient(
+        135deg,
+        rgba(255,122,0,.12),
+        rgba(255,179,71,.05)
+    );
+
+    border:1px solid rgba(255,122,0,.18);
+
+}
+
+.lb-season::before{
+
+    content:"";
+
+    position:absolute;
+
+    top:-80px;
+
+    right:-80px;
+
+    width:220px;
+
+    height:220px;
+
+    border-radius:50%;
+
+    background:rgba(255,255,255,.05);
+
+}
+
+.lb-season-title{
+
+    position:relative;
+
+    font-size:22px;
+
+    font-weight:700;
+
+}
+
+.lb-season-desc{
+
+    position:relative;
+
+    margin-top:10px;
+
+    color:var(--lb-text-light);
+
+    line-height:1.8;
+
+}
+
+.lb-season-btn{
+
+    position:relative;
+
+    margin-top:22px;
+
+    padding:16px 28px;
+
+    border-radius:18px;
+
+    background:linear-gradient(
+        135deg,
+        var(--lb-primary),
+        var(--lb-primary-light)
+    );
+
+    color:#000;
+
+    font-weight:700;
+
+}
+
+
+/*==========================================================
+RECENTLY VIEWED
+==========================================================*/
+
+.lb-recent{
+
+    margin-top:26px;
+
+    display:flex;
+
+    gap:16px;
+
+    overflow-x:auto;
+
+}
+
+.lb-recent-item{
+
+    flex:none;
+
+    width:90px;
+
+    text-align:center;
+
+}
+
+.lb-recent-item img{
+
+    width:90px;
+
+    height:90px;
+
+    border-radius:18px;
+
+    object-fit:cover;
+
+}
+
+.lb-recent-name{
+
+    margin-top:10px;
+
+    font-size:12px;
+
+    color:var(--lb-text-muted);
+
+}
+
+
+/*==========================================================
+SMART TAGS
+==========================================================*/
+
+.lb-tags{
+
+    margin-top:20px;
+
+    display:flex;
+
+    flex-wrap:wrap;
+
+    gap:10px;
+
+}
+
+.lb-tag{
+
+    padding:8px 14px;
+
+    border-radius:999px;
+
+    background:rgba(255,255,255,.05);
+
+    border:1px solid rgba(255,255,255,.08);
+
+    font-size:12px;
+
+    transition:.25s;
+
+}
+
+.lb-tag:hover{
+
+    background:var(--lb-primary);
+
+    color:#000;
+
+}
+
+
+/*==========================================================
+RESPONSIVE
+==========================================================*/
+
+@media(max-width:768px){
+
+    .lb-channel-grid{
+
+        grid-template-columns:1fr;
+
+    }
+
+    .lb-comparison{
+
+        overflow-x:auto;
+
+    }
+
+    .lb-comparison table{
+
+        min-width:700px;
+
+    }
+
+      }
+/*==========================================================
+PART 10
+AI TRAINING CENTER
+STORE HEALTH MONITOR
+BUSINESS DASHBOARD
+KPI ANALYTICS
+==========================================================*/
+
+
+/*==========================================================
+AI TRAINING PANEL
+==========================================================*/
+
+.lb-ai-training{
+
+    margin-top:28px;
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:22px;
+
+}
+
+.lb-training-card{
+
+    background:rgba(255,255,255,.04);
+
+    border:1px solid rgba(255,255,255,.08);
+
+    border-radius:24px;
+
+    padding:24px;
+
+    transition:.30s;
+
+}
+
+.lb-training-card:hover{
+
+    transform:translateY(-3px);
+
+    border-color:var(--lb-primary);
+
+}
+
+.lb-training-title{
+
+    font-size:18px;
+
+    font-weight:700;
+
+    color:#fff;
+
+}
+
+.lb-training-description{
+
+    margin-top:10px;
+
+    color:var(--lb-text-light);
+
+    line-height:1.8;
+
+}
+
+
+/*==========================================================
+KNOWLEDGE SOURCES
+==========================================================*/
+
+.lb-knowledge-list{
+
+    margin-top:20px;
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:14px;
+
+}
+
+.lb-knowledge-item{
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    padding:16px 18px;
+
+    border-radius:18px;
+
+    background:#162a47;
+
+}
+
+.lb-knowledge-name{
+
+    font-weight:600;
+
+}
+
+.lb-sync-status{
+
+    color:#7cffba;
+
+    font-size:13px;
+
+}
+
+
+/*==========================================================
+STORE HEALTH
+==========================================================*/
+
+.lb-store-health{
+
+    margin-top:30px;
+
+    border-radius:28px;
+
+    background:linear-gradient(
+        180deg,
+        rgba(255,255,255,.04),
+        rgba(255,255,255,.02)
+    );
+
+    border:1px solid rgba(255,255,255,.08);
+
+    padding:28px;
+
+}
+
+.lb-health-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:24px;
+
+}
+
+.lb-health-title{
+
+    font-size:20px;
+
+    font-weight:700;
+
+}
+
+.lb-health-score{
+
+    width:90px;
+
+    height:90px;
+
+    border-radius:50%;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    font-size:26px;
+
+    font-weight:700;
+
+    background:
