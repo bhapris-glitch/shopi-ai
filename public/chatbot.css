@@ -1,0 +1,438 @@
+/*==========================================================
+  FILE: public/chatbot.css
+
+  PROJECT:
+  Layboka AI
+  Shopify AI Sales Executive
+
+  VERSION:
+  2.0 Production
+
+  DESCRIPTION:
+  Complete Design System
+
+  AUTHOR:
+  Layboka AI
+
+==========================================================*/
+
+
+/*==========================================================
+ROOT VARIABLES
+Merchant Theme Engine
+==========================================================*/
+
+:root{
+
+    /* Merchant Primary */
+
+    --lb-primary:#ff7a00;
+    --lb-primary-hover:#ff8f1f;
+    --lb-primary-light:#ffb347;
+
+    /* Status */
+
+    --lb-success:#1dc071;
+    --lb-danger:#ff5252;
+    --lb-warning:#ffc107;
+    --lb-info:#4da3ff;
+
+    /* Text */
+
+    --lb-text:#ffffff;
+    --lb-text-light:#d6d9df;
+    --lb-text-muted:#96a1b4;
+
+    /* Background */
+
+    --lb-bg:#081321;
+    --lb-bg-secondary:#101d30;
+    --lb-bg-card:#111f34;
+    --lb-bg-hover:#172842;
+
+    /* Borders */
+
+    --lb-border:
+        rgba(255,255,255,.08);
+
+    --lb-border-light:
+        rgba(255,255,255,.05);
+
+    /* Shadows */
+
+    --lb-shadow-sm:
+        0 8px 18px rgba(0,0,0,.12);
+
+    --lb-shadow:
+
+        0 18px 45px
+        rgba(0,0,0,.28);
+
+    --lb-shadow-xl:
+
+        0 35px 80px
+        rgba(0,0,0,.42);
+
+    /* Radius */
+
+    --lb-radius-xs:8px;
+    --lb-radius-sm:12px;
+    --lb-radius:18px;
+    --lb-radius-lg:24px;
+    --lb-radius-xl:30px;
+    --lb-radius-round:999px;
+
+    /* Fonts */
+
+    --lb-font:
+        "Poppins",
+        sans-serif;
+
+    /* Transition */
+
+    --lb-speed:.28s;
+
+    /* Width */
+
+    --lb-chat-width:390px;
+    --lb-chat-height:680px;
+
+    /* Z Index */
+
+    --lb-z:999999999;
+
+}
+
+
+/*==========================================================
+RESET
+==========================================================*/
+
+.lb-widget,
+.lb-widget *{
+
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+
+}
+
+.lb-widget{
+
+    font-family:var(--lb-font);
+
+    color:var(--lb-text);
+
+    direction:ltr;
+
+    text-size-adjust:100%;
+
+    -webkit-font-smoothing:antialiased;
+
+    -moz-osx-font-smoothing:grayscale;
+
+    line-height:1.45;
+
+}
+
+.lb-widget img{
+
+    max-width:100%;
+
+    display:block;
+
+    user-select:none;
+
+}
+
+.lb-widget button{
+
+    border:none;
+
+    outline:none;
+
+    cursor:pointer;
+
+    font-family:inherit;
+
+}
+
+.lb-widget input,
+.lb-widget textarea,
+.lb-widget select{
+
+    outline:none;
+
+    border:none;
+
+    font-family:inherit;
+
+}
+
+.lb-widget a{
+
+    color:inherit;
+
+    text-decoration:none;
+
+}
+
+
+/*==========================================================
+SCROLLBAR
+==========================================================*/
+
+.lb-widget *::-webkit-scrollbar{
+
+    width:7px;
+
+}
+
+.lb-widget *::-webkit-scrollbar-track{
+
+    background:transparent;
+
+}
+
+.lb-widget *::-webkit-scrollbar-thumb{
+
+    background:rgba(255,255,255,.14);
+
+    border-radius:20px;
+
+}
+
+.lb-widget *::-webkit-scrollbar-thumb:hover{
+
+    background:rgba(255,255,255,.25);
+
+}
+
+
+/*==========================================================
+UTILITY
+==========================================================*/
+
+.lb-hidden{
+
+    display:none !important;
+
+}
+
+.lb-flex{
+
+    display:flex;
+
+}
+
+.lb-center{
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+}
+
+.lb-space{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+}
+
+.lb-column{
+
+    display:flex;
+
+    flex-direction:column;
+
+}
+
+.lb-grow{
+
+    flex:1;
+
+}
+
+.lb-gap-xs{
+
+    gap:6px;
+
+}
+
+.lb-gap-sm{
+
+    gap:10px;
+
+}
+
+.lb-gap{
+
+    gap:16px;
+
+}
+
+.lb-gap-lg{
+
+    gap:24px;
+
+}
+
+
+/*==========================================================
+GLASS EFFECT
+==========================================================*/
+
+.lb-glass{
+
+    backdrop-filter:
+        blur(20px);
+
+    -webkit-backdrop-filter:
+        blur(20px);
+
+    background:
+
+        rgba(17,31,52,.84);
+
+    border:
+
+        1px solid
+        rgba(255,255,255,.08);
+
+}
+
+
+/*==========================================================
+ANIMATIONS
+==========================================================*/
+
+@keyframes lbFade{
+
+    from{
+
+        opacity:0;
+
+    }
+
+    to{
+
+        opacity:1;
+
+    }
+
+}
+
+@keyframes lbScale{
+
+    from{
+
+        opacity:0;
+
+        transform:
+            scale(.90);
+
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:
+            scale(1);
+
+    }
+
+}
+
+@keyframes lbSlideUp{
+
+    from{
+
+        opacity:0;
+
+        transform:
+            translateY(35px);
+
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:
+            translateY(0);
+
+    }
+
+}
+
+@keyframes lbFloat{
+
+    0%{
+
+        transform:
+            translateY(0);
+
+    }
+
+    50%{
+
+        transform:
+            translateY(-6px);
+
+    }
+
+    100%{
+
+        transform:
+            translateY(0);
+
+    }
+
+}
+
+@keyframes lbPulse{
+
+    0%{
+
+        transform:scale(1);
+
+    }
+
+    50%{
+
+        transform:scale(1.05);
+
+    }
+
+    100%{
+
+        transform:scale(1);
+
+    }
+
+}
+
+@keyframes lbRotate{
+
+    from{
+
+        transform:
+            rotate(0);
+
+    }
+
+    to{
+
+        transform:
+            rotate(360deg);
+
+    }
+
+}
