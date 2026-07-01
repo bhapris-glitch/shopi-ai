@@ -9820,3 +9820,2499 @@ RESPONSIVE
 /*==========================================================
 END OF PART 19
 ==========================================================*/
+/*==========================================================
+PART 20
+BUSINESS REPORTS
+EXPORT CENTER
+FILTERS
+ENTERPRISE TABLES
+==========================================================*/
+
+
+/*==========================================================
+REPORT DASHBOARD
+==========================================================*/
+
+.lb-report-dashboard{
+
+    margin-top:32px;
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:24px;
+
+}
+
+.lb-report-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    gap:20px;
+
+}
+
+.lb-report-title{
+
+    font-size:22px;
+
+    font-weight:700;
+
+    color:#ffffff;
+
+}
+
+.lb-report-subtitle{
+
+    margin-top:8px;
+
+    line-height:1.7;
+
+    color:var(--lb-text-muted);
+
+}
+
+
+/*==========================================================
+REPORT FILTERS
+==========================================================*/
+
+.lb-report-filters{
+
+    display:flex;
+
+    flex-wrap:wrap;
+
+    gap:16px;
+
+}
+
+.lb-filter-group{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:8px;
+
+}
+
+.lb-filter-label{
+
+    font-size:12px;
+
+    font-weight:600;
+
+    color:var(--lb-text-muted);
+
+}
+
+.lb-filter-select{
+
+    min-width:180px;
+
+    height:46px;
+
+    padding:0 14px;
+
+    border-radius:14px;
+
+    background:#13253d;
+
+    border:1px solid rgba(255,255,255,.08);
+
+    color:#ffffff;
+
+    transition:.30s;
+
+}
+
+.lb-filter-select:focus{
+
+    outline:none;
+
+    border-color:var(--lb-primary);
+
+}
+
+
+/*==========================================================
+EXPORT BUTTONS
+==========================================================*/
+
+.lb-export-actions{
+
+    display:flex;
+
+    flex-wrap:wrap;
+
+    gap:14px;
+
+}
+
+.lb-export-btn{
+
+    height:46px;
+
+    padding:0 22px;
+
+    border:none;
+
+    border-radius:14px;
+
+    cursor:pointer;
+
+    font-size:14px;
+
+    font-weight:700;
+
+    transition:.30s;
+
+}
+
+.lb-export-btn.primary{
+
+    background:linear-gradient(
+        135deg,
+        var(--lb-primary),
+        var(--lb-primary-light)
+    );
+
+    color:#000000;
+
+}
+
+.lb-export-btn.secondary{
+
+    background:#162a47;
+
+    color:#ffffff;
+
+}
+
+.lb-export-btn:hover{
+
+    transform:translateY(-2px);
+
+}
+
+
+/*==========================================================
+REPORT SUMMARY
+==========================================================*/
+
+.lb-report-summary{
+
+    display:grid;
+
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+
+    gap:20px;
+
+}
+
+.lb-report-card{
+
+    padding:22px;
+
+    border-radius:22px;
+
+    background:#13253d;
+
+    border:1px solid rgba(255,255,255,.08);
+
+}
+
+.lb-report-card-title{
+
+    font-size:14px;
+
+    color:var(--lb-text-muted);
+
+}
+
+.lb-report-card-value{
+
+    margin-top:12px;
+
+    font-size:30px;
+
+    font-weight:700;
+
+    color:#ffffff;
+
+}
+
+.lb-report-card-growth{
+
+    margin-top:10px;
+
+    display:inline-flex;
+
+    align-items:center;
+
+    gap:8px;
+
+    padding:6px 12px;
+
+    border-radius:999px;
+
+    background:rgba(24,210,107,.12);
+
+    color:#18d26b;
+
+    font-size:12px;
+
+    font-weight:700;
+
+}
+
+
+/*==========================================================
+ENTERPRISE TABLE
+==========================================================*/
+
+.lb-table{
+
+    overflow:auto;
+
+    border-radius:22px;
+
+    border:1px solid rgba(255,255,255,.08);
+
+}
+
+.lb-table table{
+
+    width:100%;
+
+    min-width:900px;
+
+    border-collapse:collapse;
+
+    background:#13253d;
+
+}
+
+.lb-table thead{
+
+    background:#1b314f;
+
+}
+
+.lb-table th{
+
+    padding:18px;
+
+    text-align:left;
+
+    color:#ffffff;
+
+    font-size:13px;
+
+    font-weight:700;
+
+}
+
+.lb-table td{
+
+    padding:18px;
+
+    border-top:1px solid rgba(255,255,255,.06);
+
+    color:var(--lb-text-light);
+
+}
+
+.lb-table tbody tr{
+
+    transition:.25s;
+
+}
+
+.lb-table tbody tr:hover{
+
+    background:rgba(255,255,255,.03);
+
+}
+
+
+/*==========================================================
+STATUS TAGS
+==========================================================*/
+
+.lb-status-tag{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    padding:6px 12px;
+
+    border-radius:999px;
+
+    font-size:12px;
+
+    font-weight:700;
+
+}
+
+.lb-status-tag.success{
+
+    background:rgba(24,210,107,.12);
+
+    color:#18d26b;
+
+}
+
+.lb-status-tag.pending{
+
+    background:rgba(255,193,7,.12);
+
+    color:#ffc107;
+
+}
+
+.lb-status-tag.failed{
+
+    background:rgba(255,82,82,.12);
+
+    color:#ff5252;
+
+}
+
+
+/*==========================================================
+PAGINATION
+==========================================================*/
+
+.lb-pagination{
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    gap:10px;
+
+    margin-top:28px;
+
+}
+
+.lb-page-btn{
+
+    width:42px;
+
+    height:42px;
+
+    border:none;
+
+    border-radius:12px;
+
+    cursor:pointer;
+
+    background:#162a47;
+
+    color:#ffffff;
+
+    font-weight:700;
+
+    transition:.30s;
+
+}
+
+.lb-page-btn:hover{
+
+    background:var(--lb-primary);
+
+    color:#000000;
+
+}
+
+.lb-page-btn.active{
+
+    background:var(--lb-primary);
+
+    color:#000000;
+
+}
+
+
+/*==========================================================
+EMPTY STATE
+==========================================================*/
+
+.lb-empty-state{
+
+    padding:60px 20px;
+
+    text-align:center;
+
+    border-radius:22px;
+
+    background:#13253d;
+
+    border:1px dashed rgba(255,255,255,.08);
+
+}
+
+.lb-empty-icon{
+
+    font-size:54px;
+
+}
+
+.lb-empty-title{
+
+    margin-top:18px;
+
+    font-size:20px;
+
+    font-weight:700;
+
+    color:#ffffff;
+
+}
+
+.lb-empty-text{
+
+    margin-top:10px;
+
+    line-height:1.8;
+
+    color:var(--lb-text-muted);
+
+}
+
+
+/*==========================================================
+RESPONSIVE
+==========================================================*/
+
+@media(max-width:768px){
+
+    .lb-report-header{
+
+        flex-direction:column;
+
+        align-items:flex-start;
+
+    }
+
+    .lb-report-filters{
+
+        flex-direction:column;
+
+    }
+
+    .lb-filter-select{
+
+        width:100%;
+
+    }
+
+    .lb-export-actions{
+
+        flex-direction:column;
+
+    }
+
+}
+
+
+/*==========================================================
+END OF PART 20
+==========================================================*/
+/*==========================================================
+PART 21
+MERCHANT SETTINGS
+AVATAR MANAGEMENT
+THEME CUSTOMIZATION
+==========================================================*/
+
+
+/*==========================================================
+SETTINGS CONTAINER
+==========================================================*/
+
+.lb-settings{
+
+    margin-top:32px;
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:28px;
+
+}
+
+.lb-settings-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    gap:20px;
+
+}
+
+.lb-settings-title{
+
+    font-size:22px;
+
+    font-weight:700;
+
+    color:#ffffff;
+
+}
+
+.lb-settings-description{
+
+    margin-top:8px;
+
+    color:var(--lb-text-muted);
+
+    line-height:1.8;
+
+}
+
+
+/*==========================================================
+SETTINGS GRID
+==========================================================*/
+
+.lb-settings-grid{
+
+    display:grid;
+
+    grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+
+    gap:24px;
+
+}
+
+
+/*==========================================================
+SETTING CARD
+==========================================================*/
+
+.lb-setting-card{
+
+    padding:24px;
+
+    border-radius:24px;
+
+    background:#13253d;
+
+    border:1px solid rgba(255,255,255,.08);
+
+}
+
+.lb-setting-title{
+
+    font-size:18px;
+
+    font-weight:700;
+
+    color:#ffffff;
+
+    margin-bottom:18px;
+
+}
+
+
+/*==========================================================
+FORM GROUP
+==========================================================*/
+
+.lb-form-group{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:8px;
+
+    margin-bottom:20px;
+
+}
+
+.lb-form-label{
+
+    font-size:13px;
+
+    font-weight:600;
+
+    color:var(--lb-text-muted);
+
+}
+
+.lb-form-input,
+
+.lb-form-select{
+
+    width:100%;
+
+    height:48px;
+
+    padding:0 16px;
+
+    border-radius:14px;
+
+    background:#0f1d31;
+
+    border:1px solid rgba(255,255,255,.08);
+
+    color:#ffffff;
+
+    transition:.30s;
+
+}
+
+.lb-form-input:focus,
+
+.lb-form-select:focus{
+
+    outline:none;
+
+    border-color:var(--lb-primary);
+
+}
+
+
+/*==========================================================
+TEXTAREA
+==========================================================*/
+
+.lb-form-textarea{
+
+    width:100%;
+
+    min-height:120px;
+
+    padding:16px;
+
+    resize:vertical;
+
+    border-radius:16px;
+
+    background:#0f1d31;
+
+    border:1px solid rgba(255,255,255,.08);
+
+    color:#ffffff;
+
+}
+
+.lb-form-textarea:focus{
+
+    outline:none;
+
+    border-color:var(--lb-primary);
+
+}
+
+
+/*==========================================================
+AVATAR GRID
+==========================================================*/
+
+.lb-avatar-grid{
+
+    display:grid;
+
+    grid-template-columns:repeat(3,1fr);
+
+    gap:16px;
+
+}
+
+.lb-avatar-option{
+
+    cursor:pointer;
+
+    text-align:center;
+
+    padding:16px;
+
+    border-radius:18px;
+
+    border:2px solid transparent;
+
+    background:#162a47;
+
+    transition:.30s;
+
+}
+
+.lb-avatar-option:hover{
+
+    border-color:var(--lb-primary);
+
+}
+
+.lb-avatar-option.active{
+
+    border-color:var(--lb-primary);
+
+    background:rgba(255,122,0,.08);
+
+}
+
+.lb-avatar-option img{
+
+    width:80px;
+
+    height:80px;
+
+    border-radius:50%;
+
+    object-fit:cover;
+
+}
+
+.lb-avatar-name{
+
+    margin-top:12px;
+
+    font-size:13px;
+
+    font-weight:600;
+
+    color:#ffffff;
+
+}
+
+
+/*==========================================================
+LOGO UPLOAD
+==========================================================*/
+
+.lb-upload-box{
+
+    padding:30px;
+
+    text-align:center;
+
+    border-radius:20px;
+
+    border:2px dashed rgba(255,255,255,.10);
+
+    background:#162a47;
+
+    transition:.30s;
+
+}
+
+.lb-upload-box:hover{
+
+    border-color:var(--lb-primary);
+
+}
+
+.lb-upload-icon{
+
+    font-size:42px;
+
+}
+
+.lb-upload-title{
+
+    margin-top:14px;
+
+    font-size:16px;
+
+    font-weight:700;
+
+}
+
+.lb-upload-text{
+
+    margin-top:8px;
+
+    color:var(--lb-text-muted);
+
+}
+
+
+/*==========================================================
+COLOR PICKER
+==========================================================*/
+
+.lb-color-grid{
+
+    display:grid;
+
+    grid-template-columns:repeat(6,1fr);
+
+    gap:12px;
+
+}
+
+.lb-color{
+
+    width:46px;
+
+    height:46px;
+
+    border-radius:50%;
+
+    cursor:pointer;
+
+    border:3px solid transparent;
+
+    transition:.30s;
+
+}
+
+.lb-color:hover{
+
+    transform:scale(1.08);
+
+}
+
+.lb-color.active{
+
+    border-color:#ffffff;
+
+}
+
+
+/*==========================================================
+THEME PREVIEW
+==========================================================*/
+
+.lb-theme-preview{
+
+    margin-top:24px;
+
+    border-radius:22px;
+
+    overflow:hidden;
+
+    border:1px solid rgba(255,255,255,.08);
+
+    background:#101f34;
+
+}
+
+.lb-theme-header{
+
+    height:56px;
+
+    background:linear-gradient(
+
+        90deg,
+
+        var(--lb-primary),
+
+        var(--lb-primary-light)
+
+    );
+
+}
+
+.lb-theme-body{
+
+    padding:24px;
+
+}
+
+.lb-theme-message{
+
+    width:70%;
+
+    height:14px;
+
+    margin-bottom:12px;
+
+    border-radius:999px;
+
+    background:rgba(255,255,255,.08);
+
+}
+
+.lb-theme-button{
+
+    width:120px;
+
+    height:40px;
+
+    border-radius:12px;
+
+    background:var(--lb-primary);
+
+}
+
+
+/*==========================================================
+SAVE SETTINGS
+==========================================================*/
+
+.lb-settings-actions{
+
+    display:flex;
+
+    justify-content:flex-end;
+
+    gap:16px;
+
+}
+
+.lb-settings-btn{
+
+    height:48px;
+
+    padding:0 24px;
+
+    border:none;
+
+    border-radius:14px;
+
+    cursor:pointer;
+
+    font-size:14px;
+
+    font-weight:700;
+
+    transition:.30s;
+
+}
+
+.lb-settings-btn.primary{
+
+    background:linear-gradient(
+
+        135deg,
+
+        var(--lb-primary),
+
+        var(--lb-primary-light)
+
+    );
+
+    color:#000000;
+
+}
+
+.lb-settings-btn.secondary{
+
+    background:#162a47;
+
+    color:#ffffff;
+
+}
+
+.lb-settings-btn:hover{
+
+    transform:translateY(-2px);
+
+}
+
+
+/*==========================================================
+RESPONSIVE
+==========================================================*/
+
+@media(max-width:768px){
+
+    .lb-settings-header{
+
+        flex-direction:column;
+
+        align-items:flex-start;
+
+    }
+
+    .lb-avatar-grid{
+
+        grid-template-columns:repeat(2,1fr);
+
+    }
+
+    .lb-color-grid{
+
+        grid-template-columns:repeat(4,1fr);
+
+    }
+
+    .lb-settings-actions{
+
+        flex-direction:column;
+
+    }
+
+}
+
+
+/*==========================================================
+END OF PART 21
+==========================================================*/
+/*==========================================================
+PART 22
+ENTERPRISE ANIMATIONS
+MICRO INTERACTIONS
+GLASSMORPHISM
+==========================================================*/
+
+
+/*==========================================================
+GLASS CARD
+==========================================================*/
+
+.lb-glass{
+
+    background:rgba(255,255,255,.06);
+
+    backdrop-filter:blur(22px);
+
+    -webkit-backdrop-filter:blur(22px);
+
+    border:1px solid rgba(255,255,255,.10);
+
+    box-shadow:
+
+        0 10px 35px rgba(0,0,0,.22),
+
+        inset 0 1px rgba(255,255,255,.08);
+
+}
+
+
+/*==========================================================
+HOVER LIFT
+==========================================================*/
+
+.lb-hover-lift{
+
+    transition:
+
+        transform .30s,
+
+        box-shadow .30s;
+
+}
+
+.lb-hover-lift:hover{
+
+    transform:translateY(-6px);
+
+    box-shadow:0 24px 50px rgba(0,0,0,.30);
+
+}
+
+
+/*==========================================================
+HOVER SCALE
+==========================================================*/
+
+.lb-hover-scale{
+
+    transition:transform .30s;
+
+}
+
+.lb-hover-scale:hover{
+
+    transform:scale(1.04);
+
+}
+
+
+/*==========================================================
+BUTTON RIPPLE
+==========================================================*/
+
+.lb-ripple{
+
+    position:relative;
+
+    overflow:hidden;
+
+}
+
+.lb-ripple::after{
+
+    content:"";
+
+    position:absolute;
+
+    left:50%;
+
+    top:50%;
+
+    width:0;
+
+    height:0;
+
+    border-radius:50%;
+
+    background:rgba(255,255,255,.30);
+
+    transform:translate(-50%,-50%);
+
+    transition:
+
+        width .45s,
+
+        height .45s,
+
+        opacity .45s;
+
+    opacity:0;
+
+}
+
+.lb-ripple:active::after{
+
+    width:320px;
+
+    height:320px;
+
+    opacity:1;
+
+}
+
+
+/*==========================================================
+SOFT GLOW
+==========================================================*/
+
+.lb-glow{
+
+    transition:
+
+        box-shadow .30s,
+
+        border-color .30s;
+
+}
+
+.lb-glow:hover{
+
+    border-color:var(--lb-primary);
+
+    box-shadow:
+
+        0 0 0 1px rgba(255,122,0,.18),
+
+        0 0 25px rgba(255,122,0,.22);
+
+}
+
+
+/*==========================================================
+SHIMMER
+==========================================================*/
+
+.lb-shimmer{
+
+    position:relative;
+
+    overflow:hidden;
+
+}
+
+.lb-shimmer::before{
+
+    content:"";
+
+    position:absolute;
+
+    inset:0;
+
+    transform:translateX(-120%);
+
+    background:linear-gradient(
+
+        90deg,
+
+        transparent,
+
+        rgba(255,255,255,.12),
+
+        transparent
+
+    );
+
+}
+
+.lb-shimmer:hover::before{
+
+    animation:lbShimmer 1.4s linear;
+
+}
+
+@keyframes lbShimmer{
+
+    from{
+
+        transform:translateX(-120%);
+
+    }
+
+    to{
+
+        transform:translateX(120%);
+
+    }
+
+}
+
+
+/*==========================================================
+FADE IN
+==========================================================*/
+
+.lb-fade-in{
+
+    animation:lbFadeIn .45s ease;
+
+}
+
+@keyframes lbFadeIn{
+
+    from{
+
+        opacity:0;
+
+        transform:translateY(10px);
+
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:translateY(0);
+
+    }
+
+}
+
+
+/*==========================================================
+SLIDE UP
+==========================================================*/
+
+.lb-slide-up{
+
+    animation:lbSlideUp .45s ease;
+
+}
+
+@keyframes lbSlideUp{
+
+    from{
+
+        opacity:0;
+
+        transform:translateY(30px);
+
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:translateY(0);
+
+    }
+
+}
+
+
+/*==========================================================
+ZOOM IN
+==========================================================*/
+
+.lb-zoom{
+
+    animation:lbZoom .35s ease;
+
+}
+
+@keyframes lbZoom{
+
+    from{
+
+        opacity:0;
+
+        transform:scale(.92);
+
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:scale(1);
+
+    }
+
+}
+
+
+/*==========================================================
+FLOAT
+==========================================================*/
+
+.lb-float{
+
+    animation:lbFloat 4s ease-in-out infinite;
+
+}
+
+@keyframes lbFloat{
+
+    0%{
+
+        transform:translateY(0);
+
+    }
+
+    50%{
+
+        transform:translateY(-8px);
+
+    }
+
+    100%{
+
+        transform:translateY(0);
+
+    }
+
+}
+
+
+/*==========================================================
+PULSE
+==========================================================*/
+
+.lb-pulse{
+
+    animation:lbPulse 2s infinite;
+
+}
+
+@keyframes lbPulse{
+
+    0%{
+
+        transform:scale(1);
+
+    }
+
+    50%{
+
+        transform:scale(1.05);
+
+    }
+
+    100%{
+
+        transform:scale(1);
+
+    }
+
+}
+
+
+/*==========================================================
+ROTATE
+==========================================================*/
+
+.lb-rotate{
+
+    animation:lbRotate 18s linear infinite;
+
+}
+
+@keyframes lbRotate{
+
+    from{
+
+        transform:rotate(0deg);
+
+    }
+
+    to{
+
+        transform:rotate(360deg);
+
+    }
+
+}
+
+
+/*==========================================================
+LOADING DOTS
+==========================================================*/
+
+.lb-loading{
+
+    display:flex;
+
+    gap:8px;
+
+}
+
+.lb-loading span{
+
+    width:10px;
+
+    height:10px;
+
+    border-radius:50%;
+
+    background:var(--lb-primary);
+
+    animation:lbLoading 1s infinite ease-in-out;
+
+}
+
+.lb-loading span:nth-child(2){
+
+    animation-delay:.15s;
+
+}
+
+.lb-loading span:nth-child(3){
+
+    animation-delay:.30s;
+
+}
+
+@keyframes lbLoading{
+
+    0%,100%{
+
+        transform:scale(.6);
+
+        opacity:.4;
+
+    }
+
+    50%{
+
+        transform:scale(1.2);
+
+        opacity:1;
+
+    }
+
+}
+
+
+/*==========================================================
+SCROLLBAR
+==========================================================*/
+
+.lb-scroll{
+
+    scrollbar-width:thin;
+
+    scrollbar-color:
+
+        var(--lb-primary)
+
+        rgba(255,255,255,.06);
+
+}
+
+.lb-scroll::-webkit-scrollbar{
+
+    width:8px;
+
+}
+
+.lb-scroll::-webkit-scrollbar-track{
+
+    background:rgba(255,255,255,.04);
+
+}
+
+.lb-scroll::-webkit-scrollbar-thumb{
+
+    border-radius:999px;
+
+    background:var(--lb-primary);
+
+}
+
+
+/*==========================================================
+BACKDROP BLUR
+==========================================================*/
+
+.lb-backdrop{
+
+    backdrop-filter:blur(18px);
+
+    -webkit-backdrop-filter:blur(18px);
+
+}
+
+
+/*==========================================================
+REDUCED MOTION
+==========================================================*/
+
+@media (prefers-reduced-motion:reduce){
+
+    .lb-hover-lift,
+
+    .lb-hover-scale,
+
+    .lb-glow,
+
+    .lb-shimmer,
+
+    .lb-fade-in,
+
+    .lb-slide-up,
+
+    .lb-zoom,
+
+    .lb-float,
+
+    .lb-pulse,
+
+    .lb-rotate{
+
+        animation:none !important;
+
+        transition:none !important;
+
+        transform:none !important;
+
+    }
+
+}
+
+
+/*==========================================================
+END OF PART 22
+==========================================================*/
+/*==========================================================
+PART 23
+UTILITY CLASSES
+ACCESSIBILITY
+RTL SUPPORT
+PRINT STYLES
+==========================================================*/
+
+
+/*==========================================================
+DISPLAY UTILITIES
+==========================================================*/
+
+.lb-hidden{
+
+    display:none !important;
+
+}
+
+.lb-block{
+
+    display:block !important;
+
+}
+
+.lb-inline{
+
+    display:inline !important;
+
+}
+
+.lb-inline-block{
+
+    display:inline-block !important;
+
+}
+
+.lb-flex{
+
+    display:flex !important;
+
+}
+
+.lb-inline-flex{
+
+    display:inline-flex !important;
+
+}
+
+.lb-grid{
+
+    display:grid !important;
+
+}
+
+
+/*==========================================================
+FLEX UTILITIES
+==========================================================*/
+
+.lb-row{
+
+    display:flex;
+
+    flex-direction:row;
+
+}
+
+.lb-column{
+
+    display:flex;
+
+    flex-direction:column;
+
+}
+
+.lb-wrap{
+
+    flex-wrap:wrap;
+
+}
+
+.lb-center{
+
+    justify-content:center;
+
+    align-items:center;
+
+}
+
+.lb-between{
+
+    justify-content:space-between;
+
+}
+
+.lb-around{
+
+    justify-content:space-around;
+
+}
+
+.lb-evenly{
+
+    justify-content:space-evenly;
+
+}
+
+.lb-start{
+
+    justify-content:flex-start;
+
+}
+
+.lb-end{
+
+    justify-content:flex-end;
+
+}
+
+.lb-align-start{
+
+    align-items:flex-start;
+
+}
+
+.lb-align-end{
+
+    align-items:flex-end;
+
+}
+
+
+/*==========================================================
+WIDTH
+==========================================================*/
+
+.lb-w-100{
+
+    width:100%;
+
+}
+
+.lb-h-100{
+
+    height:100%;
+
+}
+
+
+/*==========================================================
+TEXT
+==========================================================*/
+
+.lb-text-left{
+
+    text-align:left;
+
+}
+
+.lb-text-center{
+
+    text-align:center;
+
+}
+
+.lb-text-right{
+
+    text-align:right;
+
+}
+
+.lb-bold{
+
+    font-weight:700;
+
+}
+
+.lb-uppercase{
+
+    text-transform:uppercase;
+
+}
+
+.lb-capitalize{
+
+    text-transform:capitalize;
+
+}
+
+.lb-nowrap{
+
+    white-space:nowrap;
+
+}
+
+
+/*==========================================================
+SPACING
+==========================================================*/
+
+.lb-mt-0{margin-top:0!important;}
+.lb-mt-10{margin-top:10px!important;}
+.lb-mt-20{margin-top:20px!important;}
+.lb-mt-30{margin-top:30px!important;}
+.lb-mt-40{margin-top:40px!important;}
+
+.lb-mb-0{margin-bottom:0!important;}
+.lb-mb-10{margin-bottom:10px!important;}
+.lb-mb-20{margin-bottom:20px!important;}
+.lb-mb-30{margin-bottom:30px!important;}
+.lb-mb-40{margin-bottom:40px!important;}
+
+.lb-p-10{padding:10px!important;}
+.lb-p-20{padding:20px!important;}
+.lb-p-30{padding:30px!important;}
+
+.lb-gap-10{gap:10px!important;}
+.lb-gap-20{gap:20px!important;}
+.lb-gap-30{gap:30px!important;}
+
+
+/*==========================================================
+BORDER RADIUS
+==========================================================*/
+
+.lb-radius-sm{
+
+    border-radius:10px;
+
+}
+
+.lb-radius{
+
+    border-radius:18px;
+
+}
+
+.lb-radius-lg{
+
+    border-radius:28px;
+
+}
+
+.lb-round{
+
+    border-radius:999px;
+
+}
+
+.lb-circle{
+
+    border-radius:50%;
+
+}
+
+
+/*==========================================================
+SHADOWS
+==========================================================*/
+
+.lb-shadow-sm{
+
+    box-shadow:0 8px 20px rgba(0,0,0,.15);
+
+}
+
+.lb-shadow{
+
+    box-shadow:0 15px 35px rgba(0,0,0,.25);
+
+}
+
+.lb-shadow-lg{
+
+    box-shadow:0 25px 60px rgba(0,0,0,.35);
+
+}
+
+
+/*==========================================================
+CURSOR
+==========================================================*/
+
+.lb-pointer{
+
+    cursor:pointer;
+
+}
+
+.lb-disabled{
+
+    pointer-events:none;
+
+    opacity:.55;
+
+}
+
+
+/*==========================================================
+TEXT TRUNCATION
+==========================================================*/
+
+.lb-ellipsis{
+
+    overflow:hidden;
+
+    white-space:nowrap;
+
+    text-overflow:ellipsis;
+
+}
+
+
+/*==========================================================
+FOCUS ACCESSIBILITY
+==========================================================*/
+
+.lb-focus:focus-visible,
+
+button:focus-visible,
+
+input:focus-visible,
+
+select:focus-visible,
+
+textarea:focus-visible,
+
+a:focus-visible{
+
+    outline:3px solid var(--lb-primary);
+
+    outline-offset:3px;
+
+}
+
+
+/*==========================================================
+SCREEN READER ONLY
+==========================================================*/
+
+.lb-sr-only{
+
+    position:absolute;
+
+    width:1px;
+
+    height:1px;
+
+    margin:-1px;
+
+    padding:0;
+
+    overflow:hidden;
+
+    clip:rect(0,0,0,0);
+
+    border:0;
+
+}
+
+
+/*==========================================================
+RTL SUPPORT
+==========================================================*/
+
+[dir="rtl"] .lb-row{
+
+    flex-direction:row-reverse;
+
+}
+
+[dir="rtl"] .lb-text-left{
+
+    text-align:right;
+
+}
+
+[dir="rtl"] .lb-text-right{
+
+    text-align:left;
+
+}
+
+[dir="rtl"] .lb-between{
+
+    direction:rtl;
+
+}
+
+
+/*==========================================================
+PRINT STYLES
+==========================================================*/
+
+@media print{
+
+    .lb-no-print{
+
+        display:none !important;
+
+    }
+
+    .lb-print-full{
+
+        width:100% !important;
+
+        box-shadow:none !important;
+
+        background:#ffffff !important;
+
+        color:#000000 !important;
+
+    }
+
+    a{
+
+        color:#000000 !important;
+
+        text-decoration:none;
+
+    }
+
+}
+
+
+/*==========================================================
+HIGH CONTRAST MODE
+==========================================================*/
+
+@media (prefers-contrast:more){
+
+    .lb-glass,
+
+    .lb-product-card,
+
+    .lb-setting-card,
+
+    .lb-chart-card{
+
+        border-width:2px;
+
+    }
+
+    .lb-btn-cart,
+
+    .lb-bundle-button,
+
+    .lb-settings-btn.primary{
+
+        border:2px solid #ffffff;
+
+    }
+
+}
+
+
+/*==========================================================
+END OF PART 23
+==========================================================*/
+/*==========================================================
+PART 24
+PRODUCTION OPTIMIZATION
+BROWSER COMPATIBILITY
+FINAL POLISH
+==========================================================*/
+
+
+/*==========================================================
+GPU ACCELERATION
+==========================================================*/
+
+.lb-gpu,
+
+.lb-product-card,
+
+.lb-chart-card,
+
+.lb-bundle-card,
+
+.lb-cross-card,
+
+.lb-avatar-option,
+
+.lb-widget,
+
+.lb-modal{
+
+    transform:translateZ(0);
+
+    backface-visibility:hidden;
+
+    -webkit-backface-visibility:hidden;
+
+    will-change:transform;
+
+}
+
+
+/*==========================================================
+OPTIMIZED IMAGE RENDERING
+==========================================================*/
+
+.lb-image{
+
+    display:block;
+
+    max-width:100%;
+
+    height:auto;
+
+    image-rendering:auto;
+
+}
+
+.lb-image-cover{
+
+    width:100%;
+
+    height:100%;
+
+    object-fit:cover;
+
+}
+
+.lb-image-contain{
+
+    width:100%;
+
+    height:100%;
+
+    object-fit:contain;
+
+}
+
+
+/*==========================================================
+TEXT RENDERING
+==========================================================*/
+
+.lb-text-render{
+
+    text-rendering:optimizeLegibility;
+
+    -webkit-font-smoothing:antialiased;
+
+    -moz-osx-font-smoothing:grayscale;
+
+}
+
+
+/*==========================================================
+OVERFLOW HELPERS
+==========================================================*/
+
+.lb-overflow-hidden{
+
+    overflow:hidden;
+
+}
+
+.lb-overflow-auto{
+
+    overflow:auto;
+
+}
+
+.lb-overflow-x{
+
+    overflow-x:auto;
+
+}
+
+.lb-overflow-y{
+
+    overflow-y:auto;
+
+}
+
+
+/*==========================================================
+SAFE AREA SUPPORT
+==========================================================*/
+
+.lb-safe-bottom{
+
+    padding-bottom:max(20px,env(safe-area-inset-bottom));
+
+}
+
+.lb-safe-top{
+
+    padding-top:max(20px,env(safe-area-inset-top));
+
+}
+
+
+/*==========================================================
+SELECTION
+==========================================================*/
+
+::selection{
+
+    background:var(--lb-primary);
+
+    color:#000000;
+
+}
+
+::-moz-selection{
+
+    background:var(--lb-primary);
+
+    color:#000000;
+
+}
+
+
+/*==========================================================
+SMOOTH SCROLL
+==========================================================*/
+
+html{
+
+    scroll-behavior:smooth;
+
+}
+
+
+/*==========================================================
+DISABLE TAP HIGHLIGHT
+==========================================================*/
+
+*{
+
+    -webkit-tap-highlight-color:transparent;
+
+}
+
+
+/*==========================================================
+BUTTON RESET
+==========================================================*/
+
+button{
+
+    appearance:none;
+
+    -webkit-appearance:none;
+
+    font:inherit;
+
+}
+
+button:disabled{
+
+    opacity:.55;
+
+    cursor:not-allowed;
+
+}
+
+
+/*==========================================================
+FORM RESET
+==========================================================*/
+
+input,
+
+select,
+
+textarea{
+
+    appearance:none;
+
+    -webkit-appearance:none;
+
+    font:inherit;
+
+}
+
+
+/*==========================================================
+SVG
+==========================================================*/
+
+svg{
+
+    display:block;
+
+    max-width:100%;
+
+}
+
+
+/*==========================================================
+VIDEO
+==========================================================*/
+
+video{
+
+    display:block;
+
+    max-width:100%;
+
+    border-radius:inherit;
+
+}
+
+
+/*==========================================================
+IFRAME
+==========================================================*/
+
+iframe{
+
+    border:0;
+
+    width:100%;
+
+}
+
+
+/*==========================================================
+TRANSITION HELPERS
+==========================================================*/
+
+.lb-transition{
+
+    transition:.30s ease;
+
+}
+
+.lb-transition-fast{
+
+    transition:.18s ease;
+
+}
+
+.lb-transition-slow{
+
+    transition:.50s ease;
+
+}
+
+
+/*==========================================================
+Z INDEX SCALE
+==========================================================*/
+
+:root{
+
+    --lb-z-base:1;
+
+    --lb-z-dropdown:100;
+
+    --lb-z-sticky:200;
+
+    --lb-z-overlay:900;
+
+    --lb-z-modal:1000;
+
+    --lb-z-toast:1100;
+
+    --lb-z-tooltip:1200;
+
+    --lb-z-loader:9999;
+
+}
+
+
+/*==========================================================
+PERFORMANCE HELPERS
+==========================================================*/
+
+.lb-no-select{
+
+    user-select:none;
+
+    -webkit-user-select:none;
+
+}
+
+.lb-select-all{
+
+    user-select:all;
+
+}
+
+.lb-no-pointer{
+
+    pointer-events:none;
+
+}
+
+.lb-pointer{
+
+    pointer-events:auto;
+
+}
+
+
+/*==========================================================
+VISIBILITY HELPERS
+==========================================================*/
+
+.lb-visible{
+
+    visibility:visible;
+
+}
+
+.lb-invisible{
+
+    visibility:hidden;
+
+}
+
+
+/*==========================================================
+OPACITY HELPERS
+==========================================================*/
+
+.lb-opacity-0{
+
+    opacity:0;
+
+}
+
+.lb-opacity-25{
+
+    opacity:.25;
+
+}
+
+.lb-opacity-50{
+
+    opacity:.50;
+
+}
+
+.lb-opacity-75{
+
+    opacity:.75;
+
+}
+
+.lb-opacity-100{
+
+    opacity:1;
+
+}
+
+
+/*==========================================================
+FINAL RESPONSIVE TWEAKS
+==========================================================*/
+
+@media (max-width:480px){
+
+    .lb-product-grid,
+
+    .lb-bundle-grid,
+
+    .lb-cross-grid,
+
+    .lb-settings-grid,
+
+    .lb-chart-grid,
+
+    .lb-report-summary,
+
+    .lb-metric-grid{
+
+        grid-template-columns:1fr;
+
+    }
+
+    .lb-widget{
+
+        border-radius:18px;
+
+    }
+
+}
+
+
+/*==========================================================
+BROWSER FALLBACKS
+==========================================================*/
+
+@supports not (backdrop-filter:blur(10px)){
+
+    .lb-glass,
+
+    .lb-backdrop{
+
+        background:rgba(16,31,52,.96);
+
+    }
+
+}
+
+
+/*==========================================================
+END OF LAYBOKA AI
+SHOPIFY SALES EXECUTIVE
+PRODUCTION CHATBOT.CSS
+VERSION 1.0
+==========================================================*/
