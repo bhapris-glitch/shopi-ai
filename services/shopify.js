@@ -148,7 +148,19 @@ async function graphqlRequest({
         }
 
       );
+// ======================================
+// HTTP RESPONSE VALIDATION
+// ======================================
 
+if (!response.ok) {
+
+  throw new Error(
+
+    `Shopify HTTP ${response.status}`
+
+  );
+
+}
     const data =
       await response.json();
 
@@ -1306,8 +1318,10 @@ module.exports = {
   getShopifyHeaders,
 
   getGraphqlUrl,
-
+  
   graphqlRequest,
+  shopifyGraphQL,
+  verifyConnection,
 
   verifyConnection,
   getShopInfo,
