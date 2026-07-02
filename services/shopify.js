@@ -183,7 +183,28 @@ async function graphqlRequest({
   }
 
 }
+// ======================================
+// SHOPIFY GRAPHQL COMPATIBILITY WRAPPER
+// Keeps legacy functions working
+// ======================================
 
+async function shopifyGraphQL(
+  client,
+  query,
+  variables = {}
+) {
+
+  return graphqlRequest({
+
+    client,
+
+    query,
+
+    variables
+
+  });
+
+}
 // ======================================
 // FIND CLIENT
 // ======================================
