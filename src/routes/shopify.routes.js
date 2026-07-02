@@ -141,3 +141,283 @@ function failure(
 // ======================================================
 // PART 2 CONTINUES
 // ======================================================
+// ======================================================
+// STORE VALIDATION
+// ======================================================
+
+async function validateStore(req, res, next) {
+
+    try {
+
+        const rawStore =
+
+            req.body.store ||
+
+            req.query.store ||
+
+            "";
+
+        if (!rawStore) {
+
+            return failure(
+
+                res,
+
+                400,
+
+                "Store URL is required."
+
+            );
+
+        }
+
+        const store =
+
+            normalizeStore(rawStore);
+
+        if (!store) {
+
+            return failure(
+
+                res,
+
+                400,
+
+                "Invalid store."
+
+            );
+
+        }
+
+        req.store = store;
+
+        next();
+
+    }
+
+    catch (err) {
+
+        console.error(
+
+            "Store Validation:",
+
+            err.message
+
+        );
+
+        return failure(
+
+            res,
+
+            500,
+
+            "Unable to validate store."
+
+        );
+
+    }
+
+}
+
+// ======================================================
+// CHECK EXISTING INSTALLATION
+// ======================================================
+
+async function checkExistingInstallation(
+
+    req,
+
+    res,
+
+    next
+
+) {
+
+    try {
+
+        const existing =
+
+            await Client.findOne({
+
+                store: req.store
+
+            });
+
+        if (
+
+            existing &&
+
+            existing.token
+
+        ) {
+
+            return success(
+
+                res,
+
+                {
+
+                    installed: true,
+
+                    message:
+
+                        "Application already installed.",
+
+                    dashboard:
+
+                        "/dashboard"
+
+                }
+
+            );
+
+        }
+
+        next();
+
+    }
+
+    catch (err) {
+
+        console.error(
+
+            "Installation Check:",
+
+            err.message
+
+        );
+
+        return failure(
+
+            res,
+
+            500,
+
+            "Installation lookup failed."
+
+        );
+
+    }
+
+}
+
+// ======================================================
+// CREATE INSTALL SESSION
+// ======================================================
+
+function buildInstallSession(
+
+    store
+
+) {
+
+    return {
+
+        id: createNonce(),
+
+        state: createNonce(),
+
+        store,
+
+        createdAt:
+
+            Date.now()
+
+    };
+
+}
+
+// ======================================================
+// INSTALL ROUTE
+// POST /api/shopify/install
+// ======================================================
+
+router.post(
+
+    "/install",
+
+    validateStore,
+
+    checkExistingInstallation,
+
+    async (
+
+        req,
+
+        res
+
+    ) => {
+
+        try {
+
+            const session =
+
+                buildInstallSession(
+
+                    req.store
+
+                );
+
+            const authUrl =
+
+                oauthUrl(
+
+                    req.store,
+
+                    session.state
+
+                );
+
+            return success(
+
+                res,
+
+                {
+
+                    installed: false,
+
+                    store: req.store,
+
+                    state:
+
+                        session.state,
+
+                    installUrl:
+
+                        authUrl
+
+                }
+
+            );
+
+        }
+
+        catch (err) {
+
+            console.error(
+
+                "Install Error:",
+
+                err.message
+
+            );
+
+            return failure(
+
+                res,
+
+                500,
+
+                "Unable to start installation."
+
+            );
+
+        }
+
+    }
+
+);
+
+// ======================================================
+// PART 3 CONTINUES...
+// ======================================================
