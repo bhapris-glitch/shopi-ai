@@ -333,3 +333,273 @@ async function validateInstallationRequest(req, res, next) {
 /* =====================================================
  * PART 2 CONTINUES...
  * ===================================================== */
+/* =====================================================
+ * SHOPIFY STORE DETECTION
+ * ===================================================== */
+
+/**
+ * Detect Shopify storefront.
+ *
+ * For .myshopify.com we already know.
+ * For custom domains we'll use the existing
+ * Shopify service where available.
+ */
+async function verifyShopifyStore(hostname) {
+
+    try {
+
+        if (isMyShopifyDomain(hostname)) {
+
+            return {
+
+                valid: true,
+
+                shop: hostname,
+
+                customDomain: false
+
+            };
+
+        }
+
+        if (
+            shopifyService &&
+            typeof shopifyService.detectStore === "function"
+        ) {
+
+            const detected =
+                await shopifyService.detectStore(hostname);
+
+            if (detected && detected.valid) {
+
+                return {
+
+                    valid: true,
+
+                    shop: detected.shop,
+
+                    customDomain: true
+
+                };
+
+            }
+
+        }
+
+        return {
+
+            valid: false
+
+        };
+
+    } catch (error) {
+
+        console.error(
+            "[SHOPIFY DETECTION]",
+            error
+        );
+
+        return {
+
+            valid: false
+
+        };
+
+    }
+
+}
+
+/* =====================================================
+ * CLIENT LOOKUP
+ * ===================================================== */
+
+async function findClient(shop) {
+
+    return Client.findOne({
+
+        store: shop.toLowerCase()
+
+    });
+
+}
+
+async function ensureStoreAvailable(shop) {
+
+    const client =
+        await findClient(shop);
+
+    if (!client) {
+
+        return {
+
+            available: true,
+
+            client: null
+
+        };
+
+    }
+
+    if (client.locked) {
+
+        return {
+
+            available: false,
+
+            reason: "STORE_LOCKED"
+
+        };
+
+    }
+
+    return {
+
+        available: true,
+
+        client
+
+    };
+
+}
+
+/* =====================================================
+ * BUILD OAUTH URL
+ * ===================================================== */
+
+function buildOAuthUrl(shop) {
+
+    const apiKey =
+        process.env.SHOPIFY_API_KEY;
+
+    const scopes =
+        process.env.SHOPIFY_SCOPES;
+
+    const host =
+        process.env.APP_URL;
+
+    const redirectUri =
+        `${host}/api/install/callback`;
+
+    const state =
+        crypto.randomBytes(20).toString("hex");
+
+    const params =
+        new URLSearchParams({
+
+            client_id: apiKey,
+
+            scope: scopes,
+
+            redirect_uri: redirectUri,
+
+            state,
+
+            "grant_options[]": ""
+
+        });
+
+    return {
+
+        state,
+
+        url:
+            `https://${shop}/admin/oauth/authorize?${params.toString()}`
+
+    };
+
+}
+
+/* =====================================================
+ * VALIDATE STORE
+ * POST /api/install/validate
+ * ===================================================== */
+
+router.post(
+
+    "/validate",
+
+    validateInstallationRequest,
+
+    async (req, res) => {
+
+        try {
+
+            const verification =
+                await verifyShopifyStore(
+                    req.install.hostname
+                );
+
+            if (!verification.valid) {
+
+                return failure(
+
+                    res,
+
+                    400,
+
+                    "This website is not a supported Shopify store.",
+
+                    "SHOP_NOT_SUPPORTED"
+
+                );
+
+            }
+
+            const availability =
+                await ensureStoreAvailable(
+                    verification.shop
+                );
+
+            return success(res, {
+
+                installId:
+                    req.install.id,
+
+                platform:
+                    SUPPORTED_PLATFORMS.SHOPIFY,
+
+                shop:
+                    verification.shop,
+
+                customDomain:
+                    verification.customDomain,
+
+                alreadyInstalled:
+                    !!availability.client,
+
+                installationAllowed:
+                    availability.available
+
+            });
+
+        } catch (error) {
+
+            console.error(
+
+                "[INSTALL VALIDATE]",
+
+                error
+
+            );
+
+            return failure(
+
+                res,
+
+                500,
+
+                "Unable to validate store.",
+
+                "VALIDATION_FAILED"
+
+            );
+
+        }
+
+    }
+
+);
+
+/* =====================================================
+ * PART 3 CONTINUES...
+ * ===================================================== */
