@@ -343,3 +343,222 @@ Install.init();
 
 });
 
+// ======================================
+// PHASE 1
+// PART 12
+// Installation Flow Manager
+// ======================================
+
+// ======================================
+// STATUS UI
+// ======================================
+
+Install.setStatus=function(type,message){
+
+    let statusBox=
+
+    document.getElementById(
+
+        "installStatus"
+
+    );
+
+    if(!statusBox){
+
+        statusBox=
+
+        document.createElement("div");
+
+        statusBox.id=
+
+        "installStatus";
+
+        statusBox.className=
+
+        "install-status";
+
+        this.form.appendChild(
+
+            statusBox
+
+        );
+
+    }
+
+    statusBox.className=
+
+    "install-status "+type;
+
+    statusBox.innerHTML=
+
+    message;
+
+};
+
+// ======================================
+// LOADING
+// ======================================
+
+Install.showLoading=function(){
+
+    this.loading.style.display=
+
+    "flex";
+
+    this.button.disabled=true;
+
+    this.button.innerHTML=
+
+    "Connecting...";
+
+};
+
+// ======================================
+// STOP LOADING
+// ======================================
+
+Install.hideLoading=function(){
+
+    this.loading.style.display=
+
+    "none";
+
+    this.button.disabled=false;
+
+    this.button.innerHTML=
+
+    "Install On Shopify";
+
+};
+
+// ======================================
+// CHECK EXISTING STORE
+// ======================================
+
+Install.checkExistingStore=
+
+async function(){
+
+    try{
+
+        const response=
+
+        await fetch(
+
+        "/api/store/check?shop="+
+
+        encodeURIComponent(
+
+        this.shop.value
+
+        )
+
+        );
+
+        if(!response.ok)
+
+        return false;
+
+        const data=
+
+        await response.json();
+
+        return data.exists===true;
+
+    }
+
+    catch(err){
+
+        console.error(err);
+
+        return false;
+
+    }
+
+};
+
+// ======================================
+// INSTALL START
+// ======================================
+
+Install.startInstallation=
+
+async function(){
+
+    this.cleanStore();
+
+    if(
+
+        !this.validate()
+
+    ) return;
+
+    this.showLoading();
+
+    this.setStatus(
+
+        "info",
+
+        "Checking your Shopify store..."
+
+    );
+
+    const exists=
+
+    await this.checkExistingStore();
+
+    if(exists){
+
+        this.hideLoading();
+
+        this.setStatus(
+
+            "warning",
+
+            "This Shopify store is already connected."
+
+        );
+
+        return;
+
+    }
+
+    this.setStatus(
+
+        "success",
+
+        "Redirecting to Shopify..."
+
+    );
+
+    setTimeout(()=>{
+
+        this.redirect();
+
+    },1000);
+
+};
+
+// ======================================
+// NETWORK ERROR
+// ======================================
+
+window.addEventListener(
+
+    "offline",
+
+    ()=>{
+
+        Install.hideLoading();
+
+        Install.setStatus(
+
+            "error",
+
+            "No internet connection."
+
+        );
+
+    }
+
+);
