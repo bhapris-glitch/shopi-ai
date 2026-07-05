@@ -1039,6 +1039,273 @@ window.addEventListener(
 
 );
 
+/* =====================================
+   PHASE 1
+   PART 6
+   Premium Navbar
+   js/navbar.js
+===================================== */
+
+// =====================================
+// ELEMENTS
+// =====================================
+
+const navbar =
+document.querySelector(".navbar");
+
+const mobileButton =
+document.getElementById(
+"mobileMenuButton"
+);
+
+const desktopLinks =
+document.querySelectorAll(
+".desktop-nav a"
+);
+
+// =====================================
+// STICKY NAVBAR
+// =====================================
+
+function updateNavbar(){
+
+    if(window.scrollY>30){
+
+        navbar.classList.add(
+            "navbar-scrolled"
+        );
+
+    }
+
+    else{
+
+        navbar.classList.remove(
+            "navbar-scrolled"
+        );
+
+    }
+
+}
+
+window.addEventListener(
+
+    "scroll",
+
+    updateNavbar
+
+);
+
+// =====================================
+// ACTIVE MENU
+// =====================================
+
+function updateActiveMenu(){
+
+    const sections =
+    document.querySelectorAll(
+        "section[id]"
+    );
+
+    let current="";
+
+    sections.forEach(section=>{
+
+        const top =
+        section.offsetTop-140;
+
+        const height =
+        section.offsetHeight;
+
+        if(
+
+            window.scrollY>=top &&
+
+            window.scrollY<
+            top+height
+
+        ){
+
+            current=
+            section.id;
+
+        }
+
+    });
+
+    desktopLinks.forEach(link=>{
+
+        link.classList.remove(
+            "active"
+        );
+
+        if(
+
+            link.getAttribute("href")===
+
+            "#"+current
+
+        ){
+
+            link.classList.add(
+                "active"
+            );
+
+        }
+
+    });
+
+}
+
+window.addEventListener(
+
+    "scroll",
+
+    updateActiveMenu
+
+);
+
+// =====================================
+// SMOOTH SCROLL
+// =====================================
+
+desktopLinks.forEach(link=>{
+
+    link.addEventListener(
+
+        "click",
+
+        e=>{
+
+            const href =
+            link.getAttribute(
+                "href"
+            );
+
+            if(
+
+                !href.startsWith("#")
+
+            ){
+
+                return;
+
+            }
+
+            e.preventDefault();
+
+            const target =
+            document.querySelector(
+                href
+            );
+
+            if(!target) return;
+
+            window.scrollTo({
+
+                top:
+                target.offsetTop-90,
+
+                behavior:"smooth"
+
+            });
+
+        }
+
+    );
+
+});
+
+// =====================================
+// MOBILE MENU
+// =====================================
+
+mobileButton.addEventListener(
+
+    "click",
+
+    ()=>{
+
+        mobileButton.classList.toggle(
+            "open"
+        );
+
+        document.body.classList.toggle(
+            "mobile-nav-open"
+        );
+
+    }
+
+);
+
+// =====================================
+// CLOSE MENU
+// =====================================
+
+desktopLinks.forEach(link=>{
+
+    link.addEventListener(
+
+        "click",
+
+        ()=>{
+
+            mobileButton.classList.remove(
+                "open"
+            );
+
+            document.body.classList.remove(
+                "mobile-nav-open"
+            );
+
+        }
+
+    );
+
+});
+
+// =====================================
+// NAVBAR HOVER
+// =====================================
+
+desktopLinks.forEach(link=>{
+
+    link.addEventListener(
+
+        "mouseenter",
+
+        ()=>{
+
+            link.classList.add(
+                "hover"
+            );
+
+        }
+
+    );
+
+    link.addEventListener(
+
+        "mouseleave",
+
+        ()=>{
+
+            link.classList.remove(
+                "hover"
+            );
+
+        }
+
+    );
+
+});
+
+// =====================================
+// INITIALIZE
+// =====================================
+
+updateNavbar();
+updateActiveMenu();
+                
         
                 
 
