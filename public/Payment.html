@@ -594,7 +594,7 @@ Place below Hero Section
 </section>
 
 
-  ```html
+
 <!-- ======================================
 PAYMENT PAGE
 PART 3
@@ -939,45 +939,1217 @@ Place below Plan Selection
 
 </section>
 
-<!-- ======================================
-NEXT
 
+<!-- ======================================
+PAYMENT PAGE
 PART 4
-
-Order Summary
-Selected Plan
-Discount
-Taxes
-Grand Total
-Continue To Stripe
-
+ORDER SUMMARY
+Place below Billing Section
 ====================================== -->
+
+<section class="order-summary-section">
+
+    <div class="container">
+
+        <div class="order-summary-wrapper">
+
+            <!-- LEFT -->
+
+            <div class="summary-left">
+
+                <span class="section-badge">
+
+                    ORDER SUMMARY
+
+                </span>
+
+                <h2>
+
+                    Review Your Order
+
+                </h2>
+
+                <p>
+
+                    Verify your selected plan,
+                    discounts, taxes and total
+                    before proceeding to secure
+                    Stripe checkout.
+
+                </p>
+
+            </div>
+
+            <!-- RIGHT -->
+
+            <div class="summary-card">
+
+                <div class="summary-header">
+
+                    <h3>
+
+                        Layboka AI
+                        Subscription
+
+                    </h3>
+
+                </div>
+
+                <!-- Selected Plan -->
+
+                <div class="summary-row">
+
+                    <span>
+
+                        Selected Plan
+
+                    </span>
+
+                    <strong
+                    id="summaryPlan">
+
+                        Growth
+
+                    </strong>
+
+                </div>
+
+                <!-- Billing -->
+
+                <div class="summary-row">
+
+                    <span>
+
+                        Billing
+
+                    </span>
+
+                    <strong
+                    id="summaryBilling">
+
+                        Monthly
+
+                    </strong>
+
+                </div>
+
+                <!-- Price -->
+
+                <div class="summary-row">
+
+                    <span>
+
+                        Plan Price
+
+                    </span>
+
+                    <strong
+                    id="summaryPrice">
+
+                        $59.00
+
+                    </strong>
+
+                </div>
+
+                <!-- Discount -->
+
+                <div class="summary-row">
+
+                    <span>
+
+                        Discount
+
+                    </span>
+
+                    <strong
+                    id="summaryDiscount">
+
+                        - $0.00
+
+                    </strong>
+
+                </div>
+
+                <!-- Coupon -->
+
+                <div class="summary-row">
+
+                    <span>
+
+                        Coupon
+
+                    </span>
+
+                    <strong
+                    id="summaryCoupon">
+
+                        None
+
+                    </strong>
+
+                </div>
+
+                <!-- Tax -->
+
+                <div class="summary-row">
+
+                    <span>
+
+                        Estimated Tax
+
+                    </span>
+
+                    <strong
+                    id="summaryTax">
+
+                        $0.00
+
+                    </strong>
+
+                </div>
+
+                <hr>
+
+                <!-- Total -->
+
+                <div
+                class="summary-total">
+
+                    <span>
+
+                        Total Due Today
+
+                    </span>
+
+                    <strong
+                    id="summaryTotal">
+
+                        $59.00
+
+                    </strong>
+
+                </div>
+
+                <!-- Features -->
+
+                <div
+                class="included-box">
+
+                    <h4>
+
+                        Included
+
+                    </h4>
+
+                    <ul>
+
+                        <li>
+
+                            ✔ AI Sales Executive
+
+                        </li>
+
+                        <li>
+
+                            ✔ Unlimited Conversations
+
+                        </li>
+
+                        <li>
+
+                            ✔ AI Product Recommendations
+
+                        </li>
+
+                        <li>
+
+                            ✔ AI Upsell Engine
+
+                        </li>
+
+                        <li>
+
+                            ✔ Priority Support
+
+                        </li>
+
+                    </ul>
+
+                </div>
+
+                <!-- Continue -->
+
+                <button
+                id="continueStripe"
+                class="btn-primary full-width">
+
+                    Continue To Secure Payment
+
+                </button>
+
+                <div
+                class="payment-note">
+
+                    🔒 Secure payment powered by Stripe.
+                    Your card details never touch
+                    Layboka AI servers.
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
 
 <!-- ======================================
-NEXT
-
-PART 3
-
-Billing Information Form
-Customer Details
-Company Details
-Tax Information
-
+PAYMENT PAGE
+PART 5
+STRIPE PAYMENT
+Place below Order Summary
 ====================================== -->
 
-  
+<section class="stripe-payment-section">
+
+    <div class="container">
+
+        <div class="stripe-wrapper">
+
+            <!-- LEFT -->
+
+            <div class="payment-left">
+
+                <span class="section-badge">
+
+                    SECURE PAYMENT
+
+                </span>
+
+                <h2>
+
+                    Complete Your Payment
+
+                </h2>
+
+                <p>
+
+                    Your payment is processed
+                    securely using Stripe.
+                    We never store your card
+                    information.
+
+                </p>
+
+                <!-- Supported -->
+
+                <div class="payment-methods">
+
+                    <span>
+
+                        Accepted
+
+                    </span>
+
+                    <div class="cards">
+
+                        <div class="card-logo">
+
+                            VISA
+
+                        </div>
+
+                        <div class="card-logo">
+
+                            MC
+
+                        </div>
+
+                        <div class="card-logo">
+
+                            AMEX
+
+                        </div>
+
+                        <div class="card-logo">
+
+                            DISC
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- Wallet -->
+
+                <div class="wallet-support">
+
+                    <div class="wallet">
+
+                         Apple Pay
+
+                    </div>
+
+                    <div class="wallet">
+
+                        G Pay
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- RIGHT -->
+
+            <div class="stripe-card">
+
+                <div class="stripe-header">
+
+                    <h3>
+
+                        Payment Details
+
+                    </h3>
+
+                </div>
+
+                <!-- Stripe Elements -->
+
+                <form
+                id="stripe-payment-form">
+
+                    <div class="form-group">
+
+                        <label>
+
+                            Cardholder Name
+
+                        </label>
+
+                        <input
+
+                        id="cardholderName"
+
+                        type="text"
+
+                        placeholder="John Smith"
+
+                        autocomplete="cc-name">
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label>
+
+                            Card Information
+
+                        </label>
+
+                        <!-- Stripe mounts here -->
+
+                        <div
+                        id="card-element"
+                        class="stripe-element">
+
+                        </div>
+
+                    </div>
+
+                    <!-- Error -->
+
+                    <div
+                    id="card-errors"
+                    class="payment-error">
+
+                    </div>
+
+                    <!-- Pay -->
+
+                    <button
+
+                    id="payButton"
+
+                    type="submit"
+
+                    class="btn-primary full-width">
+
+                        Pay Securely
+
+                    </button>
+
+                </form>
+
+                <!-- Secure -->
+
+                <div class="stripe-security">
+
+                    <div>
+
+                        🔒 PCI DSS Level 1
+
+                    </div>
+
+                    <div>
+
+                        🔐 256-bit SSL
+
+                    </div>
+
+                    <div>
+
+                        💳 Powered by Stripe
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
 <!-- ======================================
-NEXT
-
-PART 2
-
-• Plan Cards
-• Monthly / Yearly Toggle
-• Enterprise Option
-• Savings Badge
-
+PAYMENT PAGE
+PART 6
+REFERRAL PROGRAM
+Place below Stripe Payment
 ====================================== -->
 
+<section class="referral-section">
+
+    <div class="container">
+
+        <div class="referral-wrapper">
+
+            <div class="referral-left">
+
+                <span class="section-badge">
+
+                    REFERRAL PROGRAM
+
+                </span>
+
+                <h2>
+
+                    Have A Referral Code?
+
+                </h2>
+
+                <p>
+
+                    Enter your referral code before
+                    completing payment. If valid,
+                    your referral will be linked
+                    automatically.
+
+                </p>
+
+                <div class="referral-note">
+
+                    <strong>
+
+                        Important
+
+                    </strong>
+
+                    <p>
+
+                        Referral rewards are released
+                        only after your subscription
+                        remains active for
+                        <strong>15 consecutive days.</strong>
+
+                    </p>
+
+                </div>
+
+            </div>
+
+            <div class="referral-card">
+
+                <div class="form-group">
+
+                    <label>
+
+                        Referral Code
+
+                    </label>
+
+                    <input
+
+                    id="referralCode"
+
+                    type="text"
+
+                    placeholder="Enter referral code"
+
+                    autocomplete="off">
+
+                </div>
+
+                <button
+
+                id="applyReferral"
+
+                class="btn-secondary"
+
+                type="button">
+
+                    Apply Referral
+
+                </button>
+
+                <div
+
+                id="referralStatus"
+
+                class="referral-status">
+
+                </div>
+
+                <div class="referral-policy">
+
+                    <ul>
+
+                        <li>
+
+                            ✓ Code is validated before payment
+
+                        </li>
+
+                        <li>
+
+                            ✓ Referral becomes active after payment
+
+                        </li>
+
+                        <li>
+
+                            ✓ Referrer & referee qualify only after
+                            <strong>15 active days</strong>
+
+                        </li>
+
+                        <li>
+
+                            ✓ Cancelled or refunded subscriptions
+                            do not qualify
+
+                        </li>
+
+                    </ul>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+    
+<!-- ======================================
+PAYMENT PAGE
+PART 7
+WHY CHOOSE LAYBOKA AI
+FAQ
+Place below Referral Section
+====================================== -->
+
+<section class="payment-trust-section">
+
+    <div class="container">
+
+        <!-- ==========================
+        TRUST
+        ========================== -->
+
+        <div class="trust-grid">
+
+            <div class="trust-card">
+
+                <div class="trust-icon">
+
+                    🔒
+
+                </div>
+
+                <h3>
+
+                    Secure Payments
+
+                </h3>
+
+                <p>
+
+                    Powered by Stripe with
+                    PCI DSS Level-1 compliance
+                    and 256-bit SSL encryption.
+
+                </p>
+
+            </div>
+
+            <div class="trust-card">
+
+                <div class="trust-icon">
+
+                    ⚡
+
+                </div>
+
+                <h3>
+
+                    Instant Activation
+
+                </h3>
+
+                <p>
+
+                    Your AI Sales Executive
+                    activates automatically
+                    immediately after successful
+                    payment.
+
+                </p>
+
+            </div>
+
+            <div class="trust-card">
+
+                <div class="trust-icon">
+
+                    💬
+
+                </div>
+
+                <h3>
+
+                    24×7 Support
+
+                </h3>
+
+                <p>
+
+                    Our technical and AI experts
+                    are available whenever you
+                    need assistance.
+
+                </p>
+
+            </div>
+
+            <div class="trust-card">
+
+                <div class="trust-icon">
+
+                    🔄
+
+                </div>
+
+                <h3>
+
+                    Cancel Anytime
+
+                </h3>
+
+                <p>
+
+                    No contracts.
+                    No hidden fees.
+                    Manage your subscription
+                    whenever you want.
+
+                </p>
+
+            </div>
+
+        </div>
+
+        <!-- ==========================
+        FAQ
+        ========================== -->
+
+        <div class="faq-section">
+
+            <div class="section-header">
+
+                <span class="section-badge">
+
+                    FAQ
+
+                </span>
+
+                <h2>
+
+                    Frequently Asked Questions
+
+                </h2>
+
+            </div>
+
+            <div class="faq-list">
+
+                <div class="faq-item">
+
+                    <button class="faq-question">
+
+                        When will my AI activate?
+
+                        <span>+</span>
+
+                    </button>
+
+                    <div class="faq-answer">
+
+                        <p>
+
+                            Immediately after
+                            successful payment.
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+                <div class="faq-item">
+
+                    <button class="faq-question">
+
+                        Can I cancel anytime?
+
+                        <span>+</span>
+
+                    </button>
+
+                    <div class="faq-answer">
+
+                        <p>
+
+                            Yes.
+                            You can cancel your
+                            subscription at any time
+                            from your dashboard.
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+                <div class="faq-item">
+
+                    <button class="faq-question">
+
+                        Is my payment secure?
+
+                        <span>+</span>
+
+                    </button>
+
+                    <div class="faq-answer">
+
+                        <p>
+
+                            Yes.
+                            Stripe securely processes
+                            every payment.
+                            Layboka AI never stores
+                            your card information.
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+                <div class="faq-item">
+
+                    <button class="faq-question">
+
+                        When are referral rewards released?
+
+                        <span>+</span>
+
+                    </button>
+
+                    <div class="faq-answer">
+
+                        <p>
+
+                            Referral rewards are
+                            released only after the
+                            referred subscription
+                            remains active for
+                            <strong>15 consecutive days.</strong>
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+    ```html
+<!-- ======================================
+PAYMENT PAGE
+PART 8
+GLOBAL FOOTER
+Reusable On Every Public Page
+====================================== -->
+
+<footer class="footer">
+
+    <div class="container">
+
+        <!-- =============================
+        TOP
+        ============================== -->
+
+        <div class="footer-top">
+
+            <!-- Company -->
+
+            <div class="footer-column">
+
+                <div class="footer-logo">
+
+                    <!-- Orange SVG Logo -->
+
+                    <svg
+                    width="34"
+                    height="34"
+                    viewBox="0 0 24 24"
+                    fill="#ff6b00">
+
+                        <path
+                        d="M12 2L21 7V17L12 22L3 17V7L12 2Z"/>
+
+                    </svg>
+
+                    <span>
+
+                        Layboka AI
+
+                    </span>
+
+                </div>
+
+                <p>
+
+                    The world's smartest
+                    AI Sales Executive
+                    built exclusively for
+                    Shopify merchants.
+
+                </p>
+
+            </div>
+
+            <!-- Product -->
+
+            <div class="footer-column">
+
+                <h4>
+
+                    Product
+
+                </h4>
+
+                <a href="#features">
+
+                    Features
+
+                </a>
+
+                <a href="#pricing">
+
+                    Pricing
+
+                </a>
+
+                <a href="#install">
+
+                    Install
+
+                </a>
+
+                <a href="/login">
+
+                    Dashboard
+
+                </a>
+
+            </div>
+
+            <!-- Company -->
+
+            <div class="footer-column">
+
+                <h4>
+
+                    Company
+
+                </h4>
+
+                <a href="about.html">
+
+                    About
+
+                </a>
+
+                <a href="contact.html">
+
+                    Contact
+
+                </a>
+
+                <a href="#">
+
+                    Careers
+
+                </a>
+
+                <a href="#">
+
+                    Partners
+
+                </a>
+
+            </div>
+
+            <!-- Resources -->
+
+            <div class="footer-column">
+
+                <h4>
+
+                    Resources
+
+                </h4>
+
+                <a href="#">
+
+                    Help Center
+
+                </a>
+
+                <a href="#">
+
+                    Documentation
+
+                </a>
+
+                <a href="#">
+
+                    API
+
+                </a>
+
+                <a href="#">
+
+                    Blog
+
+                </a>
+
+            </div>
+
+            <!-- Legal -->
+
+            <div class="footer-column">
+
+                <h4>
+
+                    Legal
+
+                </h4>
+
+                <a href="privacy.html">
+
+                    Privacy Policy
+
+                </a>
+
+                <a href="terms.html">
+
+                    Terms
+
+                </a>
+
+                <a href="#">
+
+                    Cookies
+
+                </a>
+
+                <a href="#">
+
+                    Refund Policy
+
+                </a>
+
+            </div>
+
+        </div>
+
+        <!-- =============================
+        NEWSLETTER
+        ============================== -->
+
+        <div class="newsletter-box">
+
+            <div>
+
+                <h3>
+
+                    Stay Updated
+
+                </h3>
+
+                <p>
+
+                    Receive product updates,
+                    AI tips and Shopify growth
+                    strategies.
+
+                </p>
+
+            </div>
+
+            <form>
+
+                <input
+                type="email"
+                placeholder="Business Email">
+
+                <button
+                type="submit"
+                class="btn-primary">
+
+                    Subscribe
+
+                </button>
+
+            </form>
+
+        </div>
+
+        <!-- =============================
+        BOTTOM
+        ============================== -->
+
+        <div class="footer-bottom">
+
+            <div>
+
+                © 2026 Layboka AI.
+                All Rights Reserved.
+
+            </div>
+
+            <!-- Social -->
+
+            <div class="social-links">
+
+                <a href="#">
+
+                    <!-- Facebook SVG -->
+
+                    <svg
+                    width="18"
+                    height="18"
+                    fill="#ff6b00"
+                    viewBox="0 0 24 24">
+
+                        <path d="M14 8h2V5h-2c-2.2 0-4 1.8-4 4v2H8v3h2v5h3v-5h2.5l.5-3H13V9c0-.6.4-1 1-1z"/>
+
+                    </svg>
+
+                </a>
+
+                <a href="#">
+
+                    <!-- X -->
+
+                    <svg
+                    width="18"
+                    height="18"
+                    fill="#ff6b00"
+                    viewBox="0 0 24 24">
+
+                        <path d="M18 2h3l-7 8 8 12h-6l-5-8-7 8H1l8-9L1 2h6l4 7z"/>
+
+                    </svg>
+
+                </a>
+
+                <a href="#">
+
+                    <!-- LinkedIn -->
+
+                    <svg
+                    width="18"
+                    height="18"
+                    fill="#ff6b00"
+                    viewBox="0 0 24 24">
+
+                        <path d="M4 3a2 2 0 100 4 2 2 0 000-4zm-1 5h2v13H3zm5 0h3v2c.7-1.3 2-2.2 4-2.2 3 0 5 2 5 6V21h-3v-6c0-2-1-3-2.6-3S12 13 12 15v6H9z"/>
+
+                    </svg>
+
+                </a>
+
+                <a href="#">
+
+                    <!-- YouTube -->
+
+                    <svg
+                    width="18"
+                    height="18"
+                    fill="#ff6b00"
+                    viewBox="0 0 24 24">
+
+                        <path d="M23 7s-.2-1.7-.8-2.5c-.8-1-1.7-1-2.2-1.1C17 3 12 3 12 3h0S7 3 4 3.4c-.5.1-1.4.1-2.2 1.1C1.2 5.3 1 7 1 7S1 9 1 11v2c0 2 0 4 0 4s.2 1.7.8 2.5c.8 1 1.9 1 2.4 1.1C6.1 21 12 21 12 21s5 0 8-.4c.5-.1 1.4-.1 2.2-1.1.6-.8.8-2.5.8-2.5s0-2 0-4v-2c0-2 0-4 0-4zM10 15V9l6 3-6 3z"/>
+
+                    </svg>
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</footer>
+
+<!-- ======================================
+PAYMENT PAGE COMPLETE
+
+NEXT FILE
+
+shopi-ai/public/js/payment.js
+
+====================================== -->
+    
 <script
 src="js/navbar.js"></script>
 
