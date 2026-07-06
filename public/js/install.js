@@ -562,3 +562,209 @@ window.addEventListener(
     }
 
 );
+
+// ======================================
+// PHASE 1
+// PART 14 (13)
+// Universal Store Detection
+// Supports:
+// • myshopify.com
+// • Custom Domains
+// ======================================
+
+// ======================================
+// NORMALIZE STORE INPUT
+// ======================================
+
+Install.normalizeStore=function(){
+
+    let shop=this.shop.value.trim();
+
+    shop=shop.replace(/^https?:\/\//i,"");
+
+    shop=shop.replace(/^www\./i,"");
+
+    shop=shop.replace(/\/$/,"");
+
+    shop=shop.replace(/\/admin.*$/i,"");
+
+    return shop;
+
+};
+
+// ======================================
+// VALIDATE DOMAIN
+// ======================================
+
+Install.validateDomain=function(domain){
+
+    const regex=
+
+    /^[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+    return regex.test(domain);
+
+};
+
+// ======================================
+// RESOLVE SHOPIFY DOMAIN
+// ======================================
+
+Install.resolveStore=
+
+async function(){
+
+    const domain=
+
+    this.normalizeStore();
+
+    if(
+
+        !this.validateDomain(domain)
+
+    ){
+
+        throw new Error(
+
+            "Invalid domain."
+
+        );
+
+    }
+
+    // Ask backend to determine
+    // canonical Shopify shop
+
+    const response=
+
+    await fetch(
+
+        "/api/store/resolve",
+
+        {
+
+            method:"POST",
+
+            headers:{
+
+                "Content-Type":
+
+                "application/json"
+
+            },
+
+            body:JSON.stringify({
+
+                domain
+
+            })
+
+        }
+
+    );
+
+    const result=
+
+    await response.json();
+
+    if(!response.ok){
+
+        throw new Error(
+
+            result.message ||
+
+            "Unable to verify store."
+
+        );
+
+    }
+
+    return result;
+
+};
+
+// ======================================
+// INSTALL FLOW
+// ======================================
+
+Install.startInstallation=
+
+async function(){
+
+    if(
+
+        !this.validate()
+
+    ) return;
+
+    this.showLoading();
+
+    this.setStatus(
+
+        "info",
+
+        "Verifying your Shopify store..."
+
+    );
+
+    try{
+
+        const store=
+
+        await this.resolveStore();
+
+        this.setStatus(
+
+            "success",
+
+            "Store verified."
+
+        );
+
+        const params=
+
+        new URLSearchParams({
+
+            shop:
+
+            store.shop,
+
+            email:
+
+            this.email.value,
+
+            plan:
+
+            this.plan.value,
+
+            country:
+
+            this.country.value
+
+        });
+
+        window.location.href=
+
+        "/auth/shopify?"
+
+        +
+
+        params.toString();
+
+    }
+
+    catch(err){
+
+        this.hideLoading();
+
+        this.setStatus(
+
+            "error",
+
+            err.message
+
+        );
+
+    }
+
+};
