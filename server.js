@@ -49,8 +49,9 @@ require("morgan");
 // LIMITER
 // ======================================
 
-const rateLimiter =
-require("./middleware/rateLimiter");
+const {
+    globalLimiter
+} = require("./middleware/rateLimiter");
 
 // ======================================
 // APP
@@ -267,11 +268,8 @@ app.use(
 // ======================================
 
 app.use(
-
     "/api",
-
-    rateLimiter
-
+    globalLimiter
 );
 
 // ======================================
