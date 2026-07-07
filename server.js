@@ -2,7 +2,7 @@
 // shopi-ai/server.js
 // Layboka AI
 // Production Ready Server
-// Part 1
+// Part 1.
 // ======================================
 
 "use strict";
