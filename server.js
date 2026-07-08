@@ -432,36 +432,36 @@ app.use(
 // ======================================
 
 // Authentication
-const authRoutes =
-require("./src/routes/auth.routes");
+//const authRoutes =
+//require("./src/routes/auth.routes");
 
 // Clients
-const clientRoutes =
-require("./src/routes/client.routes");
+//const clientRoutes =
+//require("./src/routes/client.routes");
 
 // Subscription
-const subscriptionRoutes =
-require("./src/routes/subscription.routes");
+//const subscriptionRoutes =
+//require("./src/routes/subscription.routes");
 
 // Referral
-const referralRoutes =
-require("./src/routes/referral.routes");
+//const referralRoutes =
+//require("./src/routes/referral.routes");
 
 // AI
-const aiRoutes =
-require("./src/routes/ai.routes");
+//const aiRoutes =
+//require("./src/routes/ai.routes");
 
 // Chat
-const chatRoutes =
-require("./src/routes/chat.routes");
+//const chatRoutes =
+//require("./src/routes/chat.routes");
 
 // Shopify
-const shopifyRoutes =
-require("./src/routes/shopify.routes");
+//const shopifyRoutes =
+//require("./src/routes/shopify.routes");
 
 // Webhooks
-const webhookRoutes =
-require("./src/routes/webhook.routes");
+//const webhookRoutes =
+//require("./src/routes/webhook.routes");
 
 // ======================================
 // REGISTER ROUTES
