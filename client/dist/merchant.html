@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Merchant Dashboard — Layboka</title>
+<style>
+:root{--p:#ff6b00;--ink:#111;--gray:#5b5b62;--line:#ececf1;--bg:#f6f6f8}
+*{box-sizing:border-box;margin:0;padding:0;font-family:'Inter',Arial,sans-serif}
+body{background:var(--bg);color:var(--ink);min-height:100vh}
+.hidden{display:none!important}
+.box{max-width:1060px;margin:auto;padding:24px 18px}
+.toolbar{display:flex;justify-content:space-between;align-items:center;background:#fff;border:1px solid var(--line);padding:16px 20px;border-radius:16px;margin-bottom:20px;flex-wrap:wrap;gap:12px}
+.logout{background:none;border:none;color:var(--p);font-weight:700;cursor:pointer}
+.card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:24px;margin-bottom:18px}
+.card h2{font-size:17px;margin-bottom:16px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px}
+.stat{background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px}
+.stat .lbl{font-size:13px;color:var(--gray)}.stat .val{font-size:26px;font-weight:800;margin-top:6px}
+.row{display:flex;flex-wrap:wrap;gap:16px}
+.field{flex:1;min-width:200px;margin-bottom:14px}
+.field label{font-size:13px;font-weight:600;display:block;margin-bottom:6px}
+.field input,.field select{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:10px;font-size:14px;outline:none}
+.field input:focus,.field select:focus{border-color:var(--p)}
+.btn{background:var(--p);color:#fff;border:0;padding:12px 20px;border-radius:10px;font-weight:700;cursor:pointer}
+.toggle{display:flex;align-items:center;gap:10px;margin-bottom:10px;font-size:14px}
+.toggle input{width:18px;height:18px}
+.msg{padding:10px 14px;border-radius:8px;margin-top:12px;font-size:14px}
+.msg.ok{background:#e8f8ee;color:#166534}.msg.err{background:#ffe6e6;color:#991b1b}
+#login{max-width:400px;margin:10vh auto;background:#fff;border:1px solid var(--line);border-radius:18px;padding:32px;box-shadow:0 20px 60px rgba(0,0,0,.08)}
+input[type=text],input[type=password]{width:100%;padding:12px;border:1px solid var(--line);border-radius:10px;margin-bottom:12px}
+</style></head><body>
+<script>window.API_BASE = "https://your-backend.up.railway.app";</script>
+
+<div id="loginView" class="hidden">
+  <h1 style="margin-bottom:8px">Merchant Login</h1>
+  <p style="color:var(--gray);font-size:14px;margin-bottom:20px">Store URL or email + password</p>
+  <input type="text" id="lStore" placeholder="yourstore.myshopify.com or you@email.com">
+  <input type="password" id="lPass" placeholder="Password">
+  <button class="btn" style="width:100%" onclick="login()">Login</button>
+  <p id="loginErr" class="msg err hidden"></p>
+</div>
+
+<div id="appView" class="hidden"><div class="box">
+  <div class="toolbar">
+    <h1>Merchant Dashboard</h1>
+    <div style="display:flex;gap:14px;align-items:center">
+      <span id="storeName" style="font-size:14px;color:var(--gray)"></span>
+      <button class="logout" onclick="logout()">Logout</button>
+    </div>
+  </div>
+
+  <div class="grid" id="stats"></div>
+
+  <div class="card"><h2>Chatbot Settings</h2>
+    <div class="row">
+      <div class="field"><label>Agent Name</label><input id="set_agentName"></div>
+      <div class="field"><label>Personality / Tone</label>
+        <select id="set_personality">
+          <option value="friendly">Friendly</option><option value="professional">Professional</option>
+          <option value="luxury">Luxury</option><option value="energetic">Energetic</option>
+          <option value="caring">Caring</option><option value="casual">Casual</option>
+        </select></div>
+      <div class="field"><label>Agent Avatar URL</label><input id="set_agentAvatar" placeholder="https://.../avatar.png"></div>
+      <div class="field"><label>Logo URL</label><input id="set_logo"></div>
+    </div>
+    <div class="row">
+      <div class="field"><label>Welcome Message</label><textarea id="set_welcomeMessage" rows="2" style="width:100%;border:1px solid var(--line);border-radius:10px;padding:10px"></textarea></div>
+      <div class="field"><label>Returning Message</label><textarea id="set_returningMessage" rows="2" style="width:100%;border:1px solid var(--line);border-radius:10px;padding:10px"></textarea></div>
+    </div>
+    <div class="toggle"><input type="checkbox" id="set_poweredByHidden"> Hide "Powered by Layboka"</div>
+    <button class="btn" onclick="saveSettings()">Save Settings</button>
+    <div id="saveMsg" class="msg hidden"></div>
+  </div>
+
+  <div class="card"><h2>Features</h2>
+    <div class="toggle"><input type="checkbox" id="feat_memoryEnabled"> AI Memory</div>
+    <div class="toggle"><input type="checkbox" id="feat_whatsappEnabled"> WhatsApp</div>
+    <div class="toggle"><input type="checkbox" id="feat_abandonedCartAI"> Abandoned Cart AI</div>
+    <div class="toggle"><input type="checkbox" id="feat_checkoutCloser"> Checkout Closer</div>
+    <div class="toggle"><input type="checkbox" id="feat_premiumUI"> Premium UI</div>
+    <div class="toggle"><input type="checkbox" id="feat_loyaltyEnabled"> Loyalty</div>
+    <div class="toggle"><input type="checkbox" id="feat_vipEnabled"> VIP Program</div>
+    <div class="toggle"><input type="checkbox" id="feat_orderTrackingEnabled"> Order Tracking</div>
+    <div class="toggle"><input type="checkbox" id="feat_voiceEnabled"> Voice</div>
+    <div class="toggle"><input type="checkbox" id="feat_multiAgentEnabled"> Multi-Agent</div>
+    <button class="btn" onclick="saveSettings()">Save</button>
+  </div>
+
+  <div class="card"><h2>API Key (embed protection)</h2>
+    <p style="font-size:14px;color:var(--gray);margin-bottom:12px">Key for your store's widget loader. Rotate anytime.</p>
+    <input type="text" id="apiKey" readonly style="background:var(--bg)">
+    <button class="btn" style="margin-top:10px" onclick="rotateKey()">Rotate Key</button>
+  </div>
+
+  <div class="card"><h2>Plan &amp; Subscription</h2><div id="billingInfo"></div></div>
+</div></div>
+
+<script>
+const API_BASE = window.API_BASE, TOKEN_KEY = "layboka_token";
+const api = (p,o={})=>{const h={"Content-Type":"application/json"};const t=localStorage.getItem(TOKEN_KEY);if(t)h.Authorization="Bearer "+t;return fetch(API_BASE+p,{...o,headers:h}).then(r=>r.json());};
+const $=id=>document.getElementById(id);
+
+function msg(el,txt,type){el.textContent=txt;el.className="msg "+type;el.classList.remove("hidden");setTimeout(()=>el.classList.add("hidden"),3500);}
+
+async function login(){
+  const val=$("lStoreId").value.trim(); const pass=$("lPass").value;
+  const isEmail=/^\S+@\S+\.\S+$/.test(val);
+  const body= isEmail?{email:val,password:pass}:{store:val,password:pass};
+  const d= await api("/api/client/auth/login".replace("/client/auth","/auth/client"),{method:"POST",body:JSON.stringify(body)});
+  if(!d.success){msg($("loginErr"),d.message||"Login failed","err");return;}
+  localStorage.setItem(TOKEN_KEY,d.token); location.reload();
+}
