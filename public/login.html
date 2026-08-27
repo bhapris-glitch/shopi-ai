@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Login — Layboka AI</title>
+<link href="/public/css/saas.css" rel="stylesheet">
+</head><body>
+<header><div class="container nav">
+  <a class="logo" href="/">Layboka AI</a>
+  <button class="burger" onclick="document.querySelector('.menu').classList.toggle('open')">☰</button>
+  <nav class="menu">
+    <a href="/about">About Us</a><a href="/pricing">Pricing</a><a href="/terms">Terms</a>
+    <a href="/privacy">Privacy</a><a href="/contact">Contact Us</a>
+    <a class="btn btn-p" href="/login">Login</a>
+  </nav>
+</div></header>
+<section class="section"><div class="container">
+  <form class="form-card" id="lform">
+    <h2 style="text-align:center;margin-bottom:6px">Login to Dashboard</h2>
+    <p style="text-align:center;color:var(--gray);font-size:14px;margin-bottom:24px">
+      Enter your store URL <b>or</b> email, plus your password.</p>
+    <div class="field"><label>Store URL <span style="color:var(--gray);font-weight:400">(or Email)</span></label>
+      <input id="store" placeholder="yourstore.myshopify.com or you@email.com"></div>
+    <div class="field"><label>Password</label><input id="password" type="password" placeholder="••••••••"></div>
+    <button class="btn-block" type="submit">Login</button>
+    <p id="err" style="color:#d92d20;font-size:14px;min-height:18px;margin-top:12px"></p>
+  </form>
+</div></section>
+<footer><div class="container"><div class="copy">© 2026 Layboka AI • All Rights Reserved</div></div></footer>
+<script>
+const lf=document.getElementById("lform"),err=document.getElementById("err");
+lf.onsubmit=async e=>{
+  e.preventDefault();err.textContent="Logging in...";err.style.color="#666";
+  const val=store.value.trim();
+  const looksLikeEmail=/^\S+@\S+\.\S+$/.test(val);
+  const body=looksLikeEmail?{email:val,password:password.value}:{store:val,password:password.value};
+  try{
+    const r=await fetch("/api/store/login",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});
+    const d=await r.json();
+    if(!d.success)throw new Error(d.message);
+    localStorage.setItem("layboka_token",d.token);
+    window.location.href="/dashboard";
+  }catch(x){err.style.color="#d92d20";err.textContent=x.message||"Login failed.";}
+};
+</script>
+</body></html>
