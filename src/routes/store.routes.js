@@ -45,6 +45,7 @@ router.post("/register", async (req, res) => {
     return res.status(500).json({ success: false, message: "Registration failed." });
   }
 });
+router.post("/apikey", authMiddleware, controller.apiKey);
 
 // Login with EITHER store URL OR email + password
 router.post("/login", async (req, res) => {
