@@ -231,6 +231,14 @@ app.use(
 
 );
 
+origin: [
+  process.env.APP_URL,
+  process.env.WEBSITE_URL,        // https://layboka.vercel.app
+  process.env.SHOPIFY_APP_URL,
+  "https://admin.shopify.com",
+  /\.myshopify\.com$/,
+],
+
 // ======================================
 // COMPRESSION
 // ======================================
