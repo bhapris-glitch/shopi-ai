@@ -1,0 +1,10 @@
+const express = require("express");
+const router = express.Router();
+const c = require("../controllers/admin.controller");
+const { authMiddleware, adminMiddleware } = require("../../middleware/authMiddleware");
+router.use(authMiddleware, adminMiddleware);
+router.get("/summary", c.summary);
+router.get("/clients", c.listClients);
+router.get("/clients/:id", c.getClient);
+router.put("/clients/:id", c.updateClient);
+module.exports = router;
