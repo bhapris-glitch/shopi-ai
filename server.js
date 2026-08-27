@@ -426,7 +426,6 @@ app.use(
 // Import Routes
 // API Routes
 // ======================================
-
 // ======================================
 // API ROUTES
 // ======================================
@@ -463,6 +462,11 @@ app.use(
 //const webhookRoutes =
 //require("./src/routes/webhook.routes");
 
+const installRoutes =
+require("./src/routes/install.routes");
+
+const contactRoutes =
+require("./src/routes/contact.routes");
 // ======================================
 // REGISTER ROUTES
 // ======================================
@@ -530,6 +534,9 @@ app.use(
     webhookRoutes
 
 );
+
+app.use("/api/install", installRoutes);
+app.use("/api/contact", contactRoutes);
 
 // ======================================
 // API ROOT
@@ -901,48 +908,42 @@ app.get(
 // ======================================
 // SPA FALLBACK
 // ======================================
+// ======================================
+// MARKETING PAGES (multi-page SaaS)
+// ======================================
+const pages = [
+  ["/",            "index.html"],
+  ["/pricing",     "pricing.html"],
+  ["/install",     "install.html"],
+  ["/about",       "about.html"],
+  ["/contact",     "contact.html"],
+  ["/privacy",     "privacy.html"],
+  ["/terms",       "terms.html"],
+  ["/login",       "login.html"],
+];
+pages.forEach(([route, file]) => {
+  app.get(route, (req, res) =>
+    res.sendFile(path.join(__dirname, "public", file))
+  );
+});
 
-app.get(
-
-    "*",
-
-    (req,res,next)=>{
-
-        if(
-
-            req.path.startsWith("/api") ||
-
-            req.path.startsWith("/chatbot") ||
-
-            req.path.startsWith("/loader") ||
-
-            req.path.startsWith("/assets")
-
-        ){
-
-            return next();
-
-        }
-
-        return res.sendFile(
-
-            path.join(
-
-                __dirname,
-
-                "client",
-
-                "dist",
-
-                "index.html"
-
-            )
-
-        );
-
-    }
-
-);
+// ======================================
+// SPA FALLBACK (admin dashboard only)
+// ======================================
+app.get("*", (req, res, next) => {
+  if (
+    req.path.startsWith("/api") ||
+    req.path.startsWith("/chatbot") ||
+    req.path.startsWith("/loader") ||
+    req.path.startsWith("/assets") ||
+    req.path === "/public" ||
+    req.path.startsWith("/public/")
+  ) {
+    return next();
+  }
+  // Admin SPA + unknown frontend routes go to dashboard shell
+  return res.sendFile(path.join(__dirname, "client", "dist", "index.html"));
+});
 
 // ======================================
 // NEXT
