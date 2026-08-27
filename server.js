@@ -294,6 +294,11 @@ app.use(
 
 );
 
+// ===========================================
+
+app.use("/api/widget", widgetRoutes);
+
+
 // ======================================
 // NEXT
 // ======================================
@@ -467,6 +472,9 @@ require("./src/routes/install.routes");
 
 const contactRoutes =
 require("./src/routes/contact.routes");
+
+const widgetRoutes = require("./src/routes/widget.routes");
+
 // ======================================
 // REGISTER ROUTES
 // ======================================
@@ -665,6 +673,10 @@ app.get(
 
     }
 
+);
+
+app.get("/widget.js", (req, res) =>
+  res.sendFile(path.join(__dirname, "public", "widget.js"))
 );
 
 // ======================================
