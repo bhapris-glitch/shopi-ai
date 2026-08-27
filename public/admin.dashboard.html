@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Layboka Admin</title>
+<style>
+:root{--p:#ff6b00;--ink:#111;--gray:#5b5b62;--line:#ececf1;--bg:#f6f6f8}
+*{box-sizing:border-box;margin:0;padding:0;font-family:'Inter',Arial,sans-serif}
+body{background:var(--bg);color:var(--ink);min-height:100vh}
+.hidden{display:none!important}.box{max-width:1100px;margin:auto;padding:24px 18px}
+.toolbar{display:flex;justify-content:space-between;align-items:center;background:#fff;border:1px solid var(--line);padding:16px 20px;border-radius:16px;margin-bottom:20px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px;margin-bottom:20px}
+.stat{background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px}
+.stat .lbl{font-size:13px;color:var(--gray)}.stat .val{font-size:28px;font-weight:800}
+table{width:100%;border-collapse:collapse;background:#fff;border-radius:14px;overflow:hidden;border:1px solid var(--line)}
+th,td{text-align:left;padding:12px 14px;border-bottom:1px solid var(--line);font-size:14px}
+th{background:#fafafa;font-weight:700}
+.btn{background:var(--p);color:#fff;border:0;padding:10px 16px;border-radius:9px;font-weight:700;cursor:pointer;font-size:13px}
+select.user, disabled {width:auto}
+#login{max-width:380px;margin:12vh auto;background:#fff;border:1px solid var(--line);border-radius:16px;padding:32px}
+input[type=email],input[type=password]{width:100%;padding:12px;border:1px solid var(--line);border-radius:10px;margin-bottom:12px}
+</style></head><body>
+<script>window.API_BASE = "https://your-backend.up.railway.app";</script>
+<div id="login">
+  <h2 style="margin-bottom:20px">Admin Login</h2>
+  <input type="email" id="email" placeholder="admin email">
+  <input type="password" id="pass" placeholder="password">
+  <button class="btn" style="width:100%" onclick="login()">Login</button>
+  <p id="err" class="msg hidden"></p>
+</div>
+<div id="app" class="hidden"><div class="box">
+  <div class="toolbar"><h1>Admin Dashboard</h1><button class="btn" onclick="logout()">Logout</button></div>
+  <div class="grid" id="summary"></div>
+  <table>
+    <thead><tr><th>Store</th><th>Plan</th><th>Status</th><th>Locked</th><th>Messages</th><th>Revenue</th><th>Actions</th></tr></thead>
+    <tbody id="clients"></tbody>
+  </table>
+</div></div>
+<script>
+const API_BASE=window.API_BASE;const TK="layboka_admin_token";
+const api=(p,o={})=>{const h={"Content-Type":"application/json"};const t=localStorage.getItem(TK);if(t)h.Authorization="Bearer "+t;return fetch(API_BASE+p,{...o,headers:h}).then(r=>r.json());};
+async function login(){
+  const d=await api("/api/auth/admin/login",{method:"POST",body:JSON.stringify({email:$("email").value,password:$("pass").value})});
+  if(!d.success){alert("Login failed");return;}
+  localStorage.setItem(TK,d.token);location.reload();
+}
+function $ (id){return document.getElementById(id);}
+function fmt(v){return (v==null)?0:v;}
+async function load(){
+  if(!localStorage.getItem(TK)){return;}
+  show("app").classList.remove("hidden");$("login").classList.add("hidden");
+  const s=await api("/api/admin/summary"); if(s.success&&s.data){
+    $("summary").innerHTML=[
+      ["Clients",s.data.clients],["Active",s.data.active],["Trials",s.data.trials],
+      ["Locked",s.data.locked],["Contact",s.data.contacts],["Revenue $",fmt(s.data.revenue)]
+    ].map(x=>`<div class="stat"><div class="lbl">${x[0]}</div><div class="val">${x[1]}</div></div>`).join("");
+  }
+  const c=await api("/api/admin/clients"); if(!c.success)return;
+  $("clients").innerHTML=c.clients.map(u=>`
+    <tr>
+      <td>${u.store||u.email||u._id}</td>
+      <td>${u.plan}</td><td>${u.status}</td><td>${u.locked?"🔒":"✓"}</td>
+      <td>${fmt(u.messages)}</td><td>$${fmt(u.revenue)}</td>
+      <td>
+        <select id="plan_${u._id}" onchange="setPlan('${u._id}',this.value)">
+          <optionvalue="free" ${u.plan==="free"?"selected":""}>Free</option>
+          <option value="starter" ${u.plan==="starter"?"selected":""}>Starter</option>
+          <option value="growth" ${u.plan==="growth"?"selected":""}>Growth</option>
+          <option value="premium" ${u.plan==="premium"?"selected":""}>Premium</option>
+          <option value="enterprise" ${u.plan==="enterprise"?"selected":""}>Enterprise</option>
+        </select>
+        <button class="btn" onclick="toggleLock('${u._id}',${!u.locked})">${u.locked?"Unlock":"Lock"}</button>
+        <button class="btn" onclick="extendTrial('${u._id}')">+Trial</button>
+      </td>
+    </tr>`).join("");
+}
+async function setPlan(id,plan){await api("/api/admin/clients/"+id,{method:"PUT",body:JSON.stringify({plan})});load();}
+async function toggleLock(id,locked){await api("/api/admin/clients/"+id,{method:"PUT",body:JSON.stringify({locked})});load();}
+async function extendTrial(id){await api("/api/admin/clients/"+id,{method:"PUT",body:JSON.stringify({extendTrialDays:5})});load();}
+function logout(){localStorage.removeItem(TK);location.reload();}
+(document.readyState.toUpperCase())() catch 
+load();
+</script>
+</body></html>
