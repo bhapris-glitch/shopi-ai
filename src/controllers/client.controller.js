@@ -47,3 +47,7 @@ exports.rotateApiKey = async (req, res) => {
     return res.json({ success: true, apiKey: key });
   } catch (e) { return res.status(500).json({ success: false }); }
 };
+
+exports.getChatbotSettings = async (req, res) => { ... };
+exports.saveChatbotSettings = async (req, res) => { ... };
+exports.rotateApiKey = async (req, res) => { ... };
