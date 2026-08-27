@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Contact Us — Layboka AI</title>
+<link href="/public/css/saas.css" rel="stylesheet">
+</head><body>
+<header><div class="container nav">
+  <a class="logo" href="/">Layboka AI</a>
+  <button class="burger" onclick="document.querySelector('.menu').classList.toggle('open')">☰</button>
+  <nav class="menu">
+    <a href="/about">About Us</a><a href="/pricing">Pricing</a><a href="/terms">Terms</a>
+    <a href="/privacy">Privacy</a><a href="/contact">Contact Us</a>
+    <a class="btn btn-o" href="/login">Login</a>
+  </nav>
+</div></header>
+<section class="section"><div class="container">
+  <div class="head"><p>CONTACT US</p><h2>We'd love to <span>hear from you</span></h2>
+  <h4>Questions, feedback or sales — we reply within 24 hours.</h4></div>
+  <form class="form-card" id="cform">
+    <div class="field"><label>Full Name</label><input id="name" required placeholder="Your name"></div>
+    <div class="field"><label>Email</label><input id="email" type="email" required placeholder="you@email.com"></div>
+    <div class="field"><label>Store URL</label><input id="store" placeholder="yourstore.myshopify.com"></div>
+    <div class="field"><label>Mobile Number</label><input id="mobile" type="tel" placeholder="+1 234 567 890"></div>
+    <div class="field"><label>Query Type</label>
+      <select id="query">
+        <option>General</option><option>Sales</option><option>Enterprise</option><option>Payment</option>
+      </select>
+    </div>
+    <div class="field"><label>Message</label><textarea id="message" rows="4" placeholder="How can we help?"></textarea></div>
+    <button class="btn-block" type="submit">Send Message</button>
+    <p id="res" style="margin-top:14px;font-size:14px;min-height:18px"></p>
+  </form>
+</div></section>
+<footer><div class="container">
+  <div class="fgrid">
+    <div class="f-col"><h3>Layboka AI</h3><a href="/about">About Us</a><a href="/pricing">Pricing</a><a href="/contact">Contact</a></div>
+    <div class="f-col"><h3>Legal</h3><a href="/terms">Terms &amp; Conditions</a><a href="/privacy">Privacy Policy</a></div>
+  </div>
+  <div class="copy">© 2026 Layboka AI • All Rights Reserved</div>
+</div></footer>
+<script>
+const f=document.getElementById("cform"),res=document.getElementById("res");
+f.onsubmit=async e=>{
+  e.preventDefault();
+  const body={name:name.value,email:email.value,store:store.value,mobile:mobile.value,query:query.value,message:message.value};
+  try{
+    const r=await fetch("/api/contact",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});
+    const d=await r.json();
+    res.style.color=d.success?"#16a34a":"#d92d20";
+    res.textContent=d.message; if(d.success)f.reset();
+  }catch(_){res.style.color="#d92d20";res.textContent="Network error. Please try again.";}
+};
+</script>
+</body></html>
