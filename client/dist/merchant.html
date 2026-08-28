@@ -96,16 +96,21 @@ input[type=text],input[type=password]{width:100%;padding:12px;border:1px solid v
 
 <script>
 const API_BASE = window.API_BASE, TOKEN_KEY = "layboka_token";
+
+// set this ONCE — pick whichever route you implemented:
+const LOGIN_ENDPOINT = "/api/store/login";          // <-- OR "/api/auth/client/login"
 const api = (p,o={})=>{const h={"Content-Type":"application/json"};const t=localStorage.getItem(TOKEN_KEY);if(t)h.Authorization="Bearer "+t;return fetch(API_BASE+p,{...o,headers:h}).then(r=>r.json());};
 const $=id=>document.getElementById(id);
 
 function msg(el,txt,type){el.textContent=txt;el.className="msg "+type;el.classList.remove("hidden");setTimeout(()=>el.classList.add("hidden"),3500);}
 
 async function login(){
-  const val=$("lStoreId").value.trim(); const pass=$("lPass").value;
-  const isEmail=/^\S+@\S+\.\S+$/.test(val);
-  const body= isEmail?{email:val,password:pass}:{store:val,password:pass};
-  const d= await api("/api/client/auth/login".replace("/client/auth","/auth/client"),{method:"POST",body:JSON.stringify(body)});
-  if(!d.success){msg($("loginErr"),d.message||"Login failed","err");return;}
-  localStorage.setItem(TOKEN_KEY,d.token); location.reload();
+  const val = $("#lStore").value.trim();
+  const pass = $("#lPass").value;
+  const isEmail = /^\S+@\S+\.\S+$/.test(val);
+  const body = isEmail ? { email: val, password: pass } : { store: val, password: pass };
+  const d = await api(LOGIN_ENDPOINT, { method: "POST", body: JSON.stringify(body) });
+  if (!d.success) { alert(d.message || "Login failed"); return; }
+  localStorage.setItem(TOKEN_KEY, d.token);
+  location.reload();
 }
